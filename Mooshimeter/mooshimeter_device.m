@@ -318,7 +318,7 @@
         
     } else if( UUID_EQUALS(@"FFA4")) {
         NSLog(@"Read buf: %d", self->buf_i);
-        int overshoot = ((self->buf_i + 6) * sizeof(int24)) - sizeof(self->sample_buf);
+        int overshoot = ((self->buf_i + 6) * sizeof(int24_test)) - sizeof(self->sample_buf);
         overshoot = overshoot>0 ? overshoot:0;
         [characteristic.value getBytes:((char*)(&self->sample_buf) + 3*(self->buf_i)) range:NSMakeRange(0, 18-overshoot)];
         self->buf_i += 6; // This autoincrements on the meter
@@ -359,15 +359,15 @@
 }
 #undef UUID_EQUALS
 
--(long)to_int32:(int24)arg {
+-(long)to_int32:(int24_test)arg {
     long int retval;
     memcpy(&retval, &arg, 3);
     ((char*)&retval)[3] = retval & 0x00800000 ? 0xFF:0x00;
     return retval;
 }
 
--(int24)to_int24:(long)arg {
-    int24 retval;
+-(int24_test)to_int24_test:(long)arg {
+    int24_test retval;
     memcpy(&retval, &arg, 3);
     return retval;
 }
@@ -405,7 +405,7 @@
     }
 }
 
--(int)getBufMin:(int24*)buf {
+-(int)getBufMin:(int24_test*)buf {
     int i, tmp;
     int min = [self to_int32:buf[0]];
     for( i=0; i < 32;  i++ ) {
@@ -422,7 +422,7 @@
     return [self calibrateCH2Value:[self getBufMin:self->sample_buf.CH2_buf] offset:YES];
 }
 
--(int)getBufMax:(int24*)buf {
+-(int)getBufMax:(int24_test*)buf {
     int i, tmp;
     int max = [self to_int32:buf[0]];
     for( i=0; i < 32;  i++ ) {
@@ -445,7 +445,7 @@
     unsigned char pga_gain = self->ADC_settings.str.ch1set >> 4;
     double c_gain = 1.0;
     double c_offset = 0.0;
-    int24 offset_cal;
+    int24_test offset_cal;
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
@@ -497,12 +497,12 @@
 }
 
 -(double)getCH1Value {
-    int24 base = self->meter_sample.ch1_reading_lsb;
+    int24_test base = self->meter_sample.ch1_reading_lsb;
     return [self calibrateCH1Value:[self to_int32:base] offset:YES];
 }
 
 -(double)getCH1Value:(int)index {
-    int24 base = self->sample_buf.CH1_buf[index];
+    int24_test base = self->sample_buf.CH1_buf[index];
     return [self calibrateCH1Value:[self to_int32:base] offset:YES];
 }
 
@@ -571,7 +571,7 @@
     unsigned char pga_gain = self->ADC_settings.str.ch2set >> 4;
     double c_gain = 1.0;
     double c_offset = 0.0;
-    int24 offset_cal;
+    int24_test offset_cal;
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
@@ -628,12 +628,12 @@
 }
 
 -(double)getCH2Value {
-    int24 base = self->meter_sample.ch2_reading_lsb;
+    int24_test base = self->meter_sample.ch2_reading_lsb;
     return [self calibrateCH2Value:[self to_int32:base] offset:YES];
 }
 
 -(double)getCH2Value:(int)index {
-    int24 base = self->sample_buf.CH2_buf[index];
+    int24_test base = self->sample_buf.CH2_buf[index];
     return [self calibrateCH2Value:[self to_int32:base] offset:YES];
 }
 

@@ -26,7 +26,7 @@
 - (void)setDevice:(mooshimeter_device*)device
 {
     NSLog(@"I am in setDetailItem");
-    BUILD_BUG_ON(sizeof(int24) != 3);
+    BUILD_BUG_ON(sizeof(int24_test) != 3);
     if (self.meter != device) {
         NSLog(@"New device does not match old one!");
         self.meter = device;

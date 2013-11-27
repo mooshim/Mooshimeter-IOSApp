@@ -27,8 +27,8 @@
     MeterInfo_t          meter_info;
     MeterMeasurement_t   meter_sample;
     struct {
-        int24                CH1_buf[N_SAMPLE_BUFFER];
-        int24                CH2_buf[N_SAMPLE_BUFFER];
+        int24_test                CH1_buf[N_SAMPLE_BUFFER];
+        int24_test                CH2_buf[N_SAMPLE_BUFFER];
     } sample_buf;
     unsigned char        cal_i;
     unsigned short       buf_i;
@@ -99,9 +99,9 @@
 -(double)getCH1BufMax;
 -(double)getCH2BufMax;
 
-+(long)to_int32:(int24)arg;
++(long)to_int32:(int24_test)arg;
 
-+(int24)to_int24:(long)arg;
++(int24_test)to_int24_test:(long)arg;
 
 @end
 
