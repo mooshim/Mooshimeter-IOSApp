@@ -9,6 +9,11 @@
 #ifndef Mooshimeter_MooshimeterProfileTypes_h
 #define Mooshimeter_MooshimeterProfileTypes_h
 
+#define METER_NAME_LEN 16
+
+#ifdef __IAR_SYSTEMS_ICC__
+#include "int24.h"
+#else
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned long uint32;
@@ -19,9 +24,14 @@ typedef signed long int32;
 
 typedef union {
     char bytes[3];
-} int24;
+} int24_test;
+#endif
 
-typedef enum : uint8 {
+typedef enum
+#ifndef __IAR_SYSTEMS_ICC__
+: uint8
+#endif
+{
     METER_SHUTDOWN=0,
     METER_STANDBY,
     METER_PAUSED,
@@ -33,14 +43,22 @@ typedef enum : uint8 {
 typedef struct {
     uint8 cal_target :7;
     uint8 save       :1;
-}__attribute__((packed)) cal_setting_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+cal_setting_t;
 
 typedef struct {
     uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
     uint8 edge           : 3;   // 0: rising, 1: falling, 2: either
     uint8 cont           : 1;   // 0: one shot, 1: continuous
     signed long crossing;       // Value at which to trigger
-}__attribute__((packed)) trigger_settings_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+trigger_settings_t;
 
 typedef struct {
     uint8 pcb_version;
@@ -48,12 +66,20 @@ typedef struct {
     uint16 lot_number;
     uint32 fw_version;
     uint32 programming_utc_time;
-}__attribute__((packed)) MeterInfo_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed))
+#endif
+MeterInfo_t;
 
 typedef struct {
-    int24 ch1_offset;
-    int24 ch2_offset;
-}__attribute__((packed)) MeterOffsets_t;
+    int24_test ch1_offset;
+    int24_test ch2_offset;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed))
+#endif
+MeterOffsets_t;
 
 typedef struct {
     MeterOffsets_t internal_short;
@@ -62,7 +88,11 @@ typedef struct {
     MeterOffsets_t ch3_pulldown;
     MeterOffsets_t ch3_floating;
     MeterOffsets_t ps_and_temp;
-}__attribute__((packed)) MeterCalPoint_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed))
+#endif
+MeterCalPoint_t;
 
 typedef struct {
     meter_state_t target_meter_state;
@@ -74,17 +104,26 @@ typedef struct {
     uint8 calc_ac        : 1;
     uint8 calc_freq      : 1;
     uint8 fill           : 1;
-}__attribute__((packed)) MeterSettings_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+MeterSettings_t;
 
 typedef struct {
-    int24 ch1_reading_lsb;
-    int24 ch2_reading_lsb;
+    int24_test ch1_reading_lsb;
+    int24_test ch2_reading_lsb;
     uint32 ac_ch1_ms;
     uint32 ac_ch2_ms;
     uint16 ch2_period;
     int16 power_factor;
-}__attribute__((packed)) MeterMeasurement_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+MeterMeasurement_t;
 
+#ifndef __IAR_SYSTEMS_ICC__
 typedef struct {
     uint8 id;
     uint8 config1;
@@ -98,12 +137,20 @@ typedef struct {
     uint8 resp1;
     uint8 resp2;
     uint8 gpio;
-}__attribute__((packed)) ADS1x9x_registers_struct_t;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+ADS1x9x_registers_struct_t;
 
 typedef union {
     ADS1x9x_registers_struct_t str;
     uint8 bytes[sizeof(ADS1x9x_registers_struct_t)];
-} ADS1x9x_registers_t;
-
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+ADS1x9x_registers_t;
+#endif
 
 #endif
