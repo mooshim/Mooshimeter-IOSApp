@@ -165,6 +165,7 @@
 		0C844DF91803060700613079 /* mooshimeterTrendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mooshimeterTrendViewController.h; sourceTree = "<group>"; };
 		0C844DFA1803060700613079 /* mooshimeterTrendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mooshimeterTrendViewController.m; sourceTree = "<group>"; };
 		0C95E905182C320E007EBD5F /* Mooshimeter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Mooshimeter.entitlements; sourceTree = "<group>"; };
+		0CCE24EB1845D11900EEDB59 /* MooshimeterProfileTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterProfileTypes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +198,7 @@
 		0C63852017D694DC00D3FB31 = {
 			isa = PBXGroup;
 			children = (
+				0CCE24EA1845D0F900EEDB59 /* common */,
 				0C78967917E3746E00D1439E /* CorePlot */,
 				0C63853217D694DC00D3FB31 /* Mooshimeter */,
 				0C63855C17D694DD00D3FB31 /* MooshimeterTests */,
@@ -380,6 +382,15 @@
 				0C78971C17E3750700D1439E /* NSNumberExtensions.h */,
 			);
 			path = CorePlotHeaders;
+			sourceTree = "<group>";
+		};
+		0CCE24EA1845D0F900EEDB59 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				0CCE24EB1845D11900EEDB59 /* MooshimeterProfileTypes.h */,
+			);
+			name = common;
+			path = ../../common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
