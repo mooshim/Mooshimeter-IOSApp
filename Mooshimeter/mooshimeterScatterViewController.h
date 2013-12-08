@@ -25,6 +25,8 @@
 
 @property (strong, nonatomic) mooshimeter_device *meter;
 
+@property (strong, nonatomic) UITapGestureRecognizer *tapButton;
+
 @property (nonatomic, strong) CPTGraphHostingView *hostView;
 @property (nonatomic, strong) CPTPlotSpace* space2; //remove this hack
 

@@ -16,7 +16,7 @@
 @end
 
 @implementation mooshimeterMasterViewController
-@synthesize ble_master, n_meters, meters;
+@synthesize ble_master, n_meters, meters, openingMessage1, openingMessage2;
 
 - (void)awakeFromNib
 {
@@ -38,12 +38,14 @@
     [self.ble_master scanForPeripheralsWithServices:nil options:nil];
     [self.tableView reloadData];
     [self performSelector:@selector(endScan) withObject:nil afterDelay:10.f];
+    [self.openingMessage1 setText:@"Scanning..."];
 }
 
 -(void) endScan {
     [self.ble_master stopScan];
     self.meter.manager.delegate = self.meter;
     [self.refreshControl endRefreshing];
+    [self.openingMessage1 setText:@"Pull down to scan"];
 }
 
 - (void)viewDidLoad
@@ -56,6 +58,7 @@
     self.n_meters = [[NSMutableArray alloc]init];
     self.meters = [[NSMutableArray alloc]init];
     self.meter_rssi = [[NSMutableDictionary alloc] init];
+    [self.tabBarController.tabBar setHidden:YES];
     
     NSLog(@"Creating refresh handler...");
     UIRefreshControl *rescan_control = [[UIRefreshControl alloc] init];
@@ -64,6 +67,16 @@
     
     NSLog(@"Setting CBManager Delegate");
     self.ble_master.delegate = self;
+    
+    self.openingMessage1 = [[UILabel alloc] initWithFrame:CGRectMake(60, 310, 200, 34)];
+    [self.openingMessage1 setText:@"Scanning..."];
+    self.openingMessage1.backgroundColor = [UIColor clearColor];
+    self.openingMessage1.textColor = [UIColor darkGrayColor];
+    self.openingMessage1.font = [UIFont boldSystemFontOfSize:24];
+    self.openingMessage1.font = [UIFont fontWithName:@"Arial" size:24];
+    [self.view addSubview:self.openingMessage1];
+    
+    [self performSelector:@selector(endScan) withObject:nil afterDelay:10.f];
     
     self.detailViewController = (mooshimeterDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
@@ -106,10 +119,9 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d dB", [p.RSSI integerValue]];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-    if( p.UUID == self.meter.p.UUID ) {
-        cell.contentView.backgroundColor = [UIColor cyanColor];
-    }
-    
+    //if( p.UUID == self.meter.p.UUID ) {
+    //    cell.contentView.backgroundColor = [UIColor cyanColor];
+    //}
     return cell;
 }
 
@@ -212,6 +224,7 @@
         NSLog(@"Service found : %@",s.UUID);
         if ([s.UUID isEqual:[CBUUID UUIDWithString:@"ffa0"]])  {
             NSLog(@"This is a Mooshimeter !");
+            [self.openingMessage1 setText:@"Tap to connect"];
             found = YES;
         }
     }
@@ -243,13 +256,10 @@
 {
     NSLog(@"You clicked a meter");
     CBPeripheral *peripheral = self.meters[indexPath.row];
-    //mooshimeterTabBarController* tc = (mooshimeterTabBarController*)self.tabBarController;
     
     if( self.meter != nil ) {
         if( self.meter.p.UUID == peripheral.UUID && self.meter.p.isConnected ) {
-            // Do nothing
             NSLog(@"Disconnecting");
-            //[tc setSelectedIndex:1];
             [self.meter disconnect:nil cb:nil arg:nil];
             return;
         }
@@ -271,6 +281,7 @@
     mooshimeterTabBarController* tc = (mooshimeterTabBarController*)self.tabBarController;
     [self dismissMegaAnnoyingPopup];
     [tc setDevice:self.meter];
+    [self.tabBarController.tabBar setHidden:NO];
     [tc setSelectedIndex:1];
 }
 

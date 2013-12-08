@@ -22,6 +22,8 @@
     self.meter = device;
 }
 
+-(BOOL)prefersStatusBarHidden { return YES; }
+
 - (void)configureView
 {
     UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
@@ -49,7 +51,6 @@
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
-    segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
     segmentedControl.selectedSegmentIndex = 0;
     [segmentedControl addTarget:self action:@selector(changeCH1Setting:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];
@@ -68,7 +69,6 @@
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
-    segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
     segmentedControl.selectedSegmentIndex = 0;
     [segmentedControl addTarget:self action:@selector(changeCH2Setting:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];

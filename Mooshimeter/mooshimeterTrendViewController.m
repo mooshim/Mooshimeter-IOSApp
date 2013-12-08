@@ -9,6 +9,7 @@
 // TODO: Figure out how to bring up a config dialog
 
 #import "mooshimeterTrendViewController.h"
+#import "mooshimeterDetailViewController.h"
 
 @interface mooshimeterTrendViewController ()
 
@@ -21,6 +22,14 @@
 - (void)setDevice:(mooshimeter_device*)device
 {
     self.meter = device;
+}
+
+-(void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if(fromInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || fromInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+        [self.tabBarController setSelectedIndex:1];
+    } else {
+        [self initPlot];
+    }
 }
 
 -(void) togglePause {
@@ -36,6 +45,7 @@
         self.hostView.allowPinchScaling = YES;
         [self.meter startStreamMeterSample:self cb:@selector(updateReadings) arg:nil];
         self->play = YES;
+        [self.tabBarController.tabBar setHidden:YES];
     }
 }
 
@@ -44,6 +54,7 @@
     self->play = NO;
     self.hostView.allowPinchScaling = YES;
     [self.meter stopStreamMeterSample];
+    [self.tabBarController.tabBar setHidden:NO];
 }
 
 #pragma mark - UIViewController lifecycle methods
@@ -56,6 +67,9 @@
     self->play   = NO;
     memset( self->ch1_values, 0x00, sizeof(ch1_values) );
     memset( self->ch2_values, 0x00, sizeof(ch2_values) );
+}
+
+-(void) viewDidAppear:(BOOL)animated {
     self->start_time = [[NSDate date] timeIntervalSince1970];
     // Stash the present settings... in pure multimeter mode we use pure settings
     self.meter->meter_settings.target_meter_state = METER_RUNNING;
@@ -67,27 +81,24 @@
     self.meter->meter_settings.calc_mean      = 1;
     self.meter->meter_settings.calc_ac        = 0;
     self.meter->meter_settings.calc_freq      = 0;
-    [self.meter sendADCSettings:self cb:@selector(viewWillAppear2) arg:nil];
-}
-
--(void) viewWillAppear2 {
-    [self.meter sendMeterSettings:self cb:@selector(play) arg:nil];
-}
-
--(void) viewDidAppear:(BOOL)animated {
+    [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
     [super viewDidAppear:animated];
     [self initPlot];
+}
+
+-(void) viewDidAppear2 {
+    [self.meter sendMeterSettings:self cb:@selector(play) arg:nil];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
 {
     NSLog(@"Trend view preparing to die!");
     [self pause];
-    NSLog(@"Restoring settings...");
+    //NSLog(@"Restoring settings...");
     // Stash the present settings... in pure multimeter mode we use pure settings
-    self.meter->meter_settings = self->meter_settings;
-    self.meter->ADC_settings   = self->ADC_settings;
-    [self.meter sendMeterSettings:self cb:@selector(viewWillDisappear2) arg:nil];
+    //self.meter->meter_settings = self->meter_settings;
+    //self.meter->ADC_settings   = self->ADC_settings;
+    //[self.meter sendMeterSettings:self cb:@selector(viewWillDisappear2) arg:nil];
 }
 
 -(void) viewWillDisappear2 {
@@ -108,12 +119,12 @@
     
     //[self performSelector:@selector(reqUpdate) withObject:nil afterDelay:self->poll_pause];
     
-    if( !(++run_count%20) ) {
+    if( !(++run_count%5) ) {
         NSLog(@"Redrawing");
         CPTGraph *graph = self.hostView.hostedGraph;
         [graph reloadData];
         
-        CPTXYPlotSpace *ch1Space = [graph plotSpaceAtIndex:0];
+        CPTXYPlotSpace *ch1Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:0];
         
         CPTPlot *ch1Plot         = [graph plotAtIndex:0];
         [ch1Space scaleToFitPlots:[NSArray arrayWithObjects:ch1Plot, nil]];
@@ -121,17 +132,32 @@
         
         CPTMutablePlotRange *xRange = [ch1Space.xRange mutableCopy];
         CPTMutablePlotRange *y1Range = [ch1Space.yRange mutableCopy];
+        NSDecimalNumber* tmpDecimalNumber;
+        double tmpDouble;
+        
         [xRange  expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
-        [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        tmpDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:y1Range.length];
+        tmpDouble =[tmpDecimalNumber doubleValue];
+        if( 1.2*tmpDouble < 10e-3 ) {
+            [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2*10e-3/tmpDouble)];
+        } else {
+            [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        }
         ch1Space.xRange = xRange;
         ch1Space.yRange = y1Range;
         
         if(!self.meter->disp_settings.xy_mode) {
-            CPTXYPlotSpace *ch2Space = [graph plotSpaceAtIndex:1];
+            CPTXYPlotSpace *ch2Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:1];
             CPTPlot *ch2Plot         = [graph plotAtIndex:1];
             [ch2Space scaleToFitPlots:[NSArray arrayWithObjects:ch2Plot, nil]];
             CPTMutablePlotRange *y2Range = [ch2Space.yRange mutableCopy];
-            [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+            tmpDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:y2Range.length];
+            tmpDouble =[tmpDecimalNumber doubleValue];
+            if( 1.2*tmpDouble < 10e-3 ) {
+                [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2*10e-3/tmpDouble)];
+            } else {
+                [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+            }
             ch2Space.xRange = xRange;
             ch2Space.yRange = y2Range;
         }
@@ -151,6 +177,10 @@
 }
 
 -(void)configureHost {
+    for (UIView *subView in self.view.subviews)
+    {
+        [subView removeFromSuperview];
+    }
     self.hostView = [(CPTGraphHostingView *) [CPTGraphHostingView alloc] initWithFrame:self.view.bounds];
     self.hostView.allowPinchScaling = NO;
     [self.view addSubview:self.hostView];
@@ -203,7 +233,8 @@
     ch1PlotSpace.xRange = xRange;
     
     CPTMutablePlotRange *y1Range = [ch1PlotSpace.yRange mutableCopy];
-    [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+    [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.1f)];
+    
     ch1PlotSpace.yRange = y1Range;
     
     // 4 - Create styles and symbols
@@ -394,6 +425,14 @@
     for( int i = 0; i < self->buf_n; i++ ) yMax = dbuf[i] > yMax ? dbuf[i]:yMax;
     
     double range = yMax - yMin;
+    
+    if(range < 10e-3) {
+        double drange = 10e-3 - range;
+        yMax += drange/2;
+        yMin -= drange/2;
+        range = 10e-3;
+    }
+    
     double majorTick = [self getTickFromRange:range];
     double minorTick = majorTick/5.0;
     yMin = ( majorTick*floor(yMin/majorTick) );
@@ -462,19 +501,13 @@
     [super viewDidLoad];
     self.pauseButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(togglePause)];
     [self.view addGestureRecognizer:self.pauseButton];
-    
-    //[self.pauseButton addTarget:self action:@selector(togglePause)];
+    [self.tabBarController.tabBar setHidden:YES];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    NSLog(@"Rotated!");
-    [self initPlot];
 }
 
 #pragma mark - CPTPlotDataSource methods

@@ -441,6 +441,11 @@
 
 -(double)calibrateCH1Value:(int)reading offset:(BOOL)offset{
     double base = (double)reading;
+    double Rs   = 5.48e-3;
+    double Vref = 2.43;
+    double R1   = 1008;
+    double R2   = 10e3;
+    
     /* Figure out what our measurement mode is */
     unsigned char pga_gain = self->ADC_settings.str.ch1set >> 4;
     double c_gain = 1.0;
@@ -449,24 +454,24 @@
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
-            c_gain = (1/(5e-3)) * 2.42 / (1<<23);
+            c_gain = (1/(Rs)) * Vref / (1<<23);
             offset_cal = self->meter_cal[4].electrodes_gain0.ch1_offset;
             break;
         case 0x03:
             // Power supply measurement
-            c_gain = 2*2.42/(1<<23);
+            c_gain = 2*Vref/(1<<23);
             offset_cal = self->meter_cal[4].internal_short.ch1_offset;
             break;
         case 0x04:
             // Temperature sensor
-            c_gain   = (1./490e-6)*2.42/(1<<23);
+            c_gain   = (1./490e-6)*Vref/(1<<23);
             c_offset = 270.918367;
             offset_cal = self->meter_cal[4].internal_short.ch1_offset;
             break;
         case 0x09:
             // Channel 3 in
-            c_gain     = 2.42/(1<<23);
-            offset_cal = self->meter_cal[4].electrodes_gain0.ch1_offset;
+            c_gain     = Vref/(1<<23);
+            offset_cal = self->meter_cal[4].ch3_floating.ch1_offset;
             break;
         default:
             NSLog(@"Unrecognized CH1SET setting");
@@ -485,8 +490,8 @@
                 case CH3_VOLTAGE:
                     break;
                 case CH3_RESISTANCE:
-                    // Re-interpret base as a resistance assuming 10k inline
-                    base = ((-11e3*base) - (1e3*1.21)) / (1.21+base);
+                    // Interpret resistance.  Output in ohms.
+                    base = R2*(((Vref/2)/((Vref/2)+base))-1.0) - R1;
                     break;
                 case CH3_DIODE:
                     break;
@@ -566,38 +571,43 @@
 }
 
 -(double)calibrateCH2Value:(int)reading offset:(BOOL)offset {
+    double Vref = 2.43;
+    double R1   = 1008;
+    double R2   = 10e3;
+    
     double base = (double)reading;
     /* Figure out what our measurement mode is */
     unsigned char pga_gain = self->ADC_settings.str.ch2set >> 4;
     double c_gain = 1.0;
     double c_offset = 0.0;
     int24_test offset_cal;
+    
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             if( self->ADC_settings.str.gpio & 0x02 ) {
-                c_gain = ((2e6+1918.36)/(1918.36)) * 2.42 / (1<<23);
+                c_gain = ((10e6+1.91836e4)/(1.91836e4)) * Vref / (1<<23);
                 offset_cal = self->meter_cal[4].electrodes_gain1.ch2_offset;
             } else {
-                c_gain = ((2e6+47e3)/(47e3)) * 2.42 / (1<<23);
+                c_gain = ((10e6+470e3)/(470e3)) * Vref / (1<<23);
                 offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
             }
             break;
         case 0x03:
             // Power supply measurement
-            c_gain = 4*2.42/(1<<23);
+            c_gain = 4*Vref/(1<<23);
             offset_cal = self->meter_cal[4].internal_short.ch2_offset;
             break;
         case 0x04:
             // Temperature sensor
-            c_gain   = (1./490e-6)*2.42/(1<<23);
+            c_gain   = (1./490e-6)*Vref/(1<<23);
             c_offset = 270.918367;
             offset_cal = self->meter_cal[4].internal_short.ch2_offset;
             break;
         case 0x09:
             // Channel 3 in
-            c_gain     = 2.42/(1<<23);
-            offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
+            c_gain     = Vref/(1<<23);
+            offset_cal = self->meter_cal[4].ch3_floating.ch2_offset;
             break;
         default:
             NSLog(@"Unrecognized CH2SET setting");
@@ -616,8 +626,8 @@
                 case CH3_VOLTAGE:
                     break;
                 case CH3_RESISTANCE:
-                    // Re-interpret base as a resistance assuming 10k inline
-                    base = ((-11e3*base) - (1e3*1.21)) / (1.21+base);
+                    // Interpret resistance.  Output in ohms.
+                    base = R2*(((Vref/2)/((Vref/2)+base))-1.0) - R1;
                     break;
                 case CH3_DIODE:
                     break;

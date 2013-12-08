@@ -56,6 +56,8 @@
 {
     NSLog(@"onDisconnect called in tab controller");
     [self setSelectedIndex:0];
+    // Hide the tab bar to stop navigation
+    [self.tabBar setHidden:YES];
 }
 
 @end

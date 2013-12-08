@@ -17,6 +17,8 @@
 
 #pragma mark - Managing the detail item
 
+-(BOOL)prefersStatusBarHidden { return YES; }
+
 -(mooshimeterDetailViewController*)init {
     self = [super init];
     self->play = NO;
@@ -39,12 +41,16 @@
 
 - (void)viewDidLoad
 {
-    NSLog(@"Detail view trying to display!");
+    NSLog(@"Detail view loaded!");
     [super viewDidLoad];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     NSLog(@"Detail View about to appear");
+    }
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     // Stash the present settings... in pure multimeter mode we use pure settings
     self.meter->meter_settings.target_meter_state = METER_RUNNING;
     self->meter_settings = self.meter->meter_settings;
@@ -55,10 +61,10 @@
     self.meter->meter_settings.calc_mean      = 1;
     self.meter->meter_settings.calc_ac        = 1;
     self.meter->meter_settings.calc_freq      = 1;
-    [self.meter sendADCSettings:self cb:@selector(viewWillAppear2) arg:nil];
+    [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
 }
 
--(void) viewWillAppear2 {
+-(void) viewDidAppear2 {
     [self.meter sendMeterSettings:self cb:@selector(play) arg:nil];
 }
 
@@ -80,6 +86,12 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     NSLog(@"Goodbye from the detail view!");
+}
+
+-(void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if(fromInterfaceOrientation == UIInterfaceOrientationPortrait || fromInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+        [self.tabBarController setSelectedIndex:4];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -151,13 +163,6 @@
     dispval = 1.0/dispval;
     dispval /= 2;
     self.Label4.text = [NSString localizedStringWithFormat:@"%2.2f", dispval];
-
-    //dispval = adjusted.power_factor;
-    //dispval /= (1<<15);
-    //NSLog(@"Q: %f", dispval);
-    //self.Label5.text = [NSString localizedStringWithFormat:@"%3.3f", dispval];
-    
-    //[self performSelector:@selector(reqUpdate) withObject:nil afterDelay:0.2];
 }
 
 @end

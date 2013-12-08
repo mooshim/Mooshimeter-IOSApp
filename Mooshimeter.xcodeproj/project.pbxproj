@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C63852D17D694DC00D3FB31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852C17D694DC00D3FB31 /* UIKit.framework */; };
-		0C63852F17D694DC00D3FB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
-		0C63853117D694DC00D3FB31 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63853017D694DC00D3FB31 /* CoreGraphics.framework */; };
+		0C5F3CC818502442003BEF0F /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CC718502442003BEF0F /* CoreBluetooth.framework */; };
+		0C5F3CCA1850245E003BEF0F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CC91850245E003BEF0F /* QuartzCore.framework */; };
+		0C5F3CCC1850246B003BEF0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CCB1850246B003BEF0F /* UIKit.framework */; };
+		0C5F3CCE18502472003BEF0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CCD18502472003BEF0F /* Foundation.framework */; };
+		0C5F3CD01850247C003BEF0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CCF1850247C003BEF0F /* CoreGraphics.framework */; };
 		0C63853717D694DC00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63853517D694DC00D3FB31 /* InfoPlist.strings */; };
 		0C63853917D694DC00D3FB31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853817D694DC00D3FB31 /* main.m */; };
 		0C63853D17D694DC00D3FB31 /* mooshimeterAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */; };
@@ -25,12 +27,10 @@
 		0C63855917D694DD00D3FB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
 		0C63856117D694DD00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63855F17D694DD00D3FB31 /* InfoPlist.strings */; };
 		0C63856417D694DD00D3FB31 /* MooshimeterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63856317D694DD00D3FB31 /* MooshimeterTests.m */; };
-		0C7895C917D786A400D1439E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C7895C817D786A400D1439E /* CoreBluetooth.framework */; };
 		0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78962217D7E56A00D1439E /* BLEUtility.m */; };
 		0C78967417D82ABF00D1439E /* mooshimeterSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967317D82ABF00D1439E /* mooshimeterSettingViewController.m */; };
 		0C78967717DE74B800D1439E /* mooshimeter_device.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967617DE74B700D1439E /* mooshimeter_device.m */; };
 		0C78971E17E3750700D1439E /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971D17E3750700D1439E /* libCorePlot-CocoaTouch.a */; };
-		0C78972017E3762000D1439E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971F17E3762000D1439E /* QuartzCore.framework */; };
 		0C78972317E378FE00D1439E /* mooshimeterScatterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* mooshimeterScatterViewController.m */; };
 		0C82675017EA2A950062B199 /* mooshimeterTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C82674F17EA2A950062B199 /* mooshimeterTabBarController.m */; };
 		0C844DFB1803060700613079 /* mooshimeterTrendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C844DFA1803060700613079 /* mooshimeterTrendViewController.m */; };
@@ -47,6 +47,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0C5F3CC718502442003BEF0F /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
+		0C5F3CC91850245E003BEF0F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
+		0C5F3CCB1850246B003BEF0F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		0C5F3CCD18502472003BEF0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		0C5F3CCF1850247C003BEF0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		0C63852917D694DC00D3FB31 /* Mooshimeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mooshimeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C63852C17D694DC00D3FB31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0C63852E17D694DC00D3FB31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -173,11 +178,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C78972017E3762000D1439E /* QuartzCore.framework in Frameworks */,
-				0C7895C917D786A400D1439E /* CoreBluetooth.framework in Frameworks */,
-				0C63852D17D694DC00D3FB31 /* UIKit.framework in Frameworks */,
-				0C63852F17D694DC00D3FB31 /* Foundation.framework in Frameworks */,
-				0C63853117D694DC00D3FB31 /* CoreGraphics.framework in Frameworks */,
+				0C5F3CD01850247C003BEF0F /* CoreGraphics.framework in Frameworks */,
+				0C5F3CCE18502472003BEF0F /* Foundation.framework in Frameworks */,
+				0C5F3CCC1850246B003BEF0F /* UIKit.framework in Frameworks */,
+				0C5F3CCA1850245E003BEF0F /* QuartzCore.framework in Frameworks */,
+				0C5F3CC818502442003BEF0F /* CoreBluetooth.framework in Frameworks */,
 				0C78971E17E3750700D1439E /* libCorePlot-CocoaTouch.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -219,6 +224,11 @@
 		0C63852B17D694DC00D3FB31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0C5F3CCF1850247C003BEF0F /* CoreGraphics.framework */,
+				0C5F3CCD18502472003BEF0F /* Foundation.framework */,
+				0C5F3CCB1850246B003BEF0F /* UIKit.framework */,
+				0C5F3CC91850245E003BEF0F /* QuartzCore.framework */,
+				0C5F3CC718502442003BEF0F /* CoreBluetooth.framework */,
 				0C78971F17E3762000D1439E /* QuartzCore.framework */,
 				0C7895C817D786A400D1439E /* CoreBluetooth.framework */,
 				0C63852C17D694DC00D3FB31 /* UIKit.framework */,
@@ -648,6 +658,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../../Downloads/CorePlot_1.3/Binaries/iOS\"",
@@ -657,6 +668,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos6.1;
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -673,6 +686,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../../../Downloads/CorePlot_1.3/Binaries/iOS\"",
@@ -682,6 +696,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos6.1;
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

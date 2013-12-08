@@ -16,6 +16,8 @@
 
 @synthesize hostView = hostView_;
 
+-(BOOL)prefersStatusBarHidden { return YES; }
+
 - (void)setDevice:(mooshimeter_device*)device
 {
     self.meter = device;
@@ -87,6 +89,10 @@
 }
 
 -(void)configureHost {
+    for (UIView *subView in self.view.subviews)
+    {
+        [subView removeFromSuperview];
+    }
     self.hostView = [(CPTGraphHostingView *) [CPTGraphHostingView alloc] initWithFrame:self.view.bounds];
     self.hostView.allowPinchScaling = YES;
     [self.view addSubview:self.hostView];
@@ -397,6 +403,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tapButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showTabBar)];
+    [self.view addGestureRecognizer:self.tapButton];
+    [self.tabBarController.tabBar setHidden:YES];
+}
+
+-(void) showTabBar {
+    static bool hidden=YES;
+    hidden = !hidden;
+    [self.tabBarController.tabBar setHidden:hidden];
 }
 
 - (void)didReceiveMemoryWarning

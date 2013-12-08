@@ -22,6 +22,9 @@
 @property (strong, nonatomic) CBCentralManager *ble_master;
 @property (strong, nonatomic) NSMutableDictionary *meter_rssi;
 
+
+@property (nonatomic, retain) UILabel *openingMessage1;
+@property (nonatomic, retain) UILabel *openingMessage2;
 @property (strong, nonatomic) UIAlertView *megaAlert;
 
 @end
