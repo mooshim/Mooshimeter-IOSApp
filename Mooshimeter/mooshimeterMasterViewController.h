@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSMutableArray *n_meters;
 @property (strong, nonatomic) NSMutableArray *meters;
 @property (strong, nonatomic) CBCentralManager *ble_master;
-@property (strong, nonatomic) NSMutableDictionary *meter_rssi;
+@property (strong, nonatomic) NSMutableArray *meter_rssi;
 
 
 @property (nonatomic, retain) UILabel *openingMessage1;

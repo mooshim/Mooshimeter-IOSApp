@@ -16,7 +16,7 @@
 @end
 
 @implementation mooshimeterMasterViewController
-@synthesize ble_master, n_meters, meters, openingMessage1, openingMessage2;
+@synthesize ble_master, meters, openingMessage1, openingMessage2, meter_rssi;
 
 - (void)awakeFromNib
 {
@@ -29,13 +29,19 @@
 
 - (void)handleSwipe
 {
+    NSArray* services = [NSArray arrayWithObject:[CBUUID UUIDWithString:(@"FFA0")]];
+    
     NSLog(@"Refresh requested");
     self.meter.manager.delegate = self;
     [self.ble_master stopScan];
     [self.meters removeAllObjects];
-    if( self.meter.p.isConnected )
+    [self.meter_rssi removeAllObjects];
+    if( self.meter.p.isConnected ) {
         [self.meters addObject:self.meter.p];
-    [self.ble_master scanForPeripheralsWithServices:nil options:nil];
+        [self.meter.p readRSSI];
+        [self.meter_rssi addObject:self.meter.p.RSSI];
+    }
+    [self.ble_master scanForPeripheralsWithServices:services options:nil];
     [self.tableView reloadData];
     [self performSelector:@selector(endScan) withObject:nil afterDelay:10.f];
     [self.openingMessage1 setText:@"Scanning..."];
@@ -55,9 +61,8 @@
     NSLog(@"Initializing CBMaster...");
     // Custom initialization
     self.ble_master = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
-    self.n_meters = [[NSMutableArray alloc]init];
     self.meters = [[NSMutableArray alloc]init];
-    self.meter_rssi = [[NSMutableDictionary alloc] init];
+    self.meter_rssi = [[NSMutableArray alloc] init];
     [self.tabBarController.tabBar setHidden:YES];
     
     NSLog(@"Creating refresh handler...");
@@ -112,45 +117,20 @@
     }
     
     CBPeripheral *p = [self.meters objectAtIndex:indexPath.row];
-    
-    [p readRSSI];
+    NSNumber* RSSI = [self.meter_rssi objectAtIndex:indexPath.row];
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@",p.name];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d dB", [p.RSSI integerValue]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d dB", [RSSI integerValue]];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    //if( p.UUID == self.meter.p.UUID ) {
-    //    cell.contentView.backgroundColor = [UIColor cyanColor];
-    //}
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return NO;
-}
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {return NO;}
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
 }
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - CBCentralManager delegate
 
@@ -161,88 +141,46 @@
     }
     else {
         NSLog(@"CBCentralManager scanning!");
-        [central scanForPeripheralsWithServices:nil options:nil];
+        [self handleSwipe];
     }
 }
 
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     
     NSLog(@"Found a BLE Device : %@",peripheral);
-    
-    /* iOS 6.0 bug workaround : connect to device before displaying UUID !
-     The reason for this is that the CFUUID .UUID property of CBPeripheral
-     here is null the first time an unknown (never connected before in any app)
-     peripheral is connected. So therefore we connect to all peripherals we find.
-     */
+
     NSLog(@"RSSI: %d", [RSSI integerValue]);
     
-    BOOL replace = NO;
-    BOOL found = NO;
-    for (CBService *s in peripheral.services) {
-        NSLog(@"Service found : %@",s.UUID);
-        if ([s.UUID isEqual:[CBUUID UUIDWithString:@"ffa0"]])  {
-            NSLog(@"This is a Mooshimeter !");
-            found = YES;
-        }
-    }
-    if (found) {
-        // Match if we have this device from before
-        for (int ii=0; ii < self.meters.count; ii++) {
-            CBPeripheral *p = [self.meters objectAtIndex:ii];
-            if ([p isEqual:peripheral]) {
-                [self.meters replaceObjectAtIndex:ii withObject:peripheral];
-                replace = YES;
-            }
-        }
-        if (!replace) {
-            [self.meters addObject:peripheral];
-            [self.tableView reloadData];
-        }
-    } else {
-        peripheral.delegate = self;
-        [central connectPeripheral:peripheral options:nil];
-    }
     
-    [self.n_meters addObject:peripheral];
+    BOOL replace = NO;
+    
+
+    // Match if we have this device from before
+    for (int ii=0; ii < self.meters.count; ii++) {
+        CBPeripheral *p = [self.meters objectAtIndex:ii];
+        if ([p isEqual:peripheral]) {
+            [self.meters replaceObjectAtIndex:ii withObject:peripheral];
+            [self.meter_rssi replaceObjectAtIndex:ii withObject:RSSI];
+            replace = YES;
+        }
+    }
+    if (!replace) {
+        [self.meters addObject:peripheral];
+        [self.meter_rssi addObject:RSSI];
+        [self.tableView reloadData];
+    }
+
+    //[central connectPeripheral:peripheral options:nil];
 }
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    [peripheral discoverServices:nil];
+    //[peripheral discoverServices:nil];
 }
 
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
 }
 
 #pragma  mark - CBPeripheral delegate
-
--(void) peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    BOOL replace = NO;
-    BOOL found = NO;
-    NSLog(@"Services scanned !");
-    [self.ble_master cancelPeripheralConnection:peripheral];
-    for (CBService *s in peripheral.services) {
-        NSLog(@"Service found : %@",s.UUID);
-        if ([s.UUID isEqual:[CBUUID UUIDWithString:@"ffa0"]])  {
-            NSLog(@"This is a Mooshimeter !");
-            [self.openingMessage1 setText:@"Tap to connect"];
-            found = YES;
-        }
-    }
-    if (found) {
-        // Match if we have this device from before
-        for (int ii=0; ii < self.meters.count; ii++) {
-            CBPeripheral *p = [self.meters objectAtIndex:ii];
-            if ([p isEqual:peripheral]) {
-                [self.meters replaceObjectAtIndex:ii withObject:peripheral];
-                replace = YES;
-            }
-        }
-        if (!replace) {
-            [self.meters addObject:peripheral];
-            [self.tableView reloadData];
-        }
-    }
-}
 
 -(void) peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSLog(@"didUpdateNotificationStateForCharacteristic %@ error = %@",characteristic,error);
@@ -305,14 +243,6 @@
                                        otherButtonTitles: nil] init];
     
     [self.megaAlert show];
-    
-    //UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]
-    //                                      initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    
-    //indicator.center = CGPointMake(self.megaAlert.bounds.size.width / 2,
-    //                               self.megaAlert.bounds.size.height);
-    //[indicator startAnimating];
-    //[self.megaAlert addSubview:indicator];
 }
 
 -(void)dismissMegaAnnoyingPopup
