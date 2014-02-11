@@ -27,7 +27,7 @@
 - (void)configureView
 {
     UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    scroll.contentSize = CGSizeMake(320, 800);
+    scroll.contentSize = CGSizeMake(320, 1500);
     scroll.showsHorizontalScrollIndicator = YES;
     
     int yoff = 0;
@@ -47,12 +47,30 @@
     label.text = @"Channel 1 Setting";
     [scroll addSubview:label];
     
-    itemArray = [NSArray arrayWithObjects: @"Current", @"Batt.", @"Temp.", @"Aux", nil];
+    itemArray = [NSArray arrayWithObjects: @"Current", @"Batt.", @"Temp.", @"Aux", @"Off", nil];
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
     segmentedControl.selectedSegmentIndex = 0;
     [segmentedControl addTarget:self action:@selector(changeCH1Setting:) forControlEvents:UIControlEventValueChanged];
+    [scroll addSubview:segmentedControl];
+    
+    // Add Channel 1 PGA control
+    label = [ [UILabel alloc ] initWithFrame:CGRectMake(0, yoff, self.view.bounds.size.width, 50.0) ];
+    yoff += 50;
+    label.textAlignment =  NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor blackColor];
+    label.font = [UIFont fontWithName:@"Helvetica" size:(30.0)];
+    label.text = @"Channel 1 PGA Gain";
+    [scroll addSubview:label];
+    
+    itemArray = [NSArray arrayWithObjects: @"6", @"1", @"2", @"3", @"4", @"8", @"12", nil];
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
+    yoff += 60;
+    segmentedControl.selectedSegmentIndex = 1;
+    [segmentedControl addTarget:self action:@selector(changeCH1PGA:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];
     
     // Add Channel 2 setting control
@@ -65,12 +83,30 @@
     label.text = @"Channel 2 Setting";
     [scroll addSubview:label];
     
-    itemArray = [NSArray arrayWithObjects: @"±60V", @"±1kV", @"Batt.", @"Temp.", @"Aux", nil];
+    itemArray = [NSArray arrayWithObjects: @"±60V", @"±1kV", @"Batt.", @"Temp.", @"Aux", @"Off", nil];
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
     segmentedControl.selectedSegmentIndex = 0;
     [segmentedControl addTarget:self action:@selector(changeCH2Setting:) forControlEvents:UIControlEventValueChanged];
+    [scroll addSubview:segmentedControl];
+    
+    // Add Channel 2 PGA control
+    label = [ [UILabel alloc ] initWithFrame:CGRectMake(0, yoff, self.view.bounds.size.width, 50.0) ];
+    yoff += 50;
+    label.textAlignment =  NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor blackColor];
+    label.font = [UIFont fontWithName:@"Helvetica" size:(30.0)];
+    label.text = @"Channel 2 PGA Gain";
+    [scroll addSubview:label];
+    
+    itemArray = [NSArray arrayWithObjects: @"6", @"1", @"2", @"3", @"4", @"8", @"12", nil];
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
+    yoff += 60;
+    segmentedControl.selectedSegmentIndex = 1;
+    [segmentedControl addTarget:self action:@selector(changeCH2PGA:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];
     
     // Add Channel 3 setting control
@@ -202,8 +238,21 @@
     UISegmentedControl* source = sender;
     const char state_machine[] = { 0x00, 0x03, 0x04, 0x09 };
     
-    SET_W_MASK( self.meter->ADC_settings.str.ch1set, state_machine[source.selectedSegmentIndex], 0X0F);
-    [self.meter sendADCSettings:nil cb:nil arg:nil];    
+    if(source.selectedSegmentIndex == 4) {
+        self.meter->disp_settings.ch1Off = YES;
+    } else {
+        self.meter->disp_settings.ch1Off = NO;
+        SET_W_MASK( self.meter->ADC_settings.str.ch1set, state_machine[source.selectedSegmentIndex], 0X0F);
+        [self.meter sendADCSettings:nil cb:nil arg:nil];
+    }
+}
+
+-(void) changeCH1PGA:(id)sender {
+    NSLog(@"CH1PGA");
+    UISegmentedControl* source = sender;
+    
+    SET_W_MASK( self.meter->ADC_settings.str.ch1set, source.selectedSegmentIndex<<4, 0XF0);
+    [self.meter sendADCSettings:nil cb:nil arg:nil];
 }
 
 -(void) changeCH2Setting:(id)sender {
@@ -212,8 +261,21 @@
     const char ch2_set_states[]  = { 0x00, 0x00, 0x03, 0x04, 0x09 };
     const char gpio_set_states[] = { 0x00, 0x02, 0x00, 0x00, 0x00 };
 
-    SET_W_MASK( self.meter->ADC_settings.str.ch2set, ch2_set_states[ source.selectedSegmentIndex], 0X0F);
-    SET_W_MASK( self.meter->ADC_settings.str.gpio  , gpio_set_states[source.selectedSegmentIndex], 0X042);
+    if(source.selectedSegmentIndex == 5) {
+        self.meter->disp_settings.ch2Off = YES;
+    } else {
+        self.meter->disp_settings.ch2Off = NO;
+        SET_W_MASK( self.meter->ADC_settings.str.ch2set, ch2_set_states[ source.selectedSegmentIndex], 0X0F);
+        SET_W_MASK( self.meter->ADC_settings.str.gpio  , gpio_set_states[source.selectedSegmentIndex], 0X042);
+        [self.meter sendADCSettings:nil cb:nil arg:nil];
+    }
+}
+
+-(void) changeCH2PGA:(id)sender {
+    NSLog(@"CH2PGA");
+    UISegmentedControl* source = sender;
+    
+    SET_W_MASK( self.meter->ADC_settings.str.ch2set, source.selectedSegmentIndex<<4, 0XF0);
     [self.meter sendADCSettings:nil cb:nil arg:nil];
 }
 

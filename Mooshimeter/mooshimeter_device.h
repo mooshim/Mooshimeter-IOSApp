@@ -35,6 +35,8 @@
     
     // These reflect values internal to the app that determine how to display the data
     struct {
+        BOOL ch1Off;
+        BOOL ch2Off;
         BOOL xy_mode;
         enum : uint8 {
             CH3_VOLTAGE = 0,

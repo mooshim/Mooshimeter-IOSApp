@@ -55,12 +55,12 @@
     self.meter->meter_settings.target_meter_state = METER_RUNNING;
     self->meter_settings = self.meter->meter_settings;
     self->ADC_settings   = self.meter->ADC_settings;
-    // Force a 1kHz sample rate
-    self.meter->ADC_settings.str.config1 = 0x03;
+    // Force a 125Hz sample rate
+    self.meter->ADC_settings.str.config1 = 0x01;
     self.meter->meter_settings.buf_depth_log2 = 7;
     self.meter->meter_settings.calc_mean      = 1;
-    self.meter->meter_settings.calc_ac        = 1;
-    self.meter->meter_settings.calc_freq      = 1;
+    self.meter->meter_settings.calc_ac        = 0;
+    self.meter->meter_settings.calc_freq      = 0;
     [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
 }
 
@@ -113,56 +113,88 @@
     [self.meter stopStreamMeterSample];
 }
 
--(NSString*) formatReading:(double)val unit:(NSString*)unit {
-    int log_thou = 0;
-    // Normalize to be in the 1-1000 range
-    while(fabs(val) >= 1e3) {
-        log_thou++;
-        val /= 1000.0;
-        if(abs(log_thou)==4) break;
+-(NSString*) formatReading:(double)val resolution:(double)resolution unit:(NSString*)unit {
+    // If resolution is 0, autoscale the reading
+    if(resolution == 0.0) {
+        int log_thou = 0;
+        // Normalize to be in the 1-1000 range
+        while(fabs(val) >= 1e3) {
+            log_thou++;
+            val /= 1000.0;
+            if(abs(log_thou)==4) break;
+        }
+        while(fabs(val) <= 1.0) {
+            log_thou--;
+            val *= 1000.0;
+            if(abs(log_thou)==1) break;
+        }
+        const NSString* small[] = {@"m", @"u", @"n", @"p"};
+        const NSString* big[]   = {@"k", @"M", @"G", @"T"};
+        const NSString* prefix;
+        if(      log_thou > 0 ) prefix = big[    log_thou -1];
+        else if( log_thou < 0 ) prefix = small[(-log_thou)-1];
+        else                    prefix = @"";
+        NSString* retval = @"";
+        retval = [retval stringByAppendingString:[NSString stringWithFormat:@"%.3f%@%@", val, prefix, unit]];
+        return retval;
+    } else {
+        // Work out the number of decimal places from the supplied resolution
+        int n_decimal = 0;
+        double tmp = 1.0;
+        while( tmp > resolution ) {
+            tmp /= 10.0;
+            n_decimal++;
+        }
+        NSString* formatstring = [NSString stringWithFormat:@"%%.%df%%@", n_decimal];
+        NSString* retval = [NSString stringWithFormat:formatstring, val, unit];
+        return retval;
     }
-    while(fabs(val) <= 1.0) {
-        log_thou--;
-        val *= 1000.0;
-        if(abs(log_thou)==1) break;
-    }
-    const NSString* small[] = {@"m", @"u", @"n", @"p"};
-    const NSString* big[]   = {@"k", @"M", @"G", @"T"};
-    const NSString* prefix;
-    if(      log_thou > 0 ) prefix = big[    log_thou -1];
-    else if( log_thou < 0 ) prefix = small[(-log_thou)-1];
-    else                    prefix = @"";
-    NSString* retval = @"";
-    //double tmp = val;
-    //int i = 0;
-    //while(abs(tmp) < 1000) {
-    //    retval = [retval stringByAppendingString:@" "];
-    //    tmp *= 10;
-    //    if(++i == 1) break;
-    //}
-    //if( val > 0 ) retval = [retval stringByAppendingString:@" "];
-    retval = [retval stringByAppendingString:[NSString stringWithFormat:@"%.3f%@%@", val, prefix, unit]];
-    return retval;
 }
 
 -(void) updateReadings {
     NSLog(@"Updating measurements...");
     
-    double dispval;
-    self.Label1.text = [self formatReading:[self.meter getCH1Value] unit:[self.meter getCH1Units] ];
+    if(self.meter->disp_settings.ch1Off) {
+        self.Label1.text = @"";
+        self.CH1Label.text = @"";
+    } else {
+        // Quick and dirty hack to catch overload values for resistance
+        // Since no other measurement will go in to the millions we can hack like this
+        if( [self.meter getCH1Value] > 5e6 ) {
+            self.Label1.text = @"Overload";
+        } else {
+            //if( self.meter->ADC_settings.str.ch1set && 0x0F == 0x00 ) {
+            self.Label1.text = [self formatReading:[self.meter getCH1Value] resolution:1e-4 unit:[self.meter getCH1Units] ];
+        }
+        self.CH1Label.text = [self.meter getCH1Label];
+    }
     
-    self.Label0.text = [self formatReading:[self.meter getCH2Value] unit:[self.meter getCH2Units] ];
+    if(self.meter->disp_settings.ch2Off) {
+        self.Label0.text = @"";
+        self.CH2Label.text = @"";
+    } else {
+        if( [self.meter getCH2Value] > 5e6 ) {
+            self.Label0.text = @"Overload";
+        } else {
+            self.Label0.text = [self formatReading:[self.meter getCH2Value] resolution:1e-5 unit:[self.meter getCH2Units] ];
+        }
+        self.CH2Label.text = [self.meter getCH2Label];
+    }
     
-    self.Label3.text = [self formatReading:[self.meter getCH1ACValue] unit:[self.meter getCH1Units] ];
+    double watts = [self.meter getCH2Value]*[self.meter getCH1Value];
+    self.WattLabel.text = [self formatReading:watts resolution:1e-4 unit:@"W" ];
     
-    self.Label2.text = [self formatReading:[self.meter getCH2ACValue] unit:[self.meter getCH2Units] ];
+    //self.Label3.text = [self formatReading:[self.meter getCH1ACValue] unit:[self.meter getCH1Units] ];
+    //self.Label2.text = [self formatReading:[self.meter getCH2ACValue] unit:[self.meter getCH2Units] ];
     
+    /*
     dispval = self.meter->meter_sample.ch2_period;
     dispval /= 16;
     dispval *= (1./32768);
     dispval = 1.0/dispval;
     dispval /= 2;
     self.Label4.text = [NSString localizedStringWithFormat:@"%2.2f", dispval];
+     */
 }
 
 @end

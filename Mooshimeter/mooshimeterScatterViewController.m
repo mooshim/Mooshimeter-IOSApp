@@ -23,6 +23,28 @@
     self.meter = device;
 }
 
+#pragma mark - AlertView delegate
+
+-(void)invokeMegaAnnoyingPopup
+{
+    NSLog(@"Bring out the popup");
+    self.megaAlert = [[[UIAlertView alloc] initWithTitle:@"Loading..."
+                        message:@"Loading" delegate:self cancelButtonTitle:@"Cancel"
+                        otherButtonTitles: nil] init];
+    
+    [self.megaAlert show];
+}
+
+-(void)dismissMegaAnnoyingPopup
+{
+    [self.megaAlert dismissWithClickedButtonIndex:0 animated:YES];
+    self.megaAlert = nil;
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self dismissMegaAnnoyingPopup];
+}
+
 #pragma mark - UIViewController lifecycle methods
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -34,9 +56,11 @@
     self.meter->meter_settings.calc_ac        = 0;
     self.meter->meter_settings.calc_freq      = 0;
     [self.meter sendMeterSettings:self cb:@selector(redraw_graph) arg:nil];
+    [self invokeMegaAnnoyingPopup];
 }
 
 -(void) redraw_graph {
+    
     [self.meter downloadSampleBuffer:self cb:@selector(initPlot) arg:nil];
 }
 
@@ -85,6 +109,7 @@
     [self configureGraph];
     [self configurePlots];
     [self configureAxes];
+    [self dismissMegaAnnoyingPopup];
     //[self redraw_graph];
 }
 
@@ -134,7 +159,7 @@
     CPTScatterPlot *ch1Plot = [[CPTScatterPlot alloc] init];
     ch1Plot.dataSource = self;
     ch1Plot.identifier = @"CH1";
-    CPTColor *ch1Color = [CPTColor redColor];
+    CPTColor *ch1Color = [CPTColor whiteColor];
     [graph addPlot:ch1Plot toPlotSpace:ch1PlotSpace];
     
     // 3 - Set up plot space

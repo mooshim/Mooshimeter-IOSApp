@@ -10,7 +10,7 @@
 #import "CorePlot-CocoaTouch.h"
 #import "mooshimeter_device.h"
 
-@interface mooshimeterScatterViewController : UIViewController <CPTPlotDataSource>
+@interface mooshimeterScatterViewController : UIViewController <CPTPlotDataSource, UIAlertViewDelegate>
 {
 @public
     // A place to stash settings
@@ -29,5 +29,7 @@
 
 @property (nonatomic, strong) CPTGraphHostingView *hostView;
 @property (nonatomic, strong) CPTPlotSpace* space2; //remove this hack
+
+@property (strong, nonatomic) UIAlertView *megaAlert;
 
 @end

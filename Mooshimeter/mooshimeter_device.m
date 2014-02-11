@@ -445,9 +445,10 @@
     double Vref = 2.43;
     double R1   = 1008;
     double R2   = 10e3;
+    const double pga_lookup[] = {6,1,2,3,4,8,12};
     
     /* Figure out what our measurement mode is */
-    unsigned char pga_gain = self->ADC_settings.str.ch1set >> 4;
+    double pga_gain = pga_lookup[self->ADC_settings.str.ch1set >> 4];
     double c_gain = 1.0;
     double c_offset = 0.0;
     int24_test offset_cal;
@@ -478,7 +479,7 @@
     }
     if(offset)
         base -= (double)[self to_int32:offset_cal];
-    base *= pga_gain;
+    base /= pga_gain;
     base *= c_gain;
     if(offset)
         base -= c_offset;
@@ -533,7 +534,14 @@
             break;
         case 0x09:
             // Channel 3 in
-            return @"CH3 Voltage";
+            switch( self->disp_settings.ch3_mode ) {
+                case CH3_VOLTAGE:
+                    return @"CH3 Voltage";
+                case CH3_RESISTANCE:
+                    return @"Resistance";
+                case CH3_DIODE:
+                    return @"Diode";
+            }
             break;
         default:
             NSLog(@"Unrecognized CH1SET setting");
@@ -574,10 +582,11 @@
     double Vref = 2.43;
     double R1   = 1008;
     double R2   = 10e3;
+    const double pga_lookup[] = {6,1,2,3,4,8,12};
     
     double base = (double)reading;
     /* Figure out what our measurement mode is */
-    unsigned char pga_gain = self->ADC_settings.str.ch2set >> 4;
+    double pga_gain = pga_lookup[self->ADC_settings.str.ch2set >> 4];
     double c_gain = 1.0;
     double c_offset = 0.0;
     int24_test offset_cal;
@@ -614,7 +623,7 @@
     }
     if(offset)
         base -= (double)[self to_int32:offset_cal];
-    base *= pga_gain;
+    base /= pga_gain;
     base *= c_gain;
     if(offset)
         base -= c_offset;
@@ -669,13 +678,21 @@
             break;
         case 0x09:
             // Channel 3 in
-            return @"CH3 Voltage";
+            switch( self->disp_settings.ch3_mode ) {
+                case CH3_VOLTAGE:
+                    return @"CH3 Voltage";
+                case CH3_RESISTANCE:
+                    return @"Resistance";
+                case CH3_DIODE:
+                    return @"Diode";
+            }
             break;
         default:
             NSLog(@"Unrecognized CH2SET setting");
             return @"";
     }
 }
+    
 -(NSString*)getCH2Units {
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
         case 0x00:

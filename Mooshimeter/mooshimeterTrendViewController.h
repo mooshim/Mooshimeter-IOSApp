@@ -10,7 +10,7 @@
 #import "CorePlot-CocoaTouch.h"
 #import "mooshimeter_device.h"
 
-#define N_POINTS_ONSCREEN 256
+#define N_POINTS_ONSCREEN 512
 
 @interface mooshimeterTrendViewController : UIViewController <CPTPlotDataSource>
 {
@@ -24,6 +24,7 @@
     int          buf_i;
     int          buf_n;
     BOOL         play;
+    BOOL         is_redrawing;
     
     // A place to stash settings
     ADS1x9x_registers_t  ADC_settings;

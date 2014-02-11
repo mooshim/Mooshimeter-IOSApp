@@ -77,7 +77,7 @@
     self->ADC_settings   = self.meter->ADC_settings;
     // Force a 125 sample rate
     self.meter->ADC_settings.str.config1 = 0x01;
-    self.meter->meter_settings.buf_depth_log2 = 1;
+    self.meter->meter_settings.buf_depth_log2 = 3;
     self.meter->meter_settings.calc_mean      = 1;
     self.meter->meter_settings.calc_ac        = 0;
     self.meter->meter_settings.calc_freq      = 0;
@@ -111,16 +111,27 @@
     static int run_count = 0;
     
     self->time[      buf_i] = [[NSDate date] timeIntervalSince1970] - self->start_time;
+#if 1
     self->ch1_values[buf_i] = [self.meter getCH1Value];
     self->ch2_values[buf_i] = [self.meter getCH2Value];
+#else
+    // KILL ME: Derivative hack
+    static double last_ch1 = 0;
+    static double last_ch2 = 0;
+    self->ch1_values[buf_i] = [self.meter getCH1Value] - last_ch1;
+    self->ch2_values[buf_i] = [self.meter getCH2Value] - last_ch2;
+    last_ch1 = [self.meter getCH1Value];
+    last_ch2 = [self.meter getCH2Value];
+#endif
     buf_i++;
     buf_i %= N_POINTS_ONSCREEN;
     if(buf_n < N_POINTS_ONSCREEN) buf_n++;
     
     //[self performSelector:@selector(reqUpdate) withObject:nil afterDelay:self->poll_pause];
     
-    if( !(++run_count%5) ) {
+    if( !(++run_count%5) && !self->is_redrawing ) {
         NSLog(@"Redrawing");
+        self->is_redrawing = YES;
         CPTGraph *graph = self.hostView.hostedGraph;
         [graph reloadData];
         
@@ -138,8 +149,8 @@
         [xRange  expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
         tmpDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:y1Range.length];
         tmpDouble =[tmpDecimalNumber doubleValue];
-        if( 1.2*tmpDouble < 10e-3 ) {
-            [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2*10e-3/tmpDouble)];
+        if( 1.2*tmpDouble < 1e-3 ) {
+            [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2*1e-3/tmpDouble)];
         } else {
             [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
         }
@@ -153,8 +164,8 @@
             CPTMutablePlotRange *y2Range = [ch2Space.yRange mutableCopy];
             tmpDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:y2Range.length];
             tmpDouble =[tmpDecimalNumber doubleValue];
-            if( 1.2*tmpDouble < 10e-3 ) {
-                [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2*10e-3/tmpDouble)];
+            if( 1.2*tmpDouble < 1e-3 ) {
+                [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2*1e-3/tmpDouble)];
             } else {
                 [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
             }
@@ -163,6 +174,7 @@
         }
         
         [self redrawAxisLabels];
+        self->is_redrawing = NO;
     }
 }
 
@@ -222,7 +234,7 @@
     CPTScatterPlot *ch1Plot = [[CPTScatterPlot alloc] init];
     ch1Plot.dataSource = self;
     ch1Plot.identifier = @"CH1";
-    CPTColor *ch1Color = [CPTColor redColor];
+    CPTColor *ch1Color = [CPTColor whiteColor];
     [graph addPlot:ch1Plot toPlotSpace:ch1PlotSpace];
     
     // 3 - Set up plot space
@@ -321,7 +333,7 @@
     xAxisTextStyle.fontSize = 11.0f;
     
     CPTMutableTextStyle *ch1AxisTextStyle = [[CPTMutableTextStyle alloc] init];
-    ch1AxisTextStyle.color = [CPTColor redColor];
+    ch1AxisTextStyle.color = [CPTColor whiteColor];
     ch1AxisTextStyle.fontName = @"Helvetica-Bold";
     ch1AxisTextStyle.fontSize = 11.0f;
 
@@ -512,6 +524,16 @@
 
 #pragma mark - CPTPlotDataSource methods
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
+    if ( [plot.identifier isEqual:@"CH1"] == YES  ) {
+        if( self.meter->disp_settings.ch1Off ) {
+            return 0;
+        }
+    }
+    if ( [plot.identifier isEqual:@"CH2"] == YES  ) {
+        if( self.meter->disp_settings.ch2Off ) {
+            return 0;
+        }
+    }
     return self->buf_n;
 }
 
