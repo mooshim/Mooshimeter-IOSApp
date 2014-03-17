@@ -94,16 +94,22 @@ __attribute__((packed))
 #endif
 MeterCalPoint_t;
 
+#define METER_MEASURE_SETTINGS_ISRC_ON         0x01
+#define METER_MEASURE_SETTINGS_ISRC_LVL        0x02
+#define METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN 0x04
+
+#define METER_CALC_SETTINGS_DEPTH_LOG2 0x0F
+#define METER_CALC_SETTINGS_MEAN       0x10
+#define METER_CALC_SETTINGS_AC         0x20
+#define METER_CALC_SETTINGS_FREQ       0x40
+
 typedef struct {
     meter_state_t target_meter_state;    // The target state of the meter
     meter_state_t present_meter_state;   // The state of the meter right now.  Read only.
     cal_setting_t cal_setting;           // Specifies the buffer in to which the result of the calibration will be written
     trigger_settings_t trigger_settings; // Specifies level and rising/falling edge for pause (UNUSED)
-    uint8 buf_depth_log2 : 4;            // Determines how deep a sample buffer to capture and average.  Depth = 2^(buf_depth_log2)
-    uint8 calc_mean      : 1;            // Flag.  True = means are calculated and chx_reading_lsb in MeterMeasurement_t is populated
-    uint8 calc_ac        : 1;            // Flag.  True = mean squares are calculated and ac_chx_ms in MeterMeasurement_t is populated
-    uint8 calc_freq      : 1;            // Flag.  True = ch2_period in MeterMeasurement_t is populated
-    uint8 fill           : 1;            // Ignored.
+    uint8 measure_settings;              // Specifies features to turn on and off.  Note that voltage gain is controlled through ADC settings
+    uint8 calc_settings;                 // Specifies what analysis to run on captured data
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed)) 
