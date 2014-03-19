@@ -129,6 +129,36 @@ __attribute__((packed))
 #endif
 MeterMeasurement_t;
 
+#define ADS1x9x_MANDATORY_BITS {\
+  0x10, \
+  0x00, \
+  0x80, \
+  0x10, \
+  0x00, \
+  0x00, \
+  0x00, \
+  0x00, \
+  0x00, \
+  0x02, \
+  0x01, \
+  0x00, \
+}
+
+#define ADS1x9x_MANDATORY_BITS_MASK {\
+  0x1C, \
+  0x78, \
+  0x84, \
+  0x12, \
+  0x00, \
+  0x00, \
+  0x00, \
+  0xC0, \
+  0xA0, \
+  0x02, \
+  0x79, \
+  0xF0, \
+}
+
 #ifndef __IAR_SYSTEMS_ICC__
 typedef struct {
     uint8 id;                   // Information on these registers can be found on the ADS1292 datasheet.
