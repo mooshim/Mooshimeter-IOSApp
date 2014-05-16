@@ -51,10 +51,7 @@
     NSLog(@"Trend View about to appear");
     [super viewWillAppear:animated];
     self->meter_settings = self.meter->meter_settings;
-    self.meter->meter_settings.buf_depth_log2 = 7;
-    self.meter->meter_settings.calc_mean      = 0;
-    self.meter->meter_settings.calc_ac        = 0;
-    self.meter->meter_settings.calc_freq      = 0;
+    self.meter->meter_settings.calc_settings  = 0x17; // buffer depth 128, mean calc on, ac calc off, freq calc off
     [self.meter sendMeterSettings:self cb:@selector(redraw_graph) arg:nil];
     [self invokeMegaAnnoyingPopup];
 }

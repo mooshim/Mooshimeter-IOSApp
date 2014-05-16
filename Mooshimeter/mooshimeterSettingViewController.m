@@ -47,7 +47,7 @@
     label.text = @"Channel 1 Setting";
     [scroll addSubview:label];
     
-    itemArray = [NSArray arrayWithObjects: @"Current", @"Batt.", @"Temp.", @"Aux", @"Off", nil];
+    itemArray = [NSArray arrayWithObjects: @"Current", @"Temp.", @"Aux", @"Off", nil];
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
@@ -83,11 +83,11 @@
     label.text = @"Channel 2 Setting";
     [scroll addSubview:label];
     
-    itemArray = [NSArray arrayWithObjects: @"±60V", @"±1kV", @"Batt.", @"Temp.", @"Aux", @"Off", nil];
+    itemArray = [NSArray arrayWithObjects: @"±1.2V", @"±60V", @"±1kV", @"Temp.", @"Aux", @"Off", nil];
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
-    segmentedControl.selectedSegmentIndex = 0;
+    segmentedControl.selectedSegmentIndex = 1;
     [segmentedControl addTarget:self action:@selector(changeCH2Setting:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];
     
@@ -116,16 +116,34 @@
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor blackColor];
     label.font = [UIFont fontWithName:@"Helvetica" size:(30.0)];
-    label.text = @"Aux. Setting";
+    label.text = @"Current Source";
     [scroll addSubview:label];
     
-    itemArray = [NSArray arrayWithObjects: @"Prec. V", @"Ω", @"Diode", nil];
+    itemArray = [NSArray arrayWithObjects: @"Off", @"97n", @"97u", nil];
     segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
     segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
     yoff += 60;
     segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
     segmentedControl.selectedSegmentIndex = 0;
-    [segmentedControl addTarget:self action:@selector(changeCH3Setting:) forControlEvents:UIControlEventValueChanged];
+    [segmentedControl addTarget:self action:@selector(changeCurrentSourceSetting:) forControlEvents:UIControlEventValueChanged];
+    [scroll addSubview:segmentedControl];
+    
+    label = [ [UILabel alloc ] initWithFrame:CGRectMake(0, yoff, self.view.bounds.size.width, 50.0) ];
+    yoff += 50;
+    label.textAlignment =  NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor blackColor];
+    label.font = [UIFont fontWithName:@"Helvetica" size:(30.0)];
+    label.text = @"100K Pulldown";
+    [scroll addSubview:label];
+    
+    itemArray = [NSArray arrayWithObjects: @"OFF", @"ON", nil];
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
+    yoff += 60;
+    segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
+    segmentedControl.selectedSegmentIndex = 0;
+    [segmentedControl addTarget:self action:@selector(changePulldownSetting:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];
     
     // Sample Rate Control
@@ -236,7 +254,7 @@
 -(void) changeCH1Setting:(id)sender {
     NSLog(@"CH1");
     UISegmentedControl* source = sender;
-    const char state_machine[] = { 0x00, 0x03, 0x04, 0x09 };
+    const char state_machine[] = { 0x00, 0x04, 0x09 };
     
     if(source.selectedSegmentIndex == 4) {
         self.meter->disp_settings.ch1Off = YES;
@@ -258,15 +276,15 @@
 -(void) changeCH2Setting:(id)sender {
     NSLog(@"CH2");
     UISegmentedControl* source = sender;
-    const char ch2_set_states[]  = { 0x00, 0x00, 0x03, 0x04, 0x09 };
-    const char gpio_set_states[] = { 0x00, 0x02, 0x00, 0x00, 0x00 };
+    const char ch2_set_states[]  = { 0x00, 0x00, 0x00, 0x04, 0x09 };
+    const char gpio_set_states[] = { 0x00, 0x01, 0x02, 0x00, 0x00 };
 
-    if(source.selectedSegmentIndex == 5) {
+    if(source.selectedSegmentIndex == 6) {
         self.meter->disp_settings.ch2Off = YES;
     } else {
         self.meter->disp_settings.ch2Off = NO;
         SET_W_MASK( self.meter->ADC_settings.str.ch2set, ch2_set_states[ source.selectedSegmentIndex], 0X0F);
-        SET_W_MASK( self.meter->ADC_settings.str.gpio  , gpio_set_states[source.selectedSegmentIndex], 0X042);
+        SET_W_MASK( self.meter->ADC_settings.str.gpio  , gpio_set_states[source.selectedSegmentIndex], 0X03);
         [self.meter sendADCSettings:nil cb:nil arg:nil];
     }
 }
@@ -288,6 +306,44 @@
     
     SET_W_MASK( self.meter->ADC_settings.str.gpio, gpio_states[source.selectedSegmentIndex], 0X01);
     [self.meter sendADCSettings:nil cb:nil arg:nil];
+}
+
+-(void) changeCurrentSourceSetting:(id)sender {
+    NSLog(@"Current");
+    UISegmentedControl* source = sender;
+    
+    switch( source.selectedSegmentIndex ) {
+        case 0:
+            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_LVL;
+            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_ON;
+            break;
+        case 1:
+            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_LVL;
+            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_ON;
+            break;
+        case 2:
+            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_LVL;
+            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_ON;
+            break;
+    }
+    
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
+}
+
+-(void) changePulldownSetting:(id)sender {
+    NSLog(@"Pulldown");
+    UISegmentedControl* source = sender;
+    
+    switch( source.selectedSegmentIndex ) {
+        case 0:
+            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN;
+            break;
+        case 1:
+            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN;
+            break;
+    }
+    
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 -(void) setGraphMode:(id)sender {

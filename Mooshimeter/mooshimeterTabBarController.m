@@ -17,7 +17,7 @@
 - (void)setDevice:(mooshimeter_device*)device
 {
     self.meter = device;
-    [device registerDisconnectCB:self cb:@selector(onDisconnect) arg:nil];
+    [device registerDisconnectCB:self cb:@selector(onAccidentalDisconnect) arg:nil];
     NSLog(@"I am in tab controller setDevice");
     for( UIViewController* c in self.viewControllers ) {
         if( [c respondsToSelector:@selector(setDevice:)] ) {
@@ -52,12 +52,56 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)onDisconnect
+-(void)onDeliberateDisconnect
 {
-    NSLog(@"onDisconnect called in tab controller");
+    NSLog(@"onDeliberateDisconnect called in tab controller");
     [self setSelectedIndex:0];
     // Hide the tab bar to stop navigation
     [self.tabBar setHidden:YES];
+}
+
+-(void)onAccidentalDisconnect
+{
+    NSLog(@"onAccidentalDisconnect called in tab controller");
+    // Was the disconnect deliberate?
+    [self invokeMegaAnnoyingPopup];
+    
+    [self.meter reconnect:self cb:@selector(settingsRestored:) arg:[NSNumber numberWithInteger:self.selectedIndex]];
+    [self setSelectedIndex:0];
+    // Hide the tab bar to stop navigation
+    [self.tabBar setHidden:YES];
+}
+
+-(void)settingsRestored:(NSNumber*)i
+{
+    NSLog(@"Settings Restored, resuming");
+    [self.meter registerDisconnectCB:self cb:@selector(onAccidentalDisconnect) arg:nil];
+    [self dismissMegaAnnoyingPopup];
+    [self setSelectedIndex:[i integerValue]];
+    [self.tabBar setHidden:NO];
+}
+
+#pragma mark - AlertView delegate
+
+-(void)invokeMegaAnnoyingPopup
+{
+    NSLog(@"Bring out the popup");
+    self.megaAlert = [[[UIAlertView alloc] initWithTitle:nil
+                                                 message:@"Connecting..." delegate:self cancelButtonTitle:@"Cancel"
+                                       otherButtonTitles: nil] init];
+    
+    [self.megaAlert show];
+}
+
+-(void)dismissMegaAnnoyingPopup
+{
+    [self.megaAlert dismissWithClickedButtonIndex:0 animated:YES];
+    self.megaAlert = nil;
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self.meter disconnect];
+    [self dismissMegaAnnoyingPopup];
 }
 
 @end

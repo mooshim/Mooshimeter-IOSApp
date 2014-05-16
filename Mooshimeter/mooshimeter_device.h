@@ -35,6 +35,7 @@
     
     // These reflect values internal to the app that determine how to display the data
     struct {
+        BOOL connected;
         BOOL ch1Off;
         BOOL ch2Off;
         BOOL xy_mode;
@@ -55,7 +56,8 @@
 -(void)sync;
 
 -(void)setup:(id)target cb:(SEL)cb arg:(id)arg;
--(void)disconnect:(id)target cb:(SEL)cb arg:(id)arg;
+-(void)reconnect:(id)target cb:(SEL)cb arg:(id)arg;
+-(void)disconnect;
 
 -(void)reqADCSettings:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)sendADCSettings:(id)target cb:(SEL)cb arg:(id)arg;
@@ -78,8 +80,8 @@
 -(void)setMeterState:(int)new_state target:(id)target cb:(SEL)cb arg:(id)arg;
 -(int)getMeterState;
 
+-(void)setMeterLVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)setMeterHVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg;
--(void)setMeterCH3PullDown:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg;
 
 -(void)registerDisconnectCB:(id)target cb:(SEL)cb arg:(id)arg;
 
@@ -101,9 +103,9 @@
 -(double)getCH1BufMax;
 -(double)getCH2BufMax;
 
-+(long)to_int32:(int24_test)arg;
+-(long)to_int32:(int24_test)arg;
 
-+(int24_test)to_int24_test:(long)arg;
+-(int24_test)to_int24_test:(long)arg;
 
 @end
 

@@ -57,10 +57,13 @@
     self->ADC_settings   = self.meter->ADC_settings;
     // Force a 125Hz sample rate
     self.meter->ADC_settings.str.config1 = 0x01;
-    self.meter->meter_settings.buf_depth_log2 = 7;
-    self.meter->meter_settings.calc_mean      = 1;
-    self.meter->meter_settings.calc_ac        = 0;
-    self.meter->meter_settings.calc_freq      = 0;
+    self.meter->meter_settings.calc_settings &= ~METER_CALC_SETTINGS_DEPTH_LOG2;
+    self.meter->meter_settings.calc_settings |= 7;
+    
+    self.meter->meter_settings.calc_settings |= METER_CALC_SETTINGS_MEAN;
+    self.meter->meter_settings.calc_settings &=~METER_CALC_SETTINGS_AC;
+    self.meter->meter_settings.calc_settings &=~METER_CALC_SETTINGS_FREQ;
+    
     [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
 }
 
@@ -180,9 +183,9 @@
         }
         self.CH2Label.text = [self.meter getCH2Label];
     }
-    
-    double watts = [self.meter getCH2Value]*[self.meter getCH1Value];
-    self.WattLabel.text = [self formatReading:watts resolution:1e-4 unit:@"W" ];
+
+    self.CH1Raw.text = [NSString stringWithFormat:@"%06X",[self.meter to_int32:self.meter->meter_sample.ch1_reading_lsb]];
+    self.CH2Raw.text = [NSString stringWithFormat:@"%06X",[self.meter to_int32:self.meter->meter_sample.ch2_reading_lsb]];
     
     //self.Label3.text = [self formatReading:[self.meter getCH1ACValue] unit:[self.meter getCH1Units] ];
     //self.Label2.text = [self formatReading:[self.meter getCH2ACValue] unit:[self.meter getCH2Units] ];

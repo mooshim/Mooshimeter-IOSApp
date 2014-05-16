@@ -77,10 +77,7 @@
     self->ADC_settings   = self.meter->ADC_settings;
     // Force a 125 sample rate
     self.meter->ADC_settings.str.config1 = 0x01;
-    self.meter->meter_settings.buf_depth_log2 = 3;
-    self.meter->meter_settings.calc_mean      = 1;
-    self.meter->meter_settings.calc_ac        = 0;
-    self.meter->meter_settings.calc_freq      = 0;
+    self.meter->meter_settings.calc_settings = 0x13;  // Buffer depth 8, mean calc on, ac calc off, freq calc off
     [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
     [super viewDidAppear:animated];
     [self initPlot];

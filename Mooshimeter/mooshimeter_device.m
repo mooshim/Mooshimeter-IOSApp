@@ -15,7 +15,7 @@
 
 -(mooshimeter_device*) init:(CBCentralManager*)man periph:(CBPeripheral*)periph {
     // Check for issues with struct packing.
-    BUILD_BUG_ON(sizeof(MeterSettings_t)!=9);
+    BUILD_BUG_ON(sizeof(MeterSettings_t)!=10);
     BUILD_BUG_ON(sizeof(meter_state_t) != 1);
     BUILD_BUG_ON(sizeof(buf_i) != 2);
     self = [super init];
@@ -43,6 +43,10 @@
     }
     NSArray* val = [NSArray arrayWithObjects:target, [NSValue valueWithPointer:cb], arg, [NSNumber numberWithBool:oneshot], nil];
     [self.cbs setObject:val forKey:key];
+}
+
+-(void) clearCB:(NSString*)key {
+    [self.cbs removeObjectForKey:key];
 }
 
 -(void) callCB:(NSString*)key {
@@ -73,13 +77,23 @@
     }
 }
 
+-(BOOL) checkCB:(NSString*)key {
+    NSArray *val = [self.cbs objectForKey:key];
+    return val != nil;
+}
+
 -(void)setup:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"setup" target:target cb:cb arg:arg];
     [self.manager connectPeripheral:self.p options:nil];
 }
 
--(void)disconnect:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"disconnect" target:target cb:cb arg:arg];
+-(void)reconnect:(id)target cb:(SEL)cb arg:(id)arg {
+    [self createCB:@"reconnect" target:target cb:cb arg:arg];
+    [self.manager connectPeripheral:self.p options:nil];
+}
+
+-(void)disconnect {
+    [self clearCB:@"disconnect"];
     [self.manager cancelPeripheralConnection:self.p];
 }
 
@@ -109,6 +123,15 @@
 
 -(void)sendADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"write_adc_settings" target:target cb:cb arg:arg];
+    // Sanitize the ADC register settings - make sure all mandatory bits are set to their mandatory position
+    // See ADS1292 datasheet for more details
+#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
+    const uint8 mand_bits[] = ADS1x9x_MANDATORY_BITS;
+    const uint8 mand_mask[] = ADS1x9x_MANDATORY_BITS_MASK;
+    for(int i = 0; i < sizeof(ADS1x9x_registers_t); i++) {
+        SET_W_MASK(self->ADC_settings.bytes[i], mand_bits[i], mand_mask[i]);
+    }
+#undef SET_W_MASK
     [BLEUtility writeCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA7" data:[NSData dataWithBytes:(char*)(&self->ADC_settings) length:sizeof(self->ADC_settings)]];
 }
 
@@ -167,7 +190,7 @@
     }
 }
 
--(void)setMeterHVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
+-(void)setMeterLVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
     if(on) {
         self->ADC_settings.str.gpio |=  0x01;
     } else {
@@ -176,7 +199,7 @@
     [self sendADCSettings:target cb:cb arg:arg];
 }
 
--(void)setMeterCH3PullDown:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
+-(void)setMeterHVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
     if(on) {
         self->ADC_settings.str.gpio |=  0x02;
     } else {
@@ -235,7 +258,7 @@
         NSLog(@"Setting sample_buf_i to 0");
         self->buf_i = 0;
         [self sendSampleBufferI:0 target:self cb:@selector(bufferDownloadController:) arg:arg];
-    } else if ( self->buf_i < 2*(1<<self->meter_settings.buf_depth_log2) ) {
+    } else if ( self->buf_i < 2*(1<<(self->meter_settings.calc_settings&METER_CALC_SETTINGS_DEPTH_LOG2)) ) {
         /* There is still more buffer to download */
         [self reqSampleBuffer:self cb:@selector(bufferDownloadController:) arg:arg];
     } else {
@@ -267,7 +290,11 @@
 -(void) centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"Meter connected");
     peripheral.delegate = self;
-    [self createCB:@"discover" target:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:0]];
+    if( [self checkCB:@"setup"] ) {
+        [self createCB:@"discover" target:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:0]];
+    } else {
+        [self createCB:@"discover" target:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:0]];
+    }
     [peripheral discoverServices:nil];
 }
 
@@ -372,6 +399,7 @@
     return retval;
 }
 
+#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
 
 -(void) doSetup:(NSNumber*)stage {
     NSLog(@"In doSetup: stage %d", [stage intValue]);
@@ -398,6 +426,10 @@
             [self downloadCalPoint:next-4 target:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
         case 10:
+            // Take the voltage channel out of high precision mode to begin with, this confuses users.
+            SET_W_MASK( self->ADC_settings.str.gpio  , 0x01, 0X03);
+            [self sendADCSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
+        case 11:
             [self callCB:@"setup"];
             break;
         default:
@@ -405,6 +437,24 @@
     }
 }
 
+-(void) restoreSettings:(NSNumber*)stage {
+   NSLog(@"In restore: stage %d", [stage intValue]);
+   int next = [stage intValue];
+   switch( next++ ) {
+       case 0:
+           [self sendADCSettings:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:next]];
+           break;
+       case 1:
+           [self sendMeterSettings:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:next]];
+           break;
+       case 2:
+           [self callCB:@"reconnect"];
+           break;
+       default:
+           NSLog(@"in restore ended up somewhere impossible");
+   }
+}
+       
 -(int)getBufMin:(int24_test*)buf {
     int i, tmp;
     int min = [self to_int32:buf[0]];
@@ -441,8 +491,9 @@
 
 -(double)calibrateCH1Value:(int)reading offset:(BOOL)offset{
     double base = (double)reading;
-    double Rs   = 5.48e-3;
-    double Vref = 2.43;
+    double Rs   = 1e-3;
+    double amp_gain = 80.0;
+    double Vref = 2.42;
     double R1   = 1008;
     double R2   = 10e3;
     const double pga_lookup[] = {6,1,2,3,4,8,12};
@@ -455,7 +506,7 @@
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
-            c_gain = (1/(Rs)) * Vref / (1<<23);
+            c_gain = (1.0/amp_gain)*(1/(Rs)) * Vref / (1<<23);
             offset_cal = self->meter_cal[4].electrodes_gain0.ch1_offset;
             break;
         case 0x03:
@@ -522,7 +573,7 @@
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
-            return @"Current";
+            return @"CH1 Current";
             break;
         case 0x03:
             // Power supply measurement
@@ -530,17 +581,17 @@
             break;
         case 0x04:
             // Temperature sensor
-            return @"Temperature";
+            return @"CH1 Temperature";
             break;
         case 0x09:
             // Channel 3 in
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
-                    return @"CH3 Voltage";
+                    return @"Ω Voltage";
                 case CH3_RESISTANCE:
-                    return @"Resistance";
+                    return @"Ω Resistance";
                 case CH3_DIODE:
-                    return @"Diode";
+                    return @"Ω Diode";
             }
             break;
         default:
@@ -579,7 +630,7 @@
 }
 
 -(double)calibrateCH2Value:(int)reading offset:(BOOL)offset {
-    double Vref = 2.43;
+    double Vref = 2.42;
     double R1   = 1008;
     double R2   = 10e3;
     const double pga_lookup[] = {6,1,2,3,4,8,12};
@@ -594,12 +645,22 @@
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
-            if( self->ADC_settings.str.gpio & 0x02 ) {
-                c_gain = ((10e6+1.91836e4)/(1.91836e4)) * Vref / (1<<23);
-                offset_cal = self->meter_cal[4].electrodes_gain1.ch2_offset;
-            } else {
-                c_gain = ((10e6+470e3)/(470e3)) * Vref / (1<<23);
-                offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
+            switch( self->ADC_settings.str.gpio & 0x03 ) {
+                case 0x00:
+                    // 1.2V range
+                    c_gain = Vref / (1<<23);
+                    offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
+                    break;
+                case 0x01:
+                    // 60V range
+                    c_gain = ((10e6+160e3)/(160e3)) * Vref / (1<<23);
+                    offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
+                    break;
+                case 0x02:
+                    // 1000V range
+                    c_gain = ((10e6+12e3)/(12e3)) * Vref / (1<<23);
+                    offset_cal = self->meter_cal[4].electrodes_gain1.ch2_offset;
+                    break;
             }
             break;
         case 0x03:
@@ -666,25 +727,25 @@
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
-            return @"Voltage";
+            return @"CH2 Voltage";
             break;
         case 0x03:
             // Power supply measurement
-            return @"Battery Voltage";
+            return @"CH2 Battery Voltage";
             break;
         case 0x04:
             // Temperature sensor
-            return @"Temperature";
+            return @"CH2 Temperature";
             break;
         case 0x09:
             // Channel 3 in
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
-                    return @"CH3 Voltage";
+                    return @"Ω Voltage";
                 case CH3_RESISTANCE:
-                    return @"Resistance";
+                    return @"Ω Resistance";
                 case CH3_DIODE:
-                    return @"Diode";
+                    return @"Ω Diode";
             }
             break;
         default:

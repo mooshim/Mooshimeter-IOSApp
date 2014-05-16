@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "mooshimeter_device.h"
 
-@interface mooshimeterTabBarController : UITabBarController
+@interface mooshimeterTabBarController : UITabBarController <UIAlertViewDelegate>
 
 @property (strong, nonatomic) mooshimeter_device *meter;
+@property (strong, nonatomic) UIAlertView *megaAlert;
 
 -(void)setDevice:(mooshimeter_device*)device;
 

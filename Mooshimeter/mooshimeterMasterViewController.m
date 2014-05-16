@@ -198,11 +198,11 @@
     if( self.meter != nil ) {
         if( self.meter.p.UUID == peripheral.UUID && self.meter.p.isConnected ) {
             NSLog(@"Disconnecting");
-            [self.meter disconnect:nil cb:nil arg:nil];
+            [self.meter disconnect];
             return;
         }
         NSLog(@"Disconnecting old...");
-        [self.meter disconnect:nil cb:nil arg:nil];
+        [self.meter disconnect];
     }
     
     [self invokeMegaAnnoyingPopup];
@@ -225,7 +225,7 @@
 
 -(void)meterSetupCancelled {
     [self dismissMegaAnnoyingPopup];
-    [self.meter disconnect:nil cb:nil arg:nil];
+    [self.meter disconnect];
 }
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -252,7 +252,7 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    [self.meter disconnect:nil cb:nil arg:nil];
+    [self.meter disconnect];
     [self dismissMegaAnnoyingPopup];
 }
 
