@@ -34,7 +34,7 @@ typedef enum
 #endif
 {
     METER_SHUTDOWN=0,   // Booting from power down.
-    METER_STANDBY,      // uC sleeping, ADC powered down
+    METER_STANDBY,      // uC sleeping, ADC powered down.  Wakes to advertise occasionally.
     METER_PAUSED,       // uC active, ADC active, not sampling
     METER_RUNNING,      // uC active, ADC active, sampling until buffer is full, then performing computations and repeating
     METER_ONESHOT,      // uC active, ADC active, sampling until buffer is full, performing computations and dropping back to METER_PAUSED
