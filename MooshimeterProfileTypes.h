@@ -73,22 +73,28 @@ __attribute__((packed))
 #endif
 MeterInfo_t;
 
+// The 7 indices refer to the 7 possible PGA settings
 typedef struct {
-    int24_test ch1_offset;
-    int24_test ch2_offset;
+    int16 ch1_shorted_offsets[7];
+    int16 ch2_shorted_offsets[7];
+    int24_test ch2_gain1_5v[7];
+    int24_test ch2_gain2_5V[7];
+    int24_test ch1_1ma[7];
+    int24_test ch3_10k_100ua;
+    
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
 #endif
-MeterOffsets_t;
+MeterFactoryCal_t;
 
+// The values in this structure are changed as the meter settings
+// are changed.
 typedef struct {
-    MeterOffsets_t internal_short;
-    MeterOffsets_t electrodes_gain0;
-    MeterOffsets_t electrodes_gain1;
-    MeterOffsets_t ch3_pulldown;
-    MeterOffsets_t ch3_floating;
-    MeterOffsets_t ps_and_temp;
+  int16 ch1_offset;
+  int16 ch2_offset;
+  uint16 ch1_gain;  // Fixed point, 1 integer digit
+  uint16 ch2_gain;  // Fixed point, 1 integer digit
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
