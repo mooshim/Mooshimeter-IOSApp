@@ -77,11 +77,6 @@ MeterInfo_t;
 typedef struct {
     int16 ch1_shorted_offsets[7];
     int16 ch2_shorted_offsets[7];
-    int24_test ch2_gain1_5v[7];
-    int24_test ch2_gain2_5V[7];
-    int24_test ch1_1ma[7];
-    int24_test ch3_10k_100ua;
-    
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
