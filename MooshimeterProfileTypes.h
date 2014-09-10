@@ -38,17 +38,10 @@ typedef enum
     METER_PAUSED,       // uC active, ADC active, not sampling
     METER_RUNNING,      // uC active, ADC active, sampling until buffer is full, then performing computations and repeating
     METER_ONESHOT,      // uC active, ADC active, sampling until buffer is full, performing computations and dropping back to METER_PAUSED
+    METER_ZERO,         // uC active, ADC active, override factory programmed zero setting 
     METER_CALIBRATING,  // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
 } meter_state_t;
 
-typedef struct {
-    uint8 cal_target :7; // Specify which calibration slot to use in flash
-    uint8 save       :1; // Set a 1 here to save to flash
-}
-#ifndef __IAR_SYSTEMS_ICC__
-__attribute__((packed)) 
-#endif
-cal_setting_t;
 
 typedef struct {
     uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
@@ -108,7 +101,6 @@ MeterCalPoint_t;
 typedef struct {
     meter_state_t target_meter_state;    // The target state of the meter
     meter_state_t present_meter_state;   // The state of the meter right now.  Read only.
-    cal_setting_t cal_setting;           // Specifies the buffer in to which the result of the calibration will be written
     trigger_settings_t trigger_settings; // Specifies level and rising/falling edge for pause (UNUSED)
     uint8 measure_settings;              // Specifies features to turn on and off.  Note that voltage gain is controlled through ADC settings
     uint8 calc_settings;                 // Specifies what analysis to run on captured data
