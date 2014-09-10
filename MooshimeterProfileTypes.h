@@ -17,11 +17,20 @@
 #else
 typedef unsigned char uint8;
 typedef unsigned short uint16;
-typedef unsigned long uint32;
 
 typedef signed char int8;
 typedef signed short int16;
+
+// XCode 64 bit transition makes longs 8 bytes wide
+// But IAR for 8051 calls int 2 bytes wide, so we need some compiler
+// specific switches
+#ifndef __IAR_SYSTEMS_ICC__
+typedef unsigned int uint32;
+typedef signed int int32;
+#else
+typedef unsigned long uint32;
 typedef signed long int32;
+#endif
 
 typedef union {
     char bytes[3];
@@ -44,13 +53,14 @@ typedef enum
 
 
 typedef struct {
-    uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
-    uint8 edge           : 3;   // 0: rising, 1: falling, 2: either
-    uint8 cont           : 1;   // 0: one shot, 1: continuous
-    signed long crossing;       // Value at which to trigger
+    //uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
+    //uint8 edge           : 3;   // 0: rising, 1: falling, 2: either
+    //uint8 cont           : 1;   // 0: one shot, 1: continuous
+    uint8 setting;  // XCode is not playing nicely with bit fields.
+    int32 crossing;       // Value at which to trigger
 }
 #ifndef __IAR_SYSTEMS_ICC__
-__attribute__((packed)) 
+__attribute__((packed))
 #endif
 trigger_settings_t;
 
