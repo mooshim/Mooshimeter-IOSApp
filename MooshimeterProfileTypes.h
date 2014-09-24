@@ -48,6 +48,7 @@ typedef enum
     METER_RUNNING,      // uC active, ADC active, sampling until buffer is full, then performing computations and repeating
     METER_ONESHOT,      // uC active, ADC active, sampling until buffer is full, performing computations and dropping back to METER_PAUSED
     METER_ZERO,         // uC active, ADC active, override factory programmed zero setting 
+    METER_TEMPREAD,
     METER_CALIBRATING,  // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
 } meter_state_t;
 
@@ -76,10 +77,48 @@ __attribute__((packed))
 #endif
 MeterInfo_t;
 
+/*
+* Signal chains include: 
+* WORLD -> 10M DIVIDER -> PGA -> ADC
+* WORLD -> 1mOhm SENSE RES -> CURRENT SENSE AMP -> PGA -> ADC
+* WORLD -> PGA -> ADC
+*
+* We can get PGA and ADC gain by putting known voltage on CH3 and mapping
+* Ch1 and CH2 to it.  Then we can get the divider ratios by applying known test
+* current and voltages.
+*
+* Calibration stage 1: Determine intrinsic offsets  
+*   Short ACTIVE to COMMON
+*   Map CH1 and CH2 to ACTIVE
+*   For each PGA gain, determine the offset and populate intrinsic_offsets
+* Stage 2:  Determine extrinsic offsets
+*   We can assume that the voltage divider applies no extrinsic offset
+*   We cannot assume the same for the current sense amp
+*   Disconnect all terminals
+*   Map CH1 to CH1 and CH2 to CH2
+*   Sample current, remove intrinsic offset, store extrinsic offset
+* Stage 3:  Determine intrinsic gains
+*   Apply 50mV from ACTIVE to COMMON
+*   Map CH1 and CH2 to ACTIVE
+*   For each PGA gain, determine the gain error and populate intrinsic_gains
+* Stage 4:  Determine extrinsic gains
+*   Apply 100mA test current and 5V test voltage
+*   Sample CH1, calculate current gain
+*   Sample CH2 at 60V setting, calculate voltage divider gain
+*   Sample CH2 at 600V setting, calculate voltage divider gain
+*/
+
 // The 7 indices refer to the 7 possible PGA settings
 typedef struct {
-    int16 ch1_shorted_offsets[7];
-    int16 ch2_shorted_offsets[7];
+  uint16 cal_temp;
+  int16 ch1_intrinsic_offsets[7];
+  int16 ch2_intrinsic_offsets[7];
+  int16 ch1_intrinsic_gain[7];
+  int16 ch2_intrinsic_gain[7];
+  int16 isns_offset;
+  int16 ch1_isns_gain;
+  int16 ch2_60v_gain;
+  int16 ch2_600v_gain;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
