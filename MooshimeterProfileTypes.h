@@ -49,9 +49,8 @@ typedef enum
     METER_ONESHOT,      // uC active, ADC active, sampling until buffer is full, performing computations and dropping back to METER_PAUSED
     METER_ZERO,         // uC active, ADC active, override factory programmed zero setting 
     METER_TEMPREAD,
-    METER_CALIBRATING,  // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
+    METER_FACTORYCAL,  // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
 } meter_state_t;
-
 
 typedef struct {
     //uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
@@ -87,7 +86,7 @@ MeterInfo_t;
 * Ch1 and CH2 to it.  Then we can get the divider ratios by applying known test
 * current and voltages.
 *
-* Calibration stage 1: Determine intrinsic offsets  
+* Stage 1: Determine intrinsic offsets  
 *   Short ACTIVE to COMMON
 *   Map CH1 and CH2 to ACTIVE
 *   For each PGA gain, determine the offset and populate intrinsic_offsets
@@ -106,37 +105,28 @@ MeterInfo_t;
 *   Sample CH1, calculate current gain
 *   Sample CH2 at 60V setting, calculate voltage divider gain
 *   Sample CH2 at 600V setting, calculate voltage divider gain
+* Stage 5:  Record the temperature
 */
 
 // The 7 indices refer to the 7 possible PGA settings
+// The gains below are 16 bit fixed point values representing a number
+// between 0 and 2
 typedef struct {
   uint16 cal_temp;
   int16 ch1_intrinsic_offsets[7];
   int16 ch2_intrinsic_offsets[7];
-  int16 ch1_intrinsic_gain[7];
-  int16 ch2_intrinsic_gain[7];
-  int16 isns_offset;
-  int16 ch1_isns_gain;
-  int16 ch2_60v_gain;
-  int16 ch2_600v_gain;
+  uint16 ch1_intrinsic_gain[7];
+  uint16 ch2_intrinsic_gain[7];
+  int16 ch1_isns_offset;
+  uint16 ch1_isns_gain;  
+  uint16 ch2_60v_gain;   
+  uint16 ch2_600v_gain;  
+  int16 pad;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
 #endif
 MeterFactoryCal_t;
-
-// The values in this structure are changed as the meter settings
-// are changed.
-typedef struct {
-  int16 ch1_offset;
-  int16 ch2_offset;
-  uint16 ch1_gain;  // Fixed point, 1 integer digit
-  uint16 ch2_gain;  // Fixed point, 1 integer digit
-}
-#ifndef __IAR_SYSTEMS_ICC__
-__attribute__((packed))
-#endif
-MeterCalPoint_t;
 
 #define METER_MEASURE_SETTINGS_ISRC_ON         0x01
 #define METER_MEASURE_SETTINGS_ISRC_LVL        0x02
