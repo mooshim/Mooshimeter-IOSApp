@@ -86,25 +86,22 @@ MeterInfo_t;
 * Ch1 and CH2 to it.  Then we can get the divider ratios by applying known test
 * current and voltages.
 *
-* Stage 1: Determine intrinsic offsets  
-*   Short ACTIVE to COMMON
-*   Map CH1 and CH2 to ACTIVE
-*   For each PGA gain, determine the offset and populate intrinsic_offsets
-* Stage 2:  Determine extrinsic offsets
-*   We can assume that the voltage divider applies no extrinsic offset
-*   We cannot assume the same for the current sense amp
-*   Disconnect all terminals
-*   Map CH1 to CH1 and CH2 to CH2
-*   Sample current, remove intrinsic offset, store extrinsic offset
-* Stage 3:  Determine intrinsic gains
-*   Apply 50mV from ACTIVE to COMMON
-*   Map CH1 and CH2 to ACTIVE
-*   For each PGA gain, determine the gain error and populate intrinsic_gains
-* Stage 4:  Determine extrinsic gains
+* Stage 1: Determine CH1 and CH2 offsets
+*   Short ACTIVE and VOLTAGE to COMMON
+*   For each PGA gain, determine the offset and populate ch1_offsets and ch2_offsets
+* Stage 2:  Determine CH3 offsets
+*   Short CH3 to COMMON
+*   Map CH1 and CH2 to CH3
+*   For each PGA gain, determine the offset and populate ch1_3_offsets and ch2_3_offsets
+* Stage 3:  Determine internal gains
+*   Apply 100mV from CH3 to COMMON
+*   Map CH1 and CH2 to CH3
+*   For each PGA gain, determine the gain error and populate ch1_gain
+* Stage 4:  Determine external gains
 *   Apply 100mA test current and 5V test voltage
-*   Sample CH1, calculate current gain
-*   Sample CH2 at 60V setting, calculate voltage divider gain
-*   Sample CH2 at 600V setting, calculate voltage divider gain
+*   Sample CH1, calculate current gain, populate ch1_isns_gain
+*   Sample CH2 at 60V setting, calculate voltage divider gain, populate ch2_60v_gain
+*   Sample CH2 at 600V setting, calculate voltage divider gain, populate ch2_600v_gain
 * Stage 5:  Record the temperature
 */
 
@@ -113,15 +110,15 @@ MeterInfo_t;
 // between 0 and 2
 typedef struct {
   uint16 cal_temp;
-  int16 ch1_intrinsic_offsets[7];
-  int16 ch2_intrinsic_offsets[7];
-  uint16 ch1_intrinsic_gain[7];
-  uint16 ch2_intrinsic_gain[7];
-  int16 ch1_isns_offset;
-  uint16 ch1_isns_gain;  
-  uint16 ch2_60v_gain;   
-  uint16 ch2_600v_gain;  
-  int16 pad;
+  int16 ch1_offsets[7];
+  int16 ch2_offsets[7];
+  int16 ch1_3_offsets[7];
+  int16 ch2_3_offsets[7];
+  uint16 ch1_gain[7];     // Gains are fixed point between 0 and 2
+  uint16 ch2_gain[7];
+  uint16 ch1_isns_gain;
+  uint16 ch2_60v_gain;
+  uint16 ch2_600v_gain;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
