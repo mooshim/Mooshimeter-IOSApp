@@ -43,7 +43,7 @@ The linker settings still need to be set separately.
 #define FLASH_LOCK_PAGE_OFFSET  ((FLASH_LOCK_ADDR_WORDS & 0x1FF)<<2)
 static const unsigned char flash_lock_data[] =
 {
-  0x00, 0xFF, // Bank 0 split
+  0x80, 0xFF, // Bank 0 split
   0xFF, 0xFF, // Bank 1 IMGB
   0xFF, 0xFF, // Bank 2 IMGB
   0xFF, 0xFF, // Bank 3 IMGB
