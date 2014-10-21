@@ -72,14 +72,6 @@ inline signed short top_short( int24_test arg )
   return retval;
 }
 
-#pragma inline=forced
-inline signed short bottom_short( int24_test arg )
-{
-  signed short retval;
-  char* p = (char*)(&retval);
-  p[0] = arg.bytes[0];
-  p[1] = arg.bytes[1];
-  return retval;
-}
+#define bottom_short(arg) ((arg).str.low)
 
 #endif
