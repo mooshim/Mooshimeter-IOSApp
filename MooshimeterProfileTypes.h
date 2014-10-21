@@ -122,6 +122,8 @@ typedef struct {
   uint16 ch1_isns_gain;
   uint16 ch2_60v_gain;
   uint16 ch2_600v_gain;
+  uint16 ch2_100na_gain;
+  uint16 ch2_100ua_gain;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
