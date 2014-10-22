@@ -1,4 +1,4 @@
 #ifndef _VERSION_H_
 #define _VERSION_H_
-#define SVN_REV $REVISION$
+#define SVN_REV $Revision$
 #endif
