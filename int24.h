@@ -20,29 +20,27 @@ extern inline float to_float( int24_test );
 
 extern inline signed short top_short( int24_test );
 
+typedef union {
+  signed long as_int32;
+  struct {
+    int24_test low;
+    char high;
+  } as_int24;
+} int24_int32_union;
+
 #pragma inline=forced
 inline int24_test from_int32(signed long arg)
 {
-  /* Just discard the high byte */
-  int24_test retval;
-  char* a = (char*)(&arg);
-  retval.bytes[0] = a[0];
-  retval.bytes[1] = a[1];
-  retval.bytes[2] = a[2];
-  return retval;
+  return ((int24_int32_union*)&arg)->as_int24.low;
 }
 
 #pragma inline=forced
 inline signed long to_int32( int24_test arg )
 {
-  // FIXME: This is way faster than the old version,
-  // but it reads undefined memory
-  signed long retval = *((signed long*)(&arg));
-  char* p = (char*)(&retval);
-  /* sign extend */
-  if( p[2] & 0x80 ) p[3] = 0xFF;
-  else              p[3] = 0x00;
-  return retval;
+  int24_int32_union retval;
+  retval.as_int24.low = arg;
+  retval.as_int24.high = retval.as_int24.low.str.high&0x80?0xFF:0x00;
+  return retval.as_int32;
 }
 
 #pragma inline=forced
