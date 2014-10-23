@@ -15,6 +15,13 @@
 
 #define METER_NAME_LEN 16
 
+#define METER_INFO_DEFAULT {\
+METER_PCB_VERSION,\
+0,\
+0,\
+BUILD_TIME,\
+{0,0,0,0,0,0,0,0,0,0,0,0}}
+                                    
 #ifdef __IAR_SYSTEMS_ICC__
 #include "int24.h"
 #else
@@ -52,7 +59,7 @@ typedef enum
     METER_ONESHOT,      // uC active, ADC active, sampling until buffer is full, performing computations and dropping back to METER_PAUSED
     METER_ZERO,         // uC active, ADC active, override factory programmed zero setting 
     METER_TEMPREAD,
-    METER_FACTORYCAL,  // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
+    METER_FACTORYCAL,   // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
 } meter_state_t;
 
 typedef struct {
@@ -71,8 +78,8 @@ typedef struct {
     uint8 pcb_version;
     uint8 assembly_variant;
     uint16 lot_number;
-    uint32 fw_version;
-    uint32 programming_utc_time;
+    uint32 build_time;
+    uint8 reserved[12];
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
@@ -113,12 +120,9 @@ MeterInfo_t;
 // between 0 and 2
 typedef struct {
   uint16 cal_temp;
-  int16 ch1_offsets[7];
-  int16 ch2_offsets[7];
-  int16 ch1_3_offsets[7];
-  int16 ch2_3_offsets[7];
-  uint16 ch1_gain[7];     // Gains are fixed point between 0 and 2
-  uint16 ch2_gain[7];
+  int16 ch_offsets[2][7];
+  int16 ch_3_offsets[2][7];
+  uint16 ch_gain[2][7];     // Gains are fixed point between 0 and 2
   uint16 ch1_isns_gain;
   uint16 ch2_60v_gain;
   uint16 ch2_600v_gain;
@@ -133,6 +137,8 @@ MeterFactoryCal_t;
 #define METER_MEASURE_SETTINGS_ISRC_ON         0x01
 #define METER_MEASURE_SETTINGS_ISRC_LVL        0x02
 #define METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN 0x04
+#define METER_SETTINGS_CH1_AUTORANGE           0x08
+#define METER_SETTINGS_CH2_AUTORANGE           0x10
 
 #define METER_CALC_SETTINGS_DEPTH_LOG2 0x0F
 #define METER_CALC_SETTINGS_MEAN       0x10
