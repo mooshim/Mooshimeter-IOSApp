@@ -13,6 +13,17 @@
 #define MOOSHIM_BASE_UUID_128( uuid )  0xd4, 0xdb, 0x05, 0xe0, 0x54, 0xf2, 0x11, 0xe4, \
                                   0xab, 0x62, 0x00, 0x02, LO_UINT16( uuid ), HI_UINT16( uuid ), 0xc5, 0x1b                                   
 
+#define METER_SERVICE_UUID  0xFFA0
+#define METER_INFO          0xFFA1
+#define METER_SAMPLE        0xFFA2
+#define METER_NAME          0xFFA3
+#define METER_BUF           0xFFA4
+#define METER_SETTINGS      0xFFA5
+#define METER_ADC_SETTINGS  0xFFA6
+#define METER_CAL           0xFFA7
+#define METER_TEMP          0xFFA8
+#define METER_BAT           0xFFA9
+                                    
 #define METER_NAME_LEN 16
 
 #define METER_INFO_DEFAULT {\
@@ -148,7 +159,6 @@ MeterFactoryCal_t;
 typedef struct {
     meter_state_t target_meter_state;    // The target state of the meter
     meter_state_t present_meter_state;   // The state of the meter right now.  Read only.
-    trigger_settings_t trigger_settings; // Specifies level and rising/falling edge for pause (UNUSED)
     uint8 measure_settings;              // Specifies features to turn on and off.  Note that voltage gain is controlled through ADC settings
     uint8 calc_settings;                 // Specifies what analysis to run on captured data
 }
