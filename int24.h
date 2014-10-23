@@ -6,6 +6,10 @@ typedef union {
     signed short low;
     signed char high;
   } str;
+  struct {
+    signed char low;
+    signed short high;
+  } str2;
   unsigned char bytes[3];
 } int24_test;
 
@@ -31,15 +35,13 @@ inline int24_test from_int32(signed long arg)
 #pragma inline=forced
 inline signed long to_int32( int24_test arg )
 {
-  signed long retval;
+  // FIXME: This is way faster than the old version,
+  // but it reads undefined memory
+  signed long retval = *((signed long*)(&arg));
   char* p = (char*)(&retval);
-  p[0] = arg.bytes[0];
-  p[1] = arg.bytes[1];
-  p[2] = arg.bytes[2];
-  
   /* sign extend */
-  if( retval & 0x00800000 ) p[3] = 0xFF;
-  else                      p[3] = 0x00;
+  if( p[2] & 0x80 ) p[3] = 0xFF;
+  else              p[3] = 0x00;
   return retval;
 }
 
@@ -62,16 +64,7 @@ inline float to_float( int24_test arg )
   return retval;
 }
 
-#pragma inline=forced
-inline signed short top_short( int24_test arg )
-{
-  signed short retval;
-  char* p = (char*)(&retval);
-  p[0] = arg.bytes[1];
-  p[1] = arg.bytes[2];
-  return retval;
-}
-
+#define top_short(arg) ((arg).str2.high)
 #define bottom_short(arg) ((arg).str.low)
 
 #endif
