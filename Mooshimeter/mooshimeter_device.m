@@ -15,7 +15,8 @@
 
 -(mooshimeter_device*) init:(CBCentralManager*)man periph:(CBPeripheral*)periph {
     // Check for issues with struct packing.
-    BUILD_BUG_ON(sizeof(MeterSettings_t)!=10);
+    BUILD_BUG_ON(sizeof(trigger_settings_t)!=5);
+    BUILD_BUG_ON(sizeof(MeterSettings_t)!=4);
     BUILD_BUG_ON(sizeof(meter_state_t) != 1);
     BUILD_BUG_ON(sizeof(buf_i) != 2);
     self = [super init];
@@ -103,22 +104,22 @@
 
 -(void)reqMeterInfo:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"info" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA1"];
+    [BLEUtility readCharacteristic:self.p cUUID:0xFFA1];
 }
 
 -(void)reqMeterSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"settings" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA6"];
+    [BLEUtility readCharacteristic:self.p cUUID:0xFFA5];
 }
 
 -(void)sendMeterSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"write_settings" target:target cb:cb arg:arg];
-    [BLEUtility writeCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA6" data:[NSData dataWithBytes:(char*)(&self->meter_settings) length:sizeof(self->meter_settings)]];
+    [BLEUtility writeCharacteristic:self.p cUUID:0xFFA5 data:[NSData dataWithBytes:(char*)(&self->meter_settings) length:sizeof(self->meter_settings)]];
 }
 
 -(void)reqADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"adc_settings" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA7"];
+    [BLEUtility readCharacteristic:self.p cUUID:0xFFA6];
 }
 
 -(void)sendADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
@@ -132,62 +133,35 @@
         SET_W_MASK(self->ADC_settings.bytes[i], mand_bits[i], mand_mask[i]);
     }
 #undef SET_W_MASK
-    [BLEUtility writeCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA7" data:[NSData dataWithBytes:(char*)(&self->ADC_settings) length:sizeof(self->ADC_settings)]];
-}
-
--(void)reqCalPoint:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"cal_point" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA8"];
+    [BLEUtility writeCharacteristic:self.p cUUID:0xFFA6 data:[NSData dataWithBytes:(char*)(&self->ADC_settings) length:sizeof(self->ADC_settings)]];
 }
 
 -(void)reqMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA2"];
+    [BLEUtility readCharacteristic:self.p cUUID:0xFFA2];
 }
 
 -(void)startStreamMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample" target:target cb:cb arg:arg oneshot:NO];
-    [BLEUtility setNotificationForCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA2" enable:YES];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA2 enable:YES];
 }
 
 -(void)stopStreamMeterSample {
-    [BLEUtility setNotificationForCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA2" enable:NO];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA2 enable:NO];
 }
 
--(void)downloadCalPoint:(int)i target:(id)target cb:(SEL)cb arg:(id)arg {
-    NSLog(@"Starting download of cal point %d", i);
-    [self createCB:@"cal_downloaded" target:target cb:cb arg:arg];
-    [self calPointDownloadController:YES reset_i:i];
+-(void)startStreamMeterBuf:(id)target cb:(SEL)cb arg:(id)arg {
+    [self createCB:@"buf_stream" target:target cb:cb arg:arg];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA4 enable:YES];
 }
 
--(void)calPointDownloadControllerCB {
-    [self calPointDownloadController:NO reset_i:0 ];
+-(void)stopStreamMeterBuf {
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA4 enable:NO];
 }
 
--(void)calPointDownloadController:(BOOL)reset reset_i:(int)reset_i {
-    static int state = 0;
-    static int i;
-    if(reset) {
-        state = 0;
-        i = reset_i;
-    }
-    switch(state++) {
-        case 0:
-            [self sendCalI:(i*36) target:self cb:@selector(calPointDownloadControllerCB) arg:nil];
-            break;
-        case 1:
-            [self reqCalPoint:self cb:@selector(calPointDownloadControllerCB) arg:nil];
-            break;
-        case 2:
-            [self sendCalI:(i*36 + 18) target:self cb:@selector(calPointDownloadControllerCB) arg:nil];
-            break;
-        case 3:
-            [self reqCalPoint:self cb:@selector(calPointDownloadControllerCB) arg:nil];
-            break;
-        case 4:
-            [self callCB:@"cal_downloaded"];
-            break;
-    }
+-(void)enableADCSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
+    [self createCB:@"adc_settings_stream" target:target cb:cb arg:arg];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA6 enable:YES];
 }
 
 -(void)setMeterLVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
@@ -208,47 +182,12 @@
     [self sendADCSettings:target cb:cb arg:arg];
 }
 
--(void)sendCalI:(unsigned char)i target:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"write_cal_i" target:target cb:cb arg:[NSNumber numberWithInt:i]];
-    [BLEUtility writeCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA9" data:[NSData dataWithBytes:&i length:1]];
-    self->cal_i = i;
-}
-
--(void)sendSampleBufferI:(int)i target:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"write_sample_buf_i" target:target cb:cb arg:arg];
-    [BLEUtility writeCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA5" data:[NSData dataWithBytes:&i length:2]];
-}
-
--(void)doCal:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"cal_complete" target:target cb:cb arg:arg];
-    self->meter_settings.target_meter_state = METER_CALIBRATING;
-    [self sendMeterSettings:nil cb:nil arg:nil];
-    [self performSelector:@selector(afterCalCleanup) withObject:nil afterDelay:4.0];
-}
-
--(void)afterCalCleanup {
-    [self downloadCalPoint:6 target:self cb:@selector(callCB:) arg:@"cal_complete"];
-}
-
--(void)saveCalToNV:(int)i target:(id)target cb:(SEL)cb arg:(id)arg {
-    self->meter_settings.cal_setting.cal_target = i;
-    self->meter_settings.cal_setting.save = 1;
-    [self sendMeterSettings:target cb:cb arg:arg];
-    // Really we should re-download cal data from the meter, but let's just cheat and copy
-    // locally FIXME
-    self->meter_cal[i] = self->meter_cal[6];
-}
-
--(void)reqSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"sample_buf" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p sUUID:@"FFA0" cUUID:@"FFA4"];
-}
-
 -(void)downloadSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample_buf_downloaded" target:target cb:cb arg:arg];
-    [self bufferDownloadController:[NSNumber numberWithInt:0]];
+    self->buf_i = 0;
+    [self setMeterState:METER_ONESHOT target:self cb:@selector(bufferDownloadController:) arg:arg];
 }
-
+#if 0
 -(void)bufferDownloadController:(NSNumber*)state {
     int s_int = [state intValue];
     NSNumber* arg = [NSNumber numberWithInt:s_int+1];
@@ -266,6 +205,7 @@
         [self callCB:@"sample_buf_downloaded"];
     }
 }
+#endif
 
 -(void)setMeterState:(int)new_state target:(id)target cb:(SEL)cb arg:(id)arg{
     self->meter_settings.target_meter_state = new_state;
@@ -309,13 +249,13 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     NSLog(@"..");
-    if( [service.UUID isEqual:[CBUUID UUIDWithString:(@"FFA0")]] ) {
+    if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:0xFFA0]] ) {
         NSLog(@"Discovered characteristics for Mooshimeter!");
         [self callCB:@"discover"];
     }
 }
 
-#define UUID_EQUALS( uuid ) [characteristic.UUID isEqual:[CBUUID UUIDWithString:(uuid)]]
+#define UUID_EQUALS( uuid ) [characteristic.UUID isEqual:[BLEUtility expandToMooshimUUID:(uuid)]]
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     NSLog(@".");
@@ -324,6 +264,16 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSLog(@"didUpdateNotificationStateForCharacteristic %@, error = %@",characteristic.UUID, error);
+    
+    if( UUID_EQUALS(0xFFA2)) {
+        [self callCB:@"sample"];
+    } else if( UUID_EQUALS(0xFFA4)) {
+        [self callCB:@"buf_stream"];
+    } else if( UUID_EQUALS(0xFFA6)) {
+        [self callCB:@"adc_settings_stream"];
+    } else  {
+        NSLog(@"We read something I don't recognize...");
+    }
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
@@ -333,38 +283,44 @@
     unsigned char buf[characteristic.value.length];
     [characteristic.value getBytes:&buf length:characteristic.value.length];
     
-    if(        UUID_EQUALS(@"FFA1" ) ) {
-        NSLog(@"Received Meter Info: %d", characteristic.value.length);
+    if(        UUID_EQUALS(0xFFA1) ) {
+        NSLog(@"Received Meter Info: %lu", (unsigned long)characteristic.value.length);
         [characteristic.value getBytes:&self->meter_info length:characteristic.value.length];
         [self callCB:@"info"];
         
-    } else if( UUID_EQUALS(@"FFA2")) {
+    } else if( UUID_EQUALS(0xFFA2)) {
         NSLog(@"Read sample");
         [characteristic.value getBytes:&self->meter_sample length:characteristic.value.length];
         [self callCB:@"sample"];
         
-    } else if( UUID_EQUALS(@"FFA4")) {
+    } else if( UUID_EQUALS(0xFFA4)) {
         NSLog(@"Read buf: %d", self->buf_i);
-        int overshoot = ((self->buf_i + 6) * sizeof(int24_test)) - sizeof(self->sample_buf);
-        overshoot = overshoot>0 ? overshoot:0;
-        [characteristic.value getBytes:((char*)(&self->sample_buf) + 3*(self->buf_i)) range:NSMakeRange(0, 18-overshoot)];
-        self->buf_i += 6; // This autoincrements on the meter
-        [self callCB:@"sample_buf"];
-        
-    } else if( UUID_EQUALS(@"FFA6")) {
-        NSLog(@"Read meter settings: %d", characteristic.value.length);
+        uint8 tmp[20];
+        uint16 channel_buf_len_bytes = [self getBufLen]*sizeof(int24_test);
+        [characteristic.value getBytes:tmp range:NSMakeRange(0, characteristic.value.length)];
+        for(int i=0; i < characteristic.value.length; i++) {
+            if( self->buf_i < channel_buf_len_bytes) {
+                // Write to CH1
+                ((uint8*)(self->sample_buf.CH1_buf))[buf_i] = tmp[i];
+            } else if( self->buf_i < 2*channel_buf_len_bytes) {
+                // Write to CH2
+                ((uint8*)(self->sample_buf.CH2_buf))[buf_i-channel_buf_len_bytes] = tmp[i];
+            }
+            self->buf_i++;
+        }
+        if(self->buf_i >= 2*channel_buf_len_bytes) {
+            // We downloaded the whole sample buffer
+            [self callCB:@"sample_buf_downloaded"];
+        }
+    } else if( UUID_EQUALS(0xFFA5)) {
+        NSLog(@"Read meter settings: %lu", (unsigned long)characteristic.value.length);
         [characteristic.value getBytes:&self->meter_settings length:characteristic.value.length];
         [self callCB:@"settings"];
         
-    } else if( UUID_EQUALS(@"FFA7")) {
+    } else if( UUID_EQUALS(0xFFA6)) {
         NSLog(@"Read adc settings");
         [characteristic.value getBytes:&self->ADC_settings length:characteristic.value.length];
         [self callCB:@"adc_settings"];
-        
-    } else if( UUID_EQUALS(@"FFA8")) {
-        NSLog(@"Read cal");
-        [characteristic.value getBytes:((char*)(self->meter_cal) + self->cal_i) range:NSMakeRange(0, 18)];
-        [self callCB:@"cal_point"];
         
     } else  {
         NSLog(@"We read something I don't recognize...");
@@ -374,14 +330,10 @@
 -(void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSLog(@"didWriteValueForCharacteristic %@ error = %@",characteristic.UUID,error);
     
-    if(        UUID_EQUALS(@"FFA5") ) {
-        [self callCB:@"write_sample_buf_i"];
-    } else if( UUID_EQUALS(@"FFA6") ) {
+    if( UUID_EQUALS(0xFFA5) ) {
         [self callCB:@"write_settings"];
-    } else if( UUID_EQUALS(@"FFA7")) {
+    } else if( UUID_EQUALS(0xFFA6)) {
         [self callCB:@"write_adc_settings"];
-    } else if( UUID_EQUALS(@"FFA9")) {
-        [self callCB:@"write_cal_i"];
     }
 }
 #undef UUID_EQUALS
@@ -415,21 +367,19 @@
             [self reqADCSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
         case 3:
-            // TODO : This is a hack to skip the first 4 cals (factory cals).  They just take time right now.
-            next+=4;
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-            [self downloadCalPoint:next-4 target:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 10:
             // Take the voltage channel out of high precision mode to begin with, this confuses users.
             SET_W_MASK( self->ADC_settings.str.gpio  , 0x01, 0X03);
             [self sendADCSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-        case 11:
+            break;
+        case 4:
+            // Enable notifications for the sample buffer (necessary to stream)
+            [self startStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
+            break;
+        case 5:
+            // Enable notifications for the ADC settings structure (necessary to properly autorange)
+            [self enableADCSettingsNotify:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
+            break;
+        case 6:
             [self callCB:@"setup"];
             break;
         default:
@@ -454,7 +404,11 @@
            NSLog(@"in restore ended up somewhere impossible");
    }
 }
-       
+
+-(int)getBufLen {
+    return (1<<(self->meter_settings.calc_settings&METER_CALC_SETTINGS_DEPTH_LOG2));
+}
+
 -(int)getBufMin:(int24_test*)buf {
     int i, tmp;
     int min = [self to_int32:buf[0]];
@@ -493,7 +447,7 @@
     double base = (double)reading;
     double Rs   = 1e-3;
     double amp_gain = 80.0;
-    double Vref = 2.42;
+    double Vref = 2.5;
     double R1   = 1008;
     double R2   = 10e3;
     const double pga_lookup[] = {6,1,2,3,4,8,12};
@@ -502,34 +456,27 @@
     double pga_gain = pga_lookup[self->ADC_settings.str.ch1set >> 4];
     double c_gain = 1.0;
     double c_offset = 0.0;
-    int24_test offset_cal;
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             c_gain = (1.0/amp_gain)*(1/(Rs)) * Vref / (1<<23);
-            offset_cal = self->meter_cal[4].electrodes_gain0.ch1_offset;
             break;
         case 0x03:
             // Power supply measurement
             c_gain = 2*Vref/(1<<23);
-            offset_cal = self->meter_cal[4].internal_short.ch1_offset;
             break;
         case 0x04:
             // Temperature sensor
             c_gain   = (1./490e-6)*Vref/(1<<23);
             c_offset = 270.918367;
-            offset_cal = self->meter_cal[4].internal_short.ch1_offset;
             break;
         case 0x09:
             // Channel 3 in
             c_gain     = Vref/(1<<23);
-            offset_cal = self->meter_cal[4].ch3_floating.ch1_offset;
             break;
         default:
             NSLog(@"Unrecognized CH1SET setting");
     }
-    if(offset)
-        base -= (double)[self to_int32:offset_cal];
     base /= pga_gain;
     base *= c_gain;
     if(offset)
@@ -630,7 +577,7 @@
 }
 
 -(double)calibrateCH2Value:(int)reading offset:(BOOL)offset {
-    double Vref = 2.42;
+    double Vref = 2.5;
     double R1   = 1008;
     double R2   = 10e3;
     const double pga_lookup[] = {6,1,2,3,4,8,12};
@@ -640,7 +587,6 @@
     double pga_gain = pga_lookup[self->ADC_settings.str.ch2set >> 4];
     double c_gain = 1.0;
     double c_offset = 0.0;
-    int24_test offset_cal;
     
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
         case 0x00:
@@ -649,41 +595,33 @@
                 case 0x00:
                     // 1.2V range
                     c_gain = Vref / (1<<23);
-                    offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
                     break;
                 case 0x01:
                     // 60V range
                     c_gain = ((10e6+160e3)/(160e3)) * Vref / (1<<23);
-                    offset_cal = self->meter_cal[4].electrodes_gain0.ch2_offset;
                     break;
                 case 0x02:
                     // 1000V range
-                    c_gain = ((10e6+12e3)/(12e3)) * Vref / (1<<23);
-                    offset_cal = self->meter_cal[4].electrodes_gain1.ch2_offset;
+                    c_gain = ((10e6+11e3)/(11e3)) * Vref / (1<<23);
                     break;
             }
             break;
         case 0x03:
             // Power supply measurement
             c_gain = 4*Vref/(1<<23);
-            offset_cal = self->meter_cal[4].internal_short.ch2_offset;
             break;
         case 0x04:
             // Temperature sensor
             c_gain   = (1./490e-6)*Vref/(1<<23);
             c_offset = 270.918367;
-            offset_cal = self->meter_cal[4].internal_short.ch2_offset;
             break;
         case 0x09:
             // Channel 3 in
             c_gain     = Vref/(1<<23);
-            offset_cal = self->meter_cal[4].ch3_floating.ch2_offset;
             break;
         default:
             NSLog(@"Unrecognized CH2SET setting");
     }
-    if(offset)
-        base -= (double)[self to_int32:offset_cal];
     base /= pga_gain;
     base *= c_gain;
     if(offset)

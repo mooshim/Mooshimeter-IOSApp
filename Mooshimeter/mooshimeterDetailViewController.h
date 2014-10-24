@@ -30,5 +30,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *CH2Label;
 @property (weak, nonatomic) IBOutlet UILabel *CH1Raw;
 @property (weak, nonatomic) IBOutlet UILabel *CH2Raw;
+@property (weak, nonatomic) IBOutlet UIButton *ZeroButton;
 
 @end

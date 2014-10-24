@@ -9,19 +9,12 @@
 
 @implementation BLEUtility
 
++(void)writeCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data {
+    [BLEUtility writeCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:0xFFA0] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] data:data];
+}
+
 +(void)writeCharacteristic:(CBPeripheral *)peripheral sUUID:(NSString *)sUUID cUUID:(NSString *)cUUID data:(NSData *)data {
-    // Sends data to BLE peripheral to process HID and send EHIF command to PC
-    for ( CBService *service in peripheral.services ) {
-        if ([service.UUID isEqual:[CBUUID UUIDWithString:sUUID]]) {
-            for ( CBCharacteristic *characteristic in service.characteristics ) {
-                if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:cUUID]]) {
-                    /* EVERYTHING IS FOUND, WRITE characteristic ! */
-                    [peripheral writeValue:data forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
-                    
-                }
-            }
-        }
-    }
+    [BLEUtility writeCharacteristic:peripheral sCBUUID:[CBUUID UUIDWithString:sUUID] cCBUUID:[CBUUID UUIDWithString:cUUID] data:data];
 }
 
 +(void)writeCharacteristic:(CBPeripheral *)peripheral sCBUUID:(CBUUID *)sCBUUID cCBUUID:(CBUUID *)cCBUUID data:(NSData *)data {
@@ -40,17 +33,12 @@
 }
 
 
++(void)readCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID {
+    [BLEUtility readCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:0xFFA0] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID]];
+}
+
 +(void)readCharacteristic:(CBPeripheral *)peripheral sUUID:(NSString *)sUUID cUUID:(NSString *)cUUID {
-    for ( CBService *service in peripheral.services ) {
-        if([service.UUID isEqual:[CBUUID UUIDWithString:sUUID]]) {
-            for ( CBCharacteristic *characteristic in service.characteristics ) {
-                if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:cUUID]]) {
-                    /* Everything is found, read characteristic ! */
-                    [peripheral readValueForCharacteristic:characteristic];
-                }
-            }
-        }
-    }
+    [BLEUtility readCharacteristic:peripheral sCBUUID:[CBUUID UUIDWithString:sUUID] cCBUUID:[CBUUID UUIDWithString:cUUID]];
 }
 
 +(void)readCharacteristic:(CBPeripheral *)peripheral sCBUUID:(CBUUID *)sCBUUID cCBUUID:(CBUUID *)cCBUUID {
@@ -66,19 +54,12 @@
     }
 }
 
++(void)setNotificationForCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID enable:(BOOL)enable {
+    [BLEUtility setNotificationForCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:0xFFA0] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] enable:enable];
+}
+
 +(void)setNotificationForCharacteristic:(CBPeripheral *)peripheral sUUID:(NSString *)sUUID cUUID:(NSString *)cUUID enable:(BOOL)enable {
-    for ( CBService *service in peripheral.services ) {
-        if ([service.UUID isEqual:[CBUUID UUIDWithString:sUUID]]) {
-            for (CBCharacteristic *characteristic in service.characteristics ) {
-                if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:cUUID]])
-                {
-                    /* Everything is found, set notification ! */
-                    [peripheral setNotifyValue:enable forCharacteristic:characteristic];
-                }
-                
-            }
-        }
-    }
+    [BLEUtility setNotificationForCharacteristic:peripheral sCBUUID:[CBUUID UUIDWithString:sUUID] cCBUUID:[CBUUID UUIDWithString:cUUID] enable:enable];
 }
 
 +(void)setNotificationForCharacteristic:(CBPeripheral *)peripheral sCBUUID:(CBUUID *)sCBUUID cCBUUID:(CBUUID *)cCBUUID enable:(BOOL)enable {
@@ -113,16 +94,15 @@
 }
 
 
-+(CBUUID *) expandToTIUUID:(CBUUID *)sourceUUID {
-    CBUUID *expandedUUID = [CBUUID UUIDWithString:TI_BASE_LONG_UUID];
-    unsigned char expandedUUIDBytes[16];
-    unsigned char sourceUUIDBytes[2];
-    [expandedUUID.data getBytes:expandedUUIDBytes];
-    [sourceUUID.data getBytes:sourceUUIDBytes];
-    expandedUUIDBytes[2] = sourceUUIDBytes[0];
-    expandedUUIDBytes[3] = sourceUUIDBytes[1];
-    expandedUUID = [CBUUID UUIDWithData:[NSData dataWithBytes:expandedUUIDBytes length:16]];
-    return expandedUUID;
++(CBUUID *) expandToMooshimUUID:(uint16_t)sourceUUID {
+    unsigned char expandedUUIDBytes[16] = {MOOSHIM_BASE_UUID_128(sourceUUID)};
+    // FIXME:  For some reason iOS expects reversed UUIDs
+    for(int i = 0; i < 8; i++) {
+        expandedUUIDBytes[i]    ^= expandedUUIDBytes[15-i];
+        expandedUUIDBytes[15-i] ^= expandedUUIDBytes[i];
+        expandedUUIDBytes[i]    ^= expandedUUIDBytes[15-i];
+    }
+    return [CBUUID UUIDWithData:[NSData dataWithBytes:expandedUUIDBytes length:16]];
 }
 
 

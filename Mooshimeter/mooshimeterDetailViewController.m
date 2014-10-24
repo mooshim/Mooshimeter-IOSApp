@@ -42,7 +42,14 @@
 - (void)viewDidLoad
 {
     NSLog(@"Detail view loaded!");
+    [self.ZeroButton addTarget:self action:@selector(onZeroButtonPressed)
+     forControlEvents:UIControlEventTouchDown];
     [super viewDidLoad];
+}
+
+- (void)onZeroButtonPressed
+{
+    [self.meter setMeterState:METER_ZERO target:nil cb:nil arg:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -56,7 +63,7 @@
     self->meter_settings = self.meter->meter_settings;
     self->ADC_settings   = self.meter->ADC_settings;
     // Force a 125Hz sample rate
-    self.meter->ADC_settings.str.config1 = 0x01;
+    self.meter->ADC_settings.str.config1 = 0x00;
     self.meter->meter_settings.calc_settings &= ~METER_CALC_SETTINGS_DEPTH_LOG2;
     self.meter->meter_settings.calc_settings |= 7;
     

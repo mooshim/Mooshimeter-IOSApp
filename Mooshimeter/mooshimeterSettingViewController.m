@@ -218,14 +218,6 @@
     label.text = @"Calibration";
     [scroll addSubview:label];
     
-    button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button addTarget:self action:@selector(onCalButtonPressed)
-     forControlEvents:UIControlEventTouchDown];
-    [button setTitle:@"Re-Zero Now" forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
-    yoff += 60;
-    [scroll addSubview:button];
-    
     [self.view addSubview:scroll];
 }
 
@@ -237,18 +229,6 @@
     
     SET_W_MASK( self.meter->ADC_settings.str.config1, source.selectedSegmentIndex, 0X07);
     [self.meter sendADCSettings:nil cb:nil arg:nil];
-}
-
-- (void)onCalButtonPressed
-{
-    NSLog(@"Running a cal");
-    [self.meter doCal:nil cb:nil arg:nil];
-    [self performSelector:@selector(saveCalToIndex4) withObject:nil afterDelay:5.0];
-}
-
--(void)saveCalToIndex4 {
-    NSLog(@"Saving to NV");
-    [self.meter saveCalToNV:4 target:nil cb:nil arg:nil];
 }
 
 -(void) changeCH1Setting:(id)sender {

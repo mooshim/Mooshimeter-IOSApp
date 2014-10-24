@@ -14,7 +14,7 @@
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
-#define N_SAMPLE_BUFFER 128
+#define N_SAMPLE_BUFFER 256
 
 /// Class which describes a mooshimeter
 @interface mooshimeter_device : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
@@ -23,7 +23,6 @@
     // These reflect actual values on the meter itself
     ADS1x9x_registers_t  ADC_settings;
     MeterSettings_t      meter_settings;
-    MeterCalPoint_t      meter_cal[7];
     MeterInfo_t          meter_info;
     MeterMeasurement_t   meter_sample;
     struct {
@@ -53,7 +52,6 @@
 @property (strong,nonatomic)   NSMutableDictionary *cbs;
 
 -(mooshimeter_device*) init:manager periph:(CBPeripheral*)periph;
--(void)sync;
 
 -(void)setup:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)reconnect:(id)target cb:(SEL)cb arg:(id)arg;
@@ -66,10 +64,7 @@
 
 -(void)reqMeterInfo:(id)target cb:(SEL)cb arg:(id)arg;
 
--(void)reqSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg;
--(void)reqCalPoint:(int)i target:(id)target cb:(SEL)cb arg:(id)arg;
--(void)doCal:(id)target cb:(SEL)cb arg:(id)arg;
--(void)saveCalToNV:(int)i target:(id)target cb:(SEL)cb arg:(id)arg;
+//-(void)doCal:(id)target cb:(SEL)cb arg:(id)arg;
 
 -(void)reqMeterSample:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)startStreamMeterSample:(id)target cb:(SEL)cb arg:(id)arg;
@@ -85,7 +80,8 @@
 
 -(void)registerDisconnectCB:(id)target cb:(SEL)cb arg:(id)arg;
 
--(MeterMeasurement_t)getCalibratedValues;
+-(int)getBufLen;
+
 -(double)getCH1Value;
 -(double)getCH1Value:(int)index;
 -(double)getCH1ACValue;

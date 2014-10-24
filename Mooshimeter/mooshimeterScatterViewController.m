@@ -79,13 +79,13 @@
     freq <<= (self.meter->ADC_settings.str.config1 & 0x07);
     double dt = 1./((double)(freq));
 
-    for( int i = 0; i < N_SAMPLE_BUFFER; i++ ) {
+    for( int i = 0; i < [self.meter getBufLen]; i++ ) {
         time[i] = t;
         self->ch1_values[i] = [self.meter getCH1Value:i];
         self->ch2_values[i] = [self.meter getCH2Value:i];
         t+=dt;
     }
-    
+#if 0
     // FIXME: We get totally bogus points from time to time.  Right now just filter crudely to make
     // graphs look better
     for( int i = 1; i < N_SAMPLE_BUFFER-1; i++ ) {
@@ -102,6 +102,7 @@
             ch2_values[i] = (ch2_values[i-1]+ch2_values[i+1])/2;
         }
     }
+#endif
     [self configureHost];
     [self configureGraph];
     [self configurePlots];
@@ -449,7 +450,7 @@
 
 #pragma mark - CPTPlotDataSource methods
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-    return N_SAMPLE_BUFFER; // FIXME I WISH ONLY FOR DEATH
+    return [self.meter getBufLen]; // FIXME I WISH ONLY FOR DEATH
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
