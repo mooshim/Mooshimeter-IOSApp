@@ -10,6 +10,11 @@
 #ifndef Mooshimeter_MooshimeterProfileTypes_h
 #define Mooshimeter_MooshimeterProfileTypes_h
 
+#ifndef __IAR_SYSTEMS_ICC__
+#define LO_UINT16(i) ((i   ) & 0xFF)
+#define HI_UINT16(i) ((i>>8) & 0xFF)
+#endif
+
 #define MOOSHIM_BASE_UUID_128( uuid )  0xd4, 0xdb, 0x05, 0xe0, 0x54, 0xf2, 0x11, 0xe4, \
                                   0xab, 0x62, 0x00, 0x02, LO_UINT16( uuid ), HI_UINT16( uuid ), 0xc5, 0x1b                                   
 
