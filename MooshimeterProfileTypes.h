@@ -47,6 +47,11 @@ typedef unsigned short uint16;
 typedef signed char int8;
 typedef signed short int16;
 
+typedef union {
+    char bytes[3];
+} int24_test;
+#endif
+
 // XCode 64 bit transition makes longs 8 bytes wide
 // But IAR for 8051 calls int 2 bytes wide, so we need some compiler
 // specific switches
@@ -56,11 +61,6 @@ typedef signed int int32;
 #else
 typedef unsigned long uint32;
 typedef signed long int32;
-#endif
-
-typedef union {
-    char bytes[3];
-} int24_test;
 #endif
 
 typedef enum
@@ -137,6 +137,8 @@ MeterInfo_t;
 typedef struct {
   uint16 cal_temp;
   int16 ch_offsets[2][7];
+  int16 ch2_lv_offsets[7];
+  int16 ch2_hv_offsets[7];
   int16 ch_3_offsets[2][7];
   uint16 ch_gain[2][7];     // Gains are fixed point between 0 and 2
   uint16 ch1_isns_gain;
