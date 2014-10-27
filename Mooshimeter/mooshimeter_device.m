@@ -104,22 +104,22 @@
 
 -(void)reqMeterInfo:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"info" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:0xFFA1];
+    [BLEUtility readCharacteristic:self.p cUUID:METER_INFO];
 }
 
 -(void)reqMeterSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"settings" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:0xFFA5];
+    [BLEUtility readCharacteristic:self.p cUUID:METER_SETTINGS];
 }
 
 -(void)sendMeterSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"write_settings" target:target cb:cb arg:arg];
-    [BLEUtility writeCharacteristic:self.p cUUID:0xFFA5 data:[NSData dataWithBytes:(char*)(&self->meter_settings) length:sizeof(self->meter_settings)]];
+    [BLEUtility writeCharacteristic:self.p cUUID:METER_SETTINGS data:[NSData dataWithBytes:(char*)(&self->meter_settings) length:sizeof(self->meter_settings)]];
 }
 
 -(void)reqADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"adc_settings" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:0xFFA6];
+    [BLEUtility readCharacteristic:self.p cUUID:METER_ADC_SETTINGS];
 }
 
 -(void)sendADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
@@ -133,35 +133,35 @@
         SET_W_MASK(self->ADC_settings.bytes[i], mand_bits[i], mand_mask[i]);
     }
 #undef SET_W_MASK
-    [BLEUtility writeCharacteristic:self.p cUUID:0xFFA6 data:[NSData dataWithBytes:(char*)(&self->ADC_settings) length:sizeof(self->ADC_settings)]];
+    [BLEUtility writeCharacteristic:self.p cUUID:METER_ADC_SETTINGS data:[NSData dataWithBytes:(char*)(&self->ADC_settings) length:sizeof(self->ADC_settings)]];
 }
 
 -(void)reqMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:0xFFA2];
+    [BLEUtility readCharacteristic:self.p cUUID:METER_SAMPLE];
 }
 
 -(void)startStreamMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample" target:target cb:cb arg:arg oneshot:NO];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA2 enable:YES];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SAMPLE enable:YES];
 }
 
 -(void)stopStreamMeterSample {
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA2 enable:NO];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SAMPLE enable:NO];
 }
 
 -(void)startStreamMeterBuf:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"buf_stream" target:target cb:cb arg:arg];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA4 enable:YES];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_BUF enable:YES];
 }
 
 -(void)stopStreamMeterBuf {
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA4 enable:NO];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_BUF enable:NO];
 }
 
 -(void)enableADCSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"adc_settings_stream" target:target cb:cb arg:arg];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:0xFFA6 enable:YES];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_ADC_SETTINGS enable:YES];
 }
 
 -(void)setMeterLVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
@@ -249,7 +249,7 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     NSLog(@"..");
-    if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:0xFFA0]] ) {
+    if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID]] ) {
         NSLog(@"Discovered characteristics for Mooshimeter!");
         [self callCB:@"discover"];
     }
@@ -265,11 +265,11 @@
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSLog(@"didUpdateNotificationStateForCharacteristic %@, error = %@",characteristic.UUID, error);
     
-    if( UUID_EQUALS(0xFFA2)) {
+    if( UUID_EQUALS(METER_SAMPLE)) {
         [self callCB:@"sample"];
-    } else if( UUID_EQUALS(0xFFA4)) {
+    } else if( UUID_EQUALS(METER_BUF)) {
         [self callCB:@"buf_stream"];
-    } else if( UUID_EQUALS(0xFFA6)) {
+    } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
         [self callCB:@"adc_settings_stream"];
     } else  {
         NSLog(@"We read something I don't recognize...");
@@ -283,17 +283,17 @@
     unsigned char buf[characteristic.value.length];
     [characteristic.value getBytes:&buf length:characteristic.value.length];
     
-    if(        UUID_EQUALS(0xFFA1) ) {
+    if(        UUID_EQUALS(METER_INFO) ) {
         NSLog(@"Received Meter Info: %lu", (unsigned long)characteristic.value.length);
         [characteristic.value getBytes:&self->meter_info length:characteristic.value.length];
         [self callCB:@"info"];
         
-    } else if( UUID_EQUALS(0xFFA2)) {
+    } else if( UUID_EQUALS(METER_SAMPLE)) {
         NSLog(@"Read sample");
         [characteristic.value getBytes:&self->meter_sample length:characteristic.value.length];
         [self callCB:@"sample"];
         
-    } else if( UUID_EQUALS(0xFFA4)) {
+    } else if( UUID_EQUALS(METER_BUF)) {
         NSLog(@"Read buf: %d", self->buf_i);
         uint8 tmp[20];
         uint16 channel_buf_len_bytes = [self getBufLen]*sizeof(int24_test);
@@ -312,12 +312,12 @@
             // We downloaded the whole sample buffer
             [self callCB:@"sample_buf_downloaded"];
         }
-    } else if( UUID_EQUALS(0xFFA5)) {
+    } else if( UUID_EQUALS(METER_SETTINGS)) {
         NSLog(@"Read meter settings: %lu", (unsigned long)characteristic.value.length);
         [characteristic.value getBytes:&self->meter_settings length:characteristic.value.length];
         [self callCB:@"settings"];
         
-    } else if( UUID_EQUALS(0xFFA6)) {
+    } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
         NSLog(@"Read adc settings");
         [characteristic.value getBytes:&self->ADC_settings length:characteristic.value.length];
         [self callCB:@"adc_settings"];
@@ -330,9 +330,9 @@
 -(void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSLog(@"didWriteValueForCharacteristic %@ error = %@",characteristic.UUID,error);
     
-    if( UUID_EQUALS(0xFFA5) ) {
+    if( UUID_EQUALS(METER_SETTINGS) ) {
         [self callCB:@"write_settings"];
-    } else if( UUID_EQUALS(0xFFA6)) {
+    } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
         [self callCB:@"write_adc_settings"];
     }
 }
