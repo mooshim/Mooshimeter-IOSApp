@@ -20,14 +20,15 @@
 
 #define METER_SERVICE_UUID  0xFFA0
 #define METER_INFO          0xFFA1
-#define METER_SAMPLE        0xFFA2
-#define METER_NAME          0xFFA3
-#define METER_BUF           0xFFA4
-#define METER_SETTINGS      0xFFA5
-#define METER_ADC_SETTINGS  0xFFA6
-#define METER_CAL           0xFFA7
-#define METER_TEMP          0xFFA8
-#define METER_BAT           0xFFA9
+#define METER_NAME          0xFFA2
+#define METER_SETTINGS      0xFFA3
+#define METER_ADC_SETTINGS  0xFFA4
+#define METER_SAMPLE        0xFFA5
+#define METER_CH1BUF        0xFFA6
+#define METER_CH2BUF        0xFFA7
+#define METER_CAL           0xFFA8
+#define METER_TEMP          0xFFA9
+#define METER_BAT           0xFFAA
                                     
 #define METER_NAME_LEN 16
 
@@ -37,7 +38,9 @@ METER_PCB_VERSION,\
 0,\
 BUILD_TIME,\
 {0,0,0,0,0,0,0,0,0,0,0,0}}
-                                    
+
+#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+
 #ifdef __IAR_SYSTEMS_ICC__
 #include "int24.h"
 #else
@@ -58,9 +61,6 @@ typedef union {
 #ifndef __IAR_SYSTEMS_ICC__
 typedef unsigned int uint32;
 typedef signed int int32;
-#else
-typedef unsigned long uint32;
-typedef signed long int32;
 #endif
 
 typedef enum
@@ -72,17 +72,13 @@ typedef enum
     METER_STANDBY,      // uC sleeping, ADC powered down.  Wakes to advertise occasionally.
     METER_PAUSED,       // uC active, ADC active, not sampling
     METER_RUNNING,      // uC active, ADC active, sampling until buffer is full, then performing computations and repeating
-    METER_ONESHOT,      // uC active, ADC active, sampling until buffer is full, performing computations and dropping back to METER_PAUSED
-    METER_ZERO,         // uC active, ADC active, override factory programmed zero setting 
-    METER_TEMPREAD,
-    METER_FACTORYCAL,   // uC active, ADC active, uC will override user ADC settings to run a cal routine and drop back to METER_PAUSED when finished
 } meter_state_t;
 
 typedef struct {
     //uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
     //uint8 edge           : 3;   // 0: rising, 1: falling, 2: either
     //uint8 cont           : 1;   // 0: one shot, 1: continuous
-    uint8 setting;  // XCode is not playing nicely with bit fields.
+    uint8 setting;              // XCode is not playing nicely with bit fields.
     int32 crossing;       // Value at which to trigger
 }
 #ifndef __IAR_SYSTEMS_ICC__
@@ -131,6 +127,20 @@ MeterInfo_t;
 * Stage 5:  Record the temperature
 */
 
+#define METER_FAKE_CAL { \
+0,\
+{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
+{0,0,0,0,0,0,0},\
+{0,0,0,0,0,0,0},\
+{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
+{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
+0x8000,\
+0x8000,\
+0x8000,\
+0x8000,\
+0x8000\
+}
+
 // The 7 indices refer to the 7 possible PGA settings
 // The gains below are 16 bit fixed point values representing a number
 // between 0 and 2
@@ -160,8 +170,7 @@ MeterFactoryCal_t;
 
 #define METER_CALC_SETTINGS_DEPTH_LOG2 0x0F
 #define METER_CALC_SETTINGS_MEAN       0x10
-#define METER_CALC_SETTINGS_AC         0x20
-#define METER_CALC_SETTINGS_FREQ       0x40
+#define METER_CALC_SETTINGS_ONESHOT    0x20
 
 typedef struct {
     meter_state_t target_meter_state;    // The target state of the meter
@@ -177,10 +186,6 @@ MeterSettings_t;
 typedef struct {
     int24_test ch1_reading_lsb; // Mean of the sample buffer
     int24_test ch2_reading_lsb; // Mean of the sample buffer
-    uint32 ac_ch1_ms;           // Mean-square of the sample buffer (TODO)
-    uint32 ac_ch2_ms;           // Mean-square of the sample buffer (TODO)
-    uint16 ch2_period;          // Period of the signal in the sample buffer (fixed point, 8 bits integral, 8 bits fractional) (TODO)
-    int16 power_factor;         // Power factor, fixed point, 16 bits fractional (TODO)
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed)) 
