@@ -133,7 +133,7 @@ MeterInfo_t;
 {0,0,0,0,0,0,0},\
 {0,0,0,0,0,0,0},\
 {{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
-{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
+{{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000},{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,}},\
 0x8000,\
 0x8000,\
 0x8000,\
@@ -161,6 +161,13 @@ typedef struct {
 __attribute__((packed))
 #endif
 MeterFactoryCal_t;
+
+#define METER_DEFAULT_SETTINGS {\
+  METER_SHUTDOWN,\
+  METER_SHUTDOWN,\
+  0x00,\
+  0x07,\
+}
 
 #define METER_MEASURE_SETTINGS_ISRC_ON         0x01
 #define METER_MEASURE_SETTINGS_ISRC_LVL        0x02
