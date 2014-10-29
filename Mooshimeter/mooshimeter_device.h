@@ -70,7 +70,10 @@
 -(void)startStreamMeterSample:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)stopStreamMeterSample;
 
--(void)downloadSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg;
+-(void)enableStreamMeterBuf:(id)target cb:(SEL)cb arg:(id)arg;
+-(void)disableStreamMeterBuf;
+
+-(void)setBufferReceivedCallback:(id)target cb:(SEL)cb arg:(id)arg;
 
 -(void)setMeterState:(int)new_state target:(id)target cb:(SEL)cb arg:(id)arg;
 -(int)getMeterState;
@@ -98,6 +101,10 @@
 
 -(double)getCH1BufMax;
 -(double)getCH2BufMax;
+-(double)getCH1BufAvg;
+-(double)getCH2BufAvg;
+
+-(int)getBufAvg:(int24_test*)arg;
 
 -(long)to_int32:(int24_test)arg;
 

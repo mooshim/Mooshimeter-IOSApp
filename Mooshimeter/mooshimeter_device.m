@@ -150,13 +150,20 @@
     [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SAMPLE enable:NO];
 }
 
--(void)startStreamMeterBuf:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"buf_stream" target:target cb:cb arg:arg];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_BUF enable:YES];
+-(void)setBufferReceivedCallback:(id)target cb:(SEL)cb arg:(id)arg {
+        [self createCB:@"sample_buf_downloaded" target:target cb:cb arg:arg oneshot:NO];
 }
 
--(void)stopStreamMeterBuf {
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_BUF enable:NO];
+-(void)enableStreamMeterBuf:(id)target cb:(SEL)cb arg:(id)arg {
+    [self createCB:@"buf_stream" target:target cb:cb arg:arg];
+    self->buf_i = 0;
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH1BUF enable:YES];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH2BUF enable:YES];
+}
+
+-(void)disableStreamMeterBuf {
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH1BUF enable:NO];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH2BUF enable:NO];
 }
 
 -(void)enableADCSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
@@ -185,27 +192,9 @@
 -(void)downloadSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample_buf_downloaded" target:target cb:cb arg:arg];
     self->buf_i = 0;
-    [self setMeterState:METER_ONESHOT target:self cb:@selector(bufferDownloadController:) arg:arg];
+    self->meter_settings.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
+    [self sendMeterSettings:target cb:cb arg:arg];
 }
-#if 0
--(void)bufferDownloadController:(NSNumber*)state {
-    int s_int = [state intValue];
-    NSNumber* arg = [NSNumber numberWithInt:s_int+1];
-    if( s_int == 0 ) {
-        [self setMeterState:METER_ONESHOT target:self cb:@selector(bufferDownloadController:) arg:arg];
-    } else if( s_int == 1 ) {
-        NSLog(@"Setting sample_buf_i to 0");
-        self->buf_i = 0;
-        [self sendSampleBufferI:0 target:self cb:@selector(bufferDownloadController:) arg:arg];
-    } else if ( self->buf_i < 2*(1<<(self->meter_settings.calc_settings&METER_CALC_SETTINGS_DEPTH_LOG2)) ) {
-        /* There is still more buffer to download */
-        [self reqSampleBuffer:self cb:@selector(bufferDownloadController:) arg:arg];
-    } else {
-        [self setMeterState:METER_RUNNING target:nil cb:nil arg:nil];
-        [self callCB:@"sample_buf_downloaded"];
-    }
-}
-#endif
 
 -(void)setMeterState:(int)new_state target:(id)target cb:(SEL)cb arg:(id)arg{
     self->meter_settings.target_meter_state = new_state;
@@ -267,7 +256,9 @@
     
     if( UUID_EQUALS(METER_SAMPLE)) {
         [self callCB:@"sample"];
-    } else if( UUID_EQUALS(METER_BUF)) {
+    } else if( UUID_EQUALS(METER_CH1BUF)) {
+        [self callCB:@"buf_stream"];
+    } else if( UUID_EQUALS(METER_CH2BUF)) {
         [self callCB:@"buf_stream"];
     } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
         [self callCB:@"adc_settings_stream"];
@@ -279,6 +270,9 @@
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
 
     NSLog(@"didUpdateValueForCharacteristic = %@",characteristic.UUID);
+    
+    // Nasty hack to get around buffer sync
+    static char last_received = 0;
     
     unsigned char buf[characteristic.value.length];
     [characteristic.value getBytes:&buf length:characteristic.value.length];
@@ -293,22 +287,35 @@
         [characteristic.value getBytes:&self->meter_sample length:characteristic.value.length];
         [self callCB:@"sample"];
         
-    } else if( UUID_EQUALS(METER_BUF)) {
-        NSLog(@"Read buf: %d", self->buf_i);
+    } else if( UUID_EQUALS(METER_CH1BUF)) {
+        if( last_received) self->buf_i = 0;
+        last_received = 0;
+        NSLog(@"Read ch1 buf: %d", self->buf_i);
         uint8 tmp[20];
         uint16 channel_buf_len_bytes = [self getBufLen]*sizeof(int24_test);
         [characteristic.value getBytes:tmp range:NSMakeRange(0, characteristic.value.length)];
         for(int i=0; i < characteristic.value.length; i++) {
-            if( self->buf_i < channel_buf_len_bytes) {
-                // Write to CH1
-                ((uint8*)(self->sample_buf.CH1_buf))[buf_i] = tmp[i];
-            } else if( self->buf_i < 2*channel_buf_len_bytes) {
-                // Write to CH2
-                ((uint8*)(self->sample_buf.CH2_buf))[buf_i-channel_buf_len_bytes] = tmp[i];
-            }
+            ((uint8*)(self->sample_buf.CH1_buf))[buf_i] = tmp[i];
             self->buf_i++;
         }
-        if(self->buf_i >= 2*channel_buf_len_bytes) {
+        if(self->buf_i >= channel_buf_len_bytes) {
+            // We downloaded the whole CH1 sample buffer
+            // Now expect CH2
+            // TODO: This won't always be the case
+            self->buf_i = 0;
+        }
+    } else if( UUID_EQUALS(METER_CH2BUF)) {
+        if(!last_received) self->buf_i = 0;
+        last_received = 1;
+        NSLog(@"Read ch2 buf: %d", self->buf_i);
+        uint8 tmp[20];
+        uint16 channel_buf_len_bytes = [self getBufLen]*sizeof(int24_test);
+        [characteristic.value getBytes:tmp range:NSMakeRange(0, characteristic.value.length)];
+        for(int i=0; i < characteristic.value.length; i++) {
+            ((uint8*)(self->sample_buf.CH2_buf))[buf_i] = tmp[i];
+            self->buf_i++;
+        }
+        if(self->buf_i >= channel_buf_len_bytes) {
             // We downloaded the whole sample buffer
             [self callCB:@"sample_buf_downloaded"];
         }
@@ -373,7 +380,7 @@
             break;
         case 4:
             // Enable notifications for the sample buffer (necessary to stream)
-            [self startStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
+            [self enableStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
         case 5:
             // Enable notifications for the ADC settings structure (necessary to properly autorange)
@@ -412,7 +419,7 @@
 -(int)getBufMin:(int24_test*)buf {
     int i, tmp;
     int min = [self to_int32:buf[0]];
-    for( i=0; i < 32;  i++ ) {
+    for( i=0; i < [self getBufLen];  i++ ) {
         tmp = [self to_int32:buf[i]];
         if(min > tmp) min = tmp;
     }
@@ -429,7 +436,7 @@
 -(int)getBufMax:(int24_test*)buf {
     int i, tmp;
     int max = [self to_int32:buf[0]];
-    for( i=0; i < 32;  i++ ) {
+    for( i=0; i < [self getBufLen];  i++ ) {
         tmp = [self to_int32:buf[i]];
         if(max < tmp) max = tmp;
     }
@@ -441,6 +448,23 @@
 }
 -(double)getCH2BufMax {
     return [self calibrateCH2Value:[self getBufMax:self->sample_buf.CH2_buf] offset:YES];
+}
+
+-(int)getBufAvg:(int24_test*)buf {
+    int i;
+    int avg = 0;
+    for( i=0; i < [self getBufLen];  i++ ) {
+        avg += [self to_int32:buf[i]];
+    }
+    avg /= [self getBufLen];
+    return avg;
+}
+
+-(double)getCH1BufAvg {
+    return [self calibrateCH1Value:[self getBufAvg:self->sample_buf.CH1_buf] offset:YES];
+}
+-(double)getCH2BufAvg {
+    return [self calibrateCH2Value:[self getBufAvg:self->sample_buf.CH2_buf] offset:YES];
 }
 
 -(double)calibrateCH1Value:(int)reading offset:(BOOL)offset{
@@ -510,12 +534,6 @@
     return [self calibrateCH1Value:[self to_int32:base] offset:YES];
 }
 
--(double)getCH1ACValue {
-    unsigned long long ms = self->meter_sample.ac_ch1_ms << 16;
-    double rms = sqrt(ms);
-    return [self calibrateCH1Value:(int)rms offset:NO];
-}
-
 -(NSString*)getCH1Label {
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
@@ -546,6 +564,7 @@
             return @"";
     }
 }
+
 -(NSString*)getCH1Units {
     switch( self->ADC_settings.str.ch1set & 0x0F ) {
         case 0x00:
@@ -655,11 +674,6 @@
     return [self calibrateCH2Value:[self to_int32:base] offset:YES];
 }
 
--(double)getCH2ACValue {
-    unsigned long long ms = self->meter_sample.ac_ch2_ms << 16;
-    double rms = sqrt(ms);
-    return [self calibrateCH2Value:(int)rms offset:NO];
-}
 
 -(NSString*)getCH2Label {
     switch( self->ADC_settings.str.ch2set & 0x0F ) {
