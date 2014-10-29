@@ -165,6 +165,25 @@
     [segmentedControl addTarget:self action:@selector(changeSampleRate:) forControlEvents:UIControlEventValueChanged];
     [scroll addSubview:segmentedControl];
     
+    // Sample Rate Control
+    label = [ [UILabel alloc ] initWithFrame:CGRectMake(0, yoff, self.view.bounds.size.width, 50.0) ];
+    yoff += 50;
+    label.textAlignment =  NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor blackColor];
+    label.font = [UIFont fontWithName:@"Helvetica" size:(30.0)];
+    label.text = @"Buffer Depth";
+    [scroll addSubview:label];
+    
+    itemArray = [NSArray arrayWithObjects: @"1", @"2", @"4", @"8", @"16", @"32", @"64", @"128", @"256", nil];
+    segmentedControl = [[UISegmentedControl alloc] initWithItems:itemArray];
+    segmentedControl.frame = CGRectMake(0, yoff, self.view.bounds.size.width, 50);
+    yoff += 60;
+    segmentedControl.segmentedControlStyle = UISegmentedControlStylePlain;
+    segmentedControl.selectedSegmentIndex = 7;
+    [segmentedControl addTarget:self action:@selector(changeBufferDepth:) forControlEvents:UIControlEventValueChanged];
+    [scroll addSubview:segmentedControl];
+    
     // Rename meter
     label = [ [UILabel alloc ] initWithFrame:CGRectMake(0, yoff, self.view.bounds.size.width, 50.0) ];
     yoff += 50;
@@ -229,6 +248,14 @@
     
     SET_W_MASK( self.meter->ADC_settings.str.config1, source.selectedSegmentIndex, 0X07);
     [self.meter sendADCSettings:nil cb:nil arg:nil];
+}
+
+-(void) changeBufferDepth:(id)sender {
+    NSLog(@"Rate");
+    UISegmentedControl* source = sender;
+    
+    SET_W_MASK( self.meter->meter_settings.calc_settings, source.selectedSegmentIndex, METER_CALC_SETTINGS_DEPTH_LOG2);
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 -(void) changeCH1Setting:(id)sender {
