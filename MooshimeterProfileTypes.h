@@ -22,13 +22,16 @@
 #define METER_INFO          0xFFA1
 #define METER_NAME          0xFFA2
 #define METER_SETTINGS      0xFFA3
-#define METER_ADC_SETTINGS  0xFFA4
+#define METER_LOG_SETTINGS  0xFFA4
 #define METER_SAMPLE        0xFFA5
 #define METER_CH1BUF        0xFFA6
 #define METER_CH2BUF        0xFFA7
 #define METER_CAL           0xFFA8
-#define METER_TEMP          0xFFA9
-#define METER_BAT           0xFFAA
+#define METER_LOG_DATA      0xFFA9
+#define METER_TEMP          0xFFAA
+#define METER_BAT           0xFFAB
+
+#define METER_DEBUG_MSG     0xFFAF
                                     
 #define METER_NAME_LEN 16
 
@@ -74,12 +77,38 @@ typedef enum
     METER_RUNNING,      // uC active, ADC active, sampling until buffer is full, then performing computations and repeating
 } meter_state_t;
 
+typedef enum
+#ifndef __IAR_SYSTEMS_ICC__
+: uint8
+#endif
+{
+  LOGGING_OFF=0,
+  LOG_CALC,
+  LOG_BUF,
+} logging_state_t;
+
+typedef enum 
+#ifndef __IAR_SYSTEMS_ICC__
+: uint8
+#endif
+{
+  LOGGING_NO_MEDIA=0,
+  LOGGING_READY,
+  LOGGING_INSUFFICIENT_SPACE,
+  LOGGING_WRITE_ERROR,
+} logging_error_t;
+
+#define TRIGGER_SETTING_SRC_OFF      (0x00)
+#define TRIGGER_SETTING_SRC_CH1      (0x01)
+#define TRIGGER_SETTING_SRC_CH2      (0x02)
+#define TRIGGER_SETTING_EDGE_RISING  (0x00 <<2)
+#define TRIGGER_SETTING_EDGE_FALLING (0x01 <<2)
+#define TRIGGER_SETTING_EDGE_EITHER  (0x02 <<2)
+
 typedef struct {
-    //uint8 source         : 4;   // 0: no trigger, 1: ch1, 2: ch2.
-    //uint8 edge           : 3;   // 0: rising, 1: falling, 2: either
-    //uint8 cont           : 1;   // 0: one shot, 1: continuous
-    uint8 setting;              // XCode is not playing nicely with bit fields.
-    int32 crossing;       // Value at which to trigger
+    uint8      setting;        
+    uint16     x_offset;       // TODO: x offset for the trigger point to rest at
+    int24_test crossing;       // Value at which to trigger
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
@@ -179,16 +208,53 @@ MeterFactoryCal_t;
 #define METER_CALC_SETTINGS_MEAN       0x10
 #define METER_CALC_SETTINGS_ONESHOT    0x20
 
+#define ADC_SETTINGS_SAMPLERATE_MASK 0x07
+#define ADC_SETTINGS_GPIO_MASK 0x30
+
 typedef struct {
+  struct {
+    meter_state_t present_meter_state;   // The state of the meter right now.
+  } ro;
+  struct {
     meter_state_t target_meter_state;    // The target state of the meter
-    meter_state_t present_meter_state;   // The state of the meter right now.  Read only.
+    trigger_settings_t trigger_settings; // Trigger control
     uint8 measure_settings;              // Specifies features to turn on and off.  Note that voltage gain is controlled through ADC settings
     uint8 calc_settings;                 // Specifies what analysis to run on captured data
+    uint8 ch1set;
+    uint8 ch2set;
+    uint8 adc_settings;
+  } rw;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed)) 
 #endif
 MeterSettings_t;
+
+#define DEFAULT_LOG_SETTINGS {\
+{ 0,\
+  LOGGING_OFF,\
+  LOGGING_NO_MEDIA},\
+{ LOGGING_OFF,\
+  0,\
+  0} }
+  
+
+typedef struct {
+  struct {
+    uint8 sd_present;
+    logging_state_t present_logging_state;
+    logging_error_t logging_error;
+  } ro;
+  struct {
+    logging_state_t  target_logging_state;        
+    uint16 logging_period_ms;              // How long to wait between taking log samples
+    uint32 logging_n_cycles;               // How many samples to take before sleeping forever
+  } rw;
+}
+#ifndef __IAR_SYSTEMS_ICC__
+__attribute__((packed)) 
+#endif
+MeterLogSettings_t;
 
 typedef struct {
     int24_test ch1_reading_lsb; // Mean of the sample buffer
@@ -198,65 +264,5 @@ typedef struct {
 __attribute__((packed)) 
 #endif
 MeterMeasurement_t;
-
-#define ADS1x9x_MANDATORY_BITS {\
-  0x10, \
-  0x00, \
-  0x80, \
-  0x10, \
-  0x00, \
-  0x00, \
-  0x00, \
-  0x00, \
-  0x00, \
-  0x02, \
-  0x01, \
-  0x00, \
-}
-
-#define ADS1x9x_MANDATORY_BITS_MASK {\
-  0x1C, \
-  0x78, \
-  0x84, \
-  0x12, \
-  0x00, \
-  0x00, \
-  0x00, \
-  0xC0, \
-  0xA0, \
-  0x02, \
-  0x79, \
-  0xF0, \
-}
-
-#ifndef __IAR_SYSTEMS_ICC__
-typedef struct {
-    uint8 id;                   // Information on these registers can be found on the ADS1292 datasheet.
-    uint8 config1;
-    uint8 config2;
-    uint8 loff;
-    uint8 ch1set;
-    uint8 ch2set;
-    uint8 rld_sens;
-    uint8 loff_sens;
-    uint8 loff_stat;
-    uint8 resp1;
-    uint8 resp2;
-    uint8 gpio;
-}
-#ifndef __IAR_SYSTEMS_ICC__
-__attribute__((packed)) 
-#endif
-ADS1x9x_registers_struct_t;
-
-typedef union {
-    ADS1x9x_registers_struct_t str;
-    uint8 bytes[sizeof(ADS1x9x_registers_struct_t)];
-}
-#ifndef __IAR_SYSTEMS_ICC__
-__attribute__((packed)) 
-#endif
-ADS1x9x_registers_t;
-#endif
 
 #endif
