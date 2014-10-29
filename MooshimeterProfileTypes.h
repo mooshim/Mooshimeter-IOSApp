@@ -23,15 +23,14 @@
 #define METER_NAME          0xFFA2
 #define METER_SETTINGS      0xFFA3
 #define METER_LOG_SETTINGS  0xFFA4
-#define METER_SAMPLE        0xFFA5
-#define METER_CH1BUF        0xFFA6
-#define METER_CH2BUF        0xFFA7
-#define METER_CAL           0xFFA8
-#define METER_LOG_DATA      0xFFA9
-#define METER_TEMP          0xFFAA
-#define METER_BAT           0xFFAB
-
-#define METER_DEBUG_MSG     0xFFAF
+#define METER_UTC_TIME      0xFFA5
+#define METER_SAMPLE        0xFFA6
+#define METER_CH1BUF        0xFFA7
+#define METER_CH2BUF        0xFFA8
+#define METER_CAL           0xFFA9
+#define METER_LOG_DATA      0xFFAA
+#define METER_TEMP          0xFFAB
+#define METER_BAT           0xFFAC
                                     
 #define METER_NAME_LEN 16
 
