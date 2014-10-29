@@ -29,7 +29,7 @@
 
 - (void)handleSwipe
 {
-    NSArray* services = [NSArray arrayWithObject:[CBUUID UUIDWithString:(@"FFA0")]];
+    NSArray* services = [NSArray arrayWithObject:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID]];
     
     NSLog(@"Refresh requested");
     self.meter.manager.delegate = self;
