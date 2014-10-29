@@ -49,7 +49,7 @@
 
 - (void)onZeroButtonPressed
 {
-    [self.meter setMeterState:METER_ZERO target:nil cb:nil arg:nil];
+    [self.meter setMeterState:METER_SHUTDOWN target:nil cb:nil arg:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -60,16 +60,16 @@
     [super viewDidAppear:animated];
     // Stash the present settings... in pure multimeter mode we use pure settings
     self.meter->meter_settings.target_meter_state = METER_RUNNING;
-    self->meter_settings = self.meter->meter_settings;
-    self->ADC_settings   = self.meter->ADC_settings;
+    self.meter->meter_settings.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
+    //self.meter->meter_settings.calc_settings &= ~METER_CALC_SETTINGS_ONESHOT;
+    //self->meter_settings = self.meter->meter_settings;
+    //self->ADC_settings   = self.meter->ADC_settings;
     // Force a 125Hz sample rate
-    self.meter->ADC_settings.str.config1 = 0x00;
-    self.meter->meter_settings.calc_settings &= ~METER_CALC_SETTINGS_DEPTH_LOG2;
-    self.meter->meter_settings.calc_settings |= 7;
+    //self.meter->ADC_settings.str.config1 = 0x00;
+    //self.meter->meter_settings.calc_settings &= ~METER_CALC_SETTINGS_DEPTH_LOG2;
+    //self.meter->meter_settings.calc_settings |= 8;
     
-    self.meter->meter_settings.calc_settings |= METER_CALC_SETTINGS_MEAN;
-    self.meter->meter_settings.calc_settings &=~METER_CALC_SETTINGS_AC;
-    self.meter->meter_settings.calc_settings &=~METER_CALC_SETTINGS_FREQ;
+    //self.meter->meter_settings.calc_settings |= METER_CALC_SETTINGS_MEAN;
     
     [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
 }
@@ -82,15 +82,15 @@
 {
     NSLog(@"Detail view preparing to die!");
     [self pause];
-    NSLog(@"Restoring settings...");
+    //NSLog(@"Restoring settings...");
     // Stash the present settings... in pure multimeter mode we use pure settings
-    self.meter->meter_settings = self->meter_settings;
-    self.meter->ADC_settings   = self->ADC_settings;
-    [self.meter sendMeterSettings:self cb:@selector(viewWillDisappear2) arg:nil];
+    //self.meter->meter_settings = self->meter_settings;
+    //self.meter->ADC_settings   = self->ADC_settings;
+    //[self.meter sendMeterSettings:self cb:@selector(viewWillDisappear2) arg:nil];
 }
 
 -(void) viewWillDisappear2 {
-    [self.meter sendADCSettings:nil cb:nil arg:nil];
+    //[self.meter sendADCSettings:nil cb:nil arg:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -113,14 +113,19 @@
 -(void) play {
     NSLog(@"In Play");
     if( ! self->play ) {
-        [self.meter startStreamMeterSample:self cb:@selector(updateReadings) arg:nil];
+        //[self.meter startStreamMeterSample:self cb:@selector(updateReadings) arg:nil];
+        [self.meter enableStreamMeterBuf:nil cb:nil arg:nil];
+        [self.meter setBufferReceivedCallback:self cb:@selector(updateReadings) arg:nil];
+        self.meter->meter_settings.target_meter_state = METER_RUNNING;
+        [self.meter sendMeterSettings:nil cb:nil arg:nil];
         self->play = YES;
     }
 }
 
 -(void) pause {
     self->play = NO;
-    [self.meter stopStreamMeterSample];
+    //[self.meter stopStreamMeterSample];
+    [self.meter disableStreamMeterBuf];
 }
 
 -(NSString*) formatReading:(double)val resolution:(double)resolution unit:(NSString*)unit {
@@ -161,6 +166,12 @@
     }
 }
 
+-(void) trig {
+    // Trigger the next conversion
+    self.meter->meter_settings.target_meter_state = METER_RUNNING;
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
+}
+
 -(void) updateReadings {
     NSLog(@"Updating measurements...");
     
@@ -170,11 +181,11 @@
     } else {
         // Quick and dirty hack to catch overload values for resistance
         // Since no other measurement will go in to the millions we can hack like this
-        if( [self.meter getCH1Value] > 5e6 ) {
+        if( [self.meter getCH1BufAvg] > 5e6 ) {
             self.Label1.text = @"Overload";
         } else {
             //if( self.meter->ADC_settings.str.ch1set && 0x0F == 0x00 ) {
-            self.Label1.text = [self formatReading:[self.meter getCH1Value] resolution:1e-4 unit:[self.meter getCH1Units] ];
+            self.Label1.text = [self formatReading:[self.meter getCH1BufAvg] resolution:1e-4 unit:[self.meter getCH1Units] ];
         }
         self.CH1Label.text = [self.meter getCH1Label];
     }
@@ -186,25 +197,17 @@
         if( [self.meter getCH2Value] > 5e6 ) {
             self.Label0.text = @"Overload";
         } else {
-            self.Label0.text = [self formatReading:[self.meter getCH2Value] resolution:1e-5 unit:[self.meter getCH2Units] ];
+            self.Label0.text = [self formatReading:[self.meter getCH2BufAvg] resolution:1e-5 unit:[self.meter getCH2Units] ];
         }
         self.CH2Label.text = [self.meter getCH2Label];
     }
 
-    self.CH1Raw.text = [NSString stringWithFormat:@"%06X",[self.meter to_int32:self.meter->meter_sample.ch1_reading_lsb]];
-    self.CH2Raw.text = [NSString stringWithFormat:@"%06X",[self.meter to_int32:self.meter->meter_sample.ch2_reading_lsb]];
+    self.CH1Raw.text = [NSString stringWithFormat:@"%06X",[self.meter getBufAvg:self.meter->sample_buf.CH1_buf]];
+    self.CH2Raw.text = [NSString stringWithFormat:@"%06X",[self.meter getBufAvg:self.meter->sample_buf.CH2_buf]];
     
-    //self.Label3.text = [self formatReading:[self.meter getCH1ACValue] unit:[self.meter getCH1Units] ];
-    //self.Label2.text = [self formatReading:[self.meter getCH2ACValue] unit:[self.meter getCH2Units] ];
-    
-    /*
-    dispval = self.meter->meter_sample.ch2_period;
-    dispval /= 16;
-    dispval *= (1./32768);
-    dispval = 1.0/dispval;
-    dispval /= 2;
-    self.Label4.text = [NSString localizedStringWithFormat:@"%2.2f", dispval];
-     */
+    //[self performSelector:@selector(trig) withObject:nil afterDelay:1];
+    self.meter->meter_settings.target_meter_state = METER_RUNNING;
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 @end
