@@ -10,6 +10,8 @@
 #ifndef Mooshimeter_MooshimeterProfileTypes_h
 #define Mooshimeter_MooshimeterProfileTypes_h
 
+#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+
 #ifndef __IAR_SYSTEMS_ICC__
 #define LO_UINT16(i) ((i   ) & 0xFF)
 #define HI_UINT16(i) ((i>>8) & 0xFF)
@@ -41,7 +43,34 @@ METER_PCB_VERSION,\
 BUILD_TIME,\
 {0,0,0,0,0,0,0,0,0,0,0,0}}
 
-#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+#define LOG_SETTINGS_DEFAULT {\
+{ 0,\
+  LOGGING_OFF,\
+  LOGGING_NO_MEDIA},\
+{ LOGGING_OFF,\
+  0,\
+  0} }
+
+#define METER_SETTINGS_DEFAULT {\
+  METER_SHUTDOWN,\
+  METER_SHUTDOWN,\
+  0x00,\
+  0x07,\
+}
+
+#define METER_FAKE_CAL { \
+0,\
+{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
+{0,0,0,0,0,0,0},\
+{0,0,0,0,0,0,0},\
+{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
+{{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000},{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,}},\
+0x8000,\
+0x8000,\
+0x8000,\
+0x8000,\
+0x8000\
+}
 
 #ifdef __IAR_SYSTEMS_ICC__
 #include "int24.h"
@@ -82,8 +111,9 @@ typedef enum
 #endif
 {
   LOGGING_OFF=0,
-  LOG_CALC,
-  LOG_BUF,
+  LOG_CALC,      // The output of the computations specified by meter_settings to go in meter_sample are logged
+  LOG_BUF,       // The raw data buffers are logged
+  LOG_STREAMING  // The log is being streamed out to the BLE host
 } logging_state_t;
 
 typedef enum 
@@ -95,6 +125,7 @@ typedef enum
   LOGGING_READY,
   LOGGING_INSUFFICIENT_SPACE,
   LOGGING_WRITE_ERROR,
+  LOGGING_END_OF_FILE,
 } logging_error_t;
 
 #define TRIGGER_SETTING_SRC_OFF      (0x00)
@@ -126,49 +157,6 @@ __attribute__((packed))
 #endif
 MeterInfo_t;
 
-/*
-* Signal chains include: 
-* WORLD -> 10M DIVIDER -> PGA -> ADC
-* WORLD -> 1mOhm SENSE RES -> CURRENT SENSE AMP -> PGA -> ADC
-* WORLD -> PGA -> ADC
-*
-* We can get PGA and ADC gain by putting known voltage on CH3 and mapping
-* Ch1 and CH2 to it.  Then we can get the divider ratios by applying known test
-* current and voltages.
-*
-* Stage 1: Determine CH1 and CH2 offsets
-*   Short ACTIVE and VOLTAGE to COMMON
-*   For each PGA gain, determine the offset and populate ch1_offsets and ch2_offsets
-* Stage 2:  Determine CH3 offsets
-*   Short CH3 to COMMON
-*   Map CH1 and CH2 to CH3
-*   For each PGA gain, determine the offset and populate ch1_3_offsets and ch2_3_offsets
-* Stage 3:  Determine internal gains
-*   Apply 100mV from CH3 to COMMON
-*   Map CH1 and CH2 to CH3
-*   For each PGA gain, determine the gain error and populate ch1_gain
-* Stage 4:  Determine external gains
-*   Apply 100mA test current and 5V test voltage
-*   Sample CH1, calculate current gain, populate ch1_isns_gain
-*   Sample CH2 at 60V setting, calculate voltage divider gain, populate ch2_60v_gain
-*   Sample CH2 at 600V setting, calculate voltage divider gain, populate ch2_600v_gain
-* Stage 5:  Record the temperature
-*/
-
-#define METER_FAKE_CAL { \
-0,\
-{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
-{0,0,0,0,0,0,0},\
-{0,0,0,0,0,0,0},\
-{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
-{{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000},{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,}},\
-0x8000,\
-0x8000,\
-0x8000,\
-0x8000,\
-0x8000\
-}
-
 // The 7 indices refer to the 7 possible PGA settings
 // The gains below are 16 bit fixed point values representing a number
 // between 0 and 2
@@ -189,13 +177,6 @@ typedef struct {
 __attribute__((packed))
 #endif
 MeterFactoryCal_t;
-
-#define METER_DEFAULT_SETTINGS {\
-  METER_SHUTDOWN,\
-  METER_SHUTDOWN,\
-  0x00,\
-  0x07,\
-}
 
 #define METER_MEASURE_SETTINGS_ISRC_ON         0x01
 #define METER_MEASURE_SETTINGS_ISRC_LVL        0x02
@@ -229,15 +210,6 @@ __attribute__((packed))
 #endif
 MeterSettings_t;
 
-#define DEFAULT_LOG_SETTINGS {\
-{ 0,\
-  LOGGING_OFF,\
-  LOGGING_NO_MEDIA},\
-{ LOGGING_OFF,\
-  0,\
-  0} }
-  
-
 typedef struct {
   struct {
     uint8 sd_present;
@@ -248,6 +220,8 @@ typedef struct {
     logging_state_t  target_logging_state;        
     uint16 logging_period_ms;              // How long to wait between taking log samples
     uint32 logging_n_cycles;               // How many samples to take before sleeping forever
+    uint16 file_number;                    // The log file number.  A new record is started every logging session.
+    uint32 file_offset;                    // The offset within the file that is being written to (when logging) or read from (when streaming out)
   } rw;
 }
 #ifndef __IAR_SYSTEMS_ICC__
