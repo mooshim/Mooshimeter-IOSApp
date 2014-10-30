@@ -35,7 +35,8 @@
 #define METER_BAT           0xFFAC
                                     
 #define METER_NAME_LEN 16
-
+#define METER_NAME_DEFAULT "Mooshimeter V.1"
+                                    
 #define METER_INFO_DEFAULT {\
 METER_PCB_VERSION,\
 0,\
@@ -111,9 +112,9 @@ typedef enum
 #endif
 {
   LOGGING_OFF=0,
-  LOG_CALC,      // The output of the computations specified by meter_settings to go in meter_sample are logged
-  LOG_BUF,       // The raw data buffers are logged
-  LOG_STREAMING  // The log is being streamed out to the BLE host
+  LOGGING_CALC,      // The output of the computations specified by meter_settings to go in meter_sample are logged
+  LOGGING_BUF,       // The raw data buffers are logged
+  LOGGING_STREAMING  // The log is being streamed out to the BLE host
 } logging_state_t;
 
 typedef enum 
