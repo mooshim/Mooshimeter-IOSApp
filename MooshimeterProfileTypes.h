@@ -61,8 +61,8 @@ BUILD_TIME,\
 
 #define METER_FAKE_CAL { \
 0,\
+0,\
 {{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
-{0,0,0,0,0,0,0},\
 {0,0,0,0,0,0,0},\
 {{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
 {{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000},{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,}},\
@@ -72,6 +72,21 @@ BUILD_TIME,\
 0x8000,\
 0x8000\
 }
+
+#define METER_EMPTY_CAL { \
+0xFFFFFFFF,\
+0xFFFF,\
+{{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF}},\
+{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},\
+{{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF}},\
+{{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,}},\
+0xFFFF,\
+0xFFFF,\
+0xFFFF,\
+0xFFFF,\
+0xFFFF\
+}
+
 
 #ifdef __IAR_SYSTEMS_ICC__
 #include "int24.h"
@@ -162,9 +177,9 @@ MeterInfo_t;
 // The gains below are 16 bit fixed point values representing a number
 // between 0 and 2
 typedef struct {
+  uint32 build_time;
   uint16 cal_temp;
-  int16 ch_offsets[2][7];
-  int16 ch2_lv_offsets[7];
+  int16 ch_offsets[2][7];   // This contains CH2 in low voltage mode gpio=0x01
   int16 ch2_hv_offsets[7];
   int16 ch_3_offsets[2][7];
   uint16 ch_gain[2][7];     // Gains are fixed point between 0 and 2
@@ -173,6 +188,7 @@ typedef struct {
   uint16 ch2_600v_gain;
   uint16 ch2_100na_gain;
   uint16 ch2_100ua_gain;
+  uint16 __pad;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed))
