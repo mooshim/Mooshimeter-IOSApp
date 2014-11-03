@@ -10,7 +10,7 @@
 @implementation BLEUtility
 
 +(void)writeCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data {
-    [BLEUtility writeCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:0xFFA0] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] data:data];
+    [BLEUtility writeCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] data:data];
 }
 
 +(void)writeCharacteristic:(CBPeripheral *)peripheral sUUID:(NSString *)sUUID cUUID:(NSString *)cUUID data:(NSData *)data {
@@ -34,7 +34,7 @@
 
 
 +(void)readCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID {
-    [BLEUtility readCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:0xFFA0] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID]];
+    [BLEUtility readCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID]];
 }
 
 +(void)readCharacteristic:(CBPeripheral *)peripheral sUUID:(NSString *)sUUID cUUID:(NSString *)cUUID {
@@ -55,7 +55,7 @@
 }
 
 +(void)setNotificationForCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID enable:(BOOL)enable {
-    [BLEUtility setNotificationForCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:0xFFA0] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] enable:enable];
+    [BLEUtility setNotificationForCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] enable:enable];
 }
 
 +(void)setNotificationForCharacteristic:(CBPeripheral *)peripheral sUUID:(NSString *)sUUID cUUID:(NSString *)cUUID enable:(BOOL)enable {
