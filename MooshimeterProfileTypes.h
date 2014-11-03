@@ -12,6 +12,8 @@
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
+#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
+
 #ifndef __IAR_SYSTEMS_ICC__
 #define LO_UINT16(i) ((i   ) & 0xFF)
 #define HI_UINT16(i) ((i>>8) & 0xFF)
