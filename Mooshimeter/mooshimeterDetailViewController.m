@@ -59,8 +59,8 @@
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     // Stash the present settings... in pure multimeter mode we use pure settings
-    self.meter->meter_settings.target_meter_state = METER_RUNNING;
-    self.meter->meter_settings.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
+    self.meter->meter_settings.rw.target_meter_state = METER_RUNNING;
+    self.meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
     //self.meter->meter_settings.calc_settings &= ~METER_CALC_SETTINGS_ONESHOT;
     //self->meter_settings = self.meter->meter_settings;
     //self->ADC_settings   = self.meter->ADC_settings;
@@ -71,11 +71,7 @@
     
     //self.meter->meter_settings.calc_settings |= METER_CALC_SETTINGS_MEAN;
     
-    [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
-}
-
--(void) viewDidAppear2 {
-    [self.meter sendMeterSettings:self cb:@selector(play) arg:nil];
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -116,7 +112,7 @@
         //[self.meter startStreamMeterSample:self cb:@selector(updateReadings) arg:nil];
         [self.meter enableStreamMeterBuf:nil cb:nil arg:nil];
         [self.meter setBufferReceivedCallback:self cb:@selector(updateReadings) arg:nil];
-        self.meter->meter_settings.target_meter_state = METER_RUNNING;
+        self.meter->meter_settings.rw.target_meter_state = METER_RUNNING;
         [self.meter sendMeterSettings:nil cb:nil arg:nil];
         self->play = YES;
     }
@@ -168,7 +164,7 @@
 
 -(void) trig {
     // Trigger the next conversion
-    self.meter->meter_settings.target_meter_state = METER_RUNNING;
+    self.meter->meter_settings.rw.target_meter_state = METER_RUNNING;
     [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
@@ -206,7 +202,7 @@
     self.CH2Raw.text = [NSString stringWithFormat:@"%06X",[self.meter getBufAvg:self.meter->sample_buf.CH2_buf]];
     
     //[self performSelector:@selector(trig) withObject:nil afterDelay:1];
-    self.meter->meter_settings.target_meter_state = METER_RUNNING;
+    self.meter->meter_settings.rw.target_meter_state = METER_RUNNING;
     [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 

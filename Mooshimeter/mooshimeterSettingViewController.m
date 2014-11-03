@@ -32,7 +32,6 @@
     
     int yoff = 0;
     UISegmentedControl *segmentedControl;
-    UIButton *button;
     NSArray *itemArray;
     UILabel *label;
     UITextField *textField;
@@ -240,21 +239,21 @@
     [self.view addSubview:scroll];
 }
 
-#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
+
 
 -(void) changeSampleRate:(id)sender {
     NSLog(@"Rate");
     UISegmentedControl* source = sender;
     
-    SET_W_MASK( self.meter->ADC_settings.str.config1, source.selectedSegmentIndex, 0X07);
-    [self.meter sendADCSettings:nil cb:nil arg:nil];
+    SET_W_MASK( self.meter->meter_settings.rw.adc_settings, source.selectedSegmentIndex, 0x07);
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 -(void) changeBufferDepth:(id)sender {
     NSLog(@"Rate");
     UISegmentedControl* source = sender;
     
-    SET_W_MASK( self.meter->meter_settings.calc_settings, source.selectedSegmentIndex, METER_CALC_SETTINGS_DEPTH_LOG2);
+    SET_W_MASK( self.meter->meter_settings.rw.calc_settings, source.selectedSegmentIndex, METER_CALC_SETTINGS_DEPTH_LOG2);
     [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
@@ -267,8 +266,8 @@
         self.meter->disp_settings.ch1Off = YES;
     } else {
         self.meter->disp_settings.ch1Off = NO;
-        SET_W_MASK( self.meter->ADC_settings.str.ch1set, state_machine[source.selectedSegmentIndex], 0X0F);
-        [self.meter sendADCSettings:nil cb:nil arg:nil];
+        SET_W_MASK( self.meter->meter_settings.rw.ch1set, state_machine[source.selectedSegmentIndex], 0X0F);
+        [self.meter sendMeterSettings:nil cb:nil arg:nil];
     }
 }
 
@@ -276,8 +275,8 @@
     NSLog(@"CH1PGA");
     UISegmentedControl* source = sender;
     
-    SET_W_MASK( self.meter->ADC_settings.str.ch1set, source.selectedSegmentIndex<<4, 0XF0);
-    [self.meter sendADCSettings:nil cb:nil arg:nil];
+    SET_W_MASK( self.meter->meter_settings.rw.ch1set, source.selectedSegmentIndex<<4, 0XF0);
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 -(void) changeCH2Setting:(id)sender {
@@ -290,9 +289,9 @@
         self.meter->disp_settings.ch2Off = YES;
     } else {
         self.meter->disp_settings.ch2Off = NO;
-        SET_W_MASK( self.meter->ADC_settings.str.ch2set, ch2_set_states[ source.selectedSegmentIndex], 0X0F);
-        SET_W_MASK( self.meter->ADC_settings.str.gpio  , gpio_set_states[source.selectedSegmentIndex], 0X03);
-        [self.meter sendADCSettings:nil cb:nil arg:nil];
+        SET_W_MASK( self.meter->meter_settings.rw.ch2set, ch2_set_states[ source.selectedSegmentIndex], 0X0F);
+        SET_W_MASK( self.meter->meter_settings.rw.adc_settings  , gpio_set_states[source.selectedSegmentIndex]<<4, 0X30);
+        [self.meter sendMeterSettings:nil cb:nil arg:nil];
     }
 }
 
@@ -300,19 +299,8 @@
     NSLog(@"CH2PGA");
     UISegmentedControl* source = sender;
     
-    SET_W_MASK( self.meter->ADC_settings.str.ch2set, source.selectedSegmentIndex<<4, 0XF0);
-    [self.meter sendADCSettings:nil cb:nil arg:nil];
-}
-
--(void) changeCH3Setting:(id)sender {
-    NSLog(@"CH3");
-    UISegmentedControl* source = sender;
-    const char gpio_states[] = { 0x00, 0x01, 0x01 };
-    
-    self.meter->disp_settings.ch3_mode = source.selectedSegmentIndex;
-    
-    SET_W_MASK( self.meter->ADC_settings.str.gpio, gpio_states[source.selectedSegmentIndex], 0X01);
-    [self.meter sendADCSettings:nil cb:nil arg:nil];
+    SET_W_MASK( self.meter->meter_settings.rw.ch2set, source.selectedSegmentIndex<<4, 0XF0);
+    [self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 -(void) changeCurrentSourceSetting:(id)sender {
@@ -321,16 +309,16 @@
     
     switch( source.selectedSegmentIndex ) {
         case 0:
-            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_LVL;
-            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_ON;
+            self.meter->meter_settings.rw.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_LVL;
+            self.meter->meter_settings.rw.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_ON;
             break;
         case 1:
-            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_LVL;
-            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_ON;
+            self.meter->meter_settings.rw.measure_settings &= ~METER_MEASURE_SETTINGS_ISRC_LVL;
+            self.meter->meter_settings.rw.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_ON;
             break;
         case 2:
-            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_LVL;
-            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_ON;
+            self.meter->meter_settings.rw.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_LVL;
+            self.meter->meter_settings.rw.measure_settings |=  METER_MEASURE_SETTINGS_ISRC_ON;
             break;
     }
     
@@ -343,10 +331,10 @@
     
     switch( source.selectedSegmentIndex ) {
         case 0:
-            self.meter->meter_settings.measure_settings &= ~METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN;
+            self.meter->meter_settings.rw.measure_settings &= ~METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN;
             break;
         case 1:
-            self.meter->meter_settings.measure_settings |=  METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN;
+            self.meter->meter_settings.rw.measure_settings |=  METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN;
             break;
     }
     
@@ -358,8 +346,6 @@
     UISegmentedControl* source = sender;
     self.meter->disp_settings.xy_mode = source.selectedSegmentIndex?YES:NO;
 }
-
-#undef SET_W_MASK
 
 -(void) onNameButtonPressed {
     NSLog(@"Name");

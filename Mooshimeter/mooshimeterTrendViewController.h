@@ -27,7 +27,6 @@
     BOOL         is_redrawing;
     
     // A place to stash settings
-    ADS1x9x_registers_t  ADC_settings;
     MeterSettings_t      meter_settings;
 @protected
 }

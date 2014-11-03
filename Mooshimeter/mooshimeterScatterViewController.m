@@ -51,14 +51,14 @@
     NSLog(@"Trend View about to appear");
     [super viewWillAppear:animated];
     self->meter_settings = self.meter->meter_settings;
-    self.meter->meter_settings.calc_settings  = 0x17; // buffer depth 128, mean calc on, ac calc off, freq calc off
+    self.meter->meter_settings.rw.calc_settings  = 0x17; // buffer depth 128, mean calc on, ac calc off, freq calc off
     [self.meter sendMeterSettings:self cb:@selector(redraw_graph) arg:nil];
     [self invokeMegaAnnoyingPopup];
 }
 
 -(void) redraw_graph {
     
-    [self.meter downloadSampleBuffer:self cb:@selector(initPlot) arg:nil];
+    //[self.meter downloadSampleBuffer:self cb:@selector(initPlot) arg:nil];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -76,7 +76,7 @@
     // FIXME: Super memory inefficient
     double t = 0;
     int freq = 125;
-    freq <<= (self.meter->ADC_settings.str.config1 & 0x07);
+    freq <<= (self.meter->meter_settings.rw.adc_settings & 0x07);
     double dt = 1./((double)(freq));
 
     for( int i = 0; i < [self.meter getBufLen]; i++ ) {
@@ -85,24 +85,6 @@
         self->ch2_values[i] = [self.meter getCH2Value:i];
         t+=dt;
     }
-#if 0
-    // FIXME: We get totally bogus points from time to time.  Right now just filter crudely to make
-    // graphs look better
-    for( int i = 1; i < N_SAMPLE_BUFFER-1; i++ ) {
-        double max_delta;
-        double s_delta;
-        max_delta = 2*(abs(ch1_values[i-1] - ch1_values[i+1]));
-        s_delta = abs(ch1_values[i-1]-ch1_values[i]);
-        if(s_delta > max_delta) {
-            ch1_values[i] = (ch1_values[i-1]+ch1_values[i+1])/2;
-        }
-        max_delta = 2*(abs(ch2_values[i-1] - ch2_values[i+1]));
-        s_delta = abs(ch2_values[i-1]-ch2_values[i]);
-        if(s_delta > max_delta) {
-            ch2_values[i] = (ch2_values[i-1]+ch2_values[i+1])/2;
-        }
-    }
-#endif
     [self configureHost];
     [self configureGraph];
     [self configurePlots];
@@ -130,8 +112,6 @@
     self.hostView.hostedGraph = graph;
     
     // 2 - Set graph title
-    //NSString *title = @"Frame Capture";
-    //graph.title = title;
     
     // 3 - Create and set text style
     CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];

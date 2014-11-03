@@ -5,6 +5,7 @@
 /// @file
 
 @class CPTAxis;
+@class CPTAxisLabel;
 @class CPTAxisSet;
 @class CPTAxisTitle;
 @class CPTGridLines;
@@ -72,6 +73,45 @@ CPTAxisLabelingPolicy;
 
 /// @}
 
+/// @name Label Selection
+/// @{
+
+/** @brief @optional Informs the delegate that an axis label was
+ *  @if MacOnly clicked. @endif
+ *  @if iOSOnly touched. @endif
+ *  @param axis The axis.
+ *  @param label The selected axis label.
+ **/
+-(void)axis:(CPTAxis *)axis labelWasSelected:(CPTAxisLabel *)label;
+
+/** @brief @optional Informs the delegate that an axis label was
+ *  @if MacOnly clicked. @endif
+ *  @if iOSOnly touched. @endif
+ *  @param axis The axis.
+ *  @param label The selected axis label.
+ *  @param event The event that triggered the selection.
+ **/
+-(void)axis:(CPTAxis *)axis labelWasSelected:(CPTAxisLabel *)label withEvent:(CPTNativeEvent *)event;
+
+/** @brief @optional Informs the delegate that a minor tick axis label was
+ *  @if MacOnly clicked. @endif
+ *  @if iOSOnly touched. @endif
+ *  @param axis The axis.
+ *  @param label The selected minor tick axis label.
+ **/
+-(void)axis:(CPTAxis *)axis minorTickLabelWasSelected:(CPTAxisLabel *)label;
+
+/** @brief @optional Informs the delegate that a minor tick axis label was
+ *  @if MacOnly clicked. @endif
+ *  @if iOSOnly touched. @endif
+ *  @param axis The axis.
+ *  @param label The selected minor tick axis label.
+ *  @param event The event that triggered the selection.
+ **/
+-(void)axis:(CPTAxis *)axis minorTickLabelWasSelected:(CPTAxisLabel *)label withEvent:(CPTNativeEvent *)event;
+
+/// @}
+
 @end
 
 #pragma mark -
@@ -104,6 +144,8 @@ CPTAxisLabelingPolicy;
     CPTAxisLabelingPolicy labelingPolicy;
     CPTTextStyle *labelTextStyle;
     CPTTextStyle *minorTickLabelTextStyle;
+    CPTSign tickLabelDirection;
+    CPTSign minorTickLabelDirection;
     CPTTextStyle *titleTextStyle;
     NSFormatter *labelFormatter;
     NSFormatter *minorTickLabelFormatter;
@@ -168,6 +210,8 @@ CPTAxisLabelingPolicy;
 @property (nonatomic, readwrite, assign) CPTAlignment minorTickLabelAlignment;
 @property (nonatomic, readwrite, copy) CPTTextStyle *labelTextStyle;
 @property (nonatomic, readwrite, copy) CPTTextStyle *minorTickLabelTextStyle;
+@property (nonatomic, readwrite, assign) CPTSign tickLabelDirection;
+@property (nonatomic, readwrite, assign) CPTSign minorTickLabelDirection;
 @property (nonatomic, readwrite, retain) NSFormatter *labelFormatter;
 @property (nonatomic, readwrite, retain) NSFormatter *minorTickLabelFormatter;
 @property (nonatomic, readwrite, retain) NSSet *axisLabels;

@@ -16,19 +16,11 @@
 		0C349D7F1885292C00B6D64F /* Mstar57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D7A1885292C00B6D64F /* Mstar57x57.png */; };
 		0C349D801885292C00B6D64F /* Mstar58x58.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D7B1885292C00B6D64F /* Mstar58x58.png */; };
 		0C349D82188529A200B6D64F /* Mstar80x80.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D81188529A200B6D64F /* Mstar80x80.png */; };
-		0C5F3CC818502442003BEF0F /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CC718502442003BEF0F /* CoreBluetooth.framework */; };
-		0C5F3CCA1850245E003BEF0F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CC91850245E003BEF0F /* QuartzCore.framework */; };
-		0C5F3CCC1850246B003BEF0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CCB1850246B003BEF0F /* UIKit.framework */; };
-		0C5F3CCE18502472003BEF0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CCD18502472003BEF0F /* Foundation.framework */; };
-		0C5F3CD01850247C003BEF0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5F3CCF1850247C003BEF0F /* CoreGraphics.framework */; };
 		0C63853717D694DC00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63853517D694DC00D3FB31 /* InfoPlist.strings */; };
 		0C63853917D694DC00D3FB31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853817D694DC00D3FB31 /* main.m */; };
 		0C63853D17D694DC00D3FB31 /* mooshimeterAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */; };
-		0C63854617D694DC00D3FB31 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C63854417D694DC00D3FB31 /* MainStoryboard_iPhone.storyboard */; };
-		0C63854917D694DC00D3FB31 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C63854717D694DC00D3FB31 /* MainStoryboard_iPad.storyboard */; };
 		0C63854C17D694DC00D3FB31 /* mooshimeterMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63854B17D694DC00D3FB31 /* mooshimeterMasterViewController.m */; };
 		0C63854F17D694DC00D3FB31 /* mooshimeterDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63854E17D694DC00D3FB31 /* mooshimeterDetailViewController.m */; };
-		0C63855717D694DD00D3FB31 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63855617D694DD00D3FB31 /* SenTestingKit.framework */; };
 		0C63855817D694DD00D3FB31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852C17D694DC00D3FB31 /* UIKit.framework */; };
 		0C63855917D694DD00D3FB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
 		0C63856117D694DD00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63855F17D694DD00D3FB31 /* InfoPlist.strings */; };
@@ -36,10 +28,15 @@
 		0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78962217D7E56A00D1439E /* BLEUtility.m */; };
 		0C78967417D82ABF00D1439E /* mooshimeterSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967317D82ABF00D1439E /* mooshimeterSettingViewController.m */; };
 		0C78967717DE74B800D1439E /* mooshimeter_device.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967617DE74B700D1439E /* mooshimeter_device.m */; };
-		0C78971E17E3750700D1439E /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971D17E3750700D1439E /* libCorePlot-CocoaTouch.a */; };
 		0C78972317E378FE00D1439E /* mooshimeterScatterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* mooshimeterScatterViewController.m */; };
 		0C82675017EA2A950062B199 /* mooshimeterTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C82674F17EA2A950062B199 /* mooshimeterTabBarController.m */; };
 		0C844DFB1803060700613079 /* mooshimeterTrendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C844DFA1803060700613079 /* mooshimeterTrendViewController.m */; };
+		4ABE54111A07FE9C00277456 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971D17E3750700D1439E /* libCorePlot-CocoaTouch.a */; };
+		4ABE54121A07FEB900277456 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C7895C817D786A400D1439E /* CoreBluetooth.framework */; };
+		4ABE54131A07FEBF00277456 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971F17E3762000D1439E /* QuartzCore.framework */; };
+		4ABE54141A07FEE100277456 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852C17D694DC00D3FB31 /* UIKit.framework */; };
+		4ABE54151A07FEE900277456 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
+		4ABE54161A07FF0000277456 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63853017D694DC00D3FB31 /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,11 +59,6 @@
 		0C349D7A1885292C00B6D64F /* Mstar57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar57x57.png; sourceTree = "<group>"; };
 		0C349D7B1885292C00B6D64F /* Mstar58x58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar58x58.png; sourceTree = "<group>"; };
 		0C349D81188529A200B6D64F /* Mstar80x80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar80x80.png; sourceTree = "<group>"; };
-		0C5F3CC718502442003BEF0F /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
-		0C5F3CC91850245E003BEF0F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
-		0C5F3CCB1850246B003BEF0F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		0C5F3CCD18502472003BEF0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		0C5F3CCF1850247C003BEF0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		0C63852917D694DC00D3FB31 /* Mooshimeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mooshimeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C63852C17D694DC00D3FB31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0C63852E17D694DC00D3FB31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -77,14 +69,11 @@
 		0C63853A17D694DC00D3FB31 /* Mooshimeter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mooshimeter-Prefix.pch"; sourceTree = "<group>"; };
 		0C63853B17D694DC00D3FB31 /* mooshimeterAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mooshimeterAppDelegate.h; sourceTree = "<group>"; };
 		0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mooshimeterAppDelegate.m; sourceTree = "<group>"; };
-		0C63854517D694DC00D3FB31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		0C63854817D694DC00D3FB31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		0C63854A17D694DC00D3FB31 /* mooshimeterMasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mooshimeterMasterViewController.h; sourceTree = "<group>"; };
 		0C63854B17D694DC00D3FB31 /* mooshimeterMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mooshimeterMasterViewController.m; sourceTree = "<group>"; };
 		0C63854D17D694DC00D3FB31 /* mooshimeterDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mooshimeterDetailViewController.h; sourceTree = "<group>"; };
 		0C63854E17D694DC00D3FB31 /* mooshimeterDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mooshimeterDetailViewController.m; sourceTree = "<group>"; };
 		0C63855517D694DD00D3FB31 /* MooshimeterTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MooshimeterTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0C63855617D694DD00D3FB31 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		0C63855E17D694DD00D3FB31 /* MooshimeterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MooshimeterTests-Info.plist"; sourceTree = "<group>"; };
 		0C63856017D694DD00D3FB31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0C63856217D694DD00D3FB31 /* MooshimeterTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterTests.h; sourceTree = "<group>"; };
@@ -190,12 +179,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C5F3CD01850247C003BEF0F /* CoreGraphics.framework in Frameworks */,
-				0C5F3CCE18502472003BEF0F /* Foundation.framework in Frameworks */,
-				0C5F3CCC1850246B003BEF0F /* UIKit.framework in Frameworks */,
-				0C5F3CCA1850245E003BEF0F /* QuartzCore.framework in Frameworks */,
-				0C5F3CC818502442003BEF0F /* CoreBluetooth.framework in Frameworks */,
-				0C78971E17E3750700D1439E /* libCorePlot-CocoaTouch.a in Frameworks */,
+				4ABE54161A07FF0000277456 /* CoreGraphics.framework in Frameworks */,
+				4ABE54151A07FEE900277456 /* Foundation.framework in Frameworks */,
+				4ABE54141A07FEE100277456 /* UIKit.framework in Frameworks */,
+				4ABE54131A07FEBF00277456 /* QuartzCore.framework in Frameworks */,
+				4ABE54121A07FEB900277456 /* CoreBluetooth.framework in Frameworks */,
+				4ABE54111A07FE9C00277456 /* libCorePlot-CocoaTouch.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +192,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C63855717D694DD00D3FB31 /* SenTestingKit.framework in Frameworks */,
 				0C63855817D694DD00D3FB31 /* UIKit.framework in Frameworks */,
 				0C63855917D694DD00D3FB31 /* Foundation.framework in Frameworks */,
 			);
@@ -249,17 +237,11 @@
 		0C63852B17D694DC00D3FB31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0C5F3CCF1850247C003BEF0F /* CoreGraphics.framework */,
-				0C5F3CCD18502472003BEF0F /* Foundation.framework */,
-				0C5F3CCB1850246B003BEF0F /* UIKit.framework */,
-				0C5F3CC91850245E003BEF0F /* QuartzCore.framework */,
-				0C5F3CC718502442003BEF0F /* CoreBluetooth.framework */,
 				0C78971F17E3762000D1439E /* QuartzCore.framework */,
 				0C7895C817D786A400D1439E /* CoreBluetooth.framework */,
 				0C63852C17D694DC00D3FB31 /* UIKit.framework */,
 				0C63852E17D694DC00D3FB31 /* Foundation.framework */,
 				0C63853017D694DC00D3FB31 /* CoreGraphics.framework */,
-				0C63855617D694DD00D3FB31 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -282,8 +264,6 @@
 				0C78962217D7E56A00D1439E /* BLEUtility.m */,
 				0C63853B17D694DC00D3FB31 /* mooshimeterAppDelegate.h */,
 				0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */,
-				0C63854417D694DC00D3FB31 /* MainStoryboard_iPhone.storyboard */,
-				0C63854717D694DC00D3FB31 /* MainStoryboard_iPad.storyboard */,
 				0C63854A17D694DC00D3FB31 /* mooshimeterMasterViewController.h */,
 				0C63854B17D694DC00D3FB31 /* mooshimeterMasterViewController.m */,
 				0C63854D17D694DC00D3FB31 /* mooshimeterDetailViewController.h */,
@@ -466,7 +446,7 @@
 			name = MooshimeterTests;
 			productName = MooshimeterTests;
 			productReference = 0C63855517D694DD00D3FB31 /* MooshimeterTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -475,6 +455,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = mooshimeter;
+				LastTestingUpgradeCheck = 0610;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = mooshim;
 			};
@@ -511,8 +492,6 @@
 				0C349D7E1885292C00B6D64F /* Mstar29x29.png in Resources */,
 				0C349D82188529A200B6D64F /* Mstar80x80.png in Resources */,
 				0C349D751885252E00B6D64F /* Default~iphone.png in Resources */,
-				0C63854617D694DC00D3FB31 /* MainStoryboard_iPhone.storyboard in Resources */,
-				0C63854917D694DC00D3FB31 /* MainStoryboard_iPad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,22 +566,6 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		0C63854417D694DC00D3FB31 /* MainStoryboard_iPhone.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0C63854517D694DC00D3FB31 /* en */,
-			);
-			name = MainStoryboard_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		0C63854717D694DC00D3FB31 /* MainStoryboard_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0C63854817D694DC00D3FB31 /* en */,
-			);
-			name = MainStoryboard_iPad.storyboard;
-			sourceTree = "<group>";
-		};
 		0C63855F17D694DD00D3FB31 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -631,7 +594,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -683,24 +646,24 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../../../../Downloads/CorePlot_1.3/Binaries/MacOS\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../../Downloads/CorePlot_1.3/Binaries/iOS\"",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)",
 				);
-				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos6.1;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -711,24 +674,24 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../../../../Downloads/CorePlot_1.3/Binaries/MacOS\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../../Downloads/CorePlot_1.3/Binaries/iOS\"",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)",
 				);
-				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos6.1;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

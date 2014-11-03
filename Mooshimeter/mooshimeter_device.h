@@ -21,7 +21,6 @@
 {
     @public
     // These reflect actual values on the meter itself
-    ADS1x9x_registers_t  ADC_settings;
     MeterSettings_t      meter_settings;
     MeterInfo_t          meter_info;
     MeterMeasurement_t   meter_sample;
@@ -57,8 +56,6 @@
 -(void)reconnect:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)disconnect;
 
--(void)reqADCSettings:(id)target cb:(SEL)cb arg:(id)arg;
--(void)sendADCSettings:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)reqMeterSettings:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)sendMeterSettings:(id)target cb:(SEL)cb arg:(id)arg;
 

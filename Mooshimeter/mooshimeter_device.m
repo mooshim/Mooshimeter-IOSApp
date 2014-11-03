@@ -15,8 +15,8 @@
 
 -(mooshimeter_device*) init:(CBCentralManager*)man periph:(CBPeripheral*)periph {
     // Check for issues with struct packing.
-    BUILD_BUG_ON(sizeof(trigger_settings_t)!=5);
-    BUILD_BUG_ON(sizeof(MeterSettings_t)!=4);
+    BUILD_BUG_ON(sizeof(trigger_settings_t)!=6);
+    BUILD_BUG_ON(sizeof(MeterSettings_t)!=13);
     BUILD_BUG_ON(sizeof(meter_state_t) != 1);
     BUILD_BUG_ON(sizeof(buf_i) != 2);
     self = [super init];
@@ -117,25 +117,6 @@
     [BLEUtility writeCharacteristic:self.p cUUID:METER_SETTINGS data:[NSData dataWithBytes:(char*)(&self->meter_settings) length:sizeof(self->meter_settings)]];
 }
 
--(void)reqADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"adc_settings" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:METER_ADC_SETTINGS];
-}
-
--(void)sendADCSettings:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"write_adc_settings" target:target cb:cb arg:arg];
-    // Sanitize the ADC register settings - make sure all mandatory bits are set to their mandatory position
-    // See ADS1292 datasheet for more details
-#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
-    const uint8 mand_bits[] = ADS1x9x_MANDATORY_BITS;
-    const uint8 mand_mask[] = ADS1x9x_MANDATORY_BITS_MASK;
-    for(int i = 0; i < sizeof(ADS1x9x_registers_t); i++) {
-        SET_W_MASK(self->ADC_settings.bytes[i], mand_bits[i], mand_mask[i]);
-    }
-#undef SET_W_MASK
-    [BLEUtility writeCharacteristic:self.p cUUID:METER_ADC_SETTINGS data:[NSData dataWithBytes:(char*)(&self->ADC_settings) length:sizeof(self->ADC_settings)]];
-}
-
 -(void)reqMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample" target:target cb:cb arg:arg];
     [BLEUtility readCharacteristic:self.p cUUID:METER_SAMPLE];
@@ -168,36 +149,36 @@
 
 -(void)enableADCSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"adc_settings_stream" target:target cb:cb arg:arg];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_ADC_SETTINGS enable:YES];
+    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SETTINGS enable:YES];
 }
 
 -(void)setMeterLVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
     if(on) {
-        self->ADC_settings.str.gpio |=  0x01;
+        self->meter_settings.rw.adc_settings |=  0x10;
     } else {
-        self->ADC_settings.str.gpio &= ~0x01;
+        self->meter_settings.rw.adc_settings &= ~0x10;
     }
-    [self sendADCSettings:target cb:cb arg:arg];
+    [self sendMeterSettings:target cb:cb arg:arg];
 }
 
 -(void)setMeterHVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
     if(on) {
-        self->ADC_settings.str.gpio |=  0x02;
+        self->meter_settings.rw.adc_settings |=  0x20;
     } else {
-        self->ADC_settings.str.gpio &= ~0x02;
+        self->meter_settings.rw.adc_settings &= ~0x20;
     }
-    [self sendADCSettings:target cb:cb arg:arg];
+    [self sendMeterSettings:target cb:cb arg:arg];
 }
 
 -(void)downloadSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"sample_buf_downloaded" target:target cb:cb arg:arg];
     self->buf_i = 0;
-    self->meter_settings.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
+    self->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
     [self sendMeterSettings:target cb:cb arg:arg];
 }
 
 -(void)setMeterState:(int)new_state target:(id)target cb:(SEL)cb arg:(id)arg{
-    self->meter_settings.target_meter_state = new_state;
+    self->meter_settings.rw.target_meter_state = new_state;
     [self sendMeterSettings:target cb:cb arg:arg];
 }
 
@@ -260,8 +241,6 @@
         [self callCB:@"buf_stream"];
     } else if( UUID_EQUALS(METER_CH2BUF)) {
         [self callCB:@"buf_stream"];
-    } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
-        [self callCB:@"adc_settings_stream"];
     } else  {
         NSLog(@"We read something I don't recognize...");
     }
@@ -324,11 +303,6 @@
         [characteristic.value getBytes:&self->meter_settings length:characteristic.value.length];
         [self callCB:@"settings"];
         
-    } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
-        NSLog(@"Read adc settings");
-        [characteristic.value getBytes:&self->ADC_settings length:characteristic.value.length];
-        [self callCB:@"adc_settings"];
-        
     } else  {
         NSLog(@"We read something I don't recognize...");
     }
@@ -339,8 +313,6 @@
     
     if( UUID_EQUALS(METER_SETTINGS) ) {
         [self callCB:@"write_settings"];
-    } else if( UUID_EQUALS(METER_ADC_SETTINGS)) {
-        [self callCB:@"write_adc_settings"];
     }
 }
 #undef UUID_EQUALS
@@ -371,22 +343,10 @@
             [self reqMeterSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
         case 2:
-            [self reqADCSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 3:
-            // Take the voltage channel out of high precision mode to begin with, this confuses users.
-            SET_W_MASK( self->ADC_settings.str.gpio  , 0x01, 0X03);
-            [self sendADCSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 4:
             // Enable notifications for the sample buffer (necessary to stream)
             [self enableStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
-        case 5:
-            // Enable notifications for the ADC settings structure (necessary to properly autorange)
-            [self enableADCSettingsNotify:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 6:
+        case 3:
             [self callCB:@"setup"];
             break;
         default:
@@ -399,12 +359,9 @@
    int next = [stage intValue];
    switch( next++ ) {
        case 0:
-           [self sendADCSettings:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:next]];
-           break;
-       case 1:
            [self sendMeterSettings:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:next]];
            break;
-       case 2:
+       case 1:
            [self callCB:@"reconnect"];
            break;
        default:
@@ -413,7 +370,7 @@
 }
 
 -(int)getBufLen {
-    return (1<<(self->meter_settings.calc_settings&METER_CALC_SETTINGS_DEPTH_LOG2));
+    return (1<<(self->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2));
 }
 
 -(int)getBufMin:(int24_test*)buf {
@@ -477,10 +434,10 @@
     const double pga_lookup[] = {6,1,2,3,4,8,12};
     
     /* Figure out what our measurement mode is */
-    double pga_gain = pga_lookup[self->ADC_settings.str.ch1set >> 4];
+    double pga_gain = pga_lookup[self->meter_settings.rw.ch1set >> 4];
     double c_gain = 1.0;
     double c_offset = 0.0;
-    switch( self->ADC_settings.str.ch1set & 0x0F ) {
+    switch( self->meter_settings.rw.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             c_gain = (1.0/amp_gain)*(1/(Rs)) * Vref / (1<<23);
@@ -507,7 +464,7 @@
         base -= c_offset;
     
     // Apply display settings.  Right now only matters for CH3
-    switch( self->ADC_settings.str.ch1set & 0x0F ) {
+    switch( self->meter_settings.rw.ch1set & 0x0F ) {
         case 0x09:
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
@@ -535,7 +492,7 @@
 }
 
 -(NSString*)getCH1Label {
-    switch( self->ADC_settings.str.ch1set & 0x0F ) {
+    switch( self->meter_settings.rw.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             return @"CH1 Current";
@@ -566,7 +523,7 @@
 }
 
 -(NSString*)getCH1Units {
-    switch( self->ADC_settings.str.ch1set & 0x0F ) {
+    switch( self->meter_settings.rw.ch1set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             return @"A";
@@ -603,14 +560,14 @@
     
     double base = (double)reading;
     /* Figure out what our measurement mode is */
-    double pga_gain = pga_lookup[self->ADC_settings.str.ch2set >> 4];
+    double pga_gain = pga_lookup[self->meter_settings.rw.ch2set >> 4];
     double c_gain = 1.0;
     double c_offset = 0.0;
     
-    switch( self->ADC_settings.str.ch2set & 0x0F ) {
+    switch( self->meter_settings.rw.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
-            switch( self->ADC_settings.str.gpio & 0x03 ) {
+            switch( (self->meter_settings.rw.adc_settings>>4) & 0x03 ) {
                 case 0x00:
                     // 1.2V range
                     c_gain = Vref / (1<<23);
@@ -647,7 +604,7 @@
         base -= c_offset;
     
     // Apply display settings.  Right now only matters for CH3
-    switch( self->ADC_settings.str.ch2set & 0x0F ) {
+    switch( self->meter_settings.rw.ch2set & 0x0F ) {
         case 0x09:
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
@@ -676,7 +633,7 @@
 
 
 -(NSString*)getCH2Label {
-    switch( self->ADC_settings.str.ch2set & 0x0F ) {
+    switch( self->meter_settings.rw.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             return @"CH2 Voltage";
@@ -707,7 +664,7 @@
 }
     
 -(NSString*)getCH2Units {
-    switch( self->ADC_settings.str.ch2set & 0x0F ) {
+    switch( self->meter_settings.rw.ch2set & 0x0F ) {
         case 0x00:
             // Regular electrode input
             return @"V";

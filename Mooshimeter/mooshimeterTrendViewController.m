@@ -72,13 +72,12 @@
 -(void) viewDidAppear:(BOOL)animated {
     self->start_time = [[NSDate date] timeIntervalSince1970];
     // Stash the present settings... in pure multimeter mode we use pure settings
-    self.meter->meter_settings.target_meter_state = METER_RUNNING;
+    self.meter->meter_settings.rw.target_meter_state = METER_RUNNING;
     self->meter_settings = self.meter->meter_settings;
-    self->ADC_settings   = self.meter->ADC_settings;
     // Force a 125 sample rate
-    self.meter->ADC_settings.str.config1 = 0x01;
-    self.meter->meter_settings.calc_settings = 0x13;  // Buffer depth 8, mean calc on, ac calc off, freq calc off
-    [self.meter sendADCSettings:self cb:@selector(viewDidAppear2) arg:nil];
+    SET_W_MASK(self.meter->meter_settings.rw.adc_settings, 0x01, 0X0F);
+    self.meter->meter_settings.rw.calc_settings = 0x13;  // Buffer depth 8, mean calc on, ac calc off, freq calc off
+    [self.meter sendMeterSettings:self cb:@selector(viewDidAppear2) arg:nil];
     [super viewDidAppear:animated];
     [self initPlot];
 }
@@ -96,10 +95,6 @@
     //self.meter->meter_settings = self->meter_settings;
     //self.meter->ADC_settings   = self->ADC_settings;
     //[self.meter sendMeterSettings:self cb:@selector(viewWillDisappear2) arg:nil];
-}
-
--(void) viewWillDisappear2 {
-    [self.meter sendADCSettings:nil cb:nil arg:nil];
 }
 
 -(void) updateReadings {

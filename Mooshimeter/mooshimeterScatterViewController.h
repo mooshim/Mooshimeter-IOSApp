@@ -14,7 +14,6 @@
 {
 @public
     // A place to stash settings
-    ADS1x9x_registers_t  ADC_settings;
     MeterSettings_t      meter_settings;
     double       time[      N_SAMPLE_BUFFER];
     double       ch1_values[N_SAMPLE_BUFFER];
