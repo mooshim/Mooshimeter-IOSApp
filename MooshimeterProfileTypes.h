@@ -261,4 +261,17 @@ __attribute__((packed))
 #endif
 MeterMeasurement_t;
 
+#ifndef __IAR_SYSTEMS_ICC__
+// The Image Header will not be encrypted, but it will be included in a Signature.
+typedef struct {
+  uint16 crc0;       // CRC 
+  uint16 crc1;       // CRC-shadow must be 0xFFFF.
+  // User-defined Image Version Number - default logic uses simple a '!=' comparison to start an OAD.
+  uint16 ver;
+  uint16 len;        // Image length in 4-byte blocks (i.e. HAL_FLASH_WORD_SIZE blocks).
+  uint32 build_time; // Build time UTC seconds
+  uint8  res[4];     // Reserved space for future use.
+} img_hdr_t;
+#endif
+
 #endif
