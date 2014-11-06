@@ -35,7 +35,11 @@
 #define METER_LOG_DATA      0xFFAA
 #define METER_TEMP          0xFFAB
 #define METER_BAT           0xFFAC
-                                    
+
+#define OAD_SERVICE_UUID    0xFFC0
+#define OAD_IMAGE_NOTIFY    0xFFC1
+#define OAD_IMAGE_BLOCK_REQ 0xFFC2
+
 #define METER_NAME_LEN 16
 #define METER_NAME_DEFAULT "Mooshimeter V.1"
                                     
