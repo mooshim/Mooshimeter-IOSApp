@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 mooshim. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface MooshimeterTests : SenTestCase
+@interface MooshimeterTests : XCTestCase
 
 @end

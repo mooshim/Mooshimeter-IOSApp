@@ -8,16 +8,20 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BLEUtility.h"
+#import "mooshimeterAppDelegate.h"
 
 #import "MooshimeterProfileTypes.h"
-
+#import "callbackManager.h"
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
 #define N_SAMPLE_BUFFER 256
 
 /// Class which describes a mooshimeter
-@interface mooshimeter_device : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
+@class mooshimeter_device;
+@class mooshimeterAppDelegate;
+
+@interface mooshimeter_device : callbackManager <CBPeripheralDelegate>
 {
     @public
     // These reflect actual values on the meter itself
@@ -32,6 +36,8 @@
     unsigned short       buf_i;
     
     // These reflect values internal to the app that determine how to display the data
+    bool oad_mode;
+    
     struct {
         BOOL connected;
         BOOL ch1Off;
@@ -47,14 +53,11 @@
 }
 
 @property (strong,nonatomic)   CBPeripheral *p;
-@property (strong,nonatomic)   CBCentralManager *manager;
-@property (strong,nonatomic)   NSMutableDictionary *cbs;
+@property (strong,nonatomic)   mooshimeterAppDelegate *app;
 
--(mooshimeter_device*) init:manager periph:(CBPeripheral*)periph;
+-(mooshimeter_device*) init:(CBPeripheral*)periph;
 
 -(void)setup:(id)target cb:(SEL)cb arg:(id)arg;
--(void)reconnect:(id)target cb:(SEL)cb arg:(id)arg;
--(void)disconnect;
 
 -(void)reqMeterSettings:(id)target cb:(SEL)cb arg:(id)arg;
 -(void)sendMeterSettings:(id)target cb:(SEL)cb arg:(id)arg;
@@ -84,12 +87,10 @@
 
 -(double)getCH1Value;
 -(double)getCH1Value:(int)index;
--(double)getCH1ACValue;
 -(NSString*)getCH1Label;
 -(NSString*)getCH1Units;
 -(double)getCH2Value;
 -(double)getCH2Value:(int)index;
--(double)getCH2ACValue;
 -(NSString*)getCH2Label;
 -(NSString*)getCH2Units;
 

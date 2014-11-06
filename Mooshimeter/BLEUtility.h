@@ -13,6 +13,14 @@
 
 @interface BLEUtility : NSObject
 
+// Convenience functions that deal only with the OAD profile
++(void)readOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID;
++(void)writeOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data;
++(void)setNotificationForOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID enable:(BOOL)enable;
+
++(void)writeNoResponseOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data;
++(void)writeNoResponseCharacteristic:(CBPeripheral *)peripheral sCBUUID:(CBUUID *)sCBUUID cCBUUID:(CBUUID *)cCBUUID data:(NSData *)data;
+
 // Convenience functions that deal only with the Mooshimeter profile
 +(void)readCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID;
 +(void)writeCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data;
@@ -32,5 +40,7 @@
 +(CBUUID *) expandToMooshimUUID:(uint16_t)sourceUUID;
 /// Function to convert an CBUUID to NSString
 +(NSString *) CBUUIDToString:(CBUUID *)inUUID;
+
++(BOOL) runningiOSSeven;
 
 @end

@@ -12,13 +12,33 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    self->reboot_into_oad = NO;
+    
+    self.cman   = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
+    self.meters = [[NSMutableArray alloc] init];
+    self.meter_rssi = [[NSMutableArray alloc] init];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = [UIColor blackColor];
+    [self.window makeKeyAndVisible];
+    
+    self.scan_vc = [[mooshimeterScanViewController alloc] init];
+    self.oad_vc  = [[BLETIOADProgressViewController alloc] init];
+    
+    self.nav = [[UINavigationController alloc] initWithRootViewController:self.scan_vc];
+    
+    self.window.rootViewController = self.nav;
+    
+    // Start scanning for meters
+    [self scanForMeters];
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
         splitViewController.delegate = (id)navigationController.topViewController;
     }
     return YES;
+    
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -47,5 +67,139 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+#pragma mark - Random utility functions
+
+-(mooshimeterAppDelegate*)getApp {
+    return (mooshimeterAppDelegate*)[UIApplication sharedApplication].delegate;
+}
+
+-(UINavigationController*)getNav {
+    mooshimeterAppDelegate* t = [self getApp];
+    return t.window.rootViewController.navigationController;
+}
+
+- (void)scanForMeters
+{
+    uint16 tmp = (OAD_SERVICE_UUID<<8) | (OAD_SERVICE_UUID>>8);
+    NSArray* services = [NSArray arrayWithObjects:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID], [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID], [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]], nil];
+    NSLog(@"Refresh requested");
+    [self.cman stopScan];
+    [self.meters removeAllObjects];
+    [self.meter_rssi removeAllObjects];
+    [self.cman scanForPeripheralsWithServices:services options:nil];
+    [self.scan_vc reloadData];
+    [self performSelector:@selector(endScan) withObject:nil afterDelay:10.f];
+    [self.scan_vc.refreshControl beginRefreshing];
+}
+
+- (void)endScan {
+    [self.cman stopScan];
+    [self.scan_vc endRefresh];
+}
+
+-(void)selectPeripheral:(CBPeripheral*)p {
+    if( self.active_meter != nil && self.active_meter.p.isConnected ) {
+        if( self.active_meter.p.UUID == p.UUID ) {
+            NSLog(@"Disconnecting");
+            self->reboot_into_oad = NO;
+            [self.cman cancelPeripheralConnection:self.active_meter.p];
+            return;
+        }
+        NSLog(@"Disconnecting old...");
+        [self.cman cancelPeripheralConnection:self.active_meter.p];
+    }
+    NSLog(@"Connecting new...");
+    self.active_meter = [[mooshimeter_device alloc] init:p];
+    [self.cman connectPeripheral:p options:nil];
+    [self.scan_vc reloadData];
+}
+
+-(void)meterSetupSuccessful {
+    NSLog(@"Setup complete");
+}
+
+#pragma mark - CBCentralManager delegate
+
+-(void)centralManagerDidUpdateState:(CBCentralManager *)central {
+    if (central.state != CBCentralManagerStatePoweredOn) {
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"BLE not supported !" message:[NSString stringWithFormat:@"CoreBluetooth return state: %d",central.state] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+    } else {
+        NSLog(@"BLE enabled");
+    }
+}
+
+-(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
+    
+    NSLog(@"Found a BLE Device : %@",peripheral);
+    
+    NSLog(@"RSSI: %d", [RSSI integerValue]);
+    
+    
+    BOOL replace = NO;
+    
+    if (!replace) {
+        int insertion_i;
+        if([RSSI integerValue] > 0) {
+            insertion_i = self.meters.count;
+        } else {
+            for(insertion_i = 0; insertion_i < self.meters.count; insertion_i++) {
+                if([self.meter_rssi[insertion_i] integerValue] < [RSSI integerValue]) break;
+            }
+        }
+        NSLog(@"Inserting meter at index %d", insertion_i);
+        [self.meters insertObject:peripheral atIndex:insertion_i];
+        [self.meter_rssi insertObject:RSSI atIndex:insertion_i];
+        [self.scan_vc reloadData];
+    }
+    
+}
+
+-(void)meterSetupComplete:(mooshimeter_device*)d {
+    NSLog(@"Setup complete");
+    if( self.active_meter->oad_mode && self->reboot_into_oad) {
+        // We connected to a meter in OAD mode as requested previously.  Update firmware.
+        NSLog(@"Connected in OAD mode");
+#ifdef AUTO_UPDATE_FIRMWARE
+        if(self.nav.topViewController != self.oad_vc) {
+            self.oad_profile = [[BLETIOADProfile alloc]initWithDevice:d];
+            self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
+            [self.oad_profile makeConfigurationForProfile];
+            self.oad_profile.navCtrl = self.nav;
+            [self.oad_profile configureProfile];
+            self.oad_profile.view = self.nav.topViewController.view;
+            [self.oad_profile selectImagePressed:self];
+        }
+#endif
+    }
+    else if( self.active_meter->meter_info.build_time < 1415050076 ) {
+#ifdef AUTO_UPDATE_FIRMWARE
+        // Require a firmware update!
+        NSLog(@"FIRMWARE UPDATE REQUIRED.  Rebooting.");
+        self->reboot_into_oad = YES;
+        // This will reboot the meter.  We will have 5 seconds to reconnect to it in OAD mode.
+        [self.active_meter setMeterState:METER_SHUTDOWN target:self cb:@selector(delayedDisconnect:) arg:self.active_meter.p];
+#endif
+    }
+}
+
+-(void) delayedDisconnect:(CBPeripheral*)p {
+    [self.cman performSelector:@selector(cancelPeripheralConnection:) withObject:p afterDelay:0.25];
+}
+
+-(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
+    [self.active_meter setup:self cb:@selector(meterSetupComplete:) arg:self.active_meter];
+    [self.scan_vc reloadData];
+}
+
+-(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    NSLog(@"Disconnected!");
+    if(self->reboot_into_oad) {
+        [self.cman connectPeripheral:peripheral options:nil];
+    }
+    [self.scan_vc reloadData];
+}
+
 
 @end

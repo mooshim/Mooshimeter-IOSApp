@@ -9,6 +9,10 @@
 
 @implementation BLEUtility
 
++(void)writeOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data {
+    [BLEUtility writeCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] data:data];
+}
+
 +(void)writeCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data {
     [BLEUtility writeCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] data:data];
 }
@@ -32,6 +36,28 @@
     }
 }
 
++(void)writeNoResponseOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID data:(NSData *)data {
+    [BLEUtility writeNoResponseCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] data:data];
+}
+
++(void)writeNoResponseCharacteristic:(CBPeripheral *)peripheral sCBUUID:(CBUUID *)sCBUUID cCBUUID:(CBUUID *)cCBUUID data:(NSData *)data {
+    // Sends data to BLE peripheral to process HID and send EHIF command to PC
+    for ( CBService *service in peripheral.services ) {
+        if ([service.UUID isEqual:sCBUUID]) {
+            for ( CBCharacteristic *characteristic in service.characteristics ) {
+                if ([characteristic.UUID isEqual:cCBUUID]) {
+                    /* EVERYTHING IS FOUND, WRITE characteristic ! */
+                    [peripheral writeValue:data forCharacteristic:characteristic type:CBCharacteristicWriteWithoutResponse];
+                    
+                }
+            }
+        }
+    }
+}
+
++(void)readOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID {
+    [BLEUtility readCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID]];
+}
 
 +(void)readCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID {
     [BLEUtility readCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID]];
@@ -52,6 +78,10 @@
             }
         }
     }
+}
+
++(void)setNotificationForOADCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID enable:(BOOL)enable {
+    [BLEUtility setNotificationForCharacteristic:peripheral sCBUUID:[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID] cCBUUID:[BLEUtility expandToMooshimUUID:cUUID] enable:enable];
 }
 
 +(void)setNotificationForCharacteristic:(CBPeripheral *)peripheral cUUID:(uint16_t)cUUID enable:(BOOL)enable {
@@ -123,5 +153,9 @@
     }
     return nil;
 }
-  
+
++(BOOL) runningiOSSeven {
+    return YES;
+}
+
 @end

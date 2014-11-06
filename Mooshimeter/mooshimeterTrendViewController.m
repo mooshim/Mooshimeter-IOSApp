@@ -9,7 +9,7 @@
 // TODO: Figure out how to bring up a config dialog
 
 #import "mooshimeterTrendViewController.h"
-#import "mooshimeterDetailViewController.h"
+#import "mooshimeterMeterViewController.h"
 
 @interface mooshimeterTrendViewController ()
 
@@ -103,23 +103,11 @@
     static int run_count = 0;
     
     self->time[      buf_i] = [[NSDate date] timeIntervalSince1970] - self->start_time;
-#if 1
     self->ch1_values[buf_i] = [self.meter getCH1Value];
     self->ch2_values[buf_i] = [self.meter getCH2Value];
-#else
-    // KILL ME: Derivative hack
-    static double last_ch1 = 0;
-    static double last_ch2 = 0;
-    self->ch1_values[buf_i] = [self.meter getCH1Value] - last_ch1;
-    self->ch2_values[buf_i] = [self.meter getCH2Value] - last_ch2;
-    last_ch1 = [self.meter getCH1Value];
-    last_ch2 = [self.meter getCH2Value];
-#endif
     buf_i++;
     buf_i %= N_POINTS_ONSCREEN;
     if(buf_n < N_POINTS_ONSCREEN) buf_n++;
-    
-    //[self performSelector:@selector(reqUpdate) withObject:nil afterDelay:self->poll_pause];
     
     if( !(++run_count%5) && !self->is_redrawing ) {
         NSLog(@"Redrawing");

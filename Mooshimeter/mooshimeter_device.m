@@ -11,91 +11,23 @@
 @implementation mooshimeter_device
 
 @synthesize p;
-@synthesize manager;
 
--(mooshimeter_device*) init:(CBCentralManager*)man periph:(CBPeripheral*)periph {
+-(mooshimeter_device*) init:(CBPeripheral*)periph {
     // Check for issues with struct packing.
     BUILD_BUG_ON(sizeof(trigger_settings_t)!=6);
     BUILD_BUG_ON(sizeof(MeterSettings_t)!=13);
     BUILD_BUG_ON(sizeof(meter_state_t) != 1);
     BUILD_BUG_ON(sizeof(buf_i) != 2);
     self = [super init];
-    self.cbs = [[NSMutableDictionary alloc] init];
-    self.manager = man;
     self.p = periph;
+    self.p.delegate = self;
     return self;
 }
 
--(void) createCB:(NSString*)key target:(id)target cb:(SEL)cb {
-    [self createCB:key target:target cb:cb arg:[NSNull null]];
-}
-
--(void) createCB:(NSString*)key target:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:key target:target cb:cb arg:arg oneshot:YES];
-}
-
--(void) createCB:(NSString*)key target:(id)target cb:(SEL)cb arg:(id)arg oneshot:(BOOL)oneshot {
-    NSLog(@"Creating cb %@", key);
-    if( target == nil ) {
-        return;
-    }
-    if( arg == nil ) {
-        arg = [NSNull null];
-    }
-    NSArray* val = [NSArray arrayWithObjects:target, [NSValue valueWithPointer:cb], arg, [NSNumber numberWithBool:oneshot], nil];
-    [self.cbs setObject:val forKey:key];
-}
-
--(void) clearCB:(NSString*)key {
-    [self.cbs removeObjectForKey:key];
-}
-
--(void) callCB:(NSString*)key {
-    NSArray *val = [self.cbs objectForKey:key];
-    NSLog(@"Calling %@", key);
-    if( val == nil ) {
-        NSLog(@"No callback registered for %@!", key);
-        return;
-    }
-    id target  = [val objectAtIndex:0];
-    NSValue* cb_wrap = [val objectAtIndex:1];
-    id arg = [val objectAtIndex:2];
-    BOOL oneshot = [[val objectAtIndex:3] boolValue];
-    SEL cb = [cb_wrap pointerValue];
-    
-    if(oneshot) {
-        [self.cbs removeObjectForKey:key];
-    }
-    
-    if( [target respondsToSelector:cb] ) {
-        if( arg == [NSNull null] ) {
-            [target performSelector:cb];
-        } else {
-            [target performSelector:cb withObject:arg];
-        }
-    } else {
-        NSLog(@"Target does not respond to selector!");
-    }
-}
-
--(BOOL) checkCB:(NSString*)key {
-    NSArray *val = [self.cbs objectForKey:key];
-    return val != nil;
-}
 
 -(void)setup:(id)target cb:(SEL)cb arg:(id)arg {
     [self createCB:@"setup" target:target cb:cb arg:arg];
-    [self.manager connectPeripheral:self.p options:nil];
-}
-
--(void)reconnect:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"reconnect" target:target cb:cb arg:arg];
-    [self.manager connectPeripheral:self.p options:nil];
-}
-
--(void)disconnect {
-    [self clearCB:@"disconnect"];
-    [self.manager cancelPeripheralConnection:self.p];
+    [self.p discoverServices:nil];
 }
 
 -(void)registerDisconnectCB:(id)target cb:(SEL)cb arg:(id)arg {
@@ -191,37 +123,18 @@
     return retval;
 }
 
-#pragma mark - CBCentralManager delegate function
-
--(void) centralManagerDidUpdateState:(CBCentralManager *)central {
-    
-}
-
--(void) centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSLog(@"Meter connected");
-    peripheral.delegate = self;
-    if( [self checkCB:@"setup"] ) {
-        [self createCB:@"discover" target:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:0]];
-    } else {
-        [self createCB:@"discover" target:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:0]];
-    }
-    [peripheral discoverServices:nil];
-}
-
--(void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
-{
-    NSLog(@"Disconnected!");
-    NSLog(@"%@", error.localizedDescription);
-    [self callCB:@"disconnect"];
-}
-
 #pragma mark - CBperipheral delegate functions
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     NSLog(@"..");
     if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID]] ) {
         NSLog(@"Discovered characteristics for Mooshimeter!");
-        [self callCB:@"discover"];
+        self->oad_mode = NO;
+        [self doSetup:0];
+    } else if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID]] ) {
+        NSLog(@"Discovered characteristics for OAD!");
+        self->oad_mode = YES;
+        [self callCB:@"setup"];
     }
 }
 
@@ -343,10 +256,6 @@
             [self reqMeterSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
         case 2:
-            // Enable notifications for the sample buffer (necessary to stream)
-            [self enableStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 3:
             [self callCB:@"setup"];
             break;
         default:
