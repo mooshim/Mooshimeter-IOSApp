@@ -43,6 +43,9 @@
 
 #define METER_NAME_LEN 16
 #define METER_NAME_DEFAULT "Mooshimeter V.1"
+
+#define N_ADC_SAMPLES_LOG2 8
+#define N_ADC_SAMPLES      (1<<N_ADC_SAMPLES_LOG2)
                                     
 #define METER_INFO_DEFAULT {\
 METER_PCB_VERSION,\
