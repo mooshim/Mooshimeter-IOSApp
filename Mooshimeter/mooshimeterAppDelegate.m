@@ -16,13 +16,12 @@
     
     self.cman   = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
     self.meters = [[NSMutableArray alloc] init];
-    self.meter_rssi = [[NSMutableArray alloc] init];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     
-    self.scan_vc = [[mooshimeterScanViewController alloc] init];
+    self.scan_vc = [[ScanViewController alloc] init];
     self.oad_vc  = [[BLETIOADProgressViewController alloc] init];
     
     self.nav = [[UINavigationController alloc] initWithRootViewController:self.scan_vc];
@@ -81,12 +80,16 @@
 
 - (void)scanForMeters
 {
-    uint16 tmp = (OAD_SERVICE_UUID<<8) | (OAD_SERVICE_UUID>>8);
+    uint16 tmp = CFSwapInt16(OAD_SERVICE_UUID);
+    
     NSArray* services = [NSArray arrayWithObjects:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID], [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID], [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]], nil];
     NSLog(@"Refresh requested");
     [self.cman stopScan];
     [self.meters removeAllObjects];
-    [self.meter_rssi removeAllObjects];
+    // Manually re-add connected meter if we have one
+    if(self.active_meter.p.state == CBPeripheralStateConnected) {
+        [self.meters addObject:self.active_meter];
+    }
     [self.cman scanForPeripheralsWithServices:services options:nil];
     [self.scan_vc reloadData];
     [self performSelector:@selector(endScan) withObject:nil afterDelay:10.f];
@@ -98,9 +101,9 @@
     [self.scan_vc endRefresh];
 }
 
--(void)selectPeripheral:(CBPeripheral*)p {
+-(void)selectMeter:(MooshimeterDevice*)d {
     if( self.active_meter != nil && self.active_meter.p.isConnected ) {
-        if( self.active_meter.p.UUID == p.UUID ) {
+        if( self.active_meter.p.UUID == d.p.UUID ) {
             NSLog(@"Disconnecting");
             self->reboot_into_oad = NO;
             [self.cman cancelPeripheralConnection:self.active_meter.p];
@@ -110,8 +113,8 @@
         [self.cman cancelPeripheralConnection:self.active_meter.p];
     }
     NSLog(@"Connecting new...");
-    self.active_meter = [[mooshimeter_device alloc] init:p];
-    [self.cman connectPeripheral:p options:nil];
+    self.active_meter = d;
+    [self.cman connectPeripheral:d.p options:nil];
     [self.scan_vc reloadData];
 }
 
@@ -132,33 +135,60 @@
 
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     
+    uint32 build_time = 0;
+    NSData* tmp;
+    
+    if([RSSI integerValue] < -80 || [RSSI integerValue] >= 0) {
+        // Skip super weak signals for now
+        return;
+    }
+    
     NSLog(@"Found a BLE Device : %@",peripheral);
     
     NSLog(@"RSSI: %d", [RSSI integerValue]);
     
+    NSLog(@"ADV: %@", advertisementData);
     
-    BOOL replace = NO;
+    tmp = [advertisementData valueForKey:@"kCBAdvDataManufacturerData"];
     
-    if (!replace) {
-        int insertion_i;
-        if([RSSI integerValue] > 0) {
-            insertion_i = self.meters.count;
-        } else {
-            for(insertion_i = 0; insertion_i < self.meters.count; insertion_i++) {
-                if([self.meter_rssi[insertion_i] integerValue] < [RSSI integerValue]) break;
-            }
-        }
-        NSLog(@"Inserting meter at index %d", insertion_i);
-        [self.meters insertObject:peripheral atIndex:insertion_i];
-        [self.meter_rssi insertObject:RSSI atIndex:insertion_i];
-        [self.scan_vc reloadData];
+    if( tmp != nil ) {
+        [tmp getBytes:&build_time length:4];
+        NSLog(@"Build time %u", build_time);
+    } else {
+        NSLog(@"No build time");
     }
     
+    // Check for repeat
+    for(int i = 0; i < self.meters.count; i++) {
+        MooshimeterDevice* d = self.meters[i];
+        if(CFEqual(peripheral.UUID, d.p.UUID)) {
+            NSLog(@"Received duplicate advert.  Updating RSSI and reloading.");
+            d.RSSI = RSSI;
+            [self.scan_vc reloadData];
+            return;
+        }
+    }
+
+    int insertion_i;
+    if([RSSI integerValue] > 0) {
+        insertion_i = self.meters.count;
+    } else {
+        for(insertion_i = 0; insertion_i < self.meters.count; insertion_i++) {
+            MooshimeterDevice* d = self.meters[insertion_i];
+            if([d.RSSI integerValue] < [RSSI integerValue]) break;
+        }
+    }
+    NSLog(@"Inserting meter at index %d", insertion_i);
+    MooshimeterDevice* d = [[MooshimeterDevice alloc] init:peripheral];
+    d.RSSI = RSSI;
+    d.advBuildTime = [NSNumber numberWithInt:build_time];
+    [self.meters insertObject:d atIndex:insertion_i];
+    [self.scan_vc reloadData];
 }
 
--(void)meterSetupComplete:(mooshimeter_device*)d {
+-(void)meterSetupComplete:(MooshimeterDevice*)d {
     NSLog(@"Setup complete");
-    if( self.active_meter->oad_mode && self->reboot_into_oad) {
+    if( self.active_meter->oad_mode ) {
         // We connected to a meter in OAD mode as requested previously.  Update firmware.
         NSLog(@"Connected in OAD mode");
 #ifdef AUTO_UPDATE_FIRMWARE
@@ -189,6 +219,7 @@
 }
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
+    [self endScan];
     [self.active_meter setup:self cb:@selector(meterSetupComplete:) arg:self.active_meter];
     [self.scan_vc reloadData];
 }

@@ -34,8 +34,6 @@ extern "C"
      * CONSTANTS
      */
     
-
-    
 #if defined HAL_IMAGE_B
 #define OAD_IMG_D_PAGE        OAD_IMG_A_PAGE
 #define OAD_IMG_D_AREA        OAD_IMG_A_AREA

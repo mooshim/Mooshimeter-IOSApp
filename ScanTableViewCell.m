@@ -17,29 +17,34 @@
 
 - (ScanTableViewCell*)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+    UIActivityIndicatorView* spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.hidesWhenStopped = YES;
+    self.accessoryView = spinner;
     return self;
 }
 
--(void) setPeripheral:(CBPeripheral*)device {
-    self.p = device;
-    self.textLabel.text = [NSString stringWithFormat:@"%@",self.p.name];
+-(void) setMeter:(MooshimeterDevice*)device {
+    self.d = device;
+    self.textLabel.text = [NSString stringWithFormat:@"%@",self.d.p.name];
     
+    UIActivityIndicatorView* spinner = (UIActivityIndicatorView*)self.accessoryView;
     
-    switch(self.p.state) {
+    switch(self.d.p.state) {
         case CBPeripheralStateDisconnected:
             self.backgroundColor = [UIColor whiteColor];
+            [spinner stopAnimating];
             break;
         case CBPeripheralStateConnecting:
             self.backgroundColor = [UIColor orangeColor];
+            [spinner startAnimating];
             break;
         case CBPeripheralStateConnected:
             self.backgroundColor = [UIColor greenColor];
+            [spinner stopAnimating];
             break;
     }
-}
-
--(void) setRSSI:(NSNumber*)RSSI {
-    self.detailTextLabel.text = [RSSI stringValue];
+    
+    self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",[self.d.RSSI integerValue], [self.d.advBuildTime integerValue]];
 }
 
 - (void)awakeFromNib {

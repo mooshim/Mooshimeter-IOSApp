@@ -10,17 +10,17 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BLETIOADProgressDialog.h"
 #import "BLETIOADProgressViewController.h"
-#import "mooshimeter_device.h"
+#import "MooshimeterDevice.h"
 #import "oad.h"
 
 @class BLETIOADProgressViewController;
-@class mooshimeter_device;
+@class MooshimeterDevice;
 
 @interface BLETIOADProfile : NSObject <UIActionSheetDelegate,UIAlertViewDelegate,CBPeripheralDelegate>
 
 @property (strong,nonatomic) NSData *imageFile;
 @property (strong,nonatomic) BLETIOADProgressDialog *progressDialog;
-@property (strong,nonatomic) mooshimeter_device *d;
+@property (strong,nonatomic) MooshimeterDevice *d;
 @property (strong,nonatomic) UIView *view;
 
 @property int nBlocks;
@@ -37,7 +37,7 @@
 //In case of iOS 7.0
 @property (strong,nonatomic) BLETIOADProgressViewController *progressView;
 
--(id) initWithDevice:(mooshimeter_device *) dev;
+-(id) initWithDevice:(MooshimeterDevice *) dev;
 -(void) makeConfigurationForProfile;
 -(void) configureProfile;
 -(void) deconfigureProfile;

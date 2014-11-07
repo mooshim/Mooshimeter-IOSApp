@@ -15,7 +15,7 @@
 @implementation BLETIOADProfile
 
 
--(id) initWithDevice:(mooshimeter_device *) dev {
+-(id) initWithDevice:(MooshimeterDevice *) dev {
     self = [[BLETIOADProfile alloc]init];
     if (self) {
         self.d = dev;

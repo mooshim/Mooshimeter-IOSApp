@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "mooshimeter_device.h"
+#import "MooshimeterDevice.h"
 
-#import "mooshimeterScanViewController.h"
+#import "ScanViewController.h"
 
 #import "BLETIOADProgressViewController.h"
 #import "BLETIOADProfile.h"
 
-@class mooshimeter_device;
-@class mooshimeterScanViewController;
+@class MooshimeterDevice;
+@class ScanViewController;
 @class BLETIOADProgressViewController;
 @class BLETIOADProfile;
 
@@ -32,12 +32,11 @@
 @property (strong,nonatomic) UIWindow *window;
 @property (strong,nonatomic) CBCentralManager *cman;
 @property (strong,nonatomic) NSMutableArray *meters;
-@property (strong,nonatomic) NSMutableArray *meter_rssi;
-@property (strong,nonatomic) mooshimeter_device* active_meter;
+@property (strong,nonatomic) MooshimeterDevice* active_meter;
 @property (strong,nonatomic) BLETIOADProfile* oad_profile;
 
 @property (strong,nonatomic) UINavigationController* nav;
-@property (strong,nonatomic) mooshimeterScanViewController* scan_vc;
+@property (strong,nonatomic) ScanViewController* scan_vc;
 @property (strong,nonatomic) BLETIOADProgressViewController* oad_vc;
 
 -(mooshimeterAppDelegate*)getApp;
@@ -45,6 +44,6 @@
 -(void)scanForMeters;
 -(void)endScan;
 
--(void)selectPeripheral:(CBPeripheral*)p;
+-(void)selectMeter:(MooshimeterDevice*)p;
 
 @end
