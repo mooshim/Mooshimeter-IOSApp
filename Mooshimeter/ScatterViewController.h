@@ -10,14 +10,16 @@
 #import "CorePlot-CocoaTouch.h"
 #import "MooshimeterDevice.h"
 
+@class MooshimeterDevice;
+
 @interface ScatterViewController : UIViewController <CPTPlotDataSource, UIAlertViewDelegate>
 {
 @public
     // A place to stash settings
     MeterSettings_t      meter_settings;
-    double       time[      N_SAMPLE_BUFFER];
-    double       ch1_values[N_SAMPLE_BUFFER];
-    double       ch2_values[N_SAMPLE_BUFFER];
+    double       time[      N_ADC_SAMPLES];
+    double       ch1_values[N_ADC_SAMPLES];
+    double       ch2_values[N_ADC_SAMPLES];
 }
 
 -(void)setDevice:(MooshimeterDevice*)device;

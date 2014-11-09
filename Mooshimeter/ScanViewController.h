@@ -12,12 +12,12 @@
 #import "ScanTableViewCell.h"
 
 @class MeterViewController;
-@class mooshimeterAppDelegate;
+@class AppDelegate;
 
 @interface ScanViewController : UITableViewController <UIAlertViewDelegate>
 
 @property (strong, nonatomic)MeterViewController *detailViewController;
-@property (strong, nonatomic)mooshimeterAppDelegate *app;
+@property (strong, nonatomic)AppDelegate *app;
 
 -(void)reloadData;
 -(void)endRefresh;

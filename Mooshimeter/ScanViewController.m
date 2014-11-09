@@ -39,7 +39,7 @@
 {
     [super viewDidLoad];
     
-    self.app = (mooshimeterAppDelegate*)[UIApplication sharedApplication].delegate;
+    self.app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     
     [self.tableView registerClass:[ScanTableViewCell class] forCellReuseIdentifier:@"Cell"];
     
@@ -56,6 +56,12 @@
 
 -(void)endRefresh {
     [self.refreshControl endRefreshing];
+}
+
+-(BOOL)shouldAutorotate { return NO; }
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 #pragma mark - Table View

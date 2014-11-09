@@ -18,9 +18,9 @@
 		0C349D82188529A200B6D64F /* Mstar80x80.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D81188529A200B6D64F /* Mstar80x80.png */; };
 		0C63853717D694DC00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63853517D694DC00D3FB31 /* InfoPlist.strings */; };
 		0C63853917D694DC00D3FB31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853817D694DC00D3FB31 /* main.m */; };
-		0C63853D17D694DC00D3FB31 /* mooshimeterAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */; };
+		0C63853D17D694DC00D3FB31 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853C17D694DC00D3FB31 /* AppDelegate.m */; };
 		0C63854C17D694DC00D3FB31 /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63854B17D694DC00D3FB31 /* ScanViewController.m */; };
-		0C63854F17D694DC00D3FB31 /* meterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63854E17D694DC00D3FB31 /* meterViewController.m */; };
+		0C63854F17D694DC00D3FB31 /* MeterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63854E17D694DC00D3FB31 /* MeterViewController.m */; };
 		0C63855817D694DD00D3FB31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852C17D694DC00D3FB31 /* UIKit.framework */; };
 		0C63855917D694DD00D3FB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
 		0C63856117D694DD00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63855F17D694DD00D3FB31 /* InfoPlist.strings */; };
@@ -44,6 +44,7 @@
 		4ABE54201A080A9000277456 /* BLETIOADProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE541D1A080A9000277456 /* BLETIOADProgressViewController.m */; };
 		4ABE54271A0818CF00277456 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4ABE54231A0818CF00277456 /* MainStoryboard_iPad.storyboard */; };
 		4ABE54281A0818CF00277456 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4ABE54251A0818CF00277456 /* MainStoryboard_iPhone.storyboard */; };
+		4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,12 +75,12 @@
 		0C63853617D694DC00D3FB31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0C63853817D694DC00D3FB31 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0C63853A17D694DC00D3FB31 /* Mooshimeter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mooshimeter-Prefix.pch"; sourceTree = "<group>"; };
-		0C63853B17D694DC00D3FB31 /* mooshimeterAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mooshimeterAppDelegate.h; sourceTree = "<group>"; };
-		0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mooshimeterAppDelegate.m; sourceTree = "<group>"; };
+		0C63853B17D694DC00D3FB31 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		0C63853C17D694DC00D3FB31 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0C63854A17D694DC00D3FB31 /* ScanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
 		0C63854B17D694DC00D3FB31 /* ScanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
-		0C63854D17D694DC00D3FB31 /* meterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = meterViewController.h; sourceTree = "<group>"; };
-		0C63854E17D694DC00D3FB31 /* meterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = meterViewController.m; sourceTree = "<group>"; };
+		0C63854D17D694DC00D3FB31 /* MeterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeterViewController.h; sourceTree = "<group>"; };
+		0C63854E17D694DC00D3FB31 /* MeterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MeterViewController.m; sourceTree = "<group>"; };
 		0C63855517D694DD00D3FB31 /* MooshimeterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MooshimeterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C63855E17D694DD00D3FB31 /* MooshimeterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MooshimeterTests-Info.plist"; sourceTree = "<group>"; };
 		0C63856017D694DD00D3FB31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -192,6 +193,8 @@
 		4ABE54211A080AC100277456 /* oad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oad.h; path = Mooshimeter/oad.h; sourceTree = "<group>"; };
 		4ABE54241A0818CF00277456 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		4ABE54261A0818CF00277456 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartNavigationController.h; sourceTree = "<group>"; };
+		4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartNavigationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,14 +278,14 @@
 				0C95E905182C320E007EBD5F /* Mooshimeter.entitlements */,
 				0C78962117D7E56A00D1439E /* BLEUtility.h */,
 				0C78962217D7E56A00D1439E /* BLEUtility.m */,
-				0C63853B17D694DC00D3FB31 /* mooshimeterAppDelegate.h */,
-				0C63853C17D694DC00D3FB31 /* mooshimeterAppDelegate.m */,
+				0C63853B17D694DC00D3FB31 /* AppDelegate.h */,
+				0C63853C17D694DC00D3FB31 /* AppDelegate.m */,
 				0C78967517DE74B700D1439E /* MooshimeterDevice.h */,
 				0C78967617DE74B700D1439E /* MooshimeterDevice.m */,
 				4A777E991A0863CD007FEEB9 /* callbackManager.h */,
 				4A777E9A1A0863CD007FEEB9 /* callbackManager.m */,
-				0C63854D17D694DC00D3FB31 /* meterViewController.h */,
-				0C63854E17D694DC00D3FB31 /* meterViewController.m */,
+				0C63854D17D694DC00D3FB31 /* MeterViewController.h */,
+				0C63854E17D694DC00D3FB31 /* MeterViewController.m */,
 				0C844DF91803060700613079 /* TrendViewController.h */,
 				0C844DFA1803060700613079 /* TrendViewController.m */,
 				0C63854A17D694DC00D3FB31 /* ScanViewController.h */,
@@ -293,6 +296,8 @@
 				0C78967317D82ABF00D1439E /* SettingViewController.m */,
 				4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */,
 				4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */,
+				4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */,
+				4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */,
 				0C63853317D694DC00D3FB31 /* Supporting Files */,
 			);
 			path = Mooshimeter;
@@ -591,9 +596,10 @@
 				0C63853917D694DC00D3FB31 /* main.m in Sources */,
 				4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */,
 				4ABE541E1A080A9000277456 /* BLETIOADProfile.m in Sources */,
-				0C63853D17D694DC00D3FB31 /* mooshimeterAppDelegate.m in Sources */,
+				4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */,
+				0C63853D17D694DC00D3FB31 /* AppDelegate.m in Sources */,
 				0C63854C17D694DC00D3FB31 /* ScanViewController.m in Sources */,
-				0C63854F17D694DC00D3FB31 /* meterViewController.m in Sources */,
+				0C63854F17D694DC00D3FB31 /* MeterViewController.m in Sources */,
 				4A777E9B1A0863CD007FEEB9 /* callbackManager.m in Sources */,
 				0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */,
 				0C78967417D82ABF00D1439E /* SettingViewController.m in Sources */,

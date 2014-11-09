@@ -334,10 +334,10 @@
 
 - (void)drawLabelsForAxis:(CPTXYAxis*)target dbuf:(double*)dbuf {
     CGFloat yMin = dbuf[0];
-    for( int i = 0; i < N_SAMPLE_BUFFER; i++ ) yMin = dbuf[i] < yMin ? dbuf[i]:yMin;
+    for( int i = 0; i < N_ADC_SAMPLES; i++ ) yMin = dbuf[i] < yMin ? dbuf[i]:yMin;
     
     CGFloat yMax = dbuf[0];
-    for( int i = 0; i < N_SAMPLE_BUFFER; i++ ) yMax = dbuf[i] > yMax ? dbuf[i]:yMax;
+    for( int i = 0; i < N_ADC_SAMPLES; i++ ) yMax = dbuf[i] > yMax ? dbuf[i]:yMax;
     
     double range = yMax - yMin;
     double majorTick = [self getTickFromRange:range];

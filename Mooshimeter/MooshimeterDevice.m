@@ -81,8 +81,8 @@
     [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH2BUF enable:NO];
 }
 
--(void)enableADCSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"adc_settings_stream" target:target cb:cb arg:arg];
+-(void)enableSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
+    [self createCB:@"settings_stream" target:target cb:cb arg:arg];
     [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SETTINGS enable:YES];
 }
 
@@ -156,6 +156,8 @@
         [self callCB:@"buf_stream"];
     } else if( UUID_EQUALS(METER_CH2BUF)) {
         [self callCB:@"buf_stream"];
+    } else if( UUID_EQUALS(METER_SETTINGS)) {
+        [self callCB:@"settings_stream"];
     } else  {
         NSLog(@"We read something I don't recognize...");
     }
@@ -263,6 +265,12 @@
             [self reqMeterSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
             break;
         case 2:
+            [self enableSettingsNotify:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
+            break;
+        case 3:
+            [self enableStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
+            break;
+        case 4:
             [self callCB:@"setup"];
             break;
         default:

@@ -16,6 +16,7 @@
 
 @property (strong,nonatomic) MooshimeterDevice* d;
 
+
 -(void) setMeter:(MooshimeterDevice*)device;
 
 @end

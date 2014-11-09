@@ -8,18 +8,16 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BLEUtility.h"
-#import "mooshimeterAppDelegate.h"
+#import "AppDelegate.h"
 
 #import "MooshimeterProfileTypes.h"
 #import "callbackManager.h"
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
-#define N_SAMPLE_BUFFER 256
-
 /// Class which describes a mooshimeter
 @class MooshimeterDevice;
-@class mooshimeterAppDelegate;
+@class AppDelegate;
 
 @interface MooshimeterDevice : callbackManager <CBPeripheralDelegate>
 {
@@ -29,8 +27,8 @@
     MeterInfo_t          meter_info;
     MeterMeasurement_t   meter_sample;
     struct {
-        int24_test                CH1_buf[N_SAMPLE_BUFFER];
-        int24_test                CH2_buf[N_SAMPLE_BUFFER];
+        int24_test                CH1_buf[N_ADC_SAMPLES];
+        int24_test                CH2_buf[N_ADC_SAMPLES];
     } sample_buf;
     unsigned char        cal_i;
     unsigned short       buf_i;
@@ -53,7 +51,7 @@
 }
 
 @property (strong,nonatomic)   CBPeripheral *p;
-@property (strong,nonatomic)   mooshimeterAppDelegate *app;
+@property (strong,nonatomic)   AppDelegate *app;
 @property (strong,nonatomic)   NSNumber* RSSI;
 @property (strong,nonatomic)   NSNumber* advBuildTime;
 
