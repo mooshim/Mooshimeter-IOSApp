@@ -41,7 +41,11 @@ The linker settings still need to be set separately.
 #define FLASH_LOCK_SIZE_BYTES   (4*FLASH_LOCK_SIZE_WORDS)
 #define FLASH_LOCK_PAGE         (FLASH_LOCK_ADDR_WORDS>>9)
 #define FLASH_LOCK_PAGE_OFFSET  ((FLASH_LOCK_ADDR_WORDS & 0x1FF)<<2)
-static const unsigned char flash_lock_data[] =
+
+#pragma location=0x7FFF0
+__no_init __code const unsigned char flash_locks[16];
+
+static const unsigned char desired_flash_locks[] =
 {
   0x80, 0xFF, // Bank 0 split
   0xFF, 0xFF, // Bank 1 IMGB
@@ -50,7 +54,12 @@ static const unsigned char flash_lock_data[] =
   0xFF, 0xFF, // Bank 4 IMGB
   0x00, 0x00, // Bank 5 IMGA
   0x00, 0x00, // Bank 6 IMGA
-  0x00, 0x00, // Bank 7 IMGA and DEBUG LOCK
+  0x00, 
+#ifdef REQUIRE_DEBUG_LOCK
+0x00, // Bank 7 IMGA and DEBUG LOCK
+#else
+0x80,
+#endif
 };
 
 #endif
