@@ -19,7 +19,9 @@
     // Do any additional setup after loading the view.
 }
 
--(BOOL)shouldAutorotate { return [self.topViewController supportedInterfaceOrientations]; }
+-(BOOL)shouldAutorotate {
+    return [self.topViewController shouldAutorotate];
+}
 
 - (NSUInteger)supportedInterfaceOrientations {
     return [self.topViewController supportedInterfaceOrientations];

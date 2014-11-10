@@ -239,5 +239,16 @@
     [self.scan_vc reloadData];
 }
 
+-(BOOL)shouldAutorotate {
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationPortrait;
+}
+
+-(void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    NSLog(@"Signal change to graph here");
+}
 
 @end

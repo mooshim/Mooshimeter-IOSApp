@@ -33,6 +33,7 @@
 		4A777E9B1A0863CD007FEEB9 /* callbackManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A777E9A1A0863CD007FEEB9 /* callbackManager.m */; };
 		4A777E9E1A089CEC007FEEB9 /* Mooshimeter.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A777E9D1A089CEC007FEEB9 /* Mooshimeter.bin */; };
 		4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */; };
+		4AAB4A261A1052C900794EC8 /* ChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AAB4A251A1052C900794EC8 /* ChannelView.m */; };
 		4ABE54111A07FE9C00277456 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971D17E3750700D1439E /* libCorePlot-CocoaTouch.a */; };
 		4ABE54121A07FEB900277456 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C7895C817D786A400D1439E /* CoreBluetooth.framework */; };
 		4ABE54131A07FEBF00277456 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C78971F17E3762000D1439E /* QuartzCore.framework */; };
@@ -184,6 +185,8 @@
 		4A777E9D1A089CEC007FEEB9 /* Mooshimeter.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = Mooshimeter.bin; path = "../../../BLE_Firmware/Projects/ble/Mooshimeter/CC2540DB/CC2540-OAD-ImgB/Exe/Mooshimeter.bin"; sourceTree = "<group>"; };
 		4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTableViewCell.h; path = ../ScanTableViewCell.h; sourceTree = "<group>"; };
 		4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanTableViewCell.m; path = ../ScanTableViewCell.m; sourceTree = "<group>"; };
+		4AAB4A241A1052C900794EC8 /* ChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelView.h; sourceTree = "<group>"; };
+		4AAB4A251A1052C900794EC8 /* ChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelView.m; sourceTree = "<group>"; };
 		4ABE54181A080A9000277456 /* BLETIOADProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLETIOADProfile.h; path = Mooshimeter/BLETIOADProfile.h; sourceTree = "<group>"; };
 		4ABE54191A080A9000277456 /* BLETIOADProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BLETIOADProfile.m; path = Mooshimeter/BLETIOADProfile.m; sourceTree = "<group>"; };
 		4ABE541A1A080A9000277456 /* BLETIOADProgressDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLETIOADProgressDialog.h; path = Mooshimeter/BLETIOADProgressDialog.h; sourceTree = "<group>"; };
@@ -275,27 +278,15 @@
 		0C63853217D694DC00D3FB31 /* Mooshimeter */ = {
 			isa = PBXGroup;
 			children = (
+				4AAB4A291A10864C00794EC8 /* Utility */,
+				4AAB4A271A106FEA00794EC8 /* ScanTable */,
+				4AAB4A231A10529900794EC8 /* MeterView */,
+				4AAB4A281A10863700794EC8 /* GraphView */,
 				0C95E905182C320E007EBD5F /* Mooshimeter.entitlements */,
-				0C78962117D7E56A00D1439E /* BLEUtility.h */,
-				0C78962217D7E56A00D1439E /* BLEUtility.m */,
 				0C63853B17D694DC00D3FB31 /* AppDelegate.h */,
 				0C63853C17D694DC00D3FB31 /* AppDelegate.m */,
-				0C78967517DE74B700D1439E /* MooshimeterDevice.h */,
-				0C78967617DE74B700D1439E /* MooshimeterDevice.m */,
-				4A777E991A0863CD007FEEB9 /* callbackManager.h */,
-				4A777E9A1A0863CD007FEEB9 /* callbackManager.m */,
-				0C63854D17D694DC00D3FB31 /* MeterViewController.h */,
-				0C63854E17D694DC00D3FB31 /* MeterViewController.m */,
-				0C844DF91803060700613079 /* TrendViewController.h */,
-				0C844DFA1803060700613079 /* TrendViewController.m */,
-				0C63854A17D694DC00D3FB31 /* ScanViewController.h */,
-				0C63854B17D694DC00D3FB31 /* ScanViewController.m */,
-				0C78972117E378FE00D1439E /* ScatterViewController.h */,
-				0C78972217E378FE00D1439E /* ScatterViewController.m */,
 				0C78967217D82ABF00D1439E /* SettingViewController.h */,
 				0C78967317D82ABF00D1439E /* SettingViewController.m */,
-				4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */,
-				4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */,
 				4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */,
 				4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */,
 				0C63853317D694DC00D3FB31 /* Supporting Files */,
@@ -447,6 +438,52 @@
 			);
 			name = Firmware;
 			path = Mooshimeter;
+			sourceTree = "<group>";
+		};
+		4AAB4A231A10529900794EC8 /* MeterView */ = {
+			isa = PBXGroup;
+			children = (
+				0C63854D17D694DC00D3FB31 /* MeterViewController.h */,
+				0C63854E17D694DC00D3FB31 /* MeterViewController.m */,
+				4AAB4A241A1052C900794EC8 /* ChannelView.h */,
+				4AAB4A251A1052C900794EC8 /* ChannelView.m */,
+			);
+			name = MeterView;
+			sourceTree = "<group>";
+		};
+		4AAB4A271A106FEA00794EC8 /* ScanTable */ = {
+			isa = PBXGroup;
+			children = (
+				0C63854A17D694DC00D3FB31 /* ScanViewController.h */,
+				0C63854B17D694DC00D3FB31 /* ScanViewController.m */,
+				4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */,
+				4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */,
+			);
+			name = ScanTable;
+			sourceTree = "<group>";
+		};
+		4AAB4A281A10863700794EC8 /* GraphView */ = {
+			isa = PBXGroup;
+			children = (
+				0C844DF91803060700613079 /* TrendViewController.h */,
+				0C844DFA1803060700613079 /* TrendViewController.m */,
+				0C78972117E378FE00D1439E /* ScatterViewController.h */,
+				0C78972217E378FE00D1439E /* ScatterViewController.m */,
+			);
+			name = GraphView;
+			sourceTree = "<group>";
+		};
+		4AAB4A291A10864C00794EC8 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				4A777E991A0863CD007FEEB9 /* callbackManager.h */,
+				4A777E9A1A0863CD007FEEB9 /* callbackManager.m */,
+				0C78967517DE74B700D1439E /* MooshimeterDevice.h */,
+				0C78967617DE74B700D1439E /* MooshimeterDevice.m */,
+				0C78962117D7E56A00D1439E /* BLEUtility.h */,
+				0C78962217D7E56A00D1439E /* BLEUtility.m */,
+			);
+			name = Utility;
 			sourceTree = "<group>";
 		};
 		4ABE54171A080A8300277456 /* OAD */ = {
@@ -604,6 +641,7 @@
 				0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */,
 				0C78967417D82ABF00D1439E /* SettingViewController.m in Sources */,
 				4ABE54201A080A9000277456 /* BLETIOADProgressViewController.m in Sources */,
+				4AAB4A261A1052C900794EC8 /* ChannelView.m in Sources */,
 				0C78967717DE74B800D1439E /* MooshimeterDevice.m in Sources */,
 				0C78972317E378FE00D1439E /* ScatterViewController.m in Sources */,
 				0C844DFB1803060700613079 /* TrendViewController.m in Sources */,
