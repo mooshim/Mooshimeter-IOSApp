@@ -14,7 +14,13 @@
 {
     self->reboot_into_oad = NO;
     
-    self.cman   = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
+    //dispatch_queue_t high_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_queue_t high_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+    //dispatch_queue_t high_queue = dispatch_queue_create("mooshim.CBqueue", DISPATCH_QUEUE_SERIAL );
+    
+    // Having cman dispatch to any queue but main causes long delays...
+    //self.cman   = [[CBCentralManager alloc]initWithDelegate:self queue:high_queue];
+    self.cman   = [[CBCentralManager alloc]initWithDelegate:self queue:nil options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:CBCentralManagerOptionShowPowerAlertKey]];
     self.meters = [[NSMutableArray alloc] init];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -114,10 +120,6 @@
     [self.scan_vc reloadData];
 }
 
--(void)meterSetupSuccessful {
-    NSLog(@"Setup complete");
-}
-
 #pragma mark - CBCentralManager delegate
 
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central {
@@ -210,7 +212,9 @@
     } else {
         // We have a connected meter with the correct firmware.
         // Display the meter view.
+        NSLog(@"Pushing meter view controller");
         [self.nav pushViewController:self.meter_vc animated:YES];
+        NSLog(@"Did push meter view controller");
     }
 }
 

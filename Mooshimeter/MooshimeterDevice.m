@@ -156,7 +156,7 @@ MooshimeterDevice* g_meter;
     if( UUID_EQUALS(METER_SAMPLE)) {
         [self callCB:@"sample"];
     } else if( UUID_EQUALS(METER_CH1BUF)) {
-        [self callCB:@"buf_stream"];
+        //[self callCB:@"buf_stream"];
     } else if( UUID_EQUALS(METER_CH2BUF)) {
         [self callCB:@"buf_stream"];
     } else if( UUID_EQUALS(METER_SETTINGS)) {

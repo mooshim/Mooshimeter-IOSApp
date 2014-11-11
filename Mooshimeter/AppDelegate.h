@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "MooshimeterDevice.h"
+#import "LGBluetooth.h"
 
 #import "ScanViewController.h"
 #import "MeterViewController.h"

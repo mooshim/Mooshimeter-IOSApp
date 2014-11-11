@@ -8,9 +8,9 @@
 
 #import "MeterViewController.h"
 
-@implementation MeterViewController
+dispatch_semaphore_t tmp_sem;
 
-#pragma mark - Managing the detail item
+@implementation MeterViewController
 
 -(BOOL)prefersStatusBarHidden { return YES; }
 
@@ -18,15 +18,6 @@
     self = [super init];
     self->play = NO;
     return self;
-}
-
-- (void)setDevice:(MooshimeterDevice*)device
-{
-    if (g_meter != device) {
-        NSLog(@"New device does not match old one!");
-        g_meter = device;
-    }
-    [self refreshAllControls];
 }
 
 - (void)viewDidLoad
@@ -76,7 +67,11 @@
     [self.view addSubview:v];
     
     // Display done.  Check the meter settings.
-    g_meter->meter_settings.rw.calc_settings = 7;
+    g_meter->meter_settings.rw.calc_settings = 6;
+    LockManager* lm = [[LockManager alloc]init];
+    
+    self.lock_manager = lm;
+
     [g_meter sendMeterSettings:nil cb:nil arg:nil];
     
     [self play];
