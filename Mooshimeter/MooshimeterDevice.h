@@ -110,3 +110,5 @@
 
 @end
 
+extern MooshimeterDevice* g_meter;
+

@@ -10,7 +10,7 @@
 
 @implementation ChannelView
 
--(ChannelView*)initWithFrame:(CGRect)frame {
+-(ChannelView*)initWithFrame:(CGRect)frame{
     // Assume height of 200px
     self = [super initWithFrame:frame];
     UILabel* l;
@@ -61,6 +61,10 @@
     b.frame = frame;
     [self addSubview:b];
     return b;
+}
+
+-(void)reload {
+    
 }
 
 @end

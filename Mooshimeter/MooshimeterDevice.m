@@ -8,6 +8,9 @@
 
 #import "MooshimeterDevice.h"
 
+// A global meter.  Because fuck you.
+MooshimeterDevice* g_meter;
+
 @implementation MooshimeterDevice
 
 @synthesize p;

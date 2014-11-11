@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "MooshimeterDevice.h"
 
-@interface ChannelView : UIView
+@interface ChannelView : UIView {
+    @public
+        NSInteger      channel;
+}
 
 -(ChannelView*)initWithFrame:(CGRect)frame;
 

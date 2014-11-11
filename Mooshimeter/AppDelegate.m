@@ -33,12 +33,6 @@
     
     // Start scanning for meters
     [self scanForMeters];
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-        splitViewController.delegate = (id)navigationController.topViewController;
-    }
     return YES;
 }
 							
@@ -89,8 +83,8 @@
     [self.cman stopScan];
     [self.meters removeAllObjects];
     // Manually re-add connected meter if we have one
-    if(self.active_meter.p.state == CBPeripheralStateConnected) {
-        [self.meters addObject:self.active_meter];
+    if(g_meter.p.state == CBPeripheralStateConnected) {
+        [self.meters addObject:g_meter];
     }
     [self.cman scanForPeripheralsWithServices:services options:nil];
     [self.scan_vc reloadData];
@@ -104,18 +98,18 @@
 }
 
 -(void)selectMeter:(MooshimeterDevice*)d {
-    if( self.active_meter != nil && self.active_meter.p.isConnected ) {
-        if( self.active_meter.p.UUID == d.p.UUID ) {
+    if( g_meter != nil && g_meter.p.isConnected ) {
+        if( g_meter.p.UUID == d.p.UUID ) {
             NSLog(@"Disconnecting");
             self->reboot_into_oad = NO;
-            [self.cman cancelPeripheralConnection:self.active_meter.p];
+            [self.cman cancelPeripheralConnection:g_meter.p];
             return;
         }
         NSLog(@"Disconnecting old...");
-        [self.cman cancelPeripheralConnection:self.active_meter.p];
+        [self.cman cancelPeripheralConnection:g_meter.p];
     }
     NSLog(@"Connecting new...");
-    self.active_meter = d;
+    g_meter = d;
     [self.cman connectPeripheral:d.p options:nil];
     [self.scan_vc reloadData];
 }
@@ -190,7 +184,7 @@
 
 -(void)meterSetupComplete:(MooshimeterDevice*)d {
     NSLog(@"Setup complete");
-    if( self.active_meter->oad_mode ) {
+    if( g_meter->oad_mode ) {
         // We connected to a meter in OAD mode as requested previously.  Update firmware.
         NSLog(@"Connected in OAD mode");
 #ifdef AUTO_UPDATE_FIRMWARE
@@ -205,18 +199,17 @@
         }
 #endif
     }
-    else if( self.active_meter->meter_info.build_time < 1415389647 ) {
+    else if( g_meter->meter_info.build_time < 1415389647 ) {
 #ifdef AUTO_UPDATE_FIRMWARE
         // Require a firmware update!
         NSLog(@"FIRMWARE UPDATE REQUIRED.  Rebooting.");
         self->reboot_into_oad = YES;
         // This will reboot the meter.  We will have 5 seconds to reconnect to it in OAD mode.
-        [self.active_meter setMeterState:METER_SHUTDOWN target:self cb:@selector(delayedDisconnect:) arg:self.active_meter.p];
+        [g_meter setMeterState:METER_SHUTDOWN target:self cb:@selector(delayedDisconnect:) arg:g_meter.p];
 #endif
     } else {
         // We have a connected meter with the correct firmware.
         // Display the meter view.
-        self.meter_vc.meter = self.active_meter;
         [self.nav pushViewController:self.meter_vc animated:YES];
     }
 }
@@ -227,7 +220,7 @@
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     [self endScan];
-    [self.active_meter setup:self cb:@selector(meterSetupComplete:) arg:self.active_meter];
+    [g_meter setup:self cb:@selector(meterSetupComplete:) arg:g_meter];
     [self.scan_vc reloadData];
 }
 
