@@ -42,6 +42,7 @@ The linker settings still need to be set separately.
 #define FLASH_LOCK_PAGE         (FLASH_LOCK_ADDR_WORDS>>9)
 #define FLASH_LOCK_PAGE_OFFSET  ((FLASH_LOCK_ADDR_WORDS & 0x1FF)<<2)
 
+#ifdef __IAR_SYSTEMS_ICC__
 #pragma location=0x7FFF0
 __no_init __code const unsigned char flash_locks[16];
 
@@ -61,5 +62,6 @@ static const unsigned char desired_flash_locks[] =
 0x80,
 #endif
 };
+#endif
 
 #endif
