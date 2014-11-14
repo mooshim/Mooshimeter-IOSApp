@@ -214,6 +214,7 @@ MeterFactoryCal_t;
 #define METER_CALC_SETTINGS_DEPTH_LOG2 0x0F
 #define METER_CALC_SETTINGS_MEAN       0x10
 #define METER_CALC_SETTINGS_ONESHOT    0x20
+#define METER_CALC_SETTINGS_MS         0x40
 
 #define ADC_SETTINGS_SAMPLERATE_MASK 0x07
 #define ADC_SETTINGS_GPIO_MASK 0x30
@@ -259,6 +260,8 @@ MeterLogSettings_t;
 typedef struct {
     int24_test ch1_reading_lsb; // Mean of the sample buffer
     int24_test ch2_reading_lsb; // Mean of the sample buffer
+    float ch1_ms;       // Mean square of the buffer.  Square root it on the other size.
+    float ch2_ms;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed)) 
