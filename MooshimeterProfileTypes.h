@@ -63,11 +63,14 @@ BUILD_TIME,\
   0} }
 
 #define METER_SETTINGS_DEFAULT {\
-  METER_SHUTDOWN,\
-  METER_SHUTDOWN,\
-  0x00,\
-  0x07,\
-}
+  .ro={ .present_meter_state=METER_SHUTDOWN,}, \
+  .rw={ .target_meter_state=METER_SHUTDOWN,\
+        .trigger_settings={.setting=0,.x_offset=0,.crossing={.bytes={0,0,0}}},\
+        .measure_settings=0x00,\
+        .calc_settings=0x06,\
+        .ch1set=0x10,\
+        .ch2set=0x10,\
+        .adc_settings=0x00, } }
 
 #define METER_FAKE_CAL { \
 0,\
@@ -208,8 +211,6 @@ MeterFactoryCal_t;
 #define METER_MEASURE_SETTINGS_ISRC_ON         0x01
 #define METER_MEASURE_SETTINGS_ISRC_LVL        0x02
 #define METER_MEASURE_SETTINGS_ACTIVE_PULLDOWN 0x04
-#define METER_SETTINGS_CH1_AUTORANGE           0x08
-#define METER_SETTINGS_CH2_AUTORANGE           0x10
 
 #define METER_CALC_SETTINGS_DEPTH_LOG2 0x0F
 #define METER_CALC_SETTINGS_MEAN       0x10
