@@ -11,7 +11,6 @@
 #import "MooshimeterDevice.h"
 #import "ScatterViewController.h"
 #import "ChannelView.h"
-#import "LockManager.h"
 
 @class ChannelView;
 
@@ -30,5 +29,8 @@
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
 @property (strong, nonatomic) UIButton* logging_settings_button;
-@property (strong, nonatomic) LockManager* lock_manager;
+
++(void)style_auto_button:(UIButton*)b on:(BOOL)on;
++(NSString*) formatReading:(double)val digits:(SignificantDigits)digits;
+
 @end

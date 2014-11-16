@@ -8,17 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "LGPeripheral.h"
 #import "MooshimeterDevice.h"
 #import "ScanTableViewCell.h"
 
-@class MeterViewController;
-@class AppDelegate;
+@protocol ScanViewControllerDelegate <NSObject>
+@required
+-(void)handleScanViewRefreshRequest;
+-(void)handleScanViewSelect:(LGPeripheral*)p;
+@end
 
 @interface ScanViewController : UITableViewController <UIAlertViewDelegate>
 
-@property (strong, nonatomic)MeterViewController *detailViewController;
-@property (strong, nonatomic)AppDelegate *app;
+@property (strong,nonatomic) id<ScanViewControllerDelegate> delegate;
+@property (strong,nonatomic) NSArray* peripherals;
 
+-(instancetype)initWithDelegate:(id)d;
 -(void)reloadData;
 -(void)endRefresh;
 

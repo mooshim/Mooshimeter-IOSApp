@@ -10,51 +10,48 @@
 
 @implementation ChannelView
 
--(ChannelView*)initWithFrame:(CGRect)frame{
-    // Assume height of 200px
-    self = [super initWithFrame:frame];
+-(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch{
     UILabel* l;
+    self = [super initWithFrame:frame];
+    self.userInteractionEnabled = YES;
+    self->channel = ch;
+
+    float h = frame.size.height/4;
+    float w = frame.size.width/6;
     
-    float h = frame.size.height;
-    float w = frame.size.width;
+#define cg(nx,ny,nw,nh) CGRectMake(nx*w,ny*h,nw*w,nh*h)
+#define mb(nx,ny,nw,nh,s) [self makeButton:cg(nx,ny,nw,nh) cb:@selector(s)]
+
+    self.display_set_button = mb(0,0,4,1,display_set_button_press);
+    self.input_set_button   = mb(4,0,2,1,input_set_button_press);
+    self.auto_manual_button = mb(0,3,1,1,auto_manual_button_press);
+    self.range_button       = mb(1,3,2,1,range_button_press);
+    self.units_button       = mb(3,3,3,1,units_button_press);
     
-    self.display_set_button = [self makeButton:CGRectMake(0, 0, w*2/3, h/4) name:@"Display Name" cb:@selector(disp_setting_press)];
-    
-    self.input_set_button = [self makeButton:CGRectMake(w*2/3, 0, w/3, h/4) name:@"Input" cb:@selector(input_set_press)];
-    
-    self.auto_manual_button = [self makeButton:CGRectMake(0, h*3/4, w/6, h/4) name:@"A" cb:@selector(auto_manual_button_press)];
-    
-    self.range_button = [self makeButton:CGRectMake(w/6, h*3/4, w/3, h/4) name:@"RANGE" cb:@selector(range_button_press)];
-    
-    l = [[UILabel alloc] initWithFrame:CGRectMake(0, h/4, w, h*2/4)];
+    l = [[UILabel alloc] initWithFrame:cg(0,1,6,2)];
     l.textColor = [UIColor blackColor];
-    l.font = [UIFont fontWithName:@"Courier New" size:70];
+    l.textAlignment = NSTextAlignmentCenter;
+    l.font = [UIFont fontWithName:@"Courier New" size:65];
     l.text = @"0.00000";
     [self addSubview:l];
     self.value_label = l;
     
-    l = [[UILabel alloc] initWithFrame:CGRectMake(w/2, h*3/4, w/2, h/4)];
-    l.textColor = [UIColor blackColor];
-    l.font = [UIFont systemFontOfSize:24];;
-    l.text = @"UNITS";
-    l.textAlignment = CPTTextAlignmentCenter;
-    [[l layer] setBorderWidth:2];
-    [[l layer] setBorderColor:[UIColor lightGrayColor].CGColor];
-    [self addSubview:l];
-    self.units_label = l;
+#undef cg
+#undef mb
     
     [[self layer] setBorderWidth:5];
     [[self layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    
+    [self refreshAllControls];
     return self;
 }
 
--(UIButton*)makeButton:(CGRect)frame name:(NSString*)name cb:(SEL)cb {
+-(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
     UIButton* b;
     b = [UIButton buttonWithType:UIButtonTypeSystem];
+    b.userInteractionEnabled = YES;
     [b addTarget:self action:cb forControlEvents:UIControlEventTouchUpInside];
     [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitle:name forState:UIControlStateNormal];
+    [b setTitle:@"T" forState:UIControlStateNormal];
     [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [[b layer] setBorderWidth:2];
     [[b layer] setBorderColor:[UIColor lightGrayColor].CGColor];
@@ -63,8 +60,301 @@
     return b;
 }
 
--(void)reload {
+
+-(void)auto_manual_button_press{
+    BOOL* b = &g_meter->disp_settings.auto_range[self->channel-1];
+    *b = !*b;
+    [self refreshAllControls];
+}
+
+-(void)auto_manual_button_refresh {
+    BOOL* b = &g_meter->disp_settings.auto_range[self->channel-1];
+    [MeterViewController style_auto_button:self.auto_manual_button on:*b];
+}
+
+-(void)display_set_button_press {
+    // If on normal electrode input, toggle between AC and DC display
+    // If reading CH3, cycle from VauxDC->VauxAC->Resistance->Diode
+    // If reading temp, do nothing
+    uint8 setting = [g_meter getChannelSetting:self->channel] & METER_CH_SETTINGS_INPUT_MASK;
+    BOOL* const ac_setting = &g_meter->disp_settings.ac_display[self->channel-1];
+    uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
+    uint8* const measure_setting  = &g_meter->meter_settings.rw.measure_settings;
+    switch(setting) {
+        case 0x00:
+            // Electrode input
+            *ac_setting = !*ac_setting;
+            break;
+        case 0x04:
+            // Temp input
+            break;
+        case 0x09:
+            switch(*ch3_mode) {
+                case CH3_VOLTAGE:
+                    *ac_setting = !*ac_setting;
+                    if(!*ac_setting) (*ch3_mode)++;
+                    break;
+                case CH3_RESISTANCE:
+                    (*ch3_mode)++;
+                    break;
+                case CH3_DIODE:
+                    (*ch3_mode) = CH3_VOLTAGE;
+                    break;
+            }
+            switch(*ch3_mode) {
+                case CH3_VOLTAGE:
+                    *measure_setting &=~METER_MEASURE_SETTINGS_ISRC_ON;
+                    break;
+                case CH3_RESISTANCE:
+                    *measure_setting |= METER_MEASURE_SETTINGS_ISRC_ON;
+                    break;
+                case CH3_DIODE:
+                    *measure_setting |= METER_MEASURE_SETTINGS_ISRC_ON;
+                    break;
+            }
+            break;
+    }
+    [g_meter sendMeterSettings:^(NSError *error) {
+        [self refreshAllControls];
+    }];
+
+}
+
+-(void)display_set_button_refresh {
+    [self.display_set_button setTitle:[g_meter getDescriptor:self->channel] forState:UIControlStateNormal];
+}
+
+-(void)input_set_button_press {
+    uint8 setting       = [g_meter getChannelSetting:self->channel];
+    uint8 other_setting = [g_meter getChannelSetting:self->channel==1?2:1];
+    switch(setting & METER_CH_SETTINGS_INPUT_MASK) {
+        case 0x00:
+            // Electrode input: Advance to CH3 unless the other channel is already on CH3
+            if((other_setting & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
+                setting &= ~METER_CH_SETTINGS_INPUT_MASK;
+                setting |= 0x04;
+            } else {
+                setting &= ~METER_CH_SETTINGS_INPUT_MASK;
+                setting |= 0x09;
+            }
+            break;
+        case 0x09:
+            // CH3 input
+            setting &= ~METER_CH_SETTINGS_INPUT_MASK;
+            setting |= 0x04;
+            break;
+        case 0x04:
+            // Temp input
+            setting &= ~METER_CH_SETTINGS_INPUT_MASK;
+            setting |= 0x00;
+            break;
+    }
+    [g_meter setChannelSetting:self->channel set:setting];
+    [g_meter sendMeterSettings:^(NSError *error) {
+        [self refreshAllControls];
+    }];
     
+}
+
+-(void)input_set_button_refresh {
+    [self.input_set_button setTitle:[g_meter getInputLabel:self->channel] forState:UIControlStateNormal];
+}
+
+-(void)units_button_press {
+    BOOL* b = &g_meter->disp_settings.raw_hex[self->channel-1];
+    *b=!*b;
+    [self refreshAllControls];
+}
+
+-(void)units_button_refresh {
+    [self.units_button setTitle:[g_meter getUnits:self->channel] forState:UIControlStateNormal];
+}
+
+-(uint8)pga_cycle:(uint8)chx_set {
+    uint8 tmp;
+    tmp = chx_set & METER_CH_SETTINGS_PGA_MASK;
+    tmp >>=4;
+    switch(tmp) {
+        case 1:
+            tmp=4;
+            break;
+        case 4:
+            tmp=6;
+            break;
+        case 6:
+        default:
+            tmp=1;
+            break;
+    }
+    tmp <<= 4;
+    chx_set &=~METER_CH_SETTINGS_PGA_MASK;
+    chx_set |= tmp;
+    return chx_set;
+}
+
+-(void)range_button_press {
+    uint8 channel_setting = [g_meter getChannelSetting:self->channel];
+    uint8* const adc_setting = &g_meter->meter_settings.rw.adc_settings;
+    uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
+    uint8 tmp;
+    
+    switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
+        case 0x00:
+            // Electrode input
+            switch(self->channel) {
+                case 1:
+                    // We are measuring current.  We can boost PGA, but that's all.
+                    channel_setting = [self pga_cycle:channel_setting];
+                    break;
+                case 2:
+                    // Switch the ADC GPIO to activate dividers
+                    tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
+                    tmp++;
+                    tmp %= 3;
+                    tmp<<=4;
+                    *adc_setting &= ~ADC_SETTINGS_GPIO_MASK;
+                    *adc_setting |= tmp;
+                    channel_setting &=~METER_CH_SETTINGS_PGA_MASK;
+                    channel_setting |= 0x10;
+                    break;
+            }
+            break;
+        case 0x04:
+            // Temp input
+            break;
+        case 0x09:
+            switch(*ch3_mode) {
+                case CH3_VOLTAGE:
+                    channel_setting = [self pga_cycle:channel_setting];
+                    break;
+                case CH3_RESISTANCE:
+                case CH3_DIODE:
+                    channel_setting = [self pga_cycle:channel_setting];
+                    tmp = channel_setting & METER_CH_SETTINGS_PGA_MASK;
+                    tmp >>=4;
+                    if(tmp == 1) {
+                        // Change the current source setting
+                        g_meter->meter_settings.rw.measure_settings ^= METER_MEASURE_SETTINGS_ISRC_LVL;
+                    }
+                    break;
+            }
+            break;
+    }
+    [g_meter setChannelSetting:self->channel set:channel_setting];
+    [g_meter sendMeterSettings:^(NSError *error) {
+        [self refreshAllControls];
+    }];
+}
+
+-(void)range_button_refresh {
+    // How many different ranges do we want to support?
+    // Supporting a range for every single PGA gain seems mighty excessive.
+    
+    uint8 channel_setting = [g_meter getChannelSetting:self->channel];
+    uint8 measure_setting = g_meter->meter_settings.rw.measure_settings;
+    uint8* const adc_setting = &g_meter->meter_settings.rw.adc_settings;
+    uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
+    uint8 tmp;
+    NSString* lval;
+    
+    switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
+        case 0x00:
+            // Electrode input
+            switch(self->channel) {
+                case 1:
+                    switch(channel_setting&METER_CH_SETTINGS_PGA_MASK) {
+                        case 0x10:
+                            lval = @"10A";
+                            break;
+                        case 0x40:
+                            lval = @"2.5A";
+                            break;
+                        case 0x60:
+                            lval = @"1A";
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch(*adc_setting & ADC_SETTINGS_GPIO_MASK) {
+                        case 0x00:
+                            lval = @"1.2V";
+                            break;
+                        case 0x10:
+                            lval = @"60V";
+                            break;
+                        case 0x20:
+                            lval = @"600V";
+                            break;
+                    }
+                    break;
+            }
+            break;
+        case 0x04:
+            // Temp input
+            lval = @"60C";
+            break;
+        case 0x09:
+            switch(*ch3_mode) {
+                case CH3_VOLTAGE:
+                case CH3_DIODE:
+                    switch(channel_setting&METER_CH_SETTINGS_PGA_MASK) {
+                        case 0x10:
+                            lval = @"1.2V";
+                            break;
+                        case 0x40:
+                            lval = @"300mV";
+                            break;
+                        case 0x60:
+                            lval = @"100mV";
+                            break;
+                    }
+                    break;
+                case CH3_RESISTANCE:
+                    switch((channel_setting&METER_CH_SETTINGS_PGA_MASK) | (measure_setting&METER_MEASURE_SETTINGS_ISRC_LVL)) {
+                        case 0x12:
+                            lval = @"10kΩ";
+                            break;
+                        case 0x42:
+                            lval = @"2.5kΩ";
+                            break;
+                        case 0x62:
+                            lval = @"1kΩ";
+                            break;
+                        case 0x10:
+                            lval = @"10MΩ";
+                            break;
+                        case 0x40:
+                            lval = @"2.5MΩ";
+                            break;
+                        case 0x60:
+                            lval = @"1MΩ";
+                            break;
+                    }
+                    break;
+            }
+            break;
+    }
+    [self.range_button setTitle:lval forState:UIControlStateNormal];
+}
+
+-(void)value_label_refresh {
+    const int c = self->channel;
+    if(g_meter->disp_settings.raw_hex[c-1]) {
+        int lsb = (int)[g_meter getBufMean:c];
+        lsb &= 0x00FFFFFF;
+        self.value_label.text = [NSString stringWithFormat:@"%06X", lsb];
+    } else {
+        self.value_label.text = [MeterViewController formatReading:[g_meter getBufMean:c] digits:[g_meter getSigDigits:c] ];
+    }
+}
+
+-(void)refreshAllControls {
+    [self display_set_button_refresh];
+    [self input_set_button_refresh];
+    [self auto_manual_button_refresh];
+    [self units_button_refresh];
+    [self range_button_refresh];
+    [self value_label_refresh];
 }
 
 @end

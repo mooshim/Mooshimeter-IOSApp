@@ -8,15 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "LGPeripheral.h"
 #import "MooshimeterDevice.h"
 
-@class MooshimeterDevice;
 
 @interface ScanTableViewCell : UITableViewCell
 
-@property (strong,nonatomic) MooshimeterDevice* d;
+@property (strong,nonatomic) LGPeripheral* p;
 
-
--(void) setMeter:(MooshimeterDevice*)device;
+-(void) setPeripheral:(LGPeripheral*)device;
 
 @end

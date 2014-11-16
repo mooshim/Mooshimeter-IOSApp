@@ -15,232 +15,169 @@ MooshimeterDevice* g_meter;
 
 @synthesize p;
 
--(MooshimeterDevice*) init:(CBPeripheral*)periph {
+-(MooshimeterDevice*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDeviceDelegate>)delegate {
     // Check for issues with struct packing.
     BUILD_BUG_ON(sizeof(trigger_settings_t)!=6);
     BUILD_BUG_ON(sizeof(MeterSettings_t)!=13);
     BUILD_BUG_ON(sizeof(meter_state_t) != 1);
-    BUILD_BUG_ON(sizeof(buf_i) != 2);
     self = [super init];
     self.p = periph;
-    self.p.delegate = self;
-    self.advBuildTime = [NSNumber numberWithInt:0];
-    self.RSSI = [NSNumber numberWithInt:0];
+    self.delegate = delegate;
+    self.chars = nil;
     return self;
 }
 
-
--(void)setup:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"setup" target:target cb:cb arg:arg];
-    [self.p discoverServices:nil];
+-(void)connect {
+    self.chars = [[NSMutableDictionary alloc] init];
+    
+    [self.p connectWithTimeout:5 completion:^(NSError *error) {
+        NSLog(@"Discovering services");
+        [self.p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
+            for (LGService *service in services) {
+                if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:METER_SERVICE_UUID]]) {
+                    NSLog(@"METER SERVICE FOUND. Discovering characteristics.");
+                    self->oad_mode = NO;
+                    [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
+                        for (LGCharacteristic* c in characteristics) {
+                            NSLog(@"    Char: %@", c.UUIDString);
+                            uint16 lookup;
+                            [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
+                            lookup = NSSwapShort(lookup);
+                            NSNumber* key = [NSNumber numberWithInt:lookup];
+                            [self.chars setObject:c forKey:key];
+                        }
+                        [self reqMeterInfo:^(NSData *data, NSError *error) {
+                            [self reqMeterSettings:^(NSData *data, NSError *error) {
+                                [self.delegate finishedMeterSetup];
+                            }];
+                        }];
+                    }];
+                } else if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:OAD_SERVICE_UUID]]) {
+                    NSLog(@"OAD SERVICE FOUND");
+                    self->oad_mode = YES;
+                    [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
+                        for (LGCharacteristic* c in characteristics) {
+                            NSLog(@"    Char: %@", c.UUIDString);
+                            uint16 lookup;
+                            [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
+                            lookup = NSSwapShort(lookup);
+                            NSNumber* key = [NSNumber numberWithInt:lookup];
+                            [self.chars setObject:c forKey:key];
+                        }
+                    }];
+                    [self.delegate finishedMeterSetup];
+                } else {
+                    NSLog(@"Service I don't care about found.");
+                }
+            }
+        }];
+    }];
 }
 
--(void)registerDisconnectCB:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"disconnect" target:target cb:cb arg:arg];
+-(LGCharacteristic*)getLGChar:(uint16)UUID {
+    return [self.chars objectForKey:[NSNumber numberWithInt:UUID]];
 }
 
--(void)reqMeterInfo:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"info" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:METER_INFO];
+-(void)reqMeterInfo:(LGCharacteristicReadCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_INFO];
+    [c readValueWithBlock:^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_info length:data.length];
+        cb(data,error);
+    }];
 }
 
--(void)reqMeterSettings:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"settings" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:METER_SETTINGS];
+-(void)reqMeterSettings:(LGCharacteristicReadCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_SETTINGS];
+    [c readValueWithBlock:^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_settings length:data.length];
+        cb(data,error);
+    }];
 }
 
--(void)sendMeterSettings:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"write_settings" target:target cb:cb arg:arg];
-    [BLEUtility writeCharacteristic:self.p cUUID:METER_SETTINGS data:[NSData dataWithBytes:(char*)(&self->meter_settings) length:sizeof(self->meter_settings)]];
+-(void)reqMeterSample:(LGCharacteristicReadCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
+    [c readValueWithBlock:^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_sample length:data.length];
+        cb(data,error);
+    }];
 }
 
--(void)reqMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"sample" target:target cb:cb arg:arg];
-    [BLEUtility readCharacteristic:self.p cUUID:METER_SAMPLE];
+-(void)sendMeterSettings:(LGCharacteristicWriteCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_SETTINGS];
+    NSData* v = [NSData dataWithBytes:&self->meter_settings length:sizeof(self->meter_settings)];
+    [c writeValue:v completion:cb];
 }
 
--(void)startStreamMeterSample:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"sample" target:target cb:cb arg:arg oneshot:NO];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SAMPLE enable:YES];
+-(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
+    [c setNotifyValue:on completion:cb];
 }
 
--(void)stopStreamMeterSample {
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SAMPLE enable:NO];
+-(void)handleBufStreamUpdate:(NSData*) data channel:(int)channel {
+    static BOOL ch1_last_received = NO;
+    static int buf_i = 0;
+    uint16 buf_len_bytes = [self getBufLen]*sizeof(int24_test);
+    uint8* target;
+    NSLog(@"Buf: %d: %d", channel, buf_i);
+    if(channel == 1) {
+        if(!ch1_last_received){buf_i = 0;}
+        ch1_last_received = YES;
+        target = (uint8*)self->sample_buf.CH1_buf;
+        target+= buf_i;
+        [data getBytes:target length:data.length];
+        buf_i += data.length;
+    } else if(channel == 2) {
+        if(ch1_last_received){buf_i = 0;}
+        ch1_last_received = NO;
+        target = (uint8*)self->sample_buf.CH2_buf;
+        target+= buf_i;
+        [data getBytes:target length:data.length];
+        buf_i += data.length;
+        if(buf_i >= buf_len_bytes) {
+            NSLog(@"Complete buffer received!");
+            if(self->buffer_cb) self->buffer_cb();
+        }
+    } else {
+        NSLog(@"WTF");
+    }
 }
 
--(void)setBufferReceivedCallback:(id)target cb:(SEL)cb arg:(id)arg {
-        [self createCB:@"sample_buf_downloaded" target:target cb:cb arg:arg oneshot:NO];
+-(void)enableStreamMeterBuf:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb complete_buffer_cb:(BufferDownloadCompleteCB)complete_buffer_cb {
+    self->buffer_cb = complete_buffer_cb;
+    LGCharacteristic* c1 = [self getLGChar:METER_CH1BUF];
+    LGCharacteristic* c2 = [self getLGChar:METER_CH2BUF];
+    [c1 setNotifyValue:on completion:^(NSError *error) {
+        [c2 setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
+            [self handleBufStreamUpdate:data channel:2];
+        }];
+    } onUpdate:^(NSData *data, NSError *error) {
+        [self handleBufStreamUpdate:data channel:1];
+    }];
 }
 
--(void)enableStreamMeterBuf:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"buf_stream" target:target cb:cb arg:arg];
-    self->buf_i = 0;
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH1BUF enable:YES];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH2BUF enable:YES];
-}
-
--(void)disableStreamMeterBuf {
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH1BUF enable:NO];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_CH2BUF enable:NO];
-}
-
--(void)enableSettingsNotify:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"settings_stream" target:target cb:cb arg:arg];
-    [BLEUtility setNotificationForCharacteristic:self.p cUUID:METER_SETTINGS enable:YES];
-}
-
--(void)setMeterLVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
+-(void)setMeterLVMode:(bool)on cb:(LGCharacteristicWriteCallback)cb {
     if(on) {
         self->meter_settings.rw.adc_settings |=  0x10;
     } else {
         self->meter_settings.rw.adc_settings &= ~0x10;
     }
-    [self sendMeterSettings:target cb:cb arg:arg];
+    [self sendMeterSettings:cb];
 }
 
--(void)setMeterHVMode:(bool)on target:(id)target cb:(SEL)cb arg:(id)arg {
+-(void)setMeterHVMode:(bool)on cb:(LGCharacteristicWriteCallback)cb {
     if(on) {
         self->meter_settings.rw.adc_settings |=  0x20;
     } else {
         self->meter_settings.rw.adc_settings &= ~0x20;
     }
-    [self sendMeterSettings:target cb:cb arg:arg];
+    [self sendMeterSettings:cb];
 }
 
--(void)downloadSampleBuffer:(id)target cb:(SEL)cb arg:(id)arg {
-    [self createCB:@"sample_buf_downloaded" target:target cb:cb arg:arg];
-    self->buf_i = 0;
-    self->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
-    [self sendMeterSettings:target cb:cb arg:arg];
-}
-
--(void)setMeterState:(int)new_state target:(id)target cb:(SEL)cb arg:(id)arg{
+-(void)setMeterState:(int)new_state cb:(LGCharacteristicWriteCallback)cb {
     self->meter_settings.rw.target_meter_state = new_state;
-    [self sendMeterSettings:target cb:cb arg:arg];
+    [self sendMeterSettings:cb];
 }
 
--(int)getMeterState {
-    return 0;
-}
-
--(MeterMeasurement_t)getMeterReading {
-    MeterMeasurement_t retval;
-    return retval;
-}
-
-#pragma mark - CBperipheral delegate functions
-
--(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
-    NSLog(@"..");
-    if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID]] ) {
-        NSLog(@"Discovered characteristics for Mooshimeter!");
-        self->oad_mode = NO;
-        [self doSetup:0];
-    } else if( [service.UUID isEqual:[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID]] ) {
-        NSLog(@"Discovered characteristics for OAD!");
-        self->oad_mode = YES;
-        [self callCB:@"setup"];
-    }
-}
-
-#define UUID_EQUALS( uuid ) [characteristic.UUID isEqual:[BLEUtility expandToMooshimUUID:(uuid)]]
-
--(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    NSLog(@".");
-    for (CBService *s in peripheral.services) [peripheral discoverCharacteristics:nil forService:s];
-}
-
--(void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    NSLog(@"didUpdateNotificationStateForCharacteristic %@, error = %@",characteristic.UUID, error);
-    
-    if( UUID_EQUALS(METER_SAMPLE)) {
-        [self callCB:@"sample"];
-    } else if( UUID_EQUALS(METER_CH1BUF)) {
-        //[self callCB:@"buf_stream"];
-    } else if( UUID_EQUALS(METER_CH2BUF)) {
-        [self callCB:@"buf_stream"];
-    } else if( UUID_EQUALS(METER_SETTINGS)) {
-        [self callCB:@"settings_stream"];
-    } else  {
-        NSLog(@"We read something I don't recognize...");
-    }
-}
-
--(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-
-    NSLog(@"didUpdateValueForCharacteristic = %@",characteristic.UUID);
-    
-    // Nasty hack to get around buffer sync
-    static char last_received = 0;
-    
-    unsigned char buf[characteristic.value.length];
-    [characteristic.value getBytes:&buf length:characteristic.value.length];
-    
-    if(        UUID_EQUALS(METER_INFO) ) {
-        NSLog(@"Received Meter Info: %lu", (unsigned long)characteristic.value.length);
-        [characteristic.value getBytes:&self->meter_info length:characteristic.value.length];
-        [self callCB:@"info"];
-        
-    } else if( UUID_EQUALS(METER_SAMPLE)) {
-        NSLog(@"Read sample");
-        [characteristic.value getBytes:&self->meter_sample length:characteristic.value.length];
-        [self callCB:@"sample"];
-        
-    } else if( UUID_EQUALS(METER_CH1BUF)) {
-        if( last_received) self->buf_i = 0;
-        last_received = 0;
-        NSLog(@"Read ch1 buf: %d", self->buf_i);
-        uint8 tmp[20];
-        uint16 channel_buf_len_bytes = [self getBufLen]*sizeof(int24_test);
-        [characteristic.value getBytes:tmp range:NSMakeRange(0, characteristic.value.length)];
-        for(int i=0; i < characteristic.value.length; i++) {
-            ((uint8*)(self->sample_buf.CH1_buf))[buf_i] = tmp[i];
-            self->buf_i++;
-        }
-        if(self->buf_i >= channel_buf_len_bytes) {
-            // We downloaded the whole CH1 sample buffer
-            // Now expect CH2
-            // TODO: This won't always be the case
-            self->buf_i = 0;
-        }
-    } else if( UUID_EQUALS(METER_CH2BUF)) {
-        if(!last_received) self->buf_i = 0;
-        last_received = 1;
-        NSLog(@"Read ch2 buf: %d", self->buf_i);
-        uint8 tmp[20];
-        uint16 channel_buf_len_bytes = [self getBufLen]*sizeof(int24_test);
-        [characteristic.value getBytes:tmp range:NSMakeRange(0, characteristic.value.length)];
-        for(int i=0; i < characteristic.value.length; i++) {
-            ((uint8*)(self->sample_buf.CH2_buf))[buf_i] = tmp[i];
-            self->buf_i++;
-        }
-        if(self->buf_i >= channel_buf_len_bytes) {
-            // We downloaded the whole sample buffer
-            [self callCB:@"sample_buf_downloaded"];
-        }
-    } else if( UUID_EQUALS(METER_SETTINGS)) {
-        NSLog(@"Read meter settings: %lu", (unsigned long)characteristic.value.length);
-        [characteristic.value getBytes:&self->meter_settings length:characteristic.value.length];
-        [self callCB:@"settings"];
-        
-    } else  {
-        NSLog(@"We read something I don't recognize...");
-    }
-}
-
--(void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    NSLog(@"didWriteValueForCharacteristic %@ error = %@",characteristic.UUID,error);
-    
-    if( UUID_EQUALS(METER_SETTINGS) ) {
-        [self callCB:@"write_settings"];
-    }
-}
-#undef UUID_EQUALS
-
-- (void)peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error {
-    NSLog(@"Read RSSI");
-    self.RSSI = RSSI;
-}
 
 -(long)to_int32:(int24_test)arg {
     long int retval;
@@ -255,216 +192,272 @@ MooshimeterDevice* g_meter;
     return retval;
 }
 
-#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
-
--(void) doSetup:(NSNumber*)stage {
-    NSLog(@"In doSetup: stage %d", [stage intValue]);
-    int next = [stage intValue];
-    switch( next++ ) {
-        case 0:
-            [self reqMeterInfo:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
+-(int24_test*)getBuf:(int) channel {
+    switch(channel) {
         case 1:
-            [self reqMeterSettings:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
+            return self->sample_buf.CH1_buf;
         case 2:
-            [self enableSettingsNotify:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 3:
-            [self enableStreamMeterBuf:self cb:@selector(doSetup:) arg:[NSNumber numberWithInt:next]];
-            break;
-        case 4:
-            [self callCB:@"setup"];
-            break;
+            return self->sample_buf.CH2_buf;
         default:
-            NSLog(@"in doSetup ended up somewhere impossible");
+            DLog(@"SHould not be here");
+            return self->sample_buf.CH1_buf;
     }
-}
-
--(void) restoreSettings:(NSNumber*)stage {
-   NSLog(@"In restore: stage %d", [stage intValue]);
-   int next = [stage intValue];
-   switch( next++ ) {
-       case 0:
-           [self sendMeterSettings:self cb:@selector(restoreSettings:) arg:[NSNumber numberWithInt:next]];
-           break;
-       case 1:
-           [self callCB:@"reconnect"];
-           break;
-       default:
-           NSLog(@"in restore ended up somewhere impossible");
-   }
 }
 
 -(int)getBufLen {
     return (1<<(self->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2));
 }
 
--(int)getBufMin:(int24_test*)buf {
+-(uint8)getChannelSetting:(int)ch {
+    switch(ch) {
+        case 1:
+            return self->meter_settings.rw.ch1set;
+        case 2:
+            return self->meter_settings.rw.ch2set;
+        default:
+            DLog(@"Invalid channel");
+            return 0;
+    }
+}
+
+-(void)setChannelSetting:(int)ch set:(uint8)set {
+    switch(ch) {
+        case 1:
+            self->meter_settings.rw.ch1set = set;
+            break;
+        case 2:
+            self->meter_settings.rw.ch2set = set;
+            break;
+        default:
+            DLog(@"Invalid channel");
+            break;
+    }
+}
+
+-(double)getBufMin:(int)channel {
     int i, tmp;
+    int24_test* buf = [self getBuf:channel];
     int min = [self to_int32:buf[0]];
     for( i=0; i < [self getBufLen];  i++ ) {
         tmp = [self to_int32:buf[i]];
         if(min > tmp) min = tmp;
     }
-    return min;
+    return [self lsbToNativeUnits:min ch:channel];
 }
 
--(double)getCH1BufMin {
-    return [self calibrateCH1Value:[self getBufMin:self->sample_buf.CH1_buf] offset:YES];
-}
--(double)getCH2BufMin {
-    return [self calibrateCH2Value:[self getBufMin:self->sample_buf.CH2_buf] offset:YES];
-}
-
--(int)getBufMax:(int24_test*)buf {
+-(double)getBufMax:(int)channel {
     int i, tmp;
+    int24_test* buf = [self getBuf:channel];
     int max = [self to_int32:buf[0]];
     for( i=0; i < [self getBufLen];  i++ ) {
         tmp = [self to_int32:buf[i]];
         if(max < tmp) max = tmp;
     }
-    return max;
+    return [self lsbToNativeUnits:max ch:channel];
 }
 
--(double)getCH1BufMax {
-    return [self calibrateCH1Value:[self getBufMax:self->sample_buf.CH1_buf] offset:YES];
-}
--(double)getCH2BufMax {
-    return [self calibrateCH2Value:[self getBufMax:self->sample_buf.CH2_buf] offset:YES];
-}
-
--(int)getBufAvg:(int24_test*)buf {
+-(double)getBufMean:(int)channel {
     int i;
     int avg = 0;
+    int24_test* buf = [self getBuf:channel];
     for( i=0; i < [self getBufLen];  i++ ) {
         avg += [self to_int32:buf[i]];
     }
     avg /= [self getBufLen];
-    return avg;
+    return [self lsbToNativeUnits:avg ch:channel];
 }
 
--(double)getCH1BufAvg {
-    return [self calibrateCH1Value:[self getBufAvg:self->sample_buf.CH1_buf] offset:YES];
-}
--(double)getCH2BufAvg {
-    return [self calibrateCH2Value:[self getBufAvg:self->sample_buf.CH2_buf] offset:YES];
+-(double)getENOB:(int)channel {
+    // Return a rough appoximation of the ENOB of the channel
+    // For the purposes of figuring out how many digits to display
+    // Based on ADS1292 datasheet and some special sauce.
+    // And empirical measurement of CH1 (which is super noisy due to chopper)
+    const double base_enob_table[] = {
+        20.10,
+        19.58,
+        19.11,
+        18.49,
+        17.36,
+        14.91,
+        12.53};
+    const int pga_gain_table[] = {6,1,2,3,4,8,12};
+    const int samplerate_setting =self->meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK;
+    const int buffer_depth_log2 = self->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2;
+    double enob = base_enob_table[ samplerate_setting ];
+    int pga_setting = channel==1? self->meter_settings.rw.ch1set:self->meter_settings.rw.ch2set;
+    pga_setting &= METER_CH_SETTINGS_PGA_MASK;
+    pga_setting >>= 4;
+    int pga_gain = pga_gain_table[pga_setting];
+    // At lower sample frequencies, pga gain affects noise
+    // At higher frequencies it has no effect
+    double pga_degradation = (1.5/12) * pga_gain * (6-samplerate_setting);
+    enob -= pga_degradation;
+    // Oversampling adds 1 ENOB per factor of 4
+    enob += ((double)buffer_depth_log2)/2.0;
+    //
+    if(channel == 1 && (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
+        // This is compensation for a bug in RevH, where current sense chopper noise dominates
+        enob -= 3;
+    }
+    return enob;
 }
 
--(double)calibrateCH1Value:(int)reading offset:(BOOL)offset{
-    double base = (double)reading;
-    double Rs   = 1e-3;
-    double amp_gain = 80.0;
-    double Vref = 2.5;
-    double R1   = 1008;
-    double R2   = 10e3;
+-(SignificantDigits)getSigDigits:(int)channel {
+    SignificantDigits retval;
+    double enob = [self getENOB:channel];
+    double max = [self lsbToNativeUnits:(1<<22) ch:channel];
+    double max_dig  = log10(max);
+    double n_digits = log10(pow(2.0,enob));
+    retval.high = max_dig+1;
+    retval.n_digits = n_digits;
+    return retval;
+}
+
+-(double)lsbToADCInVoltage:(int)reading_lsb channel:(int)channel {
+    // This returns the input voltage to the ADC,
+    const double Vref = 2.5;
     const double pga_lookup[] = {6,1,2,3,4,8,12};
-    
-    /* Figure out what our measurement mode is */
-    double pga_gain = pga_lookup[self->meter_settings.rw.ch1set >> 4];
-    double c_gain = 1.0;
-    double c_offset = 0.0;
-    switch( self->meter_settings.rw.ch1set & 0x0F ) {
+    int pga_setting=0;
+    switch(channel) {
+        case 1:
+            pga_setting = self->meter_settings.rw.ch1set >> 4;
+            break;
+        case 2:
+            pga_setting = self->meter_settings.rw.ch2set >> 4;
+            break;
+        default:
+            DLog(@"Should not be here");
+            break;
+    }
+    double pga_gain = pga_lookup[pga_setting];
+    return ((double)reading_lsb/(double)(1<<23))*Vref/pga_gain;
+}
+
+-(double)adcVoltageToHV:(double)adc_voltage {
+    switch( (self->meter_settings.rw.adc_settings & ADC_SETTINGS_GPIO_MASK) >> 4 ) {
+        case 0x00:
+            // 1.2V range
+            return adc_voltage;
+        case 0x01:
+            // 60V range
+            return ((10e6+160e3)/(160e3)) * adc_voltage;
+        case 0x02:
+            // 1000V range
+            return ((10e6+11e3)/(11e3)) * adc_voltage;
+        default:
+            DLog(@"Invalid setting!");
+            return 0.0;
+    }
+}
+
+-(double)adcVoltageToCurrent:(double)adc_voltage {
+    const double rs = 1e-3;
+    const double amp_gain = 80.0;
+    return adc_voltage/(amp_gain*rs);
+}
+
+-(double)adcVoltageToTemp:(double)adc_voltage {
+    adc_voltage -= 145.3e-3; // 145.3mV @ 25C
+    adc_voltage /= 490e-6;   // 490uV / C
+    return 25.0 + adc_voltage;
+}
+
+-(double)lsbToNativeUnits:(int)lsb ch:(int)ch {
+    double adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
+    uint8 channel_setting = [self getChannelSetting:ch] & METER_CH_SETTINGS_INPUT_MASK;
+    if(self->disp_settings.raw_hex[ch-1]) {
+        return lsb;
+    }
+    switch(channel_setting) {
         case 0x00:
             // Regular electrode input
-            c_gain = (1.0/amp_gain)*(1/(Rs)) * Vref / (1<<23);
-            break;
-        case 0x03:
-            // Power supply measurement
-            c_gain = 2*Vref/(1<<23);
-            break;
+            switch(ch) {
+                case 1:
+                    return [self adcVoltageToCurrent:adc_volts];
+                case 2:
+                    return [self adcVoltageToHV:adc_volts];
+                default:
+                    DLog(@"Invalid channel");
+                    return 0;
+            }
+        case 0x04:
+            return [self adcVoltageToTemp:adc_volts];
+        case 0x09:
+            // TODO: In this area we have some interpretting of display settings to do, for things like diode or resistance measurement.
+            return adc_volts;
+        default:
+            DLog(@"Unrecognized channel setting");
+            return adc_volts;
+    }
+}
+
+-(NSString*)getDescriptor:(int)channel {
+    uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
+    switch( channel_setting ) {
+        case 0x00:
+            switch (channel) {
+                case 1:
+                    switch(self->disp_settings.ac_display[channel-1]){
+                        case NO:
+                            return @"Current DC";
+                        case YES:
+                            return @"Current AC";
+                    }
+                case 2:
+                    return @"Voltage";
+                    switch(self->disp_settings.ac_display[channel-1]){
+                        case NO:
+                            return @"Voltage DC";
+                        case YES:
+                            return @"Voltage AC";
+                    }
+                default:
+                    return @"Invalid";
+            }
         case 0x04:
             // Temperature sensor
-            c_gain   = (1./490e-6)*Vref/(1<<23);
-            c_offset = 270.918367;
+            return @"Temperature";
             break;
         case 0x09:
             // Channel 3 in
-            c_gain     = Vref/(1<<23);
-            break;
-        default:
-            NSLog(@"Unrecognized CH1SET setting");
-    }
-    base /= pga_gain;
-    base *= c_gain;
-    if(offset)
-        base -= c_offset;
-    
-    // Apply display settings.  Right now only matters for CH3
-    switch( self->meter_settings.rw.ch1set & 0x0F ) {
-        case 0x09:
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
-                    break;
+                    switch(self->disp_settings.ac_display[channel-1]){
+                        case NO:
+                            return @"Aux Voltage DC";
+                        case YES:
+                            return @"Aux Voltage AC";
+                    }
                 case CH3_RESISTANCE:
-                    // Interpret resistance.  Output in ohms.
-                    base = R2*(((Vref/2)/((Vref/2)+base))-1.0) - R1;
-                    break;
+                    return @"Resistance";
                 case CH3_DIODE:
-                    break;
-            }
-            break;
-    }
-    return base;
-}
-
--(double)getCH1Value {
-    int24_test base = self->meter_sample.ch1_reading_lsb;
-    return [self calibrateCH1Value:[self to_int32:base] offset:YES];
-}
-
--(double)getCH1Value:(int)index {
-    int24_test base = self->sample_buf.CH1_buf[index];
-    return [self calibrateCH1Value:[self to_int32:base] offset:YES];
-}
-
--(NSString*)getCH1Label {
-    switch( self->meter_settings.rw.ch1set & 0x0F ) {
-        case 0x00:
-            // Regular electrode input
-            return @"CH1 Current";
-            break;
-        case 0x03:
-            // Power supply measurement
-            return @"Battery Voltage";
-            break;
-        case 0x04:
-            // Temperature sensor
-            return @"CH1 Temperature";
-            break;
-        case 0x09:
-            // Channel 3 in
-            switch( self->disp_settings.ch3_mode ) {
-                case CH3_VOLTAGE:
-                    return @"Ω Voltage";
-                case CH3_RESISTANCE:
-                    return @"Ω Resistance";
-                case CH3_DIODE:
-                    return @"Ω Diode";
+                    return @"Diode Test";
             }
             break;
         default:
-            NSLog(@"Unrecognized CH1SET setting");
+            NSLog(@"Unrecognized setting");
             return @"";
     }
 }
 
--(NSString*)getCH1Units {
-    switch( self->meter_settings.rw.ch1set & 0x0F ) {
+-(NSString*)getUnits:(int)channel {
+    uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
+    if(self->disp_settings.raw_hex[channel-1]) {
+        return @"RAW";
+    }
+    switch( channel_setting ) {
         case 0x00:
-            // Regular electrode input
-            return @"A";
-            break;
-        case 0x03:
-            // Power supply measurement
-            return @"V";
-            break;
+            switch (channel) {
+                case 1:
+                    return @"A";
+                case 2:
+                    return @"V";
+                default:
+                    return @"?";
+            }
         case 0x04:
-            // Temperature sensor
             return @"C";
-            break;
         case 0x09:
-            // Channel 3 in
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
                     return @"V";
@@ -479,147 +472,26 @@ MooshimeterDevice* g_meter;
     }
 }
 
--(double)calibrateCH2Value:(int)reading offset:(BOOL)offset {
-    double Vref = 2.5;
-    double R1   = 1008;
-    double R2   = 10e3;
-    const double pga_lookup[] = {6,1,2,3,4,8,12};
-    
-    double base = (double)reading;
-    /* Figure out what our measurement mode is */
-    double pga_gain = pga_lookup[self->meter_settings.rw.ch2set >> 4];
-    double c_gain = 1.0;
-    double c_offset = 0.0;
-    
-    switch( self->meter_settings.rw.ch2set & 0x0F ) {
+-(NSString*)getInputLabel:(int)channel {
+    uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
+    switch( channel_setting ) {
         case 0x00:
-            // Regular electrode input
-            switch( (self->meter_settings.rw.adc_settings>>4) & 0x03 ) {
-                case 0x00:
-                    // 1.2V range
-                    c_gain = Vref / (1<<23);
-                    break;
-                case 0x01:
-                    // 60V range
-                    c_gain = ((10e6+160e3)/(160e3)) * Vref / (1<<23);
-                    break;
-                case 0x02:
-                    // 1000V range
-                    c_gain = ((10e6+11e3)/(11e3)) * Vref / (1<<23);
-                    break;
+            switch (channel) {
+                case 1:
+                    return @"A";
+                case 2:
+                    return @"V";
+                default:
+                    return @"?";
             }
-            break;
-        case 0x03:
-            // Power supply measurement
-            c_gain = 4*Vref/(1<<23);
-            break;
         case 0x04:
-            // Temperature sensor
-            c_gain   = (1./490e-6)*Vref/(1<<23);
-            c_offset = 270.918367;
-            break;
+            return @"INT";
         case 0x09:
-            // Channel 3 in
-            c_gain     = Vref/(1<<23);
-            break;
+            return @"Ω";
         default:
-            NSLog(@"Unrecognized CH2SET setting");
-    }
-    base /= pga_gain;
-    base *= c_gain;
-    if(offset)
-        base -= c_offset;
-    
-    // Apply display settings.  Right now only matters for CH3
-    switch( self->meter_settings.rw.ch2set & 0x0F ) {
-        case 0x09:
-            switch( self->disp_settings.ch3_mode ) {
-                case CH3_VOLTAGE:
-                    break;
-                case CH3_RESISTANCE:
-                    // Interpret resistance.  Output in ohms.
-                    base = R2*(((Vref/2)/((Vref/2)+base))-1.0) - R1;
-                    break;
-                case CH3_DIODE:
-                    break;
-            }
-            break;
-    }
-    return base;
-}
-
--(double)getCH2Value {
-    int24_test base = self->meter_sample.ch2_reading_lsb;
-    return [self calibrateCH2Value:[self to_int32:base] offset:YES];
-}
-
--(double)getCH2Value:(int)index {
-    int24_test base = self->sample_buf.CH2_buf[index];
-    return [self calibrateCH2Value:[self to_int32:base] offset:YES];
-}
-
-
--(NSString*)getCH2Label {
-    switch( self->meter_settings.rw.ch2set & 0x0F ) {
-        case 0x00:
-            // Regular electrode input
-            return @"CH2 Voltage";
-            break;
-        case 0x03:
-            // Power supply measurement
-            return @"CH2 Battery Voltage";
-            break;
-        case 0x04:
-            // Temperature sensor
-            return @"CH2 Temperature";
-            break;
-        case 0x09:
-            // Channel 3 in
-            switch( self->disp_settings.ch3_mode ) {
-                case CH3_VOLTAGE:
-                    return @"Ω Voltage";
-                case CH3_RESISTANCE:
-                    return @"Ω Resistance";
-                case CH3_DIODE:
-                    return @"Ω Diode";
-            }
-            break;
-        default:
-            NSLog(@"Unrecognized CH2SET setting");
+            NSLog(@"Unrecognized setting");
             return @"";
     }
 }
-    
--(NSString*)getCH2Units {
-    switch( self->meter_settings.rw.ch2set & 0x0F ) {
-        case 0x00:
-            // Regular electrode input
-            return @"V";
-            break;
-        case 0x03:
-            // Power supply measurement
-            return @"V";
-            break;
-        case 0x04:
-            // Temperature sensor
-            return @"C";
-            break;
-        case 0x09:
-            // Channel 3 in
-            switch( self->disp_settings.ch3_mode ) {
-                case CH3_VOLTAGE:
-                    return @"V";
-                case CH3_RESISTANCE:
-                    return @"Ω";
-                case CH3_DIODE:
-                    return @"V";
-            }
-            break;
-        default:
-            NSLog(@"Unrecognized CH1SET setting");
-            return @"";
-    }
-}
-
 
 @end

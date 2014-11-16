@@ -43,7 +43,7 @@
     if( ! self->play ) {
         NSLog(@"Starting stream...");
         self.hostView.allowPinchScaling = YES;
-        [self.meter startStreamMeterSample:self cb:@selector(updateReadings) arg:nil];
+        //[self.meter startStreamMeterSample:self cb:@selector(updateReadings) arg:nil];
         self->play = YES;
         [self.tabBarController.tabBar setHidden:YES];
     }
@@ -53,8 +53,7 @@
     NSLog(@"Stopping stream...");
     self->play = NO;
     self.hostView.allowPinchScaling = YES;
-    [self.meter stopStreamMeterSample];
-    [self.tabBarController.tabBar setHidden:NO];
+    [self.meter enableStreamMeterSample:NO cb:nil];
 }
 
 #pragma mark - UIViewController lifecycle methods
@@ -77,13 +76,13 @@
     // Force a 125 sample rate
     SET_W_MASK(self.meter->meter_settings.rw.adc_settings, 0x01, 0X0F);
     self.meter->meter_settings.rw.calc_settings = 0x13;  // Buffer depth 8, mean calc on, ac calc off, freq calc off
-    [self.meter sendMeterSettings:self cb:@selector(viewDidAppear2) arg:nil];
+    //[self.meter sendMeterSettings:self cb:@selector(viewDidAppear2) arg:nil];
     [super viewDidAppear:animated];
     [self initPlot];
 }
 
 -(void) viewDidAppear2 {
-    [self.meter sendMeterSettings:self cb:@selector(play) arg:nil];
+    //[self.meter sendMeterSettings:self cb:@selector(play) arg:nil];
 }
 
 - (void) viewWillDisappear:(BOOL)animated

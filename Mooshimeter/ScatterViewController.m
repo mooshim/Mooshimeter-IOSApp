@@ -52,7 +52,7 @@
     [super viewWillAppear:animated];
     self->meter_settings = self.meter->meter_settings;
     self.meter->meter_settings.rw.calc_settings  = 0x17; // buffer depth 128, mean calc on, ac calc off, freq calc off
-    [self.meter sendMeterSettings:self cb:@selector(redraw_graph) arg:nil];
+    //[self.meter sendMeterSettings:self cb:@selector(redraw_graph) arg:nil];
     [self invokeMegaAnnoyingPopup];
 }
 
@@ -66,7 +66,7 @@
     NSLog(@"Restoring settings...");
     // Stash the present settings... in pure multimeter mode we use pure settings
     self.meter->meter_settings = self->meter_settings;
-    [self.meter sendMeterSettings:nil cb:nil arg:nil];
+    //[self.meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 #pragma mark - Chart behavior

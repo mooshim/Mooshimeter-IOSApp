@@ -23,13 +23,13 @@
     return self;
 }
 
--(void) setMeter:(MooshimeterDevice*)device {
-    self.d = device;
-    self.textLabel.text = [NSString stringWithFormat:@"%@",self.d.p.name];
+-(void) setPeripheral:(LGPeripheral *)device {
+    self.p = device;
+    self.textLabel.text = [NSString stringWithFormat:@"%@",self.p.name];
     
     UIActivityIndicatorView* spinner = (UIActivityIndicatorView*)self.accessoryView;
     
-    switch(self.d.p.state) {
+    switch(self.p.cbPeripheral.state) {
         case CBPeripheralStateDisconnected:
             self.backgroundColor = [UIColor whiteColor];
             [spinner stopAnimating];
@@ -44,7 +44,15 @@
             break;
     }
     
-    self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",[self.d.RSSI integerValue], [self.d.advBuildTime integerValue]];
+    uint32 build_time = 0;
+    NSData* tmp;
+    
+    tmp = [self.p.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
+    if( tmp != nil ) {
+        [tmp getBytes:&build_time length:4];
+    }
+
+    self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",self.p.RSSI, build_time];
 }
 
 - (void)awakeFromNib {

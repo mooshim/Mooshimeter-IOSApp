@@ -14,13 +14,11 @@
 #import "oad.h"
 
 @class BLETIOADProgressViewController;
-@class MooshimeterDevice;
 
 @interface BLETIOADProfile : NSObject <UIActionSheetDelegate,UIAlertViewDelegate,CBPeripheralDelegate>
 
 @property (strong,nonatomic) NSData *imageFile;
 @property (strong,nonatomic) BLETIOADProgressDialog *progressDialog;
-@property (strong,nonatomic) MooshimeterDevice *d;
 @property (strong,nonatomic) UIView *view;
 
 @property int nBlocks;
@@ -37,7 +35,7 @@
 //In case of iOS 7.0
 @property (strong,nonatomic) BLETIOADProgressViewController *progressView;
 
--(id) initWithDevice:(MooshimeterDevice *) dev;
+-(instancetype) init;
 -(void) makeConfigurationForProfile;
 -(void) configureProfile;
 -(void) deconfigureProfile;

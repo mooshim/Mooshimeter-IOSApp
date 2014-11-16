@@ -8,16 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "MooshimeterDevice.h"
+#import "MeterViewController.h"
 
 @interface ChannelView : UIView {
     @public
         NSInteger      channel;
 }
 
--(ChannelView*)initWithFrame:(CGRect)frame;
+-(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch;
+-(void)value_label_refresh;
 
 @property (strong,nonatomic) UILabel*  value_label;
-@property (strong,nonatomic) UILabel*  units_label;
+@property (strong,nonatomic) UIButton* units_button;
 @property (strong,nonatomic) UIButton* display_set_button;
 @property (strong,nonatomic) UIButton* input_set_button;
 @property (strong,nonatomic) UIButton* auto_manual_button;

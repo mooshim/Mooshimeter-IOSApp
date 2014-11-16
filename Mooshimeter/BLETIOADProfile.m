@@ -15,21 +15,19 @@
 @implementation BLETIOADProfile
 
 
--(id) initWithDevice:(MooshimeterDevice *) dev {
-    self = [[BLETIOADProfile alloc]init];
+-(id) init {
+    self = [super init];
     if (self) {
-        self.d = dev;
         self.canceled = FALSE;
         self.inProgramming = FALSE;
         self.start = YES;
         // Become the peripheral delegate
-        self.d.p.delegate = self;
+        g_meter.p.cbPeripheral.delegate = self;
     }
     return self;
 }
 
-
-
+#if 0
 -(void) makeConfigurationForProfile {
 }
 
@@ -45,11 +43,11 @@
 
 -(void) deconfigureProfile {
     NSLog(@"Deconfiguring OAD Profile");
-    [BLEUtility setNotificationForOADCharacteristic:self.d.p cUUID:OAD_IMAGE_NOTIFY enable:YES];
+    [BLEUtility setNotificationForOADCharacteristic:self.d.p.cbPeripheral cUUID:OAD_IMAGE_NOTIFY enable:YES];
 }
 
 -(IBAction)selectImagePressed:(id)sender {
-    if (![self.d.p isConnected]) {
+    if (![self.d.p.cbPeripheral isConnected]) {
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Device disconnected !" message:@"Unable to start programming when device is not connected ..." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"Reconnect",nil];
         [alertView show];
         alertView.tag = 1;
@@ -198,7 +196,7 @@
             }
             else [self.progressDialog dismissWithClickedButtonIndex:0 animated:YES];
             self.inProgramming = NO;
-            self.d.p.delegate = self.d;
+            self.d.p.cbPeripheral.delegate = self.d;
             [self completionDialog];
             return;
         }
@@ -325,7 +323,7 @@
         complete = [[UIAlertView alloc]initWithTitle:@"Firmware upgrade complete" message:@"Firmware upgrade was successfully completed, device needs to be reconnected" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [complete show];
 }
-
+#endif
 @end
 
 

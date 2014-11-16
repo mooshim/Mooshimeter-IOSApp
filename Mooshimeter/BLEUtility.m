@@ -135,23 +135,8 @@
     return [CBUUID UUIDWithData:[NSData dataWithBytes:expandedUUIDBytes length:16]];
 }
 
-
-+(NSString *) CBUUIDToString:(CBUUID *)inUUID {
-    unsigned char i[16];
-    [inUUID.data getBytes:i];
-    if (inUUID.data.length == 2) {
-        return [NSString stringWithFormat:@"%02hhx%02hhx",i[0],i[1]];
-    }
-    else {
-        uint32_t g1 = ((i[0] << 24) | (i[1] << 16) | (i[2] << 8) | i[3]);
-        uint16_t g2 = ((i[4] << 8) | (i[5]));
-        uint16_t g3 = ((i[6] << 8) | (i[7]));
-        uint16_t g4 = ((i[8] << 8) | (i[9]));
-        uint16_t g5 = ((i[10] << 8) | (i[11]));
-        uint32_t g6 = ((i[12] << 24) | (i[13] << 16) | (i[14] << 8) | i[15]);
-        return [NSString stringWithFormat:@"%08x-%04hx-%04hx-%04hx-%04hx%08x",g1,g2,g3,g4,g5,g6];
-    }
-    return nil;
++(NSString *) expandToMooshimUUIDString:(uint16_t)sourceUUID {
+    return [[BLEUtility expandToMooshimUUID:sourceUUID] UUIDString];
 }
 
 +(BOOL) runningiOSSeven {

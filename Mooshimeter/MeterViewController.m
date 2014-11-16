@@ -24,27 +24,27 @@ dispatch_semaphore_t tmp_sem;
 {
     NSLog(@"Meter view loaded!");
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
     
     float h = (self.view.bounds.size.height - self.navigationController.navigationBar.frame.size.height)/10;
     float w = (self.view.bounds.size.width)/6;
     
-    UIView* v = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, w, h)];
+    UIView* v = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, 6*w, 10*h)];
+    v.userInteractionEnabled = YES;
+    v.backgroundColor = [UIColor whiteColor];
 
 #define cg(x,y,w,h) CGRectMake(x,y,w,h)
 #define mb(x,y,w,h,s) [self makeButton:cg(x,y,w,h) cb:@selector(s)]
     
-    self.ch1_view = [[ChannelView alloc]initWithFrame:cg(0, 0, 6*w, 4*h)];
-    self.ch1_view->channel = 1;
+    self.ch1_view = [[ChannelView alloc]initWithFrame:cg(0, 0, 6*w, 4*h) ch:1];
     [v addSubview:self.ch1_view];
     
-    self.ch2_view = [[ChannelView alloc]initWithFrame:cg(0, 4*h, 6*w, 4*h)];
-    self.ch2_view->channel = 2;
+    self.ch2_view = [[ChannelView alloc]initWithFrame:cg(0, 4*h, 6*w, 4*h) ch:2];
     [v addSubview:self.ch2_view];
     
     // TODO: Maybe break this out in to another subclass?
     
     UIView* sv = [[UIView alloc] initWithFrame:CGRectMake(0, 8*h, 6*w, 2*h)];
+    sv.userInteractionEnabled = YES;
     [[sv layer] setBorderWidth:5];
     [[sv layer] setBorderColor:[UIColor darkGrayColor].CGColor];
     
@@ -65,21 +65,112 @@ dispatch_semaphore_t tmp_sem;
 #undef mb
     [v addSubview:sv];
     [self.view addSubview:v];
-    
-    // Display done.  Check the meter settings.
-    g_meter->meter_settings.rw.calc_settings = 6;
-    LockManager* lm = [[LockManager alloc]init];
-    
-    self.lock_manager = lm;
+}
 
-    [g_meter sendMeterSettings:nil cb:nil arg:nil];
-    
-    [self play];
++(void)style_auto_button:(UIButton*)b on:(BOOL)on {
+    if(on) {
+        [b setBackgroundColor:[UIColor greenColor]];
+        [b setTitle:@"A" forState:UIControlStateNormal];
+    } else {
+        [b setBackgroundColor:[UIColor redColor]];
+        [b setTitle:@"M" forState:UIControlStateNormal];
+    }
+}
+
+-(void)rate_auto_button_press{
+    g_meter->disp_settings.rate_auto = !g_meter->disp_settings.rate_auto;
+    [self rate_auto_button_refresh];
+}
+-(void)rate_auto_button_refresh{
+    [MeterViewController style_auto_button:self.rate_auto_button on:g_meter->disp_settings.rate_auto];
+}
+-(void)rate_button_press {
+    if(g_meter->disp_settings.rate_auto) {
+        // If auto is on, do nothing
+    } else {
+        uint8 rate_setting = g_meter->meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK;
+        rate_setting++;
+        rate_setting %= 7;
+        g_meter->meter_settings.rw.adc_settings &= ~ADC_SETTINGS_SAMPLERATE_MASK;
+        g_meter->meter_settings.rw.adc_settings |= rate_setting;
+        [g_meter sendMeterSettings:^(NSError *error) {
+            [self rate_button_refresh];
+        }];
+    }
+}
+-(void)rate_button_refresh {
+    uint8 rate_setting = g_meter->meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK;
+    int rate = 125 * (1<<rate_setting);
+    NSString* title = [NSString stringWithFormat:@"%dHz", rate];
+    [self.rate_button setTitle:title forState:UIControlStateNormal];
+    if(g_meter->disp_settings.rate_auto) {
+        [self.rate_button setBackgroundColor:[UIColor lightGrayColor]];
+    } else {
+        [self.rate_button setBackgroundColor:[UIColor whiteColor]];
+    }
+}
+-(void)logging_button_press {
+    DLog(@"Press");
+}
+-(void)logging_button_refresh {
+    DLog(@"Disp");
+}
+-(void)depth_auto_button_press {
+    DLog(@"Press");
+    g_meter->disp_settings.depth_auto = !g_meter->disp_settings.depth_auto;
+    [self depth_auto_button_refresh];
+}
+-(void)depth_auto_button_refresh {
+    DLog(@"Disp");
+    [MeterViewController style_auto_button:self.depth_auto_button on:g_meter->disp_settings.depth_auto];
+}
+-(void)depth_button_press {
+    if(g_meter->disp_settings.depth_auto) {
+        // If auto is on, do nothing
+    } else {
+        uint8 depth_setting = g_meter->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2;
+        depth_setting++;
+        depth_setting %= 9;
+        g_meter->meter_settings.rw.calc_settings &= ~METER_CALC_SETTINGS_DEPTH_LOG2;
+        g_meter->meter_settings.rw.calc_settings |= depth_setting;
+        [g_meter sendMeterSettings:^(NSError *error) {
+            [self depth_button_refresh];
+        }];
+    }
+}
+-(void)depth_button_refresh {
+    uint8 depth_setting = g_meter->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2;
+    int depth = (1<<depth_setting);
+    NSString* title = [NSString stringWithFormat:@"%dsmpl", depth];
+    [self.depth_button setTitle:title forState:UIControlStateNormal];
+    if(g_meter->disp_settings.depth_auto) {
+        [self.depth_button setBackgroundColor:[UIColor lightGrayColor]];
+    } else {
+        [self.depth_button setBackgroundColor:[UIColor whiteColor]];
+    }
+}
+-(void)logging_settings_button_press {
+    DLog(@"Press");
+}
+-(void)logging_settings_button_refresh {
+    DLog(@"Disp");
+}
+
+
+-(void) refreshAllControls {
+    // Make all controls reflect the state of the meter
+    [self rate_auto_button_refresh];
+    [self rate_button_refresh];
+    [self depth_auto_button_refresh];
+    [self depth_button_refresh];
+    [self logging_button_refresh];
+    [self logging_settings_button_refresh];
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
     UIButton* b;
     b = [UIButton buttonWithType:UIButtonTypeSystem];
+    b.userInteractionEnabled = YES;
     [b addTarget:self action:cb forControlEvents:UIControlEventTouchUpInside];
     [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
     [b setTitle:@"TBD" forState:UIControlStateNormal];
@@ -91,26 +182,36 @@ dispatch_semaphore_t tmp_sem;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
-    NSLog(@"Detail View about to appear");
-    }
+    NSLog(@"Meter View about to appear");
+    [self refreshAllControls];
+    
+    // Display done.  Check the meter settings.
+    g_meter->meter_settings.rw.target_meter_state = METER_PAUSED;
+    g_meter->meter_settings.rw.calc_settings = METER_CALC_SETTINGS_MEAN|METER_CALC_SETTINGS_ONESHOT|6;
+    
+    [g_meter sendMeterSettings:^(NSError *error) {
+        if(error) {
+            DLog(@"Send meter settings error!");
+        } else {
+            [self play];
+        }
+    }];
+}
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
-    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
-    [g_meter sendMeterSettings:nil cb:nil arg:nil];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"Detail view preparing to die!");
+    NSLog(@"Meter view preparing to die!");
     [self pause];
 }
 
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    NSLog(@"Goodbye from the detail view!");
+    NSLog(@"Goodbye from the Meter view!");
 }
 
 -(BOOL)shouldAutorotate {
@@ -125,110 +226,46 @@ dispatch_semaphore_t tmp_sem;
     NSLog(@"Signal change to graph here");
 }
 
--(void) refreshAllControls {
-    // Make all controls reflect the state of the meter
-    
-    
-}
-
 -(void) play {
     NSLog(@"In Play");
-    if( ! self->play ) {
-        [g_meter enableStreamMeterBuf:nil cb:nil arg:nil];
-        [g_meter setBufferReceivedCallback:self cb:@selector(updateReadings) arg:nil];
-        g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
-        [g_meter sendMeterSettings:nil cb:nil arg:nil];
+    if( !self->play ) {
         self->play = YES;
+        [g_meter enableStreamMeterBuf:YES cb:nil complete_buffer_cb:^{
+            [self updateReadings];
+        }];
+        g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
+        [g_meter sendMeterSettings:^(NSError *error) {
+            NSLog(error);
+        }];
     }
 }
 
 -(void) pause {
     self->play = NO;
-    //[g_meter stopStreamMeterSample];
-    [g_meter disableStreamMeterBuf];
 }
 
--(NSString*) formatReading:(double)val resolution:(double)resolution unit:(NSString*)unit {
-    // If resolution is 0, autoscale the reading
-    if(resolution == 0.0) {
-        int log_thou = 0;
-        // Normalize to be in the 1-1000 range
-        while(fabs(val) >= 1e3) {
-            log_thou++;
-            val /= 1000.0;
-            if(abs(log_thou)==4) break;
-        }
-        while(fabs(val) <= 1.0) {
-            log_thou--;
-            val *= 1000.0;
-            if(abs(log_thou)==1) break;
-        }
-        const NSString* small[] = {@"m", @"u", @"n", @"p"};
-        const NSString* big[]   = {@"k", @"M", @"G", @"T"};
-        const NSString* prefix;
-        if(      log_thou > 0 ) prefix = big[    log_thou -1];
-        else if( log_thou < 0 ) prefix = small[(-log_thou)-1];
-        else                    prefix = @"";
-        NSString* retval = @"";
-        retval = [retval stringByAppendingString:[NSString stringWithFormat:@"%.3f%@%@", val, prefix, unit]];
-        return retval;
-    } else {
-        // Work out the number of decimal places from the supplied resolution
-        int n_decimal = 0;
-        double tmp = 1.0;
-        while( tmp > resolution ) {
-            tmp /= 10.0;
-            n_decimal++;
-        }
-        NSString* formatstring = [NSString stringWithFormat:@"%%.%df%%@", n_decimal];
-        NSString* retval = [NSString stringWithFormat:formatstring, val, unit];
-        return retval;
-    }
-}
-
--(void) trig {
-    // Trigger the next conversion
-    g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
-    [g_meter sendMeterSettings:nil cb:nil arg:nil];
++(NSString*) formatReading:(double)val digits:(SignificantDigits)digits {
+    // TODO: Prefixes for units.  This will fail for wrong values of digits
+    NSString* neg = val<0? @"":@" ";
+    int left = digits.high;
+    int right = -1*(digits.high-digits.n_digits);
+    NSString* formatstring = [NSString stringWithFormat:@"%@%%0%d.%df", neg, left+right+1, right];
+    NSString* retval = [NSString stringWithFormat:formatstring, val];
+    return retval;
 }
 
 -(void) updateReadings {
     NSLog(@"Updating measurements...");
-#if 0
-    if(g_meter->disp_settings.ch1Off) {
-        self.CH1ValueLabel.text = @"";
-        self.CH1Label.text = @"";
-    } else {
-        // Quick and dirty hack to catch overload values for resistance
-        // Since no other measurement will go in to the millions we can hack like this
-        if( [g_meter getCH1BufAvg] > 5e6 ) {
-            self.CH1ValueLabel.text = @"Overload";
-        } else {
-            //if( g_meter->ADC_settings.str.ch1set && 0x0F == 0x00 ) {
-            self.CH1ValueLabel.text = [self formatReading:[g_meter getCH1BufAvg] resolution:1e-4 unit:[g_meter getCH1Units] ];
-        }
-        self.CH1Label.text = [g_meter getCH1Label];
-    }
     
-    if(g_meter->disp_settings.ch2Off) {
-        self.CH2ValueLabel.text = @"";
-        self.CH2Label.text = @"";
-    } else {
-        if( [g_meter getCH2Value] > 5e6 ) {
-            self.CH2ValueLabel.text = @"Overload";
-        } else {
-            self.CH2ValueLabel.text = [self formatReading:[g_meter getCH2BufAvg] resolution:1e-5 unit:[g_meter getCH2Units] ];
-        }
-        self.CH2Label.text = [g_meter getCH2Label];
-    }
+    [self.ch1_view value_label_refresh];
+    [self.ch2_view value_label_refresh];
 
-    self.CH1Raw.text = [NSString stringWithFormat:@"%06X",[g_meter getBufAvg:g_meter->sample_buf.CH1_buf]];
-    self.CH2Raw.text = [NSString stringWithFormat:@"%06X",[g_meter getBufAvg:g_meter->sample_buf.CH2_buf]];
-    
-#endif
-    //[self performSelector:@selector(trig) withObject:nil afterDelay:1];
-    g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
-    [g_meter sendMeterSettings:nil cb:nil arg:nil];
+    if(self->play) {
+        g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
+        [g_meter sendMeterSettings:^(NSError *error) {
+            NSLog(error);
+        }];
+    }
 }
 
 @end

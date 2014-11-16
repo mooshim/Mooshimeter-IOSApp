@@ -17,6 +17,13 @@
 
 @implementation ScanViewController
 
+-(instancetype)initWithDelegate:(id)d {
+    self=[super init];
+    self.delegate = d;
+    self.peripherals = nil;
+    return self;
+}
+
 - (void)awakeFromNib
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -26,12 +33,10 @@
     [super awakeFromNib];
 }
 
-- (void)handleSwipe
-{
-    [self.app scanForMeters];
-}
-
 -(void)reloadData {
+    NSLog(@"Reload requested");
+    LGCentralManager* c = [LGCentralManager sharedInstance];
+    self.peripherals = [c.peripherals copy];
     [self.tableView reloadData];
 }
 
@@ -39,19 +44,17 @@
 {
     [super viewDidLoad];
     
-    self.app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    
     [self.tableView registerClass:[ScanTableViewCell class] forCellReuseIdentifier:@"Cell"];
     
     NSLog(@"Creating refresh handler...");
     UIRefreshControl *rescan_control = [[UIRefreshControl alloc] init];
-    [rescan_control addTarget:self action:@selector(handleSwipe) forControlEvents:UIControlEventValueChanged];
+    [rescan_control addTarget:self.delegate action:@selector(handleScanViewRefreshRequest) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = rescan_control;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    
+    [self reloadData];
 }
 
 -(void)endRefresh {
@@ -73,16 +76,18 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.app.meters.count;
+    NSLog(@"RowCount");
+    return self.peripherals.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MooshimeterDevice *d = [self.app.meters objectAtIndex:indexPath.row];
+    NSLog(@"Cell %d",indexPath.row);
+    LGPeripheral* p = [self.peripherals objectAtIndex:indexPath.row];
     
     ScanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
-    [cell setMeter:d];
+    [cell setPeripheral:p];
 
     return cell;
 }
@@ -97,8 +102,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"You clicked a meter");
-    MooshimeterDevice *m = self.app.meters[indexPath.row];
-    [self.app selectMeter:m];
+    ScanTableViewCell* c = (ScanTableViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+    [self.delegate handleScanViewSelect:c.p];
 }
 
 @end

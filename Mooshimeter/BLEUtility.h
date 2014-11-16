@@ -38,8 +38,8 @@
 
 /// Function to expand a 16-bit UUID to 128-bit UUID
 +(CBUUID *) expandToMooshimUUID:(uint16_t)sourceUUID;
-/// Function to convert an CBUUID to NSString
-+(NSString *) CBUUIDToString:(CBUUID *)inUUID;
+/// Function to expand a 16-bit UUID to 128-bit UUID
++(NSString *) expandToMooshimUUIDString:(uint16_t)sourceUUID;
 
 +(BOOL) runningiOSSeven;
 

@@ -18,26 +18,20 @@
 #import "BLETIOADProgressViewController.h"
 #import "BLETIOADProfile.h"
 
-@class MooshimeterDevice;
-@class ScanViewController;
-@class MeterViewController;
-@class SmartNavigationController;
-@class BLETIOADProgressViewController;
-@class BLETIOADProfile;
-
 #define AUTO_UPDATE_FIRMWARE
 
+@class SmartNavigationController;
+@class ScanViewController;
+@class BLETIOADProfile;
+@class BLETIOADProgressViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, CBCentralManagerDelegate, NSObject>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, ScanViewControllerDelegate, MooshimeterDeviceDelegate, NSObject>
 {
     @public
     bool reboot_into_oad;
 }
 
 @property (strong,nonatomic) UIWindow *window;
-@property (strong,nonatomic) CBCentralManager *cman;
-@property (strong,nonatomic) NSMutableArray *meters;
-@property (strong,nonatomic) MooshimeterDevice* active_meter;
 @property (strong,nonatomic) BLETIOADProfile* oad_profile;
 
 @property (strong,nonatomic) SmartNavigationController* nav;
@@ -50,6 +44,6 @@
 -(void)scanForMeters;
 -(void)endScan;
 
--(void)selectMeter:(MooshimeterDevice*)p;
+-(void)selectMeter:(LGPeripheral*)p;
 
 @end
