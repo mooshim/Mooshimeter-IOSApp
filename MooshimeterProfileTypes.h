@@ -220,6 +220,9 @@ MeterFactoryCal_t;
 #define ADC_SETTINGS_SAMPLERATE_MASK 0x07
 #define ADC_SETTINGS_GPIO_MASK 0x30
 
+#define METER_CH_SETTINGS_PGA_MASK 0x70
+#define METER_CH_SETTINGS_INPUT_MASK 0x0F
+
 typedef struct {
   struct {
     meter_state_t present_meter_state;   // The state of the meter right now.
