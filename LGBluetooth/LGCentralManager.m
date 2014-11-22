@@ -126,7 +126,20 @@
 - (void)scanForPeripheralsWithServices:(NSArray *)serviceUUIDs
                                options:(NSDictionary *)options
 {
+    NSArray* pcopy = [self.scannedPeripherals copy];
     [self.scannedPeripherals removeAllObjects];
+    // Don't remove connected peripherals.  They will not appear in a scan
+    for(LGPeripheral* p in pcopy) {
+        switch( p.cbPeripheral.state ) {
+            case CBPeripheralStateConnected:
+            case CBPeripheralStateConnecting:
+                [self.scannedPeripherals addObject:p];
+                break;
+            default:
+                break;
+        }
+    }
+    
     self.scanning = YES;
 	[self.manager scanForPeripheralsWithServices:serviceUUIDs
                                          options:options];
@@ -246,7 +259,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         LGPeripheral *lgPeripheral = [self wrapperByPeripheral:peripheral];
         [lgPeripheral handleDisconnectWithError:error];
-        [self.scannedPeripherals removeObject:lgPeripheral];
     });
 }
 

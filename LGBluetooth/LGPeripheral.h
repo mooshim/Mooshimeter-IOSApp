@@ -154,6 +154,12 @@ typedef void(^LGPeripheralRSSIValueCallback)(NSNumber *RSSI, NSError *error);
 - (void)disconnectWithCompletion:(LGPeripheralConnectionCallback)aCallback;
 
 /**
+ * Register a callback to be called in case peripheral disconnects
+ * @param aCallback Will be called after successfull/failure disconnect
+ */
+- (void)registerDisconnectHandler:(LGPeripheralConnectionCallback)aCallback;
+
+/**
  * Discoveres All services of this peripheral
  * @param aCallback Will be called after successfull/failure discovery
  */

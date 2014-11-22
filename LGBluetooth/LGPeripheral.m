@@ -118,6 +118,11 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
     [self.manager.manager cancelPeripheralConnection:self.cbPeripheral];
 }
 
+- (void)registerDisconnectHandler:(LGPeripheralConnectionCallback)aCallback
+{
+    self.disconnectBlock = aCallback;
+}
+
 - (void)discoverServicesWithCompletion:(LGPeripheralDiscoverServicesCallback)aCallback
 {
     [self discoverServices:nil
@@ -175,11 +180,10 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
     LGLog(@"Disconnect with error - %@", anError);
     if (self.disconnectBlock) {
         self.disconnectBlock(anError);
-    } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLGPeripheralDidDisconnect
-                                                            object:self
-                                                          userInfo:@{@"error" : anError ? : [NSNull null]}];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLGPeripheralDidDisconnect
+                                                        object:self
+                                                      userInfo:@{@"error" : anError ? : [NSNull null]}];
     self.disconnectBlock = nil;
 }
 
