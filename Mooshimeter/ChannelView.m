@@ -198,6 +198,10 @@
     uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
     uint8 tmp;
     
+    if(g_meter->disp_settings.auto_range[self->channel-1]) {
+        return;
+    }
+    
     switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
         case 0x00:
             // Electrode input
@@ -254,7 +258,6 @@
     uint8 measure_setting = g_meter->meter_settings.rw.measure_settings;
     uint8* const adc_setting = &g_meter->meter_settings.rw.adc_settings;
     uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
-    uint8 tmp;
     NSString* lval;
     
     switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
@@ -335,16 +338,36 @@
             break;
     }
     [self.range_button setTitle:lval forState:UIControlStateNormal];
+    if(g_meter->disp_settings.auto_range[self->channel-1]) {
+        [self.range_button setBackgroundColor:[UIColor lightGrayColor]];
+    } else {
+        [self.range_button setBackgroundColor:[UIColor whiteColor]];
+    }
 }
 
 -(void)value_label_refresh {
     const int c = self->channel;
-    if(g_meter->disp_settings.raw_hex[c-1]) {
-        int lsb = (int)[g_meter getBufMean:c];
-        lsb &= 0x00FFFFFF;
-        self.value_label.text = [NSString stringWithFormat:@"%06X", lsb];
+    uint8 channel_setting = [g_meter getChannelSetting:self->channel];
+    double val;
+    if(g_meter->disp_settings.ac_display[c-1]) {
+        val = [g_meter getRMS:c];
     } else {
-        self.value_label.text = [MeterViewController formatReading:[g_meter getBufMean:c] digits:[g_meter getSigDigits:c] ];
+        val = [g_meter getMean:c];
+    }
+    if(g_meter->disp_settings.raw_hex[c-1]) {
+        int lsb_int = (int)val;
+        lsb_int &= 0x00FFFFFF;
+        self.value_label.text = [NSString stringWithFormat:@"%06X", lsb_int];
+    } else {
+        if( (channel_setting&METER_CH_SETTINGS_INPUT_MASK) == 0x09 && g_meter->disp_settings.ch3_mode == CH3_RESISTANCE ) {
+            // Convert to Ohms
+            if(g_meter->meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL ) {
+                val /= 100e-6;
+            } else {
+                val /= 100e-9;
+            }
+        }
+        self.value_label.text = [MeterViewController formatReading:val digits:[g_meter getSigDigits:c] ];
     }
 }
 
