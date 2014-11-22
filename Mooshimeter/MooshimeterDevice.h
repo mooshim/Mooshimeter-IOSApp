@@ -10,7 +10,6 @@
 #import "LGBluetooth.h"
 #import "BLEUtility.h"
 #import "MooshimeterProfileTypes.h"
-#import "callbackManager.h"
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 #define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
@@ -24,6 +23,7 @@ typedef struct {
 @protocol MooshimeterDeviceDelegate <NSObject>
 @required
 -(void) finishedMeterSetup;
+-(void) meterDisconnected;
 @end
 
 @interface MooshimeterDevice : NSObject <CBPeripheralDelegate>
@@ -42,11 +42,14 @@ typedef struct {
     bool oad_mode;
     
     BufferDownloadCompleteCB buffer_cb;
+    BufferDownloadCompleteCB sample_cb;
     
     struct {
         BOOL ac_display[2];
         BOOL auto_range[2];
         BOOL raw_hex[2];
+        BOOL channel_disp[2];
+        BOOL burst_capture;
         BOOL xy_mode;
         BOOL rate_auto;
         BOOL depth_auto;
@@ -67,20 +70,17 @@ typedef struct {
 
 -(void)connect;
 
--(void)setup:(id)target cb:(SEL)cb arg:(id)arg;
-
 -(void)reqMeterInfo:(LGCharacteristicReadCallback)cb;
 -(void)reqMeterSettings:(LGCharacteristicReadCallback)cb;
 -(void)reqMeterSample:(LGCharacteristicReadCallback)cb;
 
 -(void)sendMeterSettings:(LGCharacteristicWriteCallback)cb;
 
--(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb;
+-(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb update:(BufferDownloadCompleteCB)update;
 
 -(void)enableStreamMeterBuf:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb complete_buffer_cb:(BufferDownloadCompleteCB)complete_buffer_cb;
 
 -(void)setMeterState:(int)new_state cb:(LGCharacteristicWriteCallback)cb;
--(int)getMeterState;
 
 -(void)setMeterLVMode:(bool)on cb:(LGCharacteristicWriteCallback)cb;
 -(void)setMeterHVMode:(bool)on cb:(LGCharacteristicWriteCallback)cb;
@@ -96,17 +96,21 @@ typedef struct {
 -(double)getBufMean:(int)channel;
 -(double)getBufRMS:(int)channel;
 
+-(double)getValAt:(int)channel i:(int)i;
+
 -(NSString*)getDescriptor:(int)channel;
 -(NSString*)getUnits:(int)channel;
 -(NSString*)getInputLabel:(int)channel;
 
 -(SignificantDigits)getSigDigits:(int)channel;
 
--(long)to_int32:(int24_test)arg;
--(int24_test)to_int24_test:(long)arg;
++(long)to_int32:(int24_test)arg;
++(int24_test)to_int24_test:(long)arg;
 
 -(uint8)getChannelSetting:(int)ch;
 -(void)setChannelSetting:(int)ch set:(uint8)set;
+
+-(LGCharacteristic*)getLGChar:(uint16)UUID;
 
 @end
 

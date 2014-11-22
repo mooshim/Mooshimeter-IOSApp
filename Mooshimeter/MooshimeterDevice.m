@@ -24,7 +24,26 @@ MooshimeterDevice* g_meter;
     self.p = periph;
     self.delegate = delegate;
     self.chars = nil;
+    
+    self->disp_settings.auto_range[0] = YES;
+    self->disp_settings.auto_range[1] = YES;
+    self->disp_settings.channel_disp[0] = YES;
+    self->disp_settings.channel_disp[1] = YES;
+    self->disp_settings.depth_auto = YES;
+    self->disp_settings.rate_auto = YES;
+    
     return self;
+}
+
+-(void)populateLGDict:(NSArray*)characteristics {
+    for (LGCharacteristic* c in characteristics) {
+        NSLog(@"    Char: %@", c.UUIDString);
+        uint16 lookup;
+        [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
+        lookup = NSSwapShort(lookup);
+        NSNumber* key = [NSNumber numberWithInt:lookup];
+        [self.chars setObject:c forKey:key];
+    }
 }
 
 -(void)connect {
@@ -38,16 +57,12 @@ MooshimeterDevice* g_meter;
                     NSLog(@"METER SERVICE FOUND. Discovering characteristics.");
                     self->oad_mode = NO;
                     [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
-                        for (LGCharacteristic* c in characteristics) {
-                            NSLog(@"    Char: %@", c.UUIDString);
-                            uint16 lookup;
-                            [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
-                            lookup = NSSwapShort(lookup);
-                            NSNumber* key = [NSNumber numberWithInt:lookup];
-                            [self.chars setObject:c forKey:key];
-                        }
+                        [self populateLGDict:characteristics];
                         [self reqMeterInfo:^(NSData *data, NSError *error) {
                             [self reqMeterSettings:^(NSData *data, NSError *error) {
+                                [self.p registerDisconnectHandler:^(NSError *error) {
+                                    [self accidentalDisconnect:error];
+                                }];
                                 [self.delegate finishedMeterSetup];
                             }];
                         }];
@@ -56,22 +71,20 @@ MooshimeterDevice* g_meter;
                     NSLog(@"OAD SERVICE FOUND");
                     self->oad_mode = YES;
                     [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
-                        for (LGCharacteristic* c in characteristics) {
-                            NSLog(@"    Char: %@", c.UUIDString);
-                            uint16 lookup;
-                            [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
-                            lookup = NSSwapShort(lookup);
-                            NSNumber* key = [NSNumber numberWithInt:lookup];
-                            [self.chars setObject:c forKey:key];
-                        }
+                        [self populateLGDict:characteristics];
+                        [self.delegate finishedMeterSetup];
                     }];
-                    [self.delegate finishedMeterSetup];
                 } else {
                     NSLog(@"Service I don't care about found.");
                 }
             }
         }];
     }];
+}
+
+-(void)accidentalDisconnect:(NSError*)error {
+    DLog(@"Accidental disconnect!");
+    [self.delegate meterDisconnected];
 }
 
 -(LGCharacteristic*)getLGChar:(uint16)UUID {
@@ -108,9 +121,13 @@ MooshimeterDevice* g_meter;
     [c writeValue:v completion:cb];
 }
 
--(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb {
+-(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb update:(BufferDownloadCompleteCB)update {
+    self->sample_cb = update;
     LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
-    [c setNotifyValue:on completion:cb];
+    [c setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_sample length:data.length];
+        if(update) update();
+    }];
 }
 
 -(void)handleBufStreamUpdate:(NSData*) data channel:(int)channel {
@@ -179,14 +196,14 @@ MooshimeterDevice* g_meter;
 }
 
 
--(long)to_int32:(int24_test)arg {
++(long)to_int32:(int24_test)arg {
     long int retval;
     memcpy(&retval, &arg, 3);
     ((char*)&retval)[3] = retval & 0x00800000 ? 0xFF:0x00;
     return retval;
 }
 
--(int24_test)to_int24_test:(long)arg {
++(int24_test)to_int24_test:(long)arg {
     int24_test retval;
     memcpy(&retval, &arg, 3);
     return retval;
@@ -234,12 +251,47 @@ MooshimeterDevice* g_meter;
     }
 }
 
+-(double)getMean:(int)channel {
+    int lsb;
+    switch(channel) {
+        case 1:
+            lsb = [MooshimeterDevice to_int32:g_meter->meter_sample.ch1_reading_lsb];
+            break;
+        case 2:
+            lsb = [MooshimeterDevice to_int32:g_meter->meter_sample.ch2_reading_lsb];
+            break;
+        default:
+            lsb = 0;
+            DLog(@"Invalid channel");
+            break;
+    }
+    return [self lsbToNativeUnits:lsb ch:channel];
+}
+
+-(double)getRMS:(int)channel {
+    float lsb;
+    switch(channel) {
+        case 1:
+            lsb = g_meter->meter_sample.ch1_ms;
+            break;
+        case 2:
+            lsb = g_meter->meter_sample.ch2_ms;
+            break;
+        default:
+            lsb = 0;
+            DLog(@"Invalid channel");
+            break;
+    }
+    lsb = sqrt(lsb);
+    return [self lsbToNativeUnits:lsb ch:channel];
+}
+
 -(double)getBufMin:(int)channel {
     int i, tmp;
     int24_test* buf = [self getBuf:channel];
-    int min = [self to_int32:buf[0]];
+    int min = [MooshimeterDevice to_int32:buf[0]];
     for( i=0; i < [self getBufLen];  i++ ) {
-        tmp = [self to_int32:buf[i]];
+        tmp = [MooshimeterDevice to_int32:buf[i]];
         if(min > tmp) min = tmp;
     }
     return [self lsbToNativeUnits:min ch:channel];
@@ -248,9 +300,9 @@ MooshimeterDevice* g_meter;
 -(double)getBufMax:(int)channel {
     int i, tmp;
     int24_test* buf = [self getBuf:channel];
-    int max = [self to_int32:buf[0]];
+    int max = [MooshimeterDevice to_int32:buf[0]];
     for( i=0; i < [self getBufLen];  i++ ) {
-        tmp = [self to_int32:buf[i]];
+        tmp = [MooshimeterDevice to_int32:buf[i]];
         if(max < tmp) max = tmp;
     }
     return [self lsbToNativeUnits:max ch:channel];
@@ -261,10 +313,16 @@ MooshimeterDevice* g_meter;
     int avg = 0;
     int24_test* buf = [self getBuf:channel];
     for( i=0; i < [self getBufLen];  i++ ) {
-        avg += [self to_int32:buf[i]];
+        avg += [MooshimeterDevice to_int32:buf[i]];
     }
     avg /= [self getBufLen];
     return [self lsbToNativeUnits:avg ch:channel];
+}
+
+-(double)getValAt:(int)channel i:(int)i {
+    int24_test* buf = [self getBuf:channel];
+    int val = [MooshimeterDevice to_int32:buf[i]];
+    return [self lsbToNativeUnits:val ch:channel];
 }
 
 -(double)getENOB:(int)channel {
@@ -290,7 +348,7 @@ MooshimeterDevice* g_meter;
     int pga_gain = pga_gain_table[pga_setting];
     // At lower sample frequencies, pga gain affects noise
     // At higher frequencies it has no effect
-    double pga_degradation = (1.5/12) * pga_gain * (6-samplerate_setting);
+    double pga_degradation = (1.5/12) * pga_gain * (samplerate_setting);
     enob -= pga_degradation;
     // Oversampling adds 1 ENOB per factor of 4
     enob += ((double)buffer_depth_log2)/2.0;
@@ -404,7 +462,6 @@ MooshimeterDevice* g_meter;
                             return @"Current AC";
                     }
                 case 2:
-                    return @"Voltage";
                     switch(self->disp_settings.ac_display[channel-1]){
                         case NO:
                             return @"Voltage DC";
