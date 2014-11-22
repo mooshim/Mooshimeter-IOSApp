@@ -26,14 +26,10 @@
 		0C63856117D694DD00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63855F17D694DD00D3FB31 /* InfoPlist.strings */; };
 		0C63856417D694DD00D3FB31 /* MooshimeterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63856317D694DD00D3FB31 /* MooshimeterTests.m */; };
 		0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78962217D7E56A00D1439E /* BLEUtility.m */; };
-		0C78967417D82ABF00D1439E /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967317D82ABF00D1439E /* SettingViewController.m */; };
 		0C78967717DE74B800D1439E /* MooshimeterDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967617DE74B700D1439E /* MooshimeterDevice.m */; };
-		0C78972317E378FE00D1439E /* ScatterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* ScatterViewController.m */; };
-		0C844DFB1803060700613079 /* TrendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C844DFA1803060700613079 /* TrendViewController.m */; };
-		4A777E9B1A0863CD007FEEB9 /* callbackManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A777E9A1A0863CD007FEEB9 /* callbackManager.m */; };
+		0C78972317E378FE00D1439E /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* GraphViewController.m */; };
 		4A777E9E1A089CEC007FEEB9 /* Mooshimeter.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A777E9D1A089CEC007FEEB9 /* Mooshimeter.bin */; };
 		4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */; };
-		4AA9EA1B1A11C5660031C12B /* LockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9EA1A1A11C5660031C12B /* LockManager.m */; };
 		4AA9EA2C1A12B54E0031C12B /* CBUUID+StringExtraction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9EA201A12B54E0031C12B /* CBUUID+StringExtraction.m */; };
 		4AA9EA2D1A12B54E0031C12B /* LGCentralManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9EA231A12B54E0031C12B /* LGCentralManager.m */; };
 		4AA9EA2E1A12B54E0031C12B /* LGCharacteristic.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9EA251A12B54E0031C12B /* LGCharacteristic.m */; };
@@ -47,9 +43,9 @@
 		4ABE54141A07FEE100277456 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852C17D694DC00D3FB31 /* UIKit.framework */; };
 		4ABE54151A07FEE900277456 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
 		4ABE54161A07FF0000277456 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63853017D694DC00D3FB31 /* CoreGraphics.framework */; };
-		4ABE541E1A080A9000277456 /* BLETIOADProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE54191A080A9000277456 /* BLETIOADProfile.m */; };
-		4ABE541F1A080A9000277456 /* BLETIOADProgressDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE541B1A080A9000277456 /* BLETIOADProgressDialog.m */; };
-		4ABE54201A080A9000277456 /* BLETIOADProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE541D1A080A9000277456 /* BLETIOADProgressViewController.m */; };
+		4ABE541E1A080A9000277456 /* OADProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE54191A080A9000277456 /* OADProfile.m */; };
+		4ABE54201A080A9000277456 /* OADProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE541D1A080A9000277456 /* OADProgressViewController.m */; };
+		4AC27CC31A19C0C3008CF592 /* GraphSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */; };
 		4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */; };
 /* End PBXBuildFile section */
 
@@ -95,8 +91,6 @@
 		0C7895C817D786A400D1439E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		0C78962117D7E56A00D1439E /* BLEUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEUtility.h; sourceTree = "<group>"; };
 		0C78962217D7E56A00D1439E /* BLEUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEUtility.m; sourceTree = "<group>"; };
-		0C78967217D82ABF00D1439E /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
-		0C78967317D82ABF00D1439E /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		0C78967517DE74B700D1439E /* MooshimeterDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MooshimeterDevice.h; sourceTree = "<group>"; };
 		0C78967617DE74B700D1439E /* MooshimeterDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MooshimeterDevice.m; sourceTree = "<group>"; };
 		0C7896D017E3750700D1439E /* CorePlot-CocoaTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CorePlot-CocoaTouch.h"; sourceTree = "<group>"; };
@@ -178,20 +172,14 @@
 		0C78971C17E3750700D1439E /* NSNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSNumberExtensions.h; sourceTree = "<group>"; };
 		0C78971D17E3750700D1439E /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
 		0C78971F17E3762000D1439E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		0C78972117E378FE00D1439E /* ScatterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScatterViewController.h; sourceTree = "<group>"; };
-		0C78972217E378FE00D1439E /* ScatterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScatterViewController.m; sourceTree = "<group>"; };
-		0C844DF91803060700613079 /* TrendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrendViewController.h; sourceTree = "<group>"; };
-		0C844DFA1803060700613079 /* TrendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrendViewController.m; sourceTree = "<group>"; };
+		0C78972117E378FE00D1439E /* GraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphViewController.h; sourceTree = "<group>"; };
+		0C78972217E378FE00D1439E /* GraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewController.m; sourceTree = "<group>"; };
 		0C95E905182C320E007EBD5F /* Mooshimeter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Mooshimeter.entitlements; sourceTree = "<group>"; };
 		0CCE24EB1845D11900EEDB59 /* MooshimeterProfileTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterProfileTypes.h; sourceTree = "<group>"; };
-		4A777E991A0863CD007FEEB9 /* callbackManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = callbackManager.h; sourceTree = "<group>"; };
-		4A777E9A1A0863CD007FEEB9 /* callbackManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = callbackManager.m; sourceTree = "<group>"; };
 		4A777E9C1A089C27007FEEB9 /* MooshimeterFlashLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MooshimeterFlashLayout.h; sourceTree = "<group>"; };
 		4A777E9D1A089CEC007FEEB9 /* Mooshimeter.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = Mooshimeter.bin; path = "../../../BLE_Firmware/Projects/ble/Mooshimeter/CC2540DB/CC2540-OAD-ImgB/Exe/Mooshimeter.bin"; sourceTree = "<group>"; };
 		4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTableViewCell.h; path = ../ScanTableViewCell.h; sourceTree = "<group>"; };
 		4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanTableViewCell.m; path = ../ScanTableViewCell.m; sourceTree = "<group>"; };
-		4AA9EA191A11C5660031C12B /* LockManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LockManager.h; path = ../LockManager.h; sourceTree = "<group>"; };
-		4AA9EA1A1A11C5660031C12B /* LockManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LockManager.m; path = ../LockManager.m; sourceTree = "<group>"; };
 		4AA9EA1F1A12B54E0031C12B /* CBUUID+StringExtraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CBUUID+StringExtraction.h"; path = "LGBluetooth/CBUUID+StringExtraction.h"; sourceTree = "<group>"; };
 		4AA9EA201A12B54E0031C12B /* CBUUID+StringExtraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CBUUID+StringExtraction.m"; path = "LGBluetooth/CBUUID+StringExtraction.m"; sourceTree = "<group>"; };
 		4AA9EA211A12B54E0031C12B /* LGBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGBluetooth.h; path = LGBluetooth/LGBluetooth.h; sourceTree = "<group>"; };
@@ -207,13 +195,13 @@
 		4AA9EA2B1A12B54E0031C12B /* LGUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGUtils.m; path = LGBluetooth/LGUtils.m; sourceTree = "<group>"; };
 		4AAB4A241A1052C900794EC8 /* ChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelView.h; sourceTree = "<group>"; };
 		4AAB4A251A1052C900794EC8 /* ChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelView.m; sourceTree = "<group>"; };
-		4ABE54181A080A9000277456 /* BLETIOADProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLETIOADProfile.h; path = Mooshimeter/BLETIOADProfile.h; sourceTree = "<group>"; };
-		4ABE54191A080A9000277456 /* BLETIOADProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BLETIOADProfile.m; path = Mooshimeter/BLETIOADProfile.m; sourceTree = "<group>"; };
-		4ABE541A1A080A9000277456 /* BLETIOADProgressDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLETIOADProgressDialog.h; path = Mooshimeter/BLETIOADProgressDialog.h; sourceTree = "<group>"; };
-		4ABE541B1A080A9000277456 /* BLETIOADProgressDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BLETIOADProgressDialog.m; path = Mooshimeter/BLETIOADProgressDialog.m; sourceTree = "<group>"; };
-		4ABE541C1A080A9000277456 /* BLETIOADProgressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLETIOADProgressViewController.h; path = Mooshimeter/BLETIOADProgressViewController.h; sourceTree = "<group>"; };
-		4ABE541D1A080A9000277456 /* BLETIOADProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BLETIOADProgressViewController.m; path = Mooshimeter/BLETIOADProgressViewController.m; sourceTree = "<group>"; };
+		4ABE54181A080A9000277456 /* OADProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OADProfile.h; path = Mooshimeter/OADProfile.h; sourceTree = "<group>"; };
+		4ABE54191A080A9000277456 /* OADProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OADProfile.m; path = Mooshimeter/OADProfile.m; sourceTree = "<group>"; };
+		4ABE541C1A080A9000277456 /* OADProgressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OADProgressViewController.h; path = Mooshimeter/OADProgressViewController.h; sourceTree = "<group>"; };
+		4ABE541D1A080A9000277456 /* OADProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OADProgressViewController.m; path = Mooshimeter/OADProgressViewController.m; sourceTree = "<group>"; };
 		4ABE54211A080AC100277456 /* oad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oad.h; path = Mooshimeter/oad.h; sourceTree = "<group>"; };
+		4AC27CC11A19C0C3008CF592 /* GraphSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphSettingsView.h; sourceTree = "<group>"; };
+		4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphSettingsView.m; sourceTree = "<group>"; };
 		4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartNavigationController.h; sourceTree = "<group>"; };
 		4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartNavigationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -304,8 +292,6 @@
 				0C95E905182C320E007EBD5F /* Mooshimeter.entitlements */,
 				0C63853B17D694DC00D3FB31 /* AppDelegate.h */,
 				0C63853C17D694DC00D3FB31 /* AppDelegate.m */,
-				0C78967217D82ABF00D1439E /* SettingViewController.h */,
-				0C78967317D82ABF00D1439E /* SettingViewController.m */,
 				4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */,
 				4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */,
 				0C63853317D694DC00D3FB31 /* Supporting Files */,
@@ -504,10 +490,9 @@
 		4AAB4A281A10863700794EC8 /* GraphView */ = {
 			isa = PBXGroup;
 			children = (
-				0C844DF91803060700613079 /* TrendViewController.h */,
-				0C844DFA1803060700613079 /* TrendViewController.m */,
-				0C78972117E378FE00D1439E /* ScatterViewController.h */,
-				0C78972217E378FE00D1439E /* ScatterViewController.m */,
+				4AC27CBD1A19C08F008CF592 /* GraphSettingsView */,
+				0C78972117E378FE00D1439E /* GraphViewController.h */,
+				0C78972217E378FE00D1439E /* GraphViewController.m */,
 			);
 			name = GraphView;
 			sourceTree = "<group>";
@@ -515,10 +500,6 @@
 		4AAB4A291A10864C00794EC8 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				4A777E991A0863CD007FEEB9 /* callbackManager.h */,
-				4A777E9A1A0863CD007FEEB9 /* callbackManager.m */,
-				4AA9EA191A11C5660031C12B /* LockManager.h */,
-				4AA9EA1A1A11C5660031C12B /* LockManager.m */,
 				0C78967517DE74B700D1439E /* MooshimeterDevice.h */,
 				0C78967617DE74B700D1439E /* MooshimeterDevice.m */,
 				0C78962117D7E56A00D1439E /* BLEUtility.h */,
@@ -530,13 +511,11 @@
 		4ABE54171A080A8300277456 /* OAD */ = {
 			isa = PBXGroup;
 			children = (
-				4ABE54181A080A9000277456 /* BLETIOADProfile.h */,
 				4ABE54211A080AC100277456 /* oad.h */,
-				4ABE54191A080A9000277456 /* BLETIOADProfile.m */,
-				4ABE541A1A080A9000277456 /* BLETIOADProgressDialog.h */,
-				4ABE541B1A080A9000277456 /* BLETIOADProgressDialog.m */,
-				4ABE541C1A080A9000277456 /* BLETIOADProgressViewController.h */,
-				4ABE541D1A080A9000277456 /* BLETIOADProgressViewController.m */,
+				4ABE54181A080A9000277456 /* OADProfile.h */,
+				4ABE54191A080A9000277456 /* OADProfile.m */,
+				4ABE541C1A080A9000277456 /* OADProgressViewController.h */,
+				4ABE541D1A080A9000277456 /* OADProgressViewController.m */,
 			);
 			name = OAD;
 			sourceTree = "<group>";
@@ -546,6 +525,15 @@
 			children = (
 			);
 			name = Storyboard;
+			sourceTree = "<group>";
+		};
+		4AC27CBD1A19C08F008CF592 /* GraphSettingsView */ = {
+			isa = PBXGroup;
+			children = (
+				4AC27CC11A19C0C3008CF592 /* GraphSettingsView.h */,
+				4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */,
+			);
+			name = GraphSettingsView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -668,27 +656,23 @@
 			files = (
 				4AA9EA301A12B54E0031C12B /* LGService.m in Sources */,
 				4AA9EA2D1A12B54E0031C12B /* LGCentralManager.m in Sources */,
-				4ABE541F1A080A9000277456 /* BLETIOADProgressDialog.m in Sources */,
 				0C63853917D694DC00D3FB31 /* main.m in Sources */,
 				4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */,
 				4AA9EA2C1A12B54E0031C12B /* CBUUID+StringExtraction.m in Sources */,
-				4ABE541E1A080A9000277456 /* BLETIOADProfile.m in Sources */,
+				4ABE541E1A080A9000277456 /* OADProfile.m in Sources */,
 				4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */,
 				0C63853D17D694DC00D3FB31 /* AppDelegate.m in Sources */,
 				0C63854C17D694DC00D3FB31 /* ScanViewController.m in Sources */,
 				4AA9EA2F1A12B54E0031C12B /* LGPeripheral.m in Sources */,
 				4AA9EA2E1A12B54E0031C12B /* LGCharacteristic.m in Sources */,
 				0C63854F17D694DC00D3FB31 /* MeterViewController.m in Sources */,
-				4A777E9B1A0863CD007FEEB9 /* callbackManager.m in Sources */,
-				4AA9EA1B1A11C5660031C12B /* LockManager.m in Sources */,
 				4AA9EA311A12B54E0031C12B /* LGUtils.m in Sources */,
 				0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */,
-				0C78967417D82ABF00D1439E /* SettingViewController.m in Sources */,
-				4ABE54201A080A9000277456 /* BLETIOADProgressViewController.m in Sources */,
+				4ABE54201A080A9000277456 /* OADProgressViewController.m in Sources */,
 				4AAB4A261A1052C900794EC8 /* ChannelView.m in Sources */,
+				4AC27CC31A19C0C3008CF592 /* GraphSettingsView.m in Sources */,
 				0C78967717DE74B800D1439E /* MooshimeterDevice.m in Sources */,
-				0C78972317E378FE00D1439E /* ScatterViewController.m in Sources */,
-				0C844DFB1803060700613079 /* TrendViewController.m in Sources */,
+				0C78972317E378FE00D1439E /* GraphViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

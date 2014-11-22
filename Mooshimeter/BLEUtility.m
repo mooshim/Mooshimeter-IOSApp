@@ -139,8 +139,4 @@
     return [[BLEUtility expandToMooshimUUID:sourceUUID] UUIDString];
 }
 
-+(BOOL) runningiOSSeven {
-    return YES;
-}
-
 @end

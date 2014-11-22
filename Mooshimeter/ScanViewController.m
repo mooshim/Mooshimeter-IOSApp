@@ -57,10 +57,6 @@
     [self reloadData];
 }
 
--(void)endRefresh {
-    [self.refreshControl endRefreshing];
-}
-
 -(BOOL)shouldAutorotate { return NO; }
 
 - (NSUInteger)supportedInterfaceOrientations {

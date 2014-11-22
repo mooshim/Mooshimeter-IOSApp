@@ -28,13 +28,13 @@
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration NS_DEPRECATED_IOS(2_0,8_0, "Implement viewWillTransitionToSize:withTransitionCoordinator: instead") {
-    NSLog(@"TODO!");
+    return [self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
-
+#if 0
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator NS_AVAILABLE_IOS(8_0) {
     NSLog(@"TODO!");
 }
-
+#endif
 /*
 #pragma mark - Navigation
 

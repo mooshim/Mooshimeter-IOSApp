@@ -20,13 +20,17 @@
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     
-    self.scan_vc = [[ScanViewController alloc] initWithDelegate:self];
-    self.oad_vc  = [[BLETIOADProgressViewController alloc] init];
+    self.scan_vc    = [[ScanViewController alloc] initWithDelegate:self];
+    self.meter_vc = [[MeterViewController alloc] initWithDelegate:self];
+    self.oad_vc     = [[BLETIOADProgressViewController alloc] init];
+    self.scatter_vc = [[GraphViewController alloc] initWithDelegate:self];
     
     self.nav = [[SmartNavigationController alloc] initWithRootViewController:self.scan_vc];
     self.nav.app = self;
     
-    self.meter_vc = [[MeterViewController alloc] init];
+    self.oad_profile = [[OADProfile alloc]init];
+    self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
+    self.oad_profile.navCtrl = self.nav;
     
     [self.window setRootViewController:self.nav];
     
@@ -64,13 +68,8 @@
 
 #pragma mark - Random utility functions
 
--(AppDelegate*)getApp {
-    return (AppDelegate*)[UIApplication sharedApplication].delegate;
-}
-
 -(UINavigationController*)getNav {
-    AppDelegate* t = [self getApp];
-    return t.window.rootViewController.navigationController;
+    return self.window.rootViewController.navigationController;
 }
 
 - (void)scanForMeters
@@ -91,6 +90,9 @@
     
     NSTimer* refresh_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self.scan_vc selector:@selector(reloadData) userInfo:nil repeats:YES];
     
+    //self.scan_vc.title = @"Scan in progress...";
+    self.nav.navigationItem.title = @"Scan in progress...";
+    
     [c scanForPeripheralsByInterval:5
         services:services
         options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES}
@@ -99,6 +101,7 @@
             [refresh_timer invalidate];
             [self.scan_vc.refreshControl endRefreshing];
             [self.scan_vc reloadData];
+            self.nav.navigationItem.title = @"Pull down to scan";
     }];
 }
 
@@ -108,10 +111,6 @@
 
 - (NSUInteger)supportedInterfaceOrientations {
     return UIInterfaceOrientationPortrait;
-}
-
--(void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    NSLog(@"Signal change to graph here");
 }
 
 #pragma mark ScanViewDelegate
@@ -131,6 +130,9 @@
         case CBPeripheralStateConnecting:{
             //What should we do if you click a connecting meter?
             NSLog(@"Already connecting...");
+            [p disconnectWithCompletion:^(NSError *error) {
+                [self.scan_vc reloadData];
+            }];
             break;}
         case CBPeripheralStateDisconnected:{
             NSLog(@"Connecting new...");
@@ -139,6 +141,25 @@
             [self.scan_vc reloadData];
             break;}
     }
+}
+
+#pragma mark MeterViewControllerDelegate
+
+-(void)handleMeterViewRotation {
+    // We are here because the meter view rotated to horizontal.
+    // Load the scatter view and push it.
+    // TODO: Need to wait for the present orientation to change somehow...
+    self.nav.navigationBar.hidden = YES;
+    [self.nav pushViewController:self.scatter_vc animated:YES];
+}
+
+#pragma mark ScatterViewControllerDelegate
+
+-(void)handleScatterViewRotation {
+    // We are here because the meter view rotated to vertical.
+    // Load the meter view and push it.
+    self.nav.navigationBar.hidden = NO;
+    [self.nav popToViewController:self.meter_vc animated:YES];
 }
 
 #pragma mark MooshimeterDeviceDelegate
@@ -150,28 +171,19 @@
         // We connected to a meter in OAD mode as requested previously.  Update firmware.
         NSLog(@"Connected in OAD mode");
 #ifdef AUTO_UPDATE_FIRMWARE
-        if(self.nav.topViewController != self.oad_vc) {
-            self.oad_profile = [[BLETIOADProfile alloc]init];
-            self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
-            [self.oad_profile makeConfigurationForProfile];
-            self.oad_profile.navCtrl = self.nav;
-            [self.oad_profile configureProfile];
-            self.oad_profile.view = self.nav.topViewController.view;
-            [self.oad_profile selectImagePressed:self];
-        }
+        NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
+        [path appendString:@"/"] ;
+        [path appendString:@"Mooshimeter.bin"];
+        
+        [self.oad_profile startUpload:path];
 #endif
     }
-    else if( g_meter->meter_info.build_time < 1415389647 ) {
+    else if( g_meter->meter_info.build_time < 1416285788 ) {
 #ifdef AUTO_UPDATE_FIRMWARE
         // Require a firmware update!
         NSLog(@"FIRMWARE UPDATE REQUIRED.  Rebooting.");
-        self->reboot_into_oad = YES;
-        // This will reboot the meter.  We will have 5 seconds to reconnect to it in OAD mode.
-        [g_meter setMeterState:METER_SHUTDOWN cb:^(NSError *error) {
-            [g_meter.p disconnectWithCompletion:^(NSError *error) {
-                [g_meter connect];
-            }];
-        }];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
+        [alert show];
 #endif
     } else {
         // We have a connected meter with the correct firmware.
@@ -182,11 +194,28 @@
     }
 }
 
+-(void)meterDisconnected {
+    [self.nav popToViewController:self.scan_vc animated:YES];
+    [self.scan_vc reloadData];
+}
 
--(void)meterSetupComplete:(MooshimeterDevice*)d {
-    NSLog(@"Setup complete");
+#pragma mark UIAlertViewDelegate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    DLog(@"in alert view delegate");
+    if(buttonIndex == 0) {
+        [g_meter.p disconnectWithCompletion:^(NSError *error) {
+            [self.scan_vc reloadData];
+        }];
+    } else {
+        self->reboot_into_oad = YES;
+        // This will reboot the meter.  We will have 5 seconds to reconnect to it in OAD mode.
+        [g_meter setMeterState:METER_SHUTDOWN cb:^(NSError *error) {
+            [g_meter.p disconnectWithCompletion:^(NSError *error) {
+                DLog(@"Reconnecting...");
+                [g_meter connect];
+            }];
+        }];
     }
-
-
+}
 
 @end
