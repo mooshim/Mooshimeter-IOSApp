@@ -132,6 +132,7 @@ typedef enum
     METER_STANDBY,      // uC sleeping, ADC powered down.  Wakes to advertise occasionally.
     METER_PAUSED,       // uC active, ADC active, not sampling
     METER_RUNNING,      // uC active, ADC active, sampling until buffer is full, then performing computations and repeating
+    METER_HIBERNATE,    // uC sleeping, radio off.  Wake up to test if inputs are shorted, and if they are reboot.
 } meter_state_t;
 
 typedef enum
@@ -141,8 +142,8 @@ typedef enum
 {
   LOGGING_OFF=0,
   LOGGING_CALC,      // The output of the computations specified by meter_settings to go in meter_sample are logged
-  LOGGING_BUF,       // The raw data buffers are logged
-  LOGGING_STREAMING  // The log is being streamed out to the BLE host
+  LOGGING_BUF,       // TODO: The raw data buffers are logged
+  LOGGING_STREAMING  // TODO: The log is being streamed out to the BLE host
 } logging_state_t;
 
 typedef enum 
@@ -247,13 +248,13 @@ typedef struct {
     uint8 sd_present;
     logging_state_t present_logging_state;
     logging_error_t logging_error;
+    uint16 file_number;                    // The log file number.  A new record is started every logging session.
+    uint32 file_offset;                    // The offset within the file that is being written to (when logging) or read from (when streaming out)
   } ro;
   struct {
     logging_state_t  target_logging_state;        
     uint16 logging_period_ms;              // How long to wait between taking log samples
     uint32 logging_n_cycles;               // How many samples to take before sleeping forever
-    uint16 file_number;                    // The log file number.  A new record is started every logging session.
-    uint32 file_offset;                    // The offset within the file that is being written to (when logging) or read from (when streaming out)
   } rw;
 }
 #ifndef __IAR_SYSTEMS_ICC__
