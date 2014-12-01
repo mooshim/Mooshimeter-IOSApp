@@ -250,12 +250,20 @@ typedef struct {
     logging_error_t logging_error;
     uint16 file_number;                    // The log file number.  A new record is started every logging session.
     uint32 file_offset;                    // The offset within the file that is being written to (when logging) or read from (when streaming out)
-  } ro;
+  }
+#ifndef __IAR_SYSTEMS_ICC__
+    __attribute__((packed))
+#endif
+  ro;
   struct {
     logging_state_t  target_logging_state;        
     uint16 logging_period_ms;              // How long to wait between taking log samples
     uint32 logging_n_cycles;               // How many samples to take before sleeping forever
-  } rw;
+  }
+#ifndef __IAR_SYSTEMS_ICC__
+    __attribute__((packed))
+#endif
+  rw;
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed)) 
