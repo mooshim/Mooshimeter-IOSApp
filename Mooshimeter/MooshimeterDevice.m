@@ -17,9 +17,10 @@ MooshimeterDevice* g_meter;
 
 -(MooshimeterDevice*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDeviceDelegate>)delegate {
     // Check for issues with struct packing.
-    BUILD_BUG_ON(sizeof(trigger_settings_t)!=6);
-    BUILD_BUG_ON(sizeof(MeterSettings_t)!=13);
-    BUILD_BUG_ON(sizeof(meter_state_t) != 1);
+    BUILD_BUG_ON(sizeof(trigger_settings_t) != 6);
+    BUILD_BUG_ON(sizeof(MeterSettings_t)    != 13);
+    BUILD_BUG_ON(sizeof(meter_state_t)      != 1);
+    BUILD_BUG_ON(sizeof(MeterLogSettings_t) != 16);
     self = [super init];
     self.p = periph;
     self.delegate = delegate;
@@ -57,13 +58,21 @@ MooshimeterDevice* g_meter;
                     NSLog(@"METER SERVICE FOUND. Discovering characteristics.");
                     self->oad_mode = NO;
                     [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
-                        [self populateLGDict:characteristics];
-                        [self reqMeterInfo:^(NSData *data, NSError *error) {
-                            [self reqMeterSettings:^(NSData *data, NSError *error) {
-                                [self.p registerDisconnectHandler:^(NSError *error) {
-                                    [self accidentalDisconnect:error];
+                        __unsafe_unretained typeof(self) weakSelf = self;
+                        [weakSelf populateLGDict:characteristics];
+                        [weakSelf reqMeterInfo:^(NSData *data, NSError *error) {
+                            [weakSelf reqMeterSettings:^(NSData *data, NSError *error) {
+                                [weakSelf reqMeterLogSettings:^(NSData *data, NSError *error) {
+                                    [weakSelf reqMeterBatteryLevel:^(NSData *data, NSError *error) {
+                                        uint32 utc_time = [[NSDate date] timeIntervalSince1970];
+                                        [weakSelf setMeterTime:utc_time cb:^(NSError *error) {
+                                            [weakSelf.p registerDisconnectHandler:^(NSError *error) {
+                                                [weakSelf accidentalDisconnect:error];
+                                            }];
+                                            [weakSelf.delegate finishedMeterSetup];
+                                        }];
+                                    }];
                                 }];
-                                [self.delegate finishedMeterSetup];
                             }];
                         }];
                     }];
@@ -107,6 +116,14 @@ MooshimeterDevice* g_meter;
     }];
 }
 
+-(void)reqMeterLogSettings:(LGCharacteristicReadCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_LOG_SETTINGS];
+    [c readValueWithBlock:^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_log_settings length:data.length];
+        cb(data,error);
+    }];
+}
+
 -(void)reqMeterSample:(LGCharacteristicReadCallback)cb {
     LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
     [c readValueWithBlock:^(NSData *data, NSError *error) {
@@ -115,9 +132,38 @@ MooshimeterDevice* g_meter;
     }];
 }
 
+-(void)reqMeterBatteryLevel:(LGCharacteristicReadCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_BAT];
+    [c readValueWithBlock:^(NSData *data, NSError *error) {
+        uint16 lsb;
+        [data getBytes:&lsb length:data.length];
+        // 12 bit reading, 1.24V reference, reading VDD/3
+        self->bat_voltage = 3*1.24*(((double)lsb)/(1<<12));
+        cb(data,error);
+    }];
+}
+
+-(void)setMeterTime:(uint32)utc_time cb:(LGCharacteristicWriteCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_UTC_TIME];
+    NSData *bytes = [NSData dataWithBytes:&utc_time length:4];
+    [c writeValue:bytes completion:cb];
+}
+
+-(void)sendMeterName:(NSString*)name cb:(LGCharacteristicWriteCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_NAME];
+    NSData *bytes = [name dataUsingEncoding:NSUTF8StringEncoding];
+    [c writeValue:bytes completion:cb];
+}
+
 -(void)sendMeterSettings:(LGCharacteristicWriteCallback)cb {
     LGCharacteristic* c = [self getLGChar:METER_SETTINGS];
     NSData* v = [NSData dataWithBytes:&self->meter_settings length:sizeof(self->meter_settings)];
+    [c writeValue:v completion:cb];
+}
+
+-(void)sendMeterLogSettings:(LGCharacteristicWriteCallback)cb {
+    LGCharacteristic* c = [self getLGChar:METER_LOG_SETTINGS];
+    NSData* v = [NSData dataWithBytes:&self->meter_log_settings length:sizeof(self->meter_log_settings)];
     [c writeValue:v completion:cb];
 }
 
@@ -128,6 +174,156 @@ MooshimeterDevice* g_meter;
         [data getBytes:&self->meter_sample length:data.length];
         if(update) update();
     }];
+}
+
++(uint8)pga_cycle:(uint8)chx_set inc:(BOOL)inc wrap:(BOOL)wrap {
+    // These are the PGA settings we will entertain
+    const uint8 ps[] = {0x60,0x40,0x10};
+    int8 i;
+    // Find the index of the present PGA setting
+    for(i = 0; i < sizeof(ps); i++) {
+        if(ps[i] == (chx_set & METER_CH_SETTINGS_PGA_MASK)) break;
+    }
+    
+    if(i>=sizeof(ps)) {
+        // If we didn't find it, default to setting 0
+        i = 0;
+    } else {
+        // Increment or decrement the PGA setting
+        if(inc){
+            if(++i >= sizeof(ps)) {
+                if(wrap){i=0;}
+                else    {i--;}
+            }
+        }
+        else {
+            if(--i < 0) {
+                if(wrap){i=sizeof(ps)-1;}
+                else    {i++;}
+            }
+        }
+    }
+    // Mask the new setting back in
+    chx_set &=~METER_CH_SETTINGS_PGA_MASK;
+    chx_set |= ps[i];
+    return chx_set;
+}
+
+-(void)bumpRange:(int)channel raise:(BOOL)raise wrap:(BOOL)wrap {
+    uint8 channel_setting    = [self getChannelSetting:channel];
+    uint8* const adc_setting = &self->meter_settings.rw.adc_settings;
+    uint8* const ch3_mode    = &self->disp_settings.ch3_mode;
+    uint8* const measure_setting = &self->meter_settings.rw.measure_settings;
+    int8 tmp;
+    
+    switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
+        case 0x00:
+            // Electrode input
+            switch(channel) {
+                case 1:
+                    // We are measuring current.  We can boost PGA, but that's all.
+                    channel_setting = [MooshimeterDevice pga_cycle:channel_setting inc:raise wrap:wrap];
+                    break;
+                case 2:
+                    // Switch the ADC GPIO to activate dividers
+                    // NOTE: Don't bother with the 1.2V range for now.  Having a floating autoranged input leads to glitchy behavior.
+                    tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
+                    if(raise) {
+                        if(++tmp >= 3) {
+                            if(wrap){tmp=1;}
+                            else    {tmp--;}
+                        }
+                    } else {
+                        if(--tmp < 1) {
+                            if(wrap){tmp=2;}
+                            else    {tmp++;}
+                        }
+                    }
+                    tmp<<=4;
+                    *adc_setting &= ~ADC_SETTINGS_GPIO_MASK;
+                    *adc_setting |= tmp;
+                    channel_setting &=~METER_CH_SETTINGS_PGA_MASK;
+                    channel_setting |= 0x10;
+                    break;
+            }
+            break;
+        case 0x04:
+            // Temp input
+            break;
+        case 0x09:
+            switch(*ch3_mode) {
+                case CH3_VOLTAGE:
+                    channel_setting = [MooshimeterDevice pga_cycle:channel_setting inc:raise wrap:wrap];
+                    break;
+                case CH3_RESISTANCE:
+                case CH3_DIODE:
+                    // This case is annoying.  We want PGA to always wrap if we are in the low range and going up OR in the high range and going down
+                    if((raise?0:METER_MEASURE_SETTINGS_ISRC_LVL) ^ (*measure_setting & METER_MEASURE_SETTINGS_ISRC_LVL)) {
+                        wrap = YES;
+                    }
+                    channel_setting = [MooshimeterDevice pga_cycle:channel_setting inc:raise wrap:wrap];
+                    tmp = channel_setting & METER_CH_SETTINGS_PGA_MASK;
+                    tmp >>=4;
+                    if(   ( raise && tmp == 6)
+                       || (!raise && tmp == 1) ) {
+                        *measure_setting ^= METER_MEASURE_SETTINGS_ISRC_LVL;
+                    }
+                    break;
+            }
+            break;
+    }
+    [g_meter setChannelSetting:channel set:channel_setting];
+}
+
+-(void)applyAutorange {
+    MooshimeterDevice* m = g_meter;
+    MeterSettings_t* const ms = &m->meter_settings;
+    
+    const BOOL ac_used = m->disp_settings.ac_display[0] || m->disp_settings.ac_display[1];
+    const int32 upper_limit_lsb =  1.3*(1<<22);
+    const int32 lower_limit_lsb = -0.9*(1<<22);
+    const int32 inner_limit_lsb =  0.1*(1<<22);
+    
+    // Autorange sample rate and buffer depth.
+    // If anything is doing AC, we need a deep buffer and fast sample
+    if(m->disp_settings.rate_auto) {
+        ms->rw.adc_settings &=~ADC_SETTINGS_SAMPLERATE_MASK;
+        if(ac_used) ms->rw.adc_settings |= 5; // 4kHz
+        else        ms->rw.adc_settings |= 0; // 125Hz
+    }
+    if(m->disp_settings.depth_auto) {
+        ms->rw.calc_settings &=~METER_CALC_SETTINGS_DEPTH_LOG2;
+        if(ac_used) ms->rw.calc_settings |= 8; // 256 samples
+        else        ms->rw.calc_settings |= 5; // 32 samples
+    }
+    for(uint8 i = 0; i < 2; i++) {
+        if(m->disp_settings.auto_range[i]) {
+            // If the mean reading is above 80% of our range, bump up
+            // If the reading is below 20% of our range, bump down
+            // Note that the ranges are asymmetrical - we have 1.8V of headroom above and 1.2V below
+            int32 mean_lsb;
+            double rms_lsb;
+            switch(i) {
+                case 0:
+                    mean_lsb = [MooshimeterDevice to_int32:m->meter_sample.ch1_reading_lsb];
+                    rms_lsb = sqrt(m->meter_sample.ch1_ms);
+                    break;
+                case 1:
+                    mean_lsb = [MooshimeterDevice to_int32:m->meter_sample.ch2_reading_lsb];
+                    rms_lsb = sqrt(m->meter_sample.ch2_ms);
+                    break;
+            }
+            
+            if(   mean_lsb > upper_limit_lsb
+               || mean_lsb < lower_limit_lsb
+               || rms_lsb*sqrt(2.) > ABS(lower_limit_lsb) ) {
+                [m bumpRange:i+1 raise:YES wrap:NO];
+            } else if(   ABS(mean_lsb)    < inner_limit_lsb
+                      || rms_lsb*sqrt(2.) < inner_limit_lsb ) {
+                [m bumpRange:i+1 raise:NO wrap:NO];
+            }
+        }
+    }
 }
 
 -(void)handleBufStreamUpdate:(NSData*) data channel:(int)channel {
@@ -441,8 +637,16 @@ MooshimeterDevice* g_meter;
         case 0x04:
             return [self adcVoltageToTemp:adc_volts];
         case 0x09:
-            // TODO: In this area we have some interpretting of display settings to do, for things like diode or resistance measurement.
-            return adc_volts;
+            if( self->disp_settings.ch3_mode == CH3_RESISTANCE ) {
+                // Convert to Ohms
+                if(self->meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL ) {
+                    return adc_volts/100e-6;
+                } else {
+                    return adc_volts/100e-9;
+                }
+            } else {
+                return adc_volts;
+            }
         default:
             DLog(@"Unrecognized channel setting");
             return adc_volts;

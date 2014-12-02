@@ -31,8 +31,10 @@ typedef struct {
     @public
     // These reflect actual values on the meter itself
     MeterSettings_t      meter_settings;
+    MeterLogSettings_t   meter_log_settings;
     MeterInfo_t          meter_info;
     MeterMeasurement_t   meter_sample;
+    double               bat_voltage;
     struct {
         int24_test                CH1_buf[N_ADC_SAMPLES];
         int24_test                CH2_buf[N_ADC_SAMPLES];
@@ -73,8 +75,13 @@ typedef struct {
 -(void)reqMeterInfo:(LGCharacteristicReadCallback)cb;
 -(void)reqMeterSettings:(LGCharacteristicReadCallback)cb;
 -(void)reqMeterSample:(LGCharacteristicReadCallback)cb;
+-(void)reqMeterLogSettings:(LGCharacteristicReadCallback)cb;
+-(void)reqMeterBatteryLevel:(LGCharacteristicReadCallback)cb;
 
+-(void)setMeterTime:(uint32)utc_time cb:(LGCharacteristicWriteCallback)cb;
+-(void)sendMeterName:(NSString*)name cb:(LGCharacteristicWriteCallback)cb;
 -(void)sendMeterSettings:(LGCharacteristicWriteCallback)cb;
+-(void)sendMeterLogSettings:(LGCharacteristicWriteCallback)cb;
 
 -(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb update:(BufferDownloadCompleteCB)update;
 
@@ -94,7 +101,8 @@ typedef struct {
 -(double)getBufMin:(int)channel;
 -(double)getBufMax:(int)channel;
 -(double)getBufMean:(int)channel;
--(double)getBufRMS:(int)channel;
+
+-(void)applyAutorange;
 
 -(double)getValAt:(int)channel i:(int)i;
 
