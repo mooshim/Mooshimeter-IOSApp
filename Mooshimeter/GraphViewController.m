@@ -40,9 +40,19 @@
     [super viewDidAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
     self.config_view = nil;
-    self->play = YES;
-    [self initPlot];
-    [self startTrendView];
+    if(g_meter->disp_settings.burst_capture) {
+        [self graphBuffer];
+    } else {
+        self->play = YES;
+        [self initPlot];
+        [self startTrendView];
+    }
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    NSLog(@"Goodbye from scatter...");
+    [self pause];
 }
 
 -(void)handleBackgroundTap {
@@ -59,20 +69,18 @@
 }
 
 -(void)startTrendView {
-    self->buf_i = 0;
-    self->buf_n = 0;
-    
-    g_meter->meter_settings.rw.calc_settings &=~(METER_CALC_SETTINGS_MS|METER_CALC_SETTINGS_ONESHOT);
-    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MEAN;
-    //g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MEAN|METER_CALC_SETTINGS_ONESHOT;
+    g_meter->meter_settings.rw.calc_settings &=~(METER_CALC_SETTINGS_ONESHOT);
+    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MEAN|METER_CALC_SETTINGS_MS;
     g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
     
     [g_meter enableStreamMeterBuf:NO cb:^(NSError *error) {
         [g_meter enableStreamMeterSample:YES cb:^(NSError *error) {
             self->start_time = [[NSDate date] timeIntervalSince1970];
+            self->buf_i = 0;
+            self->buf_n = 0;
             [g_meter sendMeterSettings:^(NSError *error) {
                 NSLog(@"Trend mode started");
-                [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(redrawTrendView:) userInfo:nil repeats:NO];
+                [NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(redrawTrendView:) userInfo:nil repeats:NO];
             }];
         } update:^{
             [self trendViewUpdate];
@@ -98,8 +106,16 @@
     }
     
     self->time[      buf_i] = [[NSDate date] timeIntervalSince1970] - self->start_time;
-    self->ch1_values[buf_i] = [g_meter getMean:1];
-    self->ch2_values[buf_i] = [g_meter getMean:2];
+    if(g_meter->disp_settings.ac_display[0]) {
+        self->ch1_values[buf_i] = [g_meter getRMS:1];
+    } else {
+        self->ch1_values[buf_i] = [g_meter getMean:1];
+    }
+    if(g_meter->disp_settings.ac_display[1]) {
+        self->ch2_values[buf_i] = [g_meter getRMS:2];
+    } else {
+        self->ch2_values[buf_i] = [g_meter getMean:2];
+    }
     buf_i++;
     buf_i %= N_POINTS_ONSCREEN;
     if(buf_n < N_POINTS_ONSCREEN) buf_n++;
@@ -201,12 +217,6 @@
             [self initPlot];
         }];
     } update:nil];
-}
-
-- (void) viewWillDisappear:(BOOL)animated
-{
-    NSLog(@"Goodbye from scatter...");
-    self->play = NO;
 }
 
 #pragma mark - Chart behavior

@@ -21,12 +21,12 @@
     float w = frame.size.width/ncol;
     
 #define cg(nx,ny,nw,nh) CGRectMake(nx*w,ny*h,nw*w,nh*h)
-#define mb(nx,ny,nw,nh,s) [self makeButton:cg(nx,ny,nw,nh) cb:@selector(s)]
+#define mb(name, nx,ny,nw,nh) self.name = [self makeButton:cg(nx,ny,nw,nh) cb:@selector(name##_press)]
     
-    self.trend_or_burst_button = mb(0,0,3,1,trend_or_burst_button_press);
-    self.ch1_on_button         = mb(0,1,1,1,ch1_on_button_press);
-    self.ch2_on_button         = mb(1,1,1,1,ch2_on_button_press);
-    self.xy_on_button          = mb(2,1,1,1,xy_on_button_press);
+    mb(trend_or_burst_button,  0,0,3,1);
+    mb(ch1_on_button,          0,1,1,1);
+    mb(ch2_on_button,          1,1,1,1);
+    mb(xy_on_button,           2,1,1,1);
     
 #undef cg
 #undef mb
