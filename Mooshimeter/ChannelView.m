@@ -40,7 +40,7 @@
 #undef mb
     
     [[self layer] setBorderWidth:5];
-    [[self layer] setBorderColor:[UIColor darkGrayColor].CGColor];
+    [[self layer] setBorderColor:[UIColor blackColor].CGColor];
     [self refreshAllControls];
     return self;
 }
@@ -54,7 +54,7 @@
     [b setTitle:@"T" forState:UIControlStateNormal];
     [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor lightGrayColor].CGColor];
+    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
     b.frame = frame;
     [self addSubview:b];
     return b;
@@ -167,7 +167,25 @@
 }
 
 -(void)units_button_refresh {
-    [self.units_button setTitle:[g_meter getUnits:self->channel] forState:UIControlStateNormal];
+    NSString* unit_str;
+    if(!g_meter->disp_settings.raw_hex[self->channel-1]) {
+        SignificantDigits digits = [g_meter getSigDigits:self->channel];
+        const NSString* prefixes[] = {@"μ",@"m",@"",@"k",@"M"};
+        uint8 prefix_i = 2;
+        //TODO: Unify prefix handling.
+        while(digits.high > 3) {
+            digits.high -= 3;
+            prefix_i++;
+        }
+        while(digits.high <=0) {
+            digits.high += 3;
+            prefix_i--;
+        }
+        unit_str = [NSString stringWithFormat:@"%@%@",prefixes[prefix_i],[g_meter getUnits:self->channel]];
+    } else {
+        unit_str = @"RAW";
+    }
+    [self.units_button setTitle:unit_str forState:UIControlStateNormal];
 }
 
 -(uint8)pga_cycle:(uint8)chx_set {
@@ -347,7 +365,6 @@
 
 -(void)value_label_refresh {
     const int c = self->channel;
-    uint8 channel_setting = [g_meter getChannelSetting:self->channel];
     double val;
     if(g_meter->disp_settings.ac_display[c-1]) {
         val = [g_meter getRMS:c];
@@ -359,14 +376,6 @@
         lsb_int &= 0x00FFFFFF;
         self.value_label.text = [NSString stringWithFormat:@"%06X", lsb_int];
     } else {
-        if( (channel_setting&METER_CH_SETTINGS_INPUT_MASK) == 0x09 && g_meter->disp_settings.ch3_mode == CH3_RESISTANCE ) {
-            // Convert to Ohms
-            if(g_meter->meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL ) {
-                val /= 100e-6;
-            } else {
-                val /= 100e-9;
-            }
-        }
         self.value_label.text = [MeterViewController formatReading:val digits:[g_meter getSigDigits:c] ];
     }
 }
@@ -377,7 +386,7 @@
     [self auto_manual_button_refresh];
     [self units_button_refresh];
     [self range_button_refresh];
-    [self value_label_refresh];
+    //[self value_label_refresh];
 }
 
 @end

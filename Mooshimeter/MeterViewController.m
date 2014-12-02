@@ -45,23 +45,26 @@ dispatch_semaphore_t tmp_sem;
     UIView* sv = [[UIView alloc] initWithFrame:cg(0, 8, 6, 2)];
     sv.userInteractionEnabled = YES;
     [[sv layer] setBorderWidth:5];
-    [[sv layer] setBorderColor:[UIColor darkGrayColor].CGColor];
+    [[sv layer] setBorderColor:[UIColor blackColor].CGColor];
     
     self.rate_auto_button        = mb(0,0,1,1,rate_auto_button_press);
     self.rate_button             = mb(1,0,2,1,rate_button_press);
     self.logging_button          = mb(3,0,3,1,logging_button_press);
     self.depth_auto_button       = mb(0,1,1,1,depth_auto_button_press);
     self.depth_button            = mb(1,1,2,1,depth_button_press);
-    self.logging_settings_button = mb(3,1,3,1,logging_settings_button_press);
+    self.settings_button         = mb(3,1,3,1,settings_button_press);
     
     [sv addSubview:self.rate_auto_button];
     [sv addSubview:self.rate_button];
     [sv addSubview:self.logging_button];
     [sv addSubview:self.depth_auto_button];
     [sv addSubview:self.depth_button];
-    [sv addSubview:self.logging_settings_button];
+    [sv addSubview:self.settings_button];
 #undef cg
 #undef mb
+    
+    // Because the settings button does not get refreshed, set its text here
+    [self.settings_button setTitle:@"\u2699" forState:UIControlStateNormal];
     
     [v addSubview:sv];
     [self.view addSubview:v];
@@ -114,10 +117,40 @@ dispatch_semaphore_t tmp_sem;
     }
 }
 -(void)logging_button_press {
-    DLog(@"Press");
+    logging_state_t* s = &g_meter->meter_log_settings.rw.target_logging_state;
+    switch(*s) {
+        case LOGGING_OFF:
+            *s = LOGGING_CALC;
+            break;
+        case LOGGING_CALC:
+            *s = LOGGING_OFF;
+            break;
+        default:
+            *s = LOGGING_OFF;
+            break;
+    }
+    [g_meter sendMeterLogSettings:^(NSError *error) {
+        [g_meter reqMeterLogSettings:^(NSData *data, NSError *error) {
+            [self refreshAllControls];
+            [self performSelector:@selector(refreshAllControls) withObject:nil afterDelay:1.0];
+        }];
+    }];
 }
 -(void)logging_button_refresh {
-    [self.logging_button setBackgroundColor:[UIColor lightGrayColor]];
+    logging_state_t* s = &g_meter->meter_log_settings.ro.present_logging_state;
+    switch(*s) {
+        case LOGGING_OFF:
+            [self.logging_button setTitle:@"Logging:OFF" forState:UIControlStateNormal];
+            [self.logging_button setBackgroundColor:[UIColor redColor]];
+            break;
+        case LOGGING_CALC:
+            [self.logging_button setTitle:@"Logging:ON" forState:UIControlStateNormal];
+            [self.logging_button setBackgroundColor:[UIColor greenColor]];
+            break;
+        default:
+            [self.logging_button setBackgroundColor:[UIColor lightGrayColor]];
+            break;
+    }
 }
 -(void)depth_auto_button_press {
     g_meter->disp_settings.depth_auto = !g_meter->disp_settings.depth_auto;
@@ -132,8 +165,7 @@ dispatch_semaphore_t tmp_sem;
     } else {
         uint8 depth_setting = g_meter->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2;
         depth_setting++;
-        // FIXME:  Something is broken when requesting buffers of 256
-        depth_setting %= 8;
+        depth_setting %= 9;
         g_meter->meter_settings.rw.calc_settings &= ~METER_CALC_SETTINGS_DEPTH_LOG2;
         g_meter->meter_settings.rw.calc_settings |= depth_setting;
         [g_meter sendMeterSettings:^(NSError *error) {
@@ -152,12 +184,29 @@ dispatch_semaphore_t tmp_sem;
         [self.depth_button setBackgroundColor:[UIColor whiteColor]];
     }
 }
--(void)logging_settings_button_press {
-    DLog(@"Press");
+
+-(void)settings_button_press {
+    if(!self.settings_view) {
+        CGRect frame = self.view.frame;
+        frame.origin.x += .05*frame.size.width;
+        frame.origin.y += (frame.size.height - 300)/2;
+        frame.size.width  *= 0.9;
+        frame.size.height =  300;
+        MeterSettingsView* g = [[MeterSettingsView alloc] initWithFrame:frame];
+        [g setBackgroundColor:[UIColor whiteColor]];
+        [g setAlpha:0.9];
+        self.settings_view = g;
+    }
+    if([self.view.subviews containsObject:self.settings_view]) {
+        [self.settings_view removeFromSuperview];
+    } else {
+        [self.view addSubview:self.settings_view];
+    }
 }
--(void)logging_settings_button_refresh {
+
+-(void)settings_button_refresh {
     DLog(@"Disp");
-    [self.logging_settings_button setBackgroundColor:[UIColor lightGrayColor]];
+    //[self.settings_button setBackgroundColor:[UIColor lightGrayColor]];
 }
 
 
@@ -168,7 +217,9 @@ dispatch_semaphore_t tmp_sem;
     [self depth_auto_button_refresh];
     [self depth_button_refresh];
     [self logging_button_refresh];
-    [self logging_settings_button_refresh];
+    [self settings_button_refresh];
+    [self.ch1_view refreshAllControls];
+    [self.ch2_view refreshAllControls];
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
@@ -180,7 +231,7 @@ dispatch_semaphore_t tmp_sem;
     [b setTitle:@"TBD" forState:UIControlStateNormal];
     [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor lightGrayColor].CGColor];
+    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
     b.frame = frame;
     return b;
 }
@@ -191,8 +242,7 @@ dispatch_semaphore_t tmp_sem;
     g_meter->meter_settings.rw.target_meter_state = METER_PAUSED;
     // Preserve the depth setting, overwrite other calc settings
     g_meter->meter_settings.rw.calc_settings &= METER_CALC_SETTINGS_DEPTH_LOG2;
-    //g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MS|METER_CALC_SETTINGS_MEAN|METER_CALC_SETTINGS_ONESHOT;
-    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MEAN;
+    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MS|METER_CALC_SETTINGS_MEAN;
     
     [g_meter sendMeterSettings:^(NSError *error) {
         [self refreshAllControls];
@@ -237,6 +287,7 @@ dispatch_semaphore_t tmp_sem;
 
 -(void) pause {
     self->play = NO;
+    if(!g_meter) return;
     g_meter->meter_settings.rw.target_meter_state = METER_PAUSED;
     [g_meter sendMeterSettings:^(NSError *error) {
         NSLog(@"Paused!");
@@ -244,19 +295,40 @@ dispatch_semaphore_t tmp_sem;
 }
 
 +(NSString*) formatReading:(double)val digits:(SignificantDigits)digits {
+    //TODO: Unify prefix handling.  Right now assume that in the area handling the units the correct prefix
+    // is being applied
+    while(digits.high > 3) {
+        digits.high -= 3;
+        val /= 1000;
+    }
+    while(digits.high <=0) {
+        digits.high += 3;
+        val *= 1000;
+    }
+    
     // TODO: Prefixes for units.  This will fail for wrong values of digits
     BOOL neg = val<0;
     int left = digits.high;
     int right = -1*(digits.high-digits.n_digits);
-    NSString* formatstring = [NSString stringWithFormat:@"%@%%0%d.%df", neg?@"":@" ", left+right+neg?0:1, right];
+    NSString* formatstring = [NSString stringWithFormat:@"%@%%0%d.%df", neg?@"":@" ", left+right+neg?0:1, right];  // To live is to suffer
     return [NSString stringWithFormat:formatstring, val];
 }
 
 -(void) updateReadings {
     NSLog(@"Updating measurements...");
-    
     [self.ch1_view value_label_refresh];
     [self.ch2_view value_label_refresh];
+    
+    // Handle autoranging
+    // Save a local copy of settings
+    MeterSettings_t save = g_meter->meter_settings;
+    [g_meter applyAutorange];
+    // Check if anything changed, and if so apply changes
+    if(memcmp(&save, &g_meter->meter_settings, sizeof(MeterSettings_t))) {
+        [g_meter sendMeterSettings:^(NSError *error) {
+            [self refreshAllControls];
+        }];
+    }
 }
 
 @end

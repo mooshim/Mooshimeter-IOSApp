@@ -17,6 +17,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch;
 -(void)value_label_refresh;
+-(void)refreshAllControls;
 
 @property (strong,nonatomic) UILabel*  value_label;
 @property (strong,nonatomic) UIButton* units_button;

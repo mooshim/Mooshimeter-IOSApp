@@ -11,8 +11,10 @@
 #import "MooshimeterDevice.h"
 #import "GraphViewController.h"
 #import "ChannelView.h"
+#import "MeterSettingsView.h"
 
 @class ChannelView;
+@class MeterSettingsView;
 
 @protocol MeterViewControllerDelegate <NSObject>
 @required
@@ -34,11 +36,12 @@
 @property (strong, nonatomic) UIButton* depth_auto_button;
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
-@property (strong, nonatomic) UIButton* logging_settings_button;
+@property (strong, nonatomic) UIButton* settings_button;
+
+@property (strong, nonatomic) MeterSettingsView* settings_view;
 
 -(instancetype)initWithDelegate:(id<MeterViewControllerDelegate>)delegate;
 +(void)style_auto_button:(UIButton*)b on:(BOOL)on;
 +(NSString*) formatReading:(double)val digits:(SignificantDigits)digits;
-- (void)orientationChanged:(NSNotification *)notification;
 
 @end

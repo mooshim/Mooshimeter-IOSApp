@@ -47,6 +47,7 @@
 		4ABE54201A080A9000277456 /* OADProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE541D1A080A9000277456 /* OADProgressViewController.m */; };
 		4AC27CC31A19C0C3008CF592 /* GraphSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */; };
 		4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */; };
+		4AF4D8DD1A2BCD2600622F58 /* MeterSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF4D8DC1A2BCD2600622F58 /* MeterSettingsView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,6 +205,8 @@
 		4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphSettingsView.m; sourceTree = "<group>"; };
 		4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartNavigationController.h; sourceTree = "<group>"; };
 		4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartNavigationController.m; sourceTree = "<group>"; };
+		4AF4D8DB1A2BCD2600622F58 /* MeterSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterSettingsView.h; sourceTree = "<group>"; };
+		4AF4D8DC1A2BCD2600622F58 /* MeterSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeterSettingsView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -472,6 +475,8 @@
 				0C63854E17D694DC00D3FB31 /* MeterViewController.m */,
 				4AAB4A241A1052C900794EC8 /* ChannelView.h */,
 				4AAB4A251A1052C900794EC8 /* ChannelView.m */,
+				4AF4D8DB1A2BCD2600622F58 /* MeterSettingsView.h */,
+				4AF4D8DC1A2BCD2600622F58 /* MeterSettingsView.m */,
 			);
 			name = MeterView;
 			sourceTree = "<group>";
@@ -661,6 +666,7 @@
 				4AA9EA2C1A12B54E0031C12B /* CBUUID+StringExtraction.m in Sources */,
 				4ABE541E1A080A9000277456 /* OADProfile.m in Sources */,
 				4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */,
+				4AF4D8DD1A2BCD2600622F58 /* MeterSettingsView.m in Sources */,
 				0C63853D17D694DC00D3FB31 /* AppDelegate.m in Sources */,
 				0C63854C17D694DC00D3FB31 /* ScanViewController.m in Sources */,
 				4AA9EA2F1A12B54E0031C12B /* LGPeripheral.m in Sources */,
