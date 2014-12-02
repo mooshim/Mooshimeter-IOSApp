@@ -27,6 +27,18 @@
     
     self.nav = [[SmartNavigationController alloc] initWithRootViewController:self.scan_vc];
     self.nav.app = self;
+    CGRect nav_size = self.nav.navigationBar.bounds;
+    nav_size.origin.x    = 2*nav_size.size.width/3;
+    nav_size.size.width /= 3;
+    self.bat_label = [[UILabel alloc]initWithFrame:nav_size];
+    [self.nav.navigationBar addSubview:self.bat_label];
+    [self.bat_label setText:@""];
+    nav_size = self.nav.navigationBar.bounds;
+    nav_size.origin.x    = 1*nav_size.size.width/3;
+    nav_size.size.width /= 2;
+    self.rssi_label = [[UILabel alloc]initWithFrame:nav_size];
+    [self.nav.navigationBar addSubview:self.rssi_label];
+    [self.rssi_label setText:@""];
     
     self.oad_profile = [[OADProfile alloc]init];
     self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
@@ -124,14 +136,14 @@
         case CBPeripheralStateConnected:{
             // We selected one that's already connected, disconnect
             [p disconnectWithCompletion:^(NSError *error) {
-                [self.scan_vc reloadData];
+                [self meterDisconnected];
             }];
             break;}
         case CBPeripheralStateConnecting:{
             //What should we do if you click a connecting meter?
             NSLog(@"Already connecting...");
             [p disconnectWithCompletion:^(NSError *error) {
-                [self.scan_vc reloadData];
+                [self meterDisconnected];
             }];
             break;}
         case CBPeripheralStateDisconnected:{
@@ -188,6 +200,10 @@
     } else {
         // We have a connected meter with the correct firmware.
         // Display the meter view.
+        const double bat_pcnt = 100*[AppDelegate alkSocEstimate:(g_meter->bat_voltage/2)];
+        NSString* bat_str = [NSString stringWithFormat:@"Bat:%d%%", (int)bat_pcnt];
+        [self.bat_label setText:bat_str];
+        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:YES];
         NSLog(@"Pushing meter view controller");
         [self.nav pushViewController:self.meter_vc animated:YES];
         NSLog(@"Did push meter view controller");
@@ -195,8 +211,35 @@
 }
 
 -(void)meterDisconnected {
+    [self.bat_label setText:@""];
+    [self.rssi_label setText:@""];
+    [NSTimer cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateRSSI) object:nil];
     [self.nav popToViewController:self.scan_vc animated:YES];
     [self.scan_vc reloadData];
+    g_meter = nil;
+}
+
+-(void)updateRSSI {
+    if(!g_meter) return;
+    [g_meter.p readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
+        if(RSSI) {
+            NSString* rssi_str = [NSString stringWithFormat:@"Sig:%@dB", RSSI];
+            [self.rssi_label setText:rssi_str];
+        } else {
+            [self.rssi_label setText:@""];
+        }
+    }];
+}
+
+// Estimate the state of charge of an alkaline battery
++(double)alkSocEstimate:(double)cell_voltage {
+    // CC2540 browns out at 2V, so let's just call 1V cell voltage 0% charge.
+    // 1.5V will be 100%.  Just make it linear.
+    double t = cell_voltage-1.0;
+    t*=2;
+    t = MIN(1.0,t);
+    t = MAX(0.0,t);
+    return t;
 }
 
 #pragma mark UIAlertViewDelegate

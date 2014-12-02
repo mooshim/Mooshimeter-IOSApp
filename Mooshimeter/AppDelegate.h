@@ -41,10 +41,10 @@
 @property (strong,nonatomic) MeterViewController* meter_vc;
 @property (strong,nonatomic) GraphViewController* scatter_vc;
 
+@property (strong,nonatomic) UILabel* bat_label;
+@property (strong,nonatomic) UILabel* rssi_label;
+
 -(UINavigationController*)getNav;
 -(void)scanForMeters;
--(void)endScan;
-
--(void)selectMeter:(LGPeripheral*)p;
 
 @end
