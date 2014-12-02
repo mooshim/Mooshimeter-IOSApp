@@ -25,6 +25,5 @@
 
 -(instancetype)initWithDelegate:(id)d;
 -(void)reloadData;
--(void)endRefresh;
 
 @end

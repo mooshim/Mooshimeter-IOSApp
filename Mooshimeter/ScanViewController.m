@@ -26,10 +26,6 @@
 
 - (void)awakeFromNib
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        self.clearsSelectionOnViewWillAppear = NO;
-        self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
-    }
     [super awakeFromNib];
 }
 
@@ -54,6 +50,7 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [self setTitle:@"Swipe down to scan"];
     [self reloadData];
 }
 
