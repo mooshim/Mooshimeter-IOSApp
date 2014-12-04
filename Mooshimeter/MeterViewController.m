@@ -189,9 +189,9 @@ dispatch_semaphore_t tmp_sem;
     if(!self.settings_view) {
         CGRect frame = self.view.frame;
         frame.origin.x += .05*frame.size.width;
-        frame.origin.y += (frame.size.height - 300)/2;
+        frame.origin.y += (frame.size.height - 250)/2;
         frame.size.width  *= 0.9;
-        frame.size.height =  300;
+        frame.size.height =  250;
         MeterSettingsView* g = [[MeterSettingsView alloc] initWithFrame:frame];
         [g setBackgroundColor:[UIColor whiteColor]];
         [g setAlpha:0.9];
@@ -297,7 +297,7 @@ dispatch_semaphore_t tmp_sem;
 +(NSString*) formatReading:(double)val digits:(SignificantDigits)digits {
     //TODO: Unify prefix handling.  Right now assume that in the area handling the units the correct prefix
     // is being applied
-    while(digits.high > 3) {
+    while(digits.high > 4) {
         digits.high -= 3;
         val /= 1000;
     }
@@ -311,7 +311,10 @@ dispatch_semaphore_t tmp_sem;
     int left = digits.high;
     int right = -1*(digits.high-digits.n_digits);
     NSString* formatstring = [NSString stringWithFormat:@"%@%%0%d.%df", neg?@"":@" ", left+right+neg?0:1, right];  // To live is to suffer
-    return [NSString stringWithFormat:formatstring, val];
+    NSString* retval = [NSString stringWithFormat:formatstring, val];
+    //Truncate
+    retval = [retval substringWithRange:NSMakeRange(0, MIN(retval.length,8))];
+    return retval;
 }
 
 -(void) updateReadings {

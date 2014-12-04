@@ -9,20 +9,9 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Mstar80x80</string>
-				<string>Mstar58x58</string>
-				<string>Mstar29x29</string>
-				<string>Mstar120x120</string>
-				<string>Mstar114x114</string>
-				<string>Mstar57x57</string>
-			</array>
-		</dict>
-	</dict>
+	<dict/>
+	<key>CFBundleIcons~ipad</key>
+	<dict/>
 	<key>CFBundleIdentifier</key>
 	<string>com.mooshim.$(PRODUCT_NAME:rfc1034identifier)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -39,51 +28,6 @@
 	<string>1.0.001</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchImageFile</key>
-	<string>Default</string>
-	<key>UILaunchImages</key>
-	<array>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Default</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-			<key>UILaunchImageSize</key>
-			<string>{320, 480}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Mstar640x960</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-			<key>UILaunchImageSize</key>
-			<string>{320, 480}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Default</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-			<key>UILaunchImageSize</key>
-			<string>{320, 568}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Mooshim640x1136</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-			<key>UILaunchImageSize</key>
-			<string>{320, 568}</string>
-		</dict>
-	</array>
 	<key>UIMainStoryboardFile~ipad</key>
 	<string>MainStoryboard_iPad</string>
 	<key>UIRequiredDeviceCapabilities</key>

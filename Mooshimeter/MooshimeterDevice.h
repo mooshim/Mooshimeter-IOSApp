@@ -42,6 +42,9 @@ typedef struct {
     
     // These reflect values internal to the app that determine how to display the data
     bool oad_mode;
+    double ch1_offset;
+    double ch2_offset;
+    double ch3_offset;
     
     BufferDownloadCompleteCB buffer_cb;
     BufferDownloadCompleteCB sample_cb;
@@ -93,6 +96,7 @@ typedef struct {
 -(void)setMeterHVMode:(bool)on cb:(LGCharacteristicWriteCallback)cb;
 
 -(int)getBufLen;
+-(void)setZero;
 
 // These refer to the meter sample, which is calculated on the meter itself
 -(double)getMean:(int)channel;
@@ -101,6 +105,8 @@ typedef struct {
 -(double)getBufMin:(int)channel;
 -(double)getBufMax:(int)channel;
 -(double)getBufMean:(int)channel;
+
+-(double)lsbToNativeUnits:(int)lsb ch:(int)ch;
 
 -(void)applyAutorange;
 
@@ -119,6 +125,8 @@ typedef struct {
 -(void)setChannelSetting:(int)ch set:(uint8)set;
 
 -(LGCharacteristic*)getLGChar:(uint16)UUID;
+
+-(uint32) getAdvertisedBuildTime;
 
 @end
 

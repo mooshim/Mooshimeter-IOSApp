@@ -51,6 +51,10 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [self setTitle:@"Swipe down to scan"];
+    if(g_meter) {
+        // If we've appeared, disconnect whatever we were talking to.
+        [g_meter.p disconnectWithCompletion:nil];
+    }
     [self reloadData];
 }
 

@@ -173,7 +173,7 @@
         const NSString* prefixes[] = {@"μ",@"m",@"",@"k",@"M"};
         uint8 prefix_i = 2;
         //TODO: Unify prefix handling.
-        while(digits.high > 3) {
+        while(digits.high > 4) {
             digits.high -= 3;
             prefix_i++;
         }
@@ -365,18 +365,36 @@
 
 -(void)value_label_refresh {
     const int c = self->channel;
+    const BOOL ac = g_meter->disp_settings.ac_display[c-1];
     double val;
-    if(g_meter->disp_settings.ac_display[c-1]) {
-        val = [g_meter getRMS:c];
-    } else {
-        val = [g_meter getMean:c];
+    int lsb_int;
+    switch(channel) {
+        case 1:
+            if(ac) { lsb_int = (int)(sqrt(g_meter->meter_sample.ch1_ms)); }
+            else   { lsb_int = [MooshimeterDevice to_int32:g_meter->meter_sample.ch1_reading_lsb]; }
+            break;
+        case 2:
+            if(ac) { lsb_int = (int)(sqrt(g_meter->meter_sample.ch2_ms)); }
+            else   { lsb_int = [MooshimeterDevice to_int32:g_meter->meter_sample.ch2_reading_lsb]; }
+            break;
     }
+    
     if(g_meter->disp_settings.raw_hex[c-1]) {
-        int lsb_int = (int)val;
         lsb_int &= 0x00FFFFFF;
         self.value_label.text = [NSString stringWithFormat:@"%06X", lsb_int];
     } else {
-        self.value_label.text = [MeterViewController formatReading:val digits:[g_meter getSigDigits:c] ];
+        // If at the edge of your range, say overload
+        // Remember the bounds are asymmetrical
+        const int32 upper_limit_lsb =  1.3*(1<<22);
+        const int32 lower_limit_lsb = -0.9*(1<<22);
+        
+        if(   lsb_int > upper_limit_lsb
+           || lsb_int < lower_limit_lsb ) {
+            self.value_label.text = @"OVERLOAD";
+        } else {
+            val = [g_meter lsbToNativeUnits:lsb_int ch:c];
+            self.value_label.text = [MeterViewController formatReading:val digits:[g_meter getSigDigits:c] ];
+        }
     }
 }
 

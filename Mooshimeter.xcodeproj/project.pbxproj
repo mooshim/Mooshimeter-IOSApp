@@ -28,6 +28,8 @@
 		0C78962417D7E56B00D1439E /* BLEUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78962217D7E56A00D1439E /* BLEUtility.m */; };
 		0C78967717DE74B800D1439E /* MooshimeterDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967617DE74B700D1439E /* MooshimeterDevice.m */; };
 		0C78972317E378FE00D1439E /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* GraphViewController.m */; };
+		4A6B13CA1A2EA97C000AF17B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */; };
+		4A6B13CC1A2FE808000AF17B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A6B13CB1A2FE808000AF17B /* Images.xcassets */; };
 		4A777E9E1A089CEC007FEEB9 /* Mooshimeter.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A777E9D1A089CEC007FEEB9 /* Mooshimeter.bin */; };
 		4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */; };
 		4AA9EA2C1A12B54E0031C12B /* CBUUID+StringExtraction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9EA201A12B54E0031C12B /* CBUUID+StringExtraction.m */; };
@@ -177,6 +179,8 @@
 		0C78972217E378FE00D1439E /* GraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewController.m; sourceTree = "<group>"; };
 		0C95E905182C320E007EBD5F /* Mooshimeter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Mooshimeter.entitlements; sourceTree = "<group>"; };
 		0CCE24EB1845D11900EEDB59 /* MooshimeterProfileTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterProfileTypes.h; sourceTree = "<group>"; };
+		4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		4A6B13CB1A2FE808000AF17B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4A777E9C1A089C27007FEEB9 /* MooshimeterFlashLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MooshimeterFlashLayout.h; sourceTree = "<group>"; };
 		4A777E9D1A089CEC007FEEB9 /* Mooshimeter.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = Mooshimeter.bin; path = "../../../BLE_Firmware/Projects/ble/Mooshimeter/CC2540DB/CC2540-OAD-ImgB/Exe/Mooshimeter.bin"; sourceTree = "<group>"; };
 		4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTableViewCell.h; path = ../ScanTableViewCell.h; sourceTree = "<group>"; };
@@ -251,6 +255,7 @@
 		0C63852017D694DC00D3FB31 = {
 			isa = PBXGroup;
 			children = (
+				4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */,
 				4AA9EA1E1A12B53F0031C12B /* LGBluetooth */,
 				4A777E9F1A089CF9007FEEB9 /* Firmware */,
 				4ABE54221A0814C100277456 /* Storyboard */,
@@ -297,6 +302,7 @@
 				0C63853C17D694DC00D3FB31 /* AppDelegate.m */,
 				4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */,
 				4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */,
+				4A6B13CB1A2FE808000AF17B /* Images.xcassets */,
 				0C63853317D694DC00D3FB31 /* Supporting Files */,
 			);
 			path = Mooshimeter;
@@ -617,8 +623,10 @@
 				0C349D7D1885292C00B6D64F /* Mstar120x120.png in Resources */,
 				0C349D801885292C00B6D64F /* Mstar58x58.png in Resources */,
 				0C63853717D694DC00D3FB31 /* InfoPlist.strings in Resources */,
+				4A6B13CC1A2FE808000AF17B /* Images.xcassets in Resources */,
 				0C349D7C1885292C00B6D64F /* Mstar114x114.png in Resources */,
 				0C349D731885252E00B6D64F /* Default.png in Resources */,
+				4A6B13CA1A2EA97C000AF17B /* Default-568h@2x.png in Resources */,
 				4A777E9E1A089CEC007FEEB9 /* Mooshimeter.bin in Resources */,
 				0C349D7F1885292C00B6D64F /* Mstar57x57.png in Resources */,
 				0C349D741885252E00B6D64F /* Mstar320x480.png in Resources */,
@@ -787,6 +795,8 @@
 		0C63856817D694DD00D3FB31 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -794,7 +804,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -816,13 +826,15 @@
 		0C63856917D694DD00D3FB31 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",

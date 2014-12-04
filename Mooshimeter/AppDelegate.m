@@ -40,7 +40,9 @@
     [self.nav.navigationBar addSubview:self.rssi_label];
     [self.rssi_label setText:@""];
     
-    self.oad_profile = [[OADProfile alloc]init];
+    NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
+    [path appendString:@"/Mooshimeter.bin"];
+    self.oad_profile = [[OADProfile alloc]init:path];
     self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
     self.oad_profile.navCtrl = self.nav;
     
@@ -182,28 +184,30 @@
     if( g_meter->oad_mode ) {
         // We connected to a meter in OAD mode as requested previously.  Update firmware.
         NSLog(@"Connected in OAD mode");
-#ifdef AUTO_UPDATE_FIRMWARE
-        NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
-        [path appendString:@"/"] ;
-        [path appendString:@"Mooshimeter.bin"];
-        
-        [self.oad_profile startUpload:path];
-#endif
+        if( [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
+            NSLog(@"Starting upload");
+            [self.oad_profile startUpload];
+        } else {
+            NSLog(@"We connected to an up-to-date meter in OAD mode.  Disconnecting.");
+            [g_meter.p disconnectWithCompletion:nil];
+        }
     }
-    else if( g_meter->meter_info.build_time < 1416285788 ) {
-#ifdef AUTO_UPDATE_FIRMWARE
+    else if( [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
         // Require a firmware update!
-        NSLog(@"FIRMWARE UPDATE REQUIRED.  Rebooting.");
+        NSLog(@"FIRMWARE UPDATE REQUIRED.");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
         [alert show];
-#endif
     } else {
         // We have a connected meter with the correct firmware.
         // Display the meter view.
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(meterDisconnected)
+                                                     name:kLGPeripheralDidDisconnect
+                                                   object:nil];
         const double bat_pcnt = 100*[AppDelegate alkSocEstimate:(g_meter->bat_voltage/2)];
         NSString* bat_str = [NSString stringWithFormat:@"Bat:%d%%", (int)bat_pcnt];
         [self.bat_label setText:bat_str];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:YES];
+        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
         NSLog(@"Pushing meter view controller");
         [self.nav pushViewController:self.meter_vc animated:YES];
         NSLog(@"Did push meter view controller");
@@ -228,6 +232,7 @@
         } else {
             [self.rssi_label setText:@""];
         }
+        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
     }];
 }
 

@@ -19,8 +19,6 @@
 #import "OADProgressViewController.h"
 #import "OADProfile.h"
 
-#define AUTO_UPDATE_FIRMWARE
-
 @class SmartNavigationController;
 @class ScanViewController;
 @class OADProfile;

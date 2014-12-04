@@ -33,6 +33,10 @@ MooshimeterDevice* g_meter;
     self->disp_settings.depth_auto = YES;
     self->disp_settings.rate_auto = YES;
     
+    self->ch1_offset = 0;
+    self->ch2_offset = 0;
+    self->ch3_offset = 0;
+    
     return self;
 }
 
@@ -275,14 +279,84 @@ MooshimeterDevice* g_meter;
     [g_meter setChannelSetting:channel set:channel_setting];
 }
 
+// Returns the maximum value of the next measurement range down superimposed on the current range
+
+-(int32)getLowerRange:(int)channel {
+    uint8 const pga_setting    = [self getChannelSetting:channel]&METER_CH_SETTINGS_PGA_MASK;
+    uint8* const adc_setting = &self->meter_settings.rw.adc_settings;
+    uint8* const ch3_mode    = &self->disp_settings.ch3_mode;
+    uint8* const measure_setting = &self->meter_settings.rw.measure_settings;
+    int8 tmp;
+    
+    switch([self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK) {
+        case 0x00:
+            // Electrode input
+            switch(channel) {
+                case 1:
+                    // We are measuring current.  We can boost PGA, but that's all.
+                    switch(pga_setting) {
+                        case 0x60:
+                            return 0;
+                        case 0x40:
+                            return 0.33*(1<<22);
+                        case 0x10:
+                            return 0.25*(1<<22);
+                    }
+                    break;
+                case 2:
+                    // Switch the ADC GPIO to activate dividers
+                    tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
+                    switch(tmp) {
+                        case 1:
+                            return 0;
+                        case 2:
+                            return 0.1*(1<<22);
+                    }
+                    break;
+            }
+            break;
+        case 0x04:
+            // Temp input
+            return 0;
+            break;
+        case 0x09:
+            switch(*ch3_mode) {
+                case CH3_VOLTAGE:
+                    switch(pga_setting) {
+                        case 0x60:
+                            return 0;
+                        case 0x40:
+                            return 0.33*(1<<22);
+                        case 0x10:
+                            return 0.25*(1<<22);
+                    }
+                    break;
+                case CH3_RESISTANCE:
+                case CH3_DIODE:
+                    switch(pga_setting) {
+                        case 0x60:
+                            if(!(*measure_setting&METER_MEASURE_SETTINGS_ISRC_LVL))
+                            {return 0.012*(1<<22);}
+                            else {return 0;}
+                        case 0x40:
+                            return 0.33*(1<<22);
+                        case 0x10:
+                            return 0.25*(1<<22);
+                    }
+                    break;
+            }
+            break;
+    }
+    return 0;
+}
+
 -(void)applyAutorange {
     MooshimeterDevice* m = g_meter;
     MeterSettings_t* const ms = &m->meter_settings;
     
     const BOOL ac_used = m->disp_settings.ac_display[0] || m->disp_settings.ac_display[1];
-    const int32 upper_limit_lsb =  1.3*(1<<22);
+    const int32 upper_limit_lsb =  0.9*(1<<22);
     const int32 lower_limit_lsb = -0.9*(1<<22);
-    const int32 inner_limit_lsb =  0.1*(1<<22);
     
     // Autorange sample rate and buffer depth.
     // If anything is doing AC, we need a deep buffer and fast sample
@@ -297,9 +371,10 @@ MooshimeterDevice* g_meter;
         else        ms->rw.calc_settings |= 5; // 32 samples
     }
     for(uint8 i = 0; i < 2; i++) {
+        // FIXME: Need a less hacky way of determining the inner limit
+        // 10% is OK for all ranges EXCEPT the one where we switch the current source from 100nA to 100uA
+        int32 inner_limit_lsb = 0.7*[self getLowerRange:i+1];
         if(m->disp_settings.auto_range[i]) {
-            // If the mean reading is above 80% of our range, bump up
-            // If the reading is below 20% of our range, bump down
             // Note that the ranges are asymmetrical - we have 1.8V of headroom above and 1.2V below
             int32 mean_lsb;
             double rms_lsb;
@@ -319,7 +394,7 @@ MooshimeterDevice* g_meter;
                || rms_lsb*sqrt(2.) > ABS(lower_limit_lsb) ) {
                 [m bumpRange:i+1 raise:YES wrap:NO];
             } else if(   ABS(mean_lsb)    < inner_limit_lsb
-                      || rms_lsb*sqrt(2.) < inner_limit_lsb ) {
+                      && rms_lsb*sqrt(2.) < inner_limit_lsb ) {
                 [m bumpRange:i+1 raise:NO wrap:NO];
             }
         }
@@ -544,14 +619,14 @@ MooshimeterDevice* g_meter;
     int pga_gain = pga_gain_table[pga_setting];
     // At lower sample frequencies, pga gain affects noise
     // At higher frequencies it has no effect
-    double pga_degradation = (1.5/12) * pga_gain * (samplerate_setting);
+    double pga_degradation = (1.5/12) * pga_gain * ((6-samplerate_setting)/6.0);
     enob -= pga_degradation;
     // Oversampling adds 1 ENOB per factor of 4
     enob += ((double)buffer_depth_log2)/2.0;
     //
     if(channel == 1 && (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
         // This is compensation for a bug in RevH, where current sense chopper noise dominates
-        enob -= 3;
+        enob -= 2;
     }
     return enob;
 }
@@ -617,7 +692,7 @@ MooshimeterDevice* g_meter;
 }
 
 -(double)lsbToNativeUnits:(int)lsb ch:(int)ch {
-    double adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
+    double adc_volts = 0;
     uint8 channel_setting = [self getChannelSetting:ch] & METER_CH_SETTINGS_INPUT_MASK;
     if(self->disp_settings.raw_hex[ch-1]) {
         return lsb;
@@ -627,23 +702,35 @@ MooshimeterDevice* g_meter;
             // Regular electrode input
             switch(ch) {
                 case 1:
+                    // FIXME: CH1 offset is treated as an extrinsic offset because it's dominated by drift in the isns amp
+                    adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
+                    adc_volts -= self->ch1_offset;
                     return [self adcVoltageToCurrent:adc_volts];
                 case 2:
+                    lsb -= self->ch2_offset;
+                    adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
                     return [self adcVoltageToHV:adc_volts];
                 default:
                     DLog(@"Invalid channel");
                     return 0;
             }
         case 0x04:
+            adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
             return [self adcVoltageToTemp:adc_volts];
         case 0x09:
+            // Apply offset
+            lsb -= self->ch2_offset;
+            adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
             if( self->disp_settings.ch3_mode == CH3_RESISTANCE ) {
                 // Convert to Ohms
+                double retval = adc_volts;
                 if(self->meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL ) {
-                    return adc_volts/100e-6;
+                    retval /= 100e-6;
                 } else {
-                    return adc_volts/100e-9;
+                    retval /= 100e-9;
                 }
+                retval -= 7.9; // Compensate for the PTC
+                return retval;
             } else {
                 return adc_volts;
             }
@@ -752,6 +839,32 @@ MooshimeterDevice* g_meter;
         default:
             NSLog(@"Unrecognized setting");
             return @"";
+    }
+}
+
+
+-(uint32) getAdvertisedBuildTime {
+    uint32 build_time = 0;
+    NSData* tmp;
+    tmp = [self.p.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
+    if( tmp != nil ) {
+        [tmp getBytes:&build_time length:4];
+    }
+    return build_time;
+}
+
+-(void)setZero {
+    // FIXME:  Annoying hack:  CH1 offset is dominated by extrinsic because of isns amp, but others are dominated by intrinsic
+    // To deal with this, ch1_offset will be in extrinsic units, but CH2 and CH3 will be in lsb
+    if( (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
+        self->ch3_offset = [MooshimeterDevice to_int32:self->meter_sample.ch1_reading_lsb];
+    } else {
+        self->ch1_offset = [self lsbToADCInVoltage:[MooshimeterDevice to_int32:self->meter_sample.ch1_reading_lsb] channel:1];
+    }
+    if( (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
+        self->ch3_offset = [MooshimeterDevice to_int32:self->meter_sample.ch2_reading_lsb];
+    } else {
+        self->ch2_offset = [MooshimeterDevice to_int32:self->meter_sample.ch2_reading_lsb];
     }
 }
 
