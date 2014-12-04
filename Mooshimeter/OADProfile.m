@@ -13,25 +13,25 @@
 
 @implementation OADProfile
 
--(id) init {
+-(id) init:(NSString*) filename {
     self = [super init];
     if (self) {
         self.canceled = FALSE;
         self.inProgramming = FALSE;
         self.start = YES;
+        self.imageFile = [NSData dataWithContentsOfFile:filename];
+        NSLog(@"Loaded firmware \"%@\"of size : %d",filename,self.imageFile.length);
+        [self.imageFile getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
     }
     return self;
 }
 
--(void) startUpload:(NSString*) filename {
+-(void) startUpload {
     NSLog(@"Configuring OAD Profile");
     self.start = YES;
     LGCharacteristic* image_notify = [g_meter getLGChar:OAD_IMAGE_NOTIFY];
     LGCharacteristic* image_block  = [g_meter getLGChar:OAD_IMAGE_BLOCK_REQ];
     self.pacer_sem = dispatch_semaphore_create(8);
-    
-    self.imageFile = [NSData dataWithContentsOfFile:filename];
-    NSLog(@"Loaded firmware \"%@\"of size : %d",filename,self.imageFile.length);
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleDisconnect:)
@@ -40,7 +40,7 @@
     
     [image_block setNotifyValue:YES completion:^(NSError *error) {
         [image_notify setNotifyValue:YES completion:^(NSError *error) {
-            [self uploadImage:filename];
+            [self uploadImage];
         } onUpdate:^(NSData *data, NSError *error) {
             NSLog(@"OAD Notify: %@", data);
         }];
@@ -53,6 +53,7 @@
 }
 
 -(void)handleDisconnect:(NSNotification *) notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     if(self.iBlocks == self.nBlocks) {
         // We finished before disconnecting, don't display a failure.
     }
@@ -64,7 +65,7 @@
     self.canceled = YES;
 }
 
--(void) uploadImage:(NSString *)filename {
+-(void) uploadImage {
     self.inProgramming = YES;
     self.canceled = NO;
     
@@ -147,7 +148,10 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         [self.navCtrl popToRootViewControllerAnimated:YES];
         self.inProgramming = NO;
-        [self completionDialog];
+        dispatch_queue_t mq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(mq, ^{
+            [self completionDialog];
+        });
         return;
     }
     dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);

@@ -13,7 +13,10 @@
 
 @class BLETIOADProgressViewController;
 
-@interface OADProfile : NSObject <UIActionSheetDelegate,UIAlertViewDelegate,CBPeripheralDelegate>
+@interface OADProfile : NSObject <UIActionSheetDelegate,UIAlertViewDelegate,CBPeripheralDelegate> {
+    @public
+    img_hdr_t imageHeader;
+}
 
 @property (strong,nonatomic) NSData *imageFile;
 
@@ -31,11 +34,9 @@
 
 @property (strong,nonatomic) dispatch_semaphore_t pacer_sem;
 
--(instancetype) init;
+-(instancetype) init:(NSString*) filename;
 
--(void) startUpload:(NSString*) filename;
-
--(void) programmingTimerTick:(NSTimer *)timer;
+-(void) startUpload;
 
 -(void) completionDialog;
 
