@@ -8,7 +8,7 @@
 
 #import "MooshimeterDevice.h"
 
-// A global meter.  Because fuck you.
+// A global meter.  TODO: Make this a singleton or something respectable.
 MooshimeterDevice* g_meter;
 
 @implementation MooshimeterDevice
