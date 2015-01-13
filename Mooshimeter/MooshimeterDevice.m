@@ -371,8 +371,6 @@ MooshimeterDevice* g_meter;
         else        ms->rw.calc_settings |= 5; // 32 samples
     }
     for(uint8 i = 0; i < 2; i++) {
-        // FIXME: Need a less hacky way of determining the inner limit
-        // 10% is OK for all ranges EXCEPT the one where we switch the current source from 100nA to 100uA
         int32 inner_limit_lsb = 0.7*[self getLowerRange:i+1];
         if(m->disp_settings.auto_range[i]) {
             // Note that the ranges are asymmetrical - we have 1.8V of headroom above and 1.2V below
