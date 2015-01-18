@@ -192,7 +192,8 @@
             [g_meter.p disconnectWithCompletion:nil];
         }
     }
-    else if( [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
+    // Temporarily disabling firmware update checking since the only meters in the wild have compatible firmware and this triggers on build time
+    else if(  0 && [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
         // Require a firmware update!
         NSLog(@"FIRMWARE UPDATE REQUIRED.");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
@@ -209,12 +210,15 @@
         [self.bat_label setText:bat_str];
         [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
         NSLog(@"Pushing meter view controller");
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         [self.nav pushViewController:self.meter_vc animated:YES];
         NSLog(@"Did push meter view controller");
     }
 }
 
 -(void)meterDisconnected {
+    // Allow screen dimming again
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     [self.bat_label setText:@""];
     [self.rssi_label setText:@""];
     [NSTimer cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateRSSI) object:nil];
