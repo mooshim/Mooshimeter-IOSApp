@@ -41,6 +41,7 @@
 
 @property (strong,nonatomic) UILabel* bat_label;
 @property (strong,nonatomic) UILabel* rssi_label;
+@property (strong, nonatomic) UIButton* settings_button;
 
 -(UINavigationController*)getNav;
 -(void)scanForMeters;

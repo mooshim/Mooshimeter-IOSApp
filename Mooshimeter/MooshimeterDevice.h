@@ -42,6 +42,7 @@ typedef struct {
     
     // These reflect values internal to the app that determine how to display the data
     bool oad_mode;
+    bool offset_on;
     double ch1_offset;
     double ch2_offset;
     double ch3_offset;

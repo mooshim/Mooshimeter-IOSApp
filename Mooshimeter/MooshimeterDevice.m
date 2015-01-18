@@ -33,6 +33,7 @@ MooshimeterDevice* g_meter;
     self->disp_settings.depth_auto = YES;
     self->disp_settings.rate_auto = YES;
     
+    self->offset_on  = NO;
     self->ch1_offset = 0;
     self->ch2_offset = 0;
     self->ch3_offset = 0;

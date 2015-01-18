@@ -39,7 +39,7 @@
     //self.logging_period_control = [[UISegmentedControl alloc] initWithItems:freq_options];
     
     // Lay out the controls
-    const int nrow = 3;
+    const int nrow = 2;
     const int ncol = 1;
     
     float h = frame.size.height/nrow;
@@ -49,8 +49,7 @@
     self.name_control            = [[UITextField         alloc]initWithFrame:cg(0,0,1,1)];
     //self.logging_period_control.frame =                                     cg(0,1,1,1);
     //self.logging_time_control   = [[UITextField         alloc]initWithFrame:cg(0,2,1,1)];
-    self.zero_button             = [[UIButton            alloc]initWithFrame:cg(0,1,1,1)];
-    self.hibernate_button        = [[UIButton            alloc]initWithFrame:cg(0,2,1,1)];
+    self.hibernate_button        = [[UIButton            alloc]initWithFrame:cg(0,1,1,1)];
 #undef cg
     
     // Set properties
@@ -82,13 +81,6 @@
     self.logging_time_control.inputAccessoryView = loglen_apply_toolbar;
     */
     
-    [self.zero_button addTarget:self action:@selector(zeroPress) forControlEvents:UIControlEventTouchUpInside];
-    [self.zero_button setTitle:@"Re-Zero" forState:UIControlStateNormal];
-    [self.zero_button.titleLabel setFont:[UIFont systemFontOfSize:30]];
-    [self.zero_button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[self.zero_button layer] setBorderWidth:2];
-    [[self.zero_button layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    
     [self.hibernate_button addTarget:self action:@selector(hibernateSet) forControlEvents:UIControlEventTouchUpInside];
     [self.hibernate_button setTitle:@"Hibernate" forState:UIControlStateNormal];
     [self.hibernate_button.titleLabel setFont:[UIFont systemFontOfSize:30]];
@@ -100,7 +92,6 @@
     [self addSubview:self.name_control];
     //[self addSubview:self.logging_period_control];
     //[self addSubview:self.logging_time_control];
-    [self addSubview:self.zero_button];
     [self addSubview:self.hibernate_button];
     
     [[self layer] setBorderWidth:5];
@@ -110,9 +101,6 @@
 
 // Control Callbacks
 
--(void)zeroPress {
-    [g_meter setZero];
-}
 
 -(void)nameSelected {
     [self.name_control setText:@""];
