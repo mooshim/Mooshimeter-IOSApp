@@ -14,7 +14,6 @@
 @property (strong,nonatomic) UITextField*           name_control;
 //@property (strong,nonatomic) UISegmentedControl*    logging_period_control;
 //@property (strong,nonatomic) UITextField*           logging_time_control;
-@property (strong,nonatomic) UIButton*              zero_button;
 @property (strong,nonatomic) UIButton*              hibernate_button;
 
 @end

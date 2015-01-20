@@ -28,17 +28,40 @@
     self.nav = [[SmartNavigationController alloc] initWithRootViewController:self.scan_vc];
     self.nav.app = self;
     CGRect nav_size = self.nav.navigationBar.bounds;
-    nav_size.origin.x    = 2*nav_size.size.width/3;
-    nav_size.size.width /= 3;
+    int w = nav_size.size.width/4;
+    
+    nav_size.origin.x   = 2*w;
+    nav_size.size.width = w;
     self.bat_label = [[UILabel alloc]initWithFrame:nav_size];
     [self.nav.navigationBar addSubview:self.bat_label];
     [self.bat_label setText:@""];
-    nav_size = self.nav.navigationBar.bounds;
-    nav_size.origin.x    = 1*nav_size.size.width/3;
-    nav_size.size.width /= 2;
+    
+    nav_size.origin.x   = 1*w;
+    nav_size.size.width = w;
     self.rssi_label = [[UILabel alloc]initWithFrame:nav_size];
     [self.nav.navigationBar addSubview:self.rssi_label];
     [self.rssi_label setText:@""];
+    
+    nav_size.origin.x   = 3*w;
+    nav_size.size.width = w;
+    // Fake some padding
+    nav_size.origin.x    += 5;
+    nav_size.origin.y    += 5;
+    nav_size.size.width  -= 10;
+    nav_size.size.height -= 10;
+    
+    UIButton* b;
+    b = [UIButton buttonWithType:UIButtonTypeSystem];
+    b.userInteractionEnabled = YES;
+    [b addTarget:self action:@selector(settings_button_press) forControlEvents:UIControlEventTouchUpInside];
+    [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
+    [b setTitle:@"\u2699" forState:UIControlStateNormal];
+    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [[b layer] setBorderWidth:2];
+    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
+    b.frame = nav_size;
+    self.settings_button = b;
+    [self.nav.navigationBar addSubview:self.settings_button];
     
     NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
     [path appendString:@"/Mooshimeter.bin"];
@@ -78,6 +101,11 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+-(void)settings_button_press {
+    NSLog(@"Main app settings button press");
+    [self.nav.topViewController performSelector:@selector(settings_button_press)];
 }
 
 #pragma mark - Random utility functions
@@ -192,7 +220,8 @@
             [g_meter.p disconnectWithCompletion:nil];
         }
     }
-    else if( [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
+    // Temporarily disabling firmware update checking since the only meters in the wild have compatible firmware and this triggers on build time
+    else if(  0 && [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
         // Require a firmware update!
         NSLog(@"FIRMWARE UPDATE REQUIRED.");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
@@ -209,12 +238,15 @@
         [self.bat_label setText:bat_str];
         [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
         NSLog(@"Pushing meter view controller");
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         [self.nav pushViewController:self.meter_vc animated:YES];
         NSLog(@"Did push meter view controller");
     }
 }
 
 -(void)meterDisconnected {
+    // Allow screen dimming again
+    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     [self.bat_label setText:@""];
     [self.rssi_label setText:@""];
     [NSTimer cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateRSSI) object:nil];

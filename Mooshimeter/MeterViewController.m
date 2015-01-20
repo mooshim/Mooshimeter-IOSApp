@@ -52,19 +52,18 @@ dispatch_semaphore_t tmp_sem;
     self.logging_button          = mb(3,0,3,1,logging_button_press);
     self.depth_auto_button       = mb(0,1,1,1,depth_auto_button_press);
     self.depth_button            = mb(1,1,2,1,depth_button_press);
-    self.settings_button         = mb(3,1,3,1,settings_button_press);
+    self.zero_button             = mb(3,1,3,1,zero_button_press);
+    
+    [self.zero_button setTitle:@"Zero" forState:UIControlStateNormal];
     
     [sv addSubview:self.rate_auto_button];
     [sv addSubview:self.rate_button];
     [sv addSubview:self.logging_button];
     [sv addSubview:self.depth_auto_button];
     [sv addSubview:self.depth_button];
-    [sv addSubview:self.settings_button];
+    [sv addSubview:self.zero_button];
 #undef cg
 #undef mb
-    
-    // Because the settings button does not get refreshed, set its text here
-    [self.settings_button setTitle:@"\u2699" forState:UIControlStateNormal];
     
     [v addSubview:sv];
     [self.view addSubview:v];
@@ -204,11 +203,30 @@ dispatch_semaphore_t tmp_sem;
     }
 }
 
+-(void)zero_button_press {
+    g_meter->offset_on ^= YES;
+    if(g_meter->offset_on) {
+        [g_meter setZero];
+    } else {
+        g_meter->ch1_offset = 0;
+        g_meter->ch2_offset = 0;
+        g_meter->ch3_offset = 0;
+    }
+    [self refreshAllControls];
+}
+
 -(void)settings_button_refresh {
     DLog(@"Disp");
     //[self.settings_button setBackgroundColor:[UIColor lightGrayColor]];
 }
 
+-(void)zero_button_refresh {
+    if(g_meter->offset_on) {
+        [self.zero_button setBackgroundColor: [UIColor greenColor]];
+    } else {
+        [self.zero_button setBackgroundColor: [UIColor redColor]];
+    }
+}
 
 -(void) refreshAllControls {
     // Make all controls reflect the state of the meter
@@ -217,7 +235,7 @@ dispatch_semaphore_t tmp_sem;
     [self depth_auto_button_refresh];
     [self depth_button_refresh];
     [self logging_button_refresh];
-    [self settings_button_refresh];
+    [self zero_button_refresh];
     [self.ch1_view refreshAllControls];
     [self.ch2_view refreshAllControls];
 }

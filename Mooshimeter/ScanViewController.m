@@ -64,6 +64,10 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
+-(void)settings_button_press {
+    NSLog(@"Scan view settings button press");
+}
+
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

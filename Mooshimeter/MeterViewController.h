@@ -36,7 +36,7 @@
 @property (strong, nonatomic) UIButton* depth_auto_button;
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
-@property (strong, nonatomic) UIButton* settings_button;
+@property (strong, nonatomic) UIButton* zero_button;
 
 @property (strong, nonatomic) MeterSettingsView* settings_view;
 
