@@ -112,7 +112,7 @@
     NSString* new_name = self.name_control.text;
     NSLog(@"%@", new_name);
     if(new_name.length != 0) {
-        new_name = [new_name substringToIndex: MIN(18, [new_name length])];
+        new_name = [new_name substringToIndex: MIN(16, [new_name length])];
         [g_meter sendMeterName:new_name cb:^(NSError *error) {
             DLog(@"Name send complete");
         }];
