@@ -2,6 +2,8 @@
 
 /// @file
 
+@class CPTLineStyle;
+
 #if __cplusplus
 extern "C" {
 #endif
@@ -120,6 +122,8 @@ CGRect CPTAlignRectToUserSpace(CGContextRef context, CGRect rect);
 CGPoint CPTAlignIntegralPointToUserSpace(CGContextRef context, CGPoint point);
 CGRect CPTAlignIntegralRectToUserSpace(CGContextRef context, CGRect rect);
 
+CGRect CPTAlignBorderedRectToUserSpace(CGContextRef context, CGRect rect, CPTLineStyle *borderLineStyle);
+
 /// @}
 
 /// @name String Formatting for Core Graphics Structs
@@ -133,6 +137,13 @@ NSString *CPTStringFromRect(CGRect rect);
 /// @name CGPoint Utilities
 /// @{
 CGFloat squareOfDistanceBetweenPoints(CGPoint point1, CGPoint point2);
+
+/// @}
+
+/// @name Edge Inset Utilities
+/// @{
+CPTEdgeInsets CPTEdgeInsetsMake(CGFloat top, CGFloat left, CGFloat bottom, CGFloat right);
+BOOL CPTEdgeInsetsEqualToEdgeInsets(CPTEdgeInsets insets1, CPTEdgeInsets insets2);
 
 /// @}
 

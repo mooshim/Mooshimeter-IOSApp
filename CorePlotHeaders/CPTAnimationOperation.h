@@ -3,34 +3,35 @@
 
 @class CPTAnimationPeriod;
 
-@interface CPTAnimationOperation : NSObject {
-    @private
-    CPTAnimationPeriod *period;
-    CPTAnimationCurve animationCurve;
-
-    id boundObject;
-    SEL boundGetter;
-    SEL boundSetter;
-
-    __cpt_weak NSObject<CPTAnimationDelegate> *delegate;
-}
+@interface CPTAnimationOperation : NSObject
 
 /// @name Animation Timing
 /// @{
-@property (nonatomic, retain) CPTAnimationPeriod *period;
+@property (nonatomic, strong) CPTAnimationPeriod *period;
 @property (nonatomic, assign) CPTAnimationCurve animationCurve;
 /// @}
 
 /// @name Animated Property
 /// @{
-@property (nonatomic, retain) id boundObject;
+@property (nonatomic, strong) id boundObject;
 @property (nonatomic) SEL boundGetter;
 @property (nonatomic) SEL boundSetter;
 /// @}
 
 /// @name Delegate
 /// @{
-@property (nonatomic, cpt_weak_property) __cpt_weak NSObject<CPTAnimationDelegate> *delegate;
+@property (nonatomic, cpt_weak_property) __cpt_weak id<CPTAnimationDelegate> delegate;
+/// @}
+
+/// @name Status
+/// @{
+@property (atomic, getter = isCanceled) BOOL canceled;
+/// @}
+
+/// @name Identification
+/// @{
+@property (nonatomic, readwrite, copy) id<NSCopying, NSObject> identifier;
+@property (nonatomic, readwrite, copy) NSDictionary *userInfo;
 /// @}
 
 @end

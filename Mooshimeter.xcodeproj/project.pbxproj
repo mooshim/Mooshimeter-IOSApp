@@ -49,6 +49,7 @@
 		4ABE54201A080A9000277456 /* OADProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABE541D1A080A9000277456 /* OADProgressViewController.m */; };
 		4AC27CC31A19C0C3008CF592 /* GraphSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */; };
 		4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */; };
+		4ADDC5D51A882CFB00FC5093 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ADDC5D41A882CFB00FC5093 /* Accelerate.framework */; };
 		4AF4D8DD1A2BCD2600622F58 /* MeterSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF4D8DC1A2BCD2600622F58 /* MeterSettingsView.m */; };
 /* End PBXBuildFile section */
 
@@ -209,6 +210,7 @@
 		4AC27CC21A19C0C3008CF592 /* GraphSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphSettingsView.m; sourceTree = "<group>"; };
 		4ACF8ADF1A0C918B00EC402B /* SmartNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartNavigationController.h; sourceTree = "<group>"; };
 		4ACF8AE01A0C918B00EC402B /* SmartNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartNavigationController.m; sourceTree = "<group>"; };
+		4ADDC5D41A882CFB00FC5093 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		4AF4D8DB1A2BCD2600622F58 /* MeterSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterSettingsView.h; sourceTree = "<group>"; };
 		4AF4D8DC1A2BCD2600622F58 /* MeterSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeterSettingsView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -218,6 +220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4ADDC5D51A882CFB00FC5093 /* Accelerate.framework in Frameworks */,
 				4ABE54161A07FF0000277456 /* CoreGraphics.framework in Frameworks */,
 				4ABE54151A07FEE900277456 /* Foundation.framework in Frameworks */,
 				4ABE54141A07FEE100277456 /* UIKit.framework in Frameworks */,
@@ -280,6 +283,7 @@
 		0C63852B17D694DC00D3FB31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4ADDC5D41A882CFB00FC5093 /* Accelerate.framework */,
 				0C78971F17E3762000D1439E /* QuartzCore.framework */,
 				0C7895C817D786A400D1439E /* CoreBluetooth.framework */,
 				0C63852C17D694DC00D3FB31 /* UIKit.framework */,
@@ -757,7 +761,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				"VALID_ARCHS[sdk=*]" = "armv7 armv7s";
+				"VALID_ARCHS[sdk=*]" = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -788,7 +792,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				"VALID_ARCHS[sdk=*]" = "armv7 armv7s";
+				"VALID_ARCHS[sdk=*]" = "armv7 armv7s arm64";
 			};
 			name = Release;
 		};

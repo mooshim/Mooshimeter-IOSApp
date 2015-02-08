@@ -2,7 +2,9 @@
 
 /// @file
 
+@class CPTFill;
 @class CPTLegend;
+@class CPTLineStyle;
 @class CPTPlot;
 @class CPTTextStyle;
 
@@ -36,6 +38,38 @@ extern NSString *const CPTLegendNeedsReloadEntriesForPlotNotification;
 /// @name Drawing
 /// @{
 
+/** @brief @optional This method gives the delegate a chance to provide a background fill for each legend entry.
+ *  @param legend The legend.
+ *  @param idx The zero-based index of the legend entry for the given plot.
+ *  @param plot The plot.
+ *  @return The fill for the legend entry background or @nil to use the default @link CPTLegend::entryFill entryFill @endlink .
+ **/
+-(CPTFill *)legend:(CPTLegend *)legend fillForEntryAtIndex:(NSUInteger)idx forPlot:(CPTPlot *)plot;
+
+/** @brief @optional This method gives the delegate a chance to provide a border line style for each legend entry.
+ *  @param legend The legend.
+ *  @param idx The zero-based index of the legend entry for the given plot.
+ *  @param plot The plot.
+ *  @return The line style for the legend entry border or @nil to use the default @link CPTLegend::entryBorderLineStyle entryBorderLineStyle @endlink .
+ **/
+-(CPTLineStyle *)legend:(CPTLegend *)legend lineStyleForEntryAtIndex:(NSUInteger)idx forPlot:(CPTPlot *)plot;
+
+/** @brief @optional This method gives the delegate a chance to provide a custom swatch fill for each legend entry.
+ *  @param legend The legend.
+ *  @param idx The zero-based index of the legend entry for the given plot.
+ *  @param plot The plot.
+ *  @return The fill for the legend swatch or @nil to use the default @link CPTLegend::swatchFill swatchFill @endlink .
+ **/
+-(CPTFill *)legend:(CPTLegend *)legend fillForSwatchAtIndex:(NSUInteger)idx forPlot:(CPTPlot *)plot;
+
+/** @brief @optional This method gives the delegate a chance to provide a custom swatch border line style for each legend entry.
+ *  @param legend The legend.
+ *  @param idx The zero-based index of the legend entry for the given plot.
+ *  @param plot The plot.
+ *  @return The line style for the legend swatch border or @nil to use the default @link CPTLegend::swatchBorderLineStyle swatchBorderLineStyle @endlink .
+ **/
+-(CPTLineStyle *)legend:(CPTLegend *)legend lineStyleForSwatchAtIndex:(NSUInteger)idx forPlot:(CPTPlot *)plot;
+
 /** @brief @optional This method gives the delegate a chance to draw custom swatches for each legend entry.
  *
  *  The "swatch" is the graphical part of the legend entry, usually accompanied by a text title
@@ -55,9 +89,9 @@ extern NSString *const CPTLegendNeedsReloadEntriesForPlotNotification;
 /// @name Legend Entry Selection
 /// @{
 
-/** @brief @optional Informs the delegate that the swatch or label of a legend entry was
- *  @if MacOnly clicked. @endif
- *  @if iOSOnly touched. @endif
+/** @brief @optional Informs the delegate that the swatch or label of a legend entry
+ *  @if MacOnly was both pressed and released. @endif
+ *  @if iOSOnly received both the touch down and up events. @endif
  *  @param legend The legend.
  *  @param plot The plot associated with the selected legend entry.
  *  @param idx The index of the
@@ -66,9 +100,9 @@ extern NSString *const CPTLegendNeedsReloadEntriesForPlotNotification;
  **/
 -(void)legend:(CPTLegend *)legend legendEntryForPlot:(CPTPlot *)plot wasSelectedAtIndex:(NSUInteger)idx;
 
-/** @brief @optional Informs the delegate that the swatch or label of a legend entry was
- *  @if MacOnly clicked. @endif
- *  @if iOSOnly touched. @endif
+/** @brief @optional Informs the delegate that the swatch or label of a legend entry
+ *  @if MacOnly was both pressed and released. @endif
+ *  @if iOSOnly received both the touch down and up events. @endif
  *  @param legend The legend.
  *  @param plot The plot associated with the selected legend entry.
  *  @param idx The index of the
@@ -78,34 +112,59 @@ extern NSString *const CPTLegendNeedsReloadEntriesForPlotNotification;
  **/
 -(void)legend:(CPTLegend *)legend legendEntryForPlot:(CPTPlot *)plot wasSelectedAtIndex:(NSUInteger)idx withEvent:(CPTNativeEvent *)event;
 
+/** @brief @optional Informs the delegate that the swatch or label of a legend entry
+ *  @if MacOnly was pressed. @endif
+ *  @if iOSOnly touch started. @endif
+ *  @param legend The legend.
+ *  @param plot The plot associated with the selected legend entry.
+ *  @param idx The index of the
+ *  @if MacOnly clicked legend entry. @endif
+ *  @if iOSOnly touched legend entry. @endif
+ **/
+-(void)legend:(CPTLegend *)legend legendEntryForPlot:(CPTPlot *)plot touchDownAtIndex:(NSUInteger)idx;
+
+/** @brief @optional Informs the delegate that the swatch or label of a legend entry
+ *  @if MacOnly was pressed. @endif
+ *  @if iOSOnly touch started. @endif
+ *  @param legend The legend.
+ *  @param plot The plot associated with the selected legend entry.
+ *  @param idx The index of the
+ *  @if MacOnly clicked legend entry. @endif
+ *  @if iOSOnly touched legend entry. @endif
+ *  @param event The event that triggered the selection.
+ **/
+-(void)legend:(CPTLegend *)legend legendEntryForPlot:(CPTPlot *)plot touchDownAtIndex:(NSUInteger)idx withEvent:(CPTNativeEvent *)event;
+
+/** @brief @optional Informs the delegate that the swatch or label of a legend entry
+ *  @if MacOnly was released. @endif
+ *  @if iOSOnly touch ended. @endif
+ *  @param legend The legend.
+ *  @param plot The plot associated with the selected legend entry.
+ *  @param idx The index of the
+ *  @if MacOnly clicked legend entry. @endif
+ *  @if iOSOnly touched legend entry. @endif
+ **/
+-(void)legend:(CPTLegend *)legend legendEntryForPlot:(CPTPlot *)plot touchUpAtIndex:(NSUInteger)idx;
+
+/** @brief @optional Informs the delegate that the swatch or label of a legend entry
+ *  @if MacOnly was released. @endif
+ *  @if iOSOnly touch ended. @endif
+ *  @param legend The legend.
+ *  @param plot The plot associated with the selected legend entry.
+ *  @param idx The index of the
+ *  @if MacOnly clicked legend entry. @endif
+ *  @if iOSOnly touched legend entry. @endif
+ *  @param event The event that triggered the selection.
+ **/
+-(void)legend:(CPTLegend *)legend legendEntryForPlot:(CPTPlot *)plot touchUpAtIndex:(NSUInteger)idx withEvent:(CPTNativeEvent *)event;
+
 /// @}
 
 @end
 
 #pragma mark -
 
-@interface CPTLegend : CPTBorderedLayer {
-    @private
-    NSMutableArray *plots;
-    NSMutableArray *legendEntries;
-    BOOL layoutChanged;
-    CPTTextStyle *textStyle;
-    CGSize swatchSize;
-    CPTLineStyle *swatchBorderLineStyle;
-    CGFloat swatchCornerRadius;
-    CPTFill *swatchFill;
-    NSUInteger numberOfRows;
-    NSUInteger numberOfColumns;
-    BOOL equalRows;
-    BOOL equalColumns;
-    NSArray *rowHeights;
-    NSArray *rowHeightsThatFit;
-    NSArray *columnWidths;
-    NSArray *columnWidthsThatFit;
-    CGFloat columnMargin;
-    CGFloat rowMargin;
-    CGFloat titleOffset;
-}
+@interface CPTLegend : CPTBorderedLayer
 
 /// @name Formatting
 /// @{
@@ -114,19 +173,27 @@ extern NSString *const CPTLegendNeedsReloadEntriesForPlotNotification;
 @property (nonatomic, readwrite, copy) CPTLineStyle *swatchBorderLineStyle;
 @property (nonatomic, readwrite, assign) CGFloat swatchCornerRadius;
 @property (nonatomic, readwrite, copy) CPTFill *swatchFill;
+
+@property (nonatomic, readwrite, copy) CPTLineStyle *entryBorderLineStyle;
+@property (nonatomic, readwrite, assign) CGFloat entryCornerRadius;
+@property (nonatomic, readwrite, copy) CPTFill *entryFill;
+@property (nonatomic, readwrite, assign) CGFloat entryPaddingLeft;
+@property (nonatomic, readwrite, assign) CGFloat entryPaddingTop;
+@property (nonatomic, readwrite, assign) CGFloat entryPaddingRight;
+@property (nonatomic, readwrite, assign) CGFloat entryPaddingBottom;
 /// @}
 
 /// @name Layout
 /// @{
-@property (nonatomic, readonly, assign) BOOL layoutChanged;
+@property (nonatomic, readonly) BOOL layoutChanged;
 @property (nonatomic, readwrite, assign) NSUInteger numberOfRows;
 @property (nonatomic, readwrite, assign) NSUInteger numberOfColumns;
 @property (nonatomic, readwrite, assign) BOOL equalRows;
 @property (nonatomic, readwrite, assign) BOOL equalColumns;
 @property (nonatomic, readwrite, copy) NSArray *rowHeights;
-@property (nonatomic, readonly, retain) NSArray *rowHeightsThatFit;
+@property (nonatomic, readonly) NSArray *rowHeightsThatFit;
 @property (nonatomic, readwrite, copy) NSArray *columnWidths;
-@property (nonatomic, readonly, retain) NSArray *columnWidthsThatFit;
+@property (nonatomic, readonly) NSArray *columnWidthsThatFit;
 @property (nonatomic, readwrite, assign) CGFloat columnMargin;
 @property (nonatomic, readwrite, assign) CGFloat rowMargin;
 @property (nonatomic, readwrite, assign) CGFloat titleOffset;
@@ -134,14 +201,14 @@ extern NSString *const CPTLegendNeedsReloadEntriesForPlotNotification;
 
 /// @name Factory Methods
 /// @{
-+(id)legendWithPlots:(NSArray *)newPlots;
-+(id)legendWithGraph:(CPTGraph *)graph;
++(instancetype)legendWithPlots:(NSArray *)newPlots;
++(instancetype)legendWithGraph:(CPTGraph *)graph;
 /// @}
 
 /// @name Initialization
 /// @{
--(id)initWithPlots:(NSArray *)newPlots;
--(id)initWithGraph:(CPTGraph *)graph;
+-(instancetype)initWithPlots:(NSArray *)newPlots;
+-(instancetype)initWithGraph:(CPTGraph *)graph;
 /// @}
 
 /// @name Plots

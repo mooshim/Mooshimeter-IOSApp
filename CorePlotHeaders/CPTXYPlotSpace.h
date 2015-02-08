@@ -1,26 +1,10 @@
+#import "CPTAnimation.h"
 #import "CPTDefinitions.h"
 #import "CPTPlotSpace.h"
 
 @class CPTPlotRange;
 
-@interface CPTXYPlotSpace : CPTPlotSpace {
-    @private
-    CPTPlotRange *xRange;
-    CPTPlotRange *yRange;
-    CPTPlotRange *globalXRange;
-    CPTPlotRange *globalYRange;
-    CPTScaleType xScaleType;
-    CPTScaleType yScaleType;
-    CGPoint lastDragPoint;
-    CGPoint lastDisplacement;
-    NSTimeInterval lastDragTime;
-    NSTimeInterval lastDeltaTime;
-    BOOL isDragging;
-    BOOL allowsMomentum;
-    BOOL elasticGlobalXRange;
-    BOOL elasticGlobalYRange;
-    NSMutableArray *animations;
-}
+@interface CPTXYPlotSpace : CPTPlotSpace<CPTAnimationDelegate>
 
 @property (nonatomic, readwrite, copy) CPTPlotRange *xRange;
 @property (nonatomic, readwrite, copy) CPTPlotRange *yRange;
@@ -30,7 +14,14 @@
 @property (nonatomic, readwrite, assign) CPTScaleType yScaleType;
 
 @property (nonatomic, readwrite) BOOL allowsMomentum;
-@property (nonatomic, readwrite) BOOL elasticGlobalXRange;
-@property (nonatomic, readwrite) BOOL elasticGlobalYRange;
+@property (nonatomic, readwrite) BOOL allowsMomentumX;
+@property (nonatomic, readwrite) BOOL allowsMomentumY;
+@property (nonatomic, readwrite) CPTAnimationCurve momentumAnimationCurve;
+@property (nonatomic, readwrite) CPTAnimationCurve bounceAnimationCurve;
+@property (nonatomic, readwrite) CGFloat momentumAcceleration;
+@property (nonatomic, readwrite) CGFloat bounceAcceleration;
+@property (nonatomic, readwrite) CGFloat minimumDisplacementToDrag;
+
+-(void)cancelAnimations;
 
 @end
