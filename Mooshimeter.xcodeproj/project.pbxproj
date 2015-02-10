@@ -29,6 +29,7 @@
 		0C78967717DE74B800D1439E /* MooshimeterDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967617DE74B700D1439E /* MooshimeterDevice.m */; };
 		0C78972317E378FE00D1439E /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* GraphViewController.m */; };
 		4A29DD581A5CAA4D001126A8 /* Mooshimeter.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A29DD571A5CAA4D001126A8 /* Mooshimeter.bin */; };
+		4A6716D71A8AC85E000A4F52 /* ScanSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A6716D61A8AC85E000A4F52 /* ScanSettingsView.m */; };
 		4A6B13CA1A2EA97C000AF17B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */; };
 		4A6B13CC1A2FE808000AF17B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A6B13CB1A2FE808000AF17B /* Images.xcassets */; };
 		4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */; };
@@ -182,6 +183,8 @@
 		4A29DD571A5CAA4D001126A8 /* Mooshimeter.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = Mooshimeter.bin; sourceTree = SOURCE_ROOT; };
 		4A29DD591A5CAC88001126A8 /* MooshimeterProfileTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterProfileTypes.h; sourceTree = SOURCE_ROOT; };
 		4A29DD5A1A5CAE74001126A8 /* MooshimeterFlashLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterFlashLayout.h; sourceTree = SOURCE_ROOT; };
+		4A6716D51A8AC85E000A4F52 /* ScanSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanSettingsView.h; sourceTree = "<group>"; };
+		4A6716D61A8AC85E000A4F52 /* ScanSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanSettingsView.m; sourceTree = "<group>"; };
 		4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4A6B13CB1A2FE808000AF17B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTableViewCell.h; path = ../ScanTableViewCell.h; sourceTree = "<group>"; };
@@ -497,6 +500,8 @@
 				0C63854B17D694DC00D3FB31 /* ScanViewController.m */,
 				4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */,
 				4A777EA61A09B2F2007FEEB9 /* ScanTableViewCell.m */,
+				4A6716D51A8AC85E000A4F52 /* ScanSettingsView.h */,
+				4A6716D61A8AC85E000A4F52 /* ScanSettingsView.m */,
 			);
 			name = ScanTable;
 			sourceTree = "<group>";
@@ -669,6 +674,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AA9EA301A12B54E0031C12B /* LGService.m in Sources */,
+				4A6716D71A8AC85E000A4F52 /* ScanSettingsView.m in Sources */,
 				4AA9EA2D1A12B54E0031C12B /* LGCentralManager.m in Sources */,
 				0C63853917D694DC00D3FB31 /* main.m in Sources */,
 				4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */,

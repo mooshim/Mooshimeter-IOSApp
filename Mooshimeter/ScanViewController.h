@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "LGPeripheral.h"
 #import "MooshimeterDevice.h"
 #import "ScanTableViewCell.h"
+#import "ScanSettingsView.h"
 
 @protocol ScanViewControllerDelegate <NSObject>
 @required
@@ -32,6 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @property (strong,nonatomic) id<ScanViewControllerDelegate> delegate;
 @property (strong,nonatomic) NSArray* peripherals;
+
+@property (strong, nonatomic) ScanSettingsView* settings_view;
 
 -(instancetype)initWithDelegate:(id)d;
 -(void)reloadData;

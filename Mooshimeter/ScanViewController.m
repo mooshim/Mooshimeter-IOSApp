@@ -75,7 +75,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)settings_button_press {
-    NSLog(@"Scan view settings button press");
+    if(!self.settings_view) {
+        CGRect frame = self.view.frame;
+        frame.origin.x += .05*frame.size.width;
+        frame.origin.y += (frame.size.height - 250)/2;
+        frame.size.width  *= 0.9;
+        frame.size.height =  250;
+        ScanSettingsView* g = [[ScanSettingsView alloc] initWithFrame:frame];
+        [g setBackgroundColor:[UIColor whiteColor]];
+        [g setAlpha:0.9];
+        self.settings_view = g;
+    }
+    if([self.view.subviews containsObject:self.settings_view]) {
+        [self.settings_view removeFromSuperview];
+    } else {
+        [self.view addSubview:self.settings_view];
+    }
     
 }
 
