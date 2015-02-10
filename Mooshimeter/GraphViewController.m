@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     if(UIInterfaceOrientationIsPortrait([[UIDevice currentDevice] orientation])) {
         NSLog(@"Seguing to meter");
-        [self.delegate handleScatterViewRotation];
+        [self.delegate switchToMeterView];
     }
 }
 

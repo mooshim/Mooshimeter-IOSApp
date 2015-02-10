@@ -76,6 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void)settings_button_press {
     NSLog(@"Scan view settings button press");
+    
 }
 
 #pragma mark - Table View

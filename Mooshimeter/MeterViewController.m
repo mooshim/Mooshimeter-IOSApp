@@ -292,7 +292,7 @@ dispatch_semaphore_t tmp_sem;
     if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
         NSLog(@"Seguing to graph");
         [self pause];
-        [self.delegate handleMeterViewRotation];
+        [self.delegate switchToGraphView];
     }
 }
 

@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @protocol ScatterViewControllerDelegate <NSObject>
 @required
--(void)handleScatterViewRotation;
+-(void)switchToMeterView;
 @end
 
 @interface GraphViewController : UIViewController <CPTPlotDataSource>

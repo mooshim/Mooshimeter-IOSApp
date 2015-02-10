@@ -43,11 +43,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong,nonatomic) UIWindow *window;
 @property (strong,nonatomic) OADProfile* oad_profile;
 
-@property (strong,nonatomic) SmartNavigationController* nav;
-@property (strong,nonatomic) ScanViewController* scan_vc;
+@property (strong,nonatomic) SmartNavigationController*      nav;
+@property (strong,nonatomic) ScanViewController*             scan_vc;
 @property (strong,nonatomic) BLETIOADProgressViewController* oad_vc;
-@property (strong,nonatomic) MeterViewController* meter_vc;
-@property (strong,nonatomic) GraphViewController* scatter_vc;
+@property (strong,nonatomic) MeterViewController*            meter_vc;
+@property (strong,nonatomic) GraphViewController*            graph_vc;
 
 @property (strong,nonatomic) UILabel* bat_label;
 @property (strong,nonatomic) UILabel* rssi_label;

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "MeterSettingsView.h"
+#import "AppDelegate.h"
 
 @implementation MeterSettingsView
 
@@ -49,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //self.logging_period_control = [[UISegmentedControl alloc] initWithItems:freq_options];
     
     // Lay out the controls
-    const int nrow = 2;
+    const int nrow = 3;
     const int ncol = 1;
     
     float h = frame.size.height/nrow;
@@ -60,6 +61,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //self.logging_period_control.frame =                                     cg(0,1,1,1);
     //self.logging_time_control   = [[UITextField         alloc]initWithFrame:cg(0,2,1,1)];
     self.hibernate_button        = [[UIButton            alloc]initWithFrame:cg(0,1,1,1)];
+    self.force_rotation_button   = [[UIButton            alloc]initWithFrame:cg(0,2,1,1)];
 #undef cg
     
     // Set properties
@@ -98,11 +100,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [[self.hibernate_button layer] setBorderWidth:2];
     [[self.hibernate_button layer] setBorderColor:[UIColor darkGrayColor].CGColor];
     
+    [self.force_rotation_button addTarget:self action:@selector(forceRotation) forControlEvents:UIControlEventTouchUpInside];
+    [self.force_rotation_button setTitle:@"Switch to Graph" forState:UIControlStateNormal];
+    [self.force_rotation_button.titleLabel setFont:[UIFont systemFontOfSize:30]];
+    [self.force_rotation_button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [[self.force_rotation_button layer] setBorderWidth:2];
+    [[self.force_rotation_button layer] setBorderColor:[UIColor darkGrayColor].CGColor];
+    
     // Add as subviews
     [self addSubview:self.name_control];
     //[self addSubview:self.logging_period_control];
     //[self addSubview:self.logging_time_control];
     [self addSubview:self.hibernate_button];
+    [self addSubview:self.force_rotation_button];
     
     [[self layer] setBorderWidth:5];
     [[self layer] setBorderColor:[UIColor darkGrayColor].CGColor];
@@ -111,6 +121,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Control Callbacks
 
+-(void)forceRotation {
+    const UIApplication* app = [UIApplication sharedApplication];
+    const AppDelegate* ad = (AppDelegate*)(app.delegate);
+    [ad switchToGraphView];
+}
 
 -(void)nameSelected {
     [self.name_control setText:@""];

@@ -25,5 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic)UIButton* ch1_on_button;
 @property (strong, nonatomic)UIButton* ch2_on_button;
 @property (strong, nonatomic)UIButton* xy_on_button;
+@property (strong, nonatomic)UIButton* force_rotation_button;
 
 @end

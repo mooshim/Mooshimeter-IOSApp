@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "GraphSettingsView.h"
+#import "AppDelegate.h"
 
 @implementation GraphSettingsView
 
@@ -25,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.userInteractionEnabled = YES;
     
     const int nrow = 2;
-    const int ncol = 3;
+    const int ncol = 4;
     
     float h = frame.size.height/nrow;
     float w = frame.size.width/ncol;
@@ -33,13 +34,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define cg(nx,ny,nw,nh) CGRectMake(nx*w,ny*h,nw*w,nh*h)
 #define mb(name, nx,ny,nw,nh) self.name = [self makeButton:cg(nx,ny,nw,nh) cb:@selector(name##_press)]
     
-    mb(trend_or_burst_button,  0,0,3,1);
+    mb(trend_or_burst_button,  0,0,4,1);
     mb(ch1_on_button,          0,1,1,1);
     mb(ch2_on_button,          1,1,1,1);
     mb(xy_on_button,           2,1,1,1);
+    mb(force_rotation_button,  3,1,1,1);
     
 #undef cg
 #undef mb
+    
+    [self.force_rotation_button setTitle:@"Meter\nMode" forState:UIControlStateNormal];
     
     [[self layer] setBorderWidth:5];
     [[self layer] setBorderColor:[UIColor darkGrayColor].CGColor];
@@ -76,6 +80,12 @@ DEC_TOGGLE_HANDLER(xy_on_button_press, xy_mode);
 
 #undef DEC_TOGGLE_HANDLER
 
+-(void) force_rotation_button_press {
+    const UIApplication* app = [UIApplication sharedApplication];
+    const AppDelegate* ad = (AppDelegate*)(app.delegate);
+    [ad switchToMeterView];
+}
+
 #define DEC_REF_HANDLER(on, off, b, butname) -(void)butname##_refresh {\
 NSString* title;\
 if( g_meter->disp_settings.b ) {\
@@ -92,7 +102,7 @@ DEC_REF_HANDLER(@"CH2:ON", @"CH2:OFF", channel_disp[1], ch2_on_button);
 DEC_REF_HANDLER(@"XY:ON", @"XY:OFF", xy_mode, xy_on_button);
 
 
-#undef DEC_REF_HANDLERxy_on_button_refresh
+#undef DEC_REF_HANDLER
 
 -(void)refreshAllControls {
     [self trend_or_burst_button_refresh];

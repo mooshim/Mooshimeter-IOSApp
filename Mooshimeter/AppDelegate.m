@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.scan_vc    = [[ScanViewController alloc] initWithDelegate:self];
     self.meter_vc = [[MeterViewController alloc] initWithDelegate:self];
     self.oad_vc     = [[BLETIOADProgressViewController alloc] init];
-    self.scatter_vc = [[GraphViewController alloc] initWithDelegate:self];
+    self.graph_vc = [[GraphViewController alloc] initWithDelegate:self];
     
     self.nav = [[SmartNavigationController alloc] initWithRootViewController:self.scan_vc];
     self.nav.app = self;
@@ -157,14 +157,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }];
 }
 
--(BOOL)shouldAutorotate {
-    return NO;
-}
-
-- (NSUInteger)supportedInterfaceOrientations {
-    return UIInterfaceOrientationPortrait;
-}
-
 #pragma mark ScanViewDelegate
 
 -(void)handleScanViewRefreshRequest {
@@ -197,21 +189,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma mark MeterViewControllerDelegate
 
--(void)handleMeterViewRotation {
+-(void)switchToGraphView {
     // We are here because the meter view rotated to horizontal.
     // Load the scatter view and push it.
-    // TODO: Need to wait for the present orientation to change somehow...
-    self.nav.navigationBar.hidden = YES;
-    [self.nav pushViewController:self.scatter_vc animated:YES];
+    if( [self.nav topViewController] != self.graph_vc ) {
+        self.nav.navigationBar.hidden = YES;
+        NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeLeft];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+        [self.nav pushViewController:self.graph_vc animated:YES];
+    }
 }
 
 #pragma mark ScatterViewControllerDelegate
 
--(void)handleScatterViewRotation {
+-(void)switchToMeterView {
     // We are here because the meter view rotated to vertical.
     // Load the meter view and push it.
-    self.nav.navigationBar.hidden = NO;
-    [self.nav popToViewController:self.meter_vc animated:YES];
+    if( [self.nav topViewController] != self.meter_vc ) {
+        self.nav.navigationBar.hidden = NO;
+        NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+        [self.nav popToViewController:self.meter_vc animated:YES];
+    }
 }
 
 #pragma mark MooshimeterDeviceDelegate
