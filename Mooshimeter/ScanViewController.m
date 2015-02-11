@@ -109,7 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Cell %d",indexPath.row);
+    NSLog(@"Cell %d",(int)indexPath.row);
     LGPeripheral* p = [self.peripherals objectAtIndex:indexPath.row];
     
     ScanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];

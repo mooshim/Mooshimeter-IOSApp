@@ -149,7 +149,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         services:services
         options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES}
         completion:^(NSArray *peripherals) {
-            NSLog(@"Found: %d", peripherals.count);
+            NSLog(@"Found: %d", (int)peripherals.count);
             [refresh_timer invalidate];
             [self.scan_vc.refreshControl endRefreshing];
             [self.scan_vc reloadData];

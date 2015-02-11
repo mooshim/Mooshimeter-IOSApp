@@ -62,7 +62,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         [tmp getBytes:&build_time length:4];
     }
 
-    self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",self.p.RSSI, build_time];
+    self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",(int)self.p.RSSI, build_time];
 }
 
 - (void)awakeFromNib {

@@ -755,18 +755,16 @@ MooshimeterDevice* g_meter;
         case 0x00:
             switch (channel) {
                 case 1:
-                    switch(self->disp_settings.ac_display[channel-1]){
-                        case NO:
-                            return @"Current DC";
-                        case YES:
-                            return @"Current AC";
+                    if(self->disp_settings.ac_display[channel-1]){
+                        return @"Current AC";
+                    } else {
+                        return @"Current DC";
                     }
                 case 2:
-                    switch(self->disp_settings.ac_display[channel-1]){
-                        case NO:
-                            return @"Voltage DC";
-                        case YES:
-                            return @"Voltage AC";
+                    if(self->disp_settings.ac_display[channel-1]){
+                        return @"Voltage AC";
+                    } else {
+                        return @"Voltage DC";
                     }
                 default:
                     return @"Invalid";
@@ -779,11 +777,10 @@ MooshimeterDevice* g_meter;
             // Channel 3 in
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
-                    switch(self->disp_settings.ac_display[channel-1]){
-                        case NO:
-                            return @"Aux Voltage DC";
-                        case YES:
-                            return @"Aux Voltage AC";
+                    if(self->disp_settings.ac_display[channel-1]){
+                        return @"Aux Voltage AC";
+                    } else {
+                        return @"Aux Voltage DC";
                     }
                 case CH3_RESISTANCE:
                     return @"Resistance";

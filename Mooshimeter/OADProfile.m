@@ -20,7 +20,7 @@
         self.inProgramming = FALSE;
         self.start = YES;
         self.imageFile = [NSData dataWithContentsOfFile:filename];
-        NSLog(@"Loaded firmware \"%@\"of size : %d",filename,self.imageFile.length);
+        NSLog(@"Loaded firmware \"%@\"of size : %d",filename,(int)self.imageFile.length);
         [self.imageFile getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
     }
     return self;

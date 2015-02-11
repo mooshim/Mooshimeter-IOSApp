@@ -338,7 +338,7 @@ dispatch_semaphore_t tmp_sem;
     BOOL neg = val<0;
     int left = digits.high;
     int right = -1*(digits.high-digits.n_digits);
-    NSString* formatstring = [NSString stringWithFormat:@"%@%%0%d.%df", neg?@"":@" ", left+right+neg?0:1, right];  // To live is to suffer
+    NSString* formatstring = [NSString stringWithFormat:@"%@%%0%d.%df", neg?@"":@" ", (left+right+neg)?0:1, right];  // To live is to suffer
     NSString* retval = [NSString stringWithFormat:formatstring, val];
     //Truncate
     retval = [retval substringWithRange:NSMakeRange(0, MIN(retval.length,8))];
