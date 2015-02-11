@@ -123,6 +123,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     *measure_setting |= METER_MEASURE_SETTINGS_ISRC_ON;
                     break;
             }
+            [g_meter clearOffsets];
             break;
     }
     [g_meter sendMeterSettings:^(NSError *error) {
@@ -144,6 +145,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             if((other_setting & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
                 setting &= ~METER_CH_SETTINGS_INPUT_MASK;
                 setting |= 0x04;
+                // Turn off AC analysis - no such thing as AC temperature
+                g_meter->disp_settings.ac_display[self->channel-1] = NO;
+                // Temp input - set to PGA gain 1 always
+                setting &=~METER_CH_SETTINGS_PGA_MASK;
+                setting |= 0x10;
             } else {
                 setting &= ~METER_CH_SETTINGS_INPUT_MASK;
                 setting |= 0x09;
@@ -153,14 +159,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             // CH3 input
             setting &= ~METER_CH_SETTINGS_INPUT_MASK;
             setting |= 0x04;
+            // FIXME: Repeated code
+            // Turn off AC analysis - no such thing as AC temperature
+            g_meter->disp_settings.ac_display[self->channel-1] = NO;
+            // Temp input - set to PGA gain 1 always
+            setting &=~METER_CH_SETTINGS_PGA_MASK;
+            setting |= 0x10;
             break;
         case 0x04:
-            // Temp input
+            // Temp input 
             setting &= ~METER_CH_SETTINGS_INPUT_MASK;
             setting |= 0x00;
             break;
     }
-    [g_meter clearOffsets];
     [g_meter setChannelSetting:self->channel set:setting];
     [g_meter sendMeterSettings:^(NSError *error) {
         [self refreshAllControls];
