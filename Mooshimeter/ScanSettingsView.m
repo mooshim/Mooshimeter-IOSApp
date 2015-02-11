@@ -31,14 +31,14 @@
 #undef cg
     
     // Set properties
-    NSDictionary *infoDictionary = [[NSBundle mainBundle]infoDictionary];
-    NSString *build = infoDictionary[(NSString*)kCFBundleVersionKey];
-    NSString *bundleName = infoDictionary[(NSString *)kCFBundleNameKey];
+    NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     
-    NSString* about_string = [NSString stringWithFormat:@"Mooshimeter iOS App\nVersion Name: %@\nBuild:%@", bundleName, build];
+    NSString* about_string = [NSString stringWithFormat:@"Mooshimeter iOS App\nVersion: %@ (%@)", appVersionString, appBuildString];
     [self.about_section setText:about_string];
     [self.about_section setFont:[UIFont systemFontOfSize:20]];
     [self.about_section setTextAlignment:NSTextAlignmentCenter];
+    [self.about_section setTextColor:[UIColor darkGrayColor]];
     self.about_section.numberOfLines = 3;
     
     [ self.help_button addTarget:self action:@selector(launchHelp) forControlEvents:UIControlEventTouchUpInside];

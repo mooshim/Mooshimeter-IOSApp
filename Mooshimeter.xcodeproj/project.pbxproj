@@ -556,6 +556,7 @@
 			buildConfigurationList = 0C63856717D694DD00D3FB31 /* Build configuration list for PBXNativeTarget "Mooshimeter" */;
 			buildPhases = (
 				0C63852517D694DC00D3FB31 /* Sources */,
+				4A6716D81A8B13B2000A4F52 /* ShellScript */,
 				0C63852617D694DC00D3FB31 /* Frameworks */,
 				0C63852717D694DC00D3FB31 /* Resources */,
 			);
@@ -665,6 +666,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		4A6716D81A8B13B2000A4F52 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
