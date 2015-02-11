@@ -111,6 +111,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     (*ch3_mode) = CH3_VOLTAGE;
                     break;
             }
+            [g_meter clearOffsets];
             switch(*ch3_mode) {
                 case CH3_VOLTAGE:
                     *measure_setting &=~METER_MEASURE_SETTINGS_ISRC_ON;
@@ -159,6 +160,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             setting |= 0x00;
             break;
     }
+    [g_meter clearOffsets];
     [g_meter setChannelSetting:self->channel set:setting];
     [g_meter sendMeterSettings:^(NSError *error) {
         [self refreshAllControls];

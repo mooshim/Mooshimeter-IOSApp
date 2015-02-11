@@ -874,6 +874,7 @@ MooshimeterDevice* g_meter;
 }
 
 -(void)clearOffsets {
+    offset_on = NO;
     self->ch1_offset = 0;
     self->ch2_offset = 0;
     self->ch3_offset = 0;
