@@ -10,12 +10,6 @@
 		0C349D731885252E00B6D64F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D701885252E00B6D64F /* Default.png */; };
 		0C349D741885252E00B6D64F /* Mstar320x480.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D711885252E00B6D64F /* Mstar320x480.png */; };
 		0C349D751885252E00B6D64F /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D721885252E00B6D64F /* Default~iphone.png */; };
-		0C349D7C1885292C00B6D64F /* Mstar114x114.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D771885292C00B6D64F /* Mstar114x114.png */; };
-		0C349D7D1885292C00B6D64F /* Mstar120x120.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D781885292C00B6D64F /* Mstar120x120.png */; };
-		0C349D7E1885292C00B6D64F /* Mstar29x29.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D791885292C00B6D64F /* Mstar29x29.png */; };
-		0C349D7F1885292C00B6D64F /* Mstar57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D7A1885292C00B6D64F /* Mstar57x57.png */; };
-		0C349D801885292C00B6D64F /* Mstar58x58.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D7B1885292C00B6D64F /* Mstar58x58.png */; };
-		0C349D82188529A200B6D64F /* Mstar80x80.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C349D81188529A200B6D64F /* Mstar80x80.png */; };
 		0C63853717D694DC00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63853517D694DC00D3FB31 /* InfoPlist.strings */; };
 		0C63853917D694DC00D3FB31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853817D694DC00D3FB31 /* main.m */; };
 		0C63853D17D694DC00D3FB31 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63853C17D694DC00D3FB31 /* AppDelegate.m */; };
@@ -596,7 +590,7 @@
 			attributes = {
 				CLASSPREFIX = mooshimeter;
 				LastTestingUpgradeCheck = 0610;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = mooshim;
 				TargetAttributes = {
 					0C63852817D694DC00D3FB31 = {
@@ -627,18 +621,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C349D7D1885292C00B6D64F /* Mstar120x120.png in Resources */,
-				0C349D801885292C00B6D64F /* Mstar58x58.png in Resources */,
 				0C63853717D694DC00D3FB31 /* InfoPlist.strings in Resources */,
 				4A6B13CC1A2FE808000AF17B /* Images.xcassets in Resources */,
-				0C349D7C1885292C00B6D64F /* Mstar114x114.png in Resources */,
 				4A29DD581A5CAA4D001126A8 /* Mooshimeter.bin in Resources */,
 				0C349D731885252E00B6D64F /* Default.png in Resources */,
 				4A6B13CA1A2EA97C000AF17B /* Default-568h@2x.png in Resources */,
-				0C349D7F1885292C00B6D64F /* Mstar57x57.png in Resources */,
 				0C349D741885252E00B6D64F /* Mstar320x480.png in Resources */,
-				0C349D7E1885292C00B6D64F /* Mstar29x29.png in Resources */,
-				0C349D82188529A200B6D64F /* Mstar80x80.png in Resources */,
 				0C349D751885252E00B6D64F /* Default~iphone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -776,11 +764,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				"VALID_ARCHS[sdk=*]" = "armv7 armv7s arm64";
 			};
 			name = Debug;
@@ -810,7 +798,7 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				"VALID_ARCHS[sdk=*]" = "armv7 armv7s arm64";
 			};
@@ -843,7 +831,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				SEPARATE_STRIP = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -874,7 +862,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				SEPARATE_STRIP = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
