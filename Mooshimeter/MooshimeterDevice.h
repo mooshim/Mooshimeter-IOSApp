@@ -139,6 +139,8 @@ typedef struct {
 -(LGCharacteristic*)getLGChar:(uint16)UUID;
 
 -(uint32) getAdvertisedBuildTime;
+-(double)getIsrcCurrent;
+-(void)clearOffsets;
 
 @end
 

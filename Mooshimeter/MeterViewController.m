@@ -218,9 +218,7 @@ dispatch_semaphore_t tmp_sem;
     if(g_meter->offset_on) {
         [g_meter setZero];
     } else {
-        g_meter->ch1_offset = 0;
-        g_meter->ch2_offset = 0;
-        g_meter->ch3_offset = 0;
+        [g_meter clearOffsets];
     }
     [self refreshAllControls];
 }

@@ -702,6 +702,8 @@ MooshimeterDevice* g_meter;
 
 -(double)lsbToNativeUnits:(int)lsb ch:(int)ch {
     double adc_volts = 0;
+    const double ptc_resistance = 7.9;
+    const double isrc_current = [self getIsrcCurrent];
     uint8 channel_setting = [self getChannelSetting:ch] & METER_CH_SETTINGS_INPUT_MASK;
     if(self->disp_settings.raw_hex[ch-1]) {
         return lsb;
@@ -727,19 +729,20 @@ MooshimeterDevice* g_meter;
             adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
             return [self adcVoltageToTemp:adc_volts];
         case 0x09:
-            // Apply offset
-            lsb -= self->ch2_offset;
-            adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-            if( self->disp_settings.ch3_mode == CH3_RESISTANCE ) {
-                // Convert to Ohms
-                double retval = adc_volts;
-                if(self->meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL ) {
-                    retval /= 100e-6;
-                } else {
-                    retval /= 100e-9;
-                }
-                retval -= 7.9; // Compensate for the PTC
-                return retval;
+            // Channel 3 is complicated.  When measuring aux voltage, offset is dominated by intrinsic offsets in the ADC
+            // When measuring resistance, offset is a resistance and must be treated as such
+            if( isrc_current != 0 ) {
+                // Current source is on, apply compensation for PTC drop
+                adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
+                adc_volts -= ptc_resistance*isrc_current;
+                adc_volts -= ch3_offset*isrc_current;
+            } else {
+                // Current source is off, offset is intrinsic
+                lsb -= ch3_offset;
+                adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
+            }
+            if(disp_settings.ch3_mode == CH3_RESISTANCE) {
+                return adc_volts/isrc_current;
             } else {
                 return adc_volts;
             }
@@ -859,16 +862,52 @@ MooshimeterDevice* g_meter;
     return build_time;
 }
 
+-(double)getIsrcCurrent {
+    if( 0 == (meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_ON) ) {
+        return 0;
+    }
+    if( 0 != (meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL) ) {
+        return 100e-6;
+    } else {
+        return 100e-9;
+    }
+}
+
+-(void)clearOffsets {
+    self->ch1_offset = 0;
+    self->ch2_offset = 0;
+    self->ch3_offset = 0;
+}
+
+-(void)auxZero:(int)c {
+    int24_test tmp;
+    int lsb;
+    if(c==0) { tmp = meter_sample.ch1_reading_lsb; }
+    else     { tmp = meter_sample.ch2_reading_lsb; }
+    lsb = [MooshimeterDevice to_int32:tmp];
+    if( meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_ON ) {
+        double isrc_current = [self getIsrcCurrent];
+        // Save aux offset as a resistance
+        self->ch3_offset = [self lsbToNativeUnits:lsb ch:c+1]; // FIXME: Inconsistent channel addressing
+        if( disp_settings.ch3_mode != CH3_RESISTANCE ) {
+            self->ch3_offset /= isrc_current;
+        }
+    } else {
+            // Current source is off, save as a simple voltage offset
+            self->ch3_offset = lsb;
+    }
+}
+
 -(void)setZero {
     // FIXME:  Annoying hack:  CH1 offset is dominated by extrinsic because of isns amp, but others are dominated by intrinsic
     // To deal with this, ch1_offset will be in extrinsic units, but CH2 and CH3 will be in lsb
     if( (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
-        self->ch3_offset = [MooshimeterDevice to_int32:self->meter_sample.ch1_reading_lsb];
+        [self auxZero:0];
     } else {
         self->ch1_offset = [self lsbToADCInVoltage:[MooshimeterDevice to_int32:self->meter_sample.ch1_reading_lsb] channel:1];
     }
-    if( (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
-        self->ch3_offset = [MooshimeterDevice to_int32:self->meter_sample.ch2_reading_lsb];
+    if( (self->meter_settings.rw.ch2set & METER_CH_SETTINGS_INPUT_MASK) == 0x09 ) {
+        [self auxZero:1];
     } else {
         self->ch2_offset = [MooshimeterDevice to_int32:self->meter_sample.ch2_reading_lsb];
     }
