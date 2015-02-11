@@ -62,12 +62,6 @@
 		0C349D701885252E00B6D64F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		0C349D711885252E00B6D64F /* Mstar320x480.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar320x480.png; sourceTree = "<group>"; };
 		0C349D721885252E00B6D64F /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~iphone.png"; sourceTree = "<group>"; };
-		0C349D771885292C00B6D64F /* Mstar114x114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar114x114.png; sourceTree = "<group>"; };
-		0C349D781885292C00B6D64F /* Mstar120x120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar120x120.png; sourceTree = "<group>"; };
-		0C349D791885292C00B6D64F /* Mstar29x29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar29x29.png; sourceTree = "<group>"; };
-		0C349D7A1885292C00B6D64F /* Mstar57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar57x57.png; sourceTree = "<group>"; };
-		0C349D7B1885292C00B6D64F /* Mstar58x58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar58x58.png; sourceTree = "<group>"; };
-		0C349D81188529A200B6D64F /* Mstar80x80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mstar80x80.png; sourceTree = "<group>"; };
 		0C63852917D694DC00D3FB31 /* Mooshimeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mooshimeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C63852C17D694DC00D3FB31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0C63852E17D694DC00D3FB31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -239,19 +233,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0C349D761885292C00B6D64F /* Icons */ = {
-			isa = PBXGroup;
-			children = (
-				0C349D81188529A200B6D64F /* Mstar80x80.png */,
-				0C349D771885292C00B6D64F /* Mstar114x114.png */,
-				0C349D781885292C00B6D64F /* Mstar120x120.png */,
-				0C349D791885292C00B6D64F /* Mstar29x29.png */,
-				0C349D7A1885292C00B6D64F /* Mstar57x57.png */,
-				0C349D7B1885292C00B6D64F /* Mstar58x58.png */,
-			);
-			path = Icons;
-			sourceTree = "<group>";
-		};
 		0C63852017D694DC00D3FB31 = {
 			isa = PBXGroup;
 			children = (
@@ -311,7 +292,6 @@
 		0C63853317D694DC00D3FB31 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				0C349D761885292C00B6D64F /* Icons */,
 				0C349D701885252E00B6D64F /* Default.png */,
 				0C349D711885252E00B6D64F /* Mstar320x480.png */,
 				0C349D721885252E00B6D64F /* Default~iphone.png */,

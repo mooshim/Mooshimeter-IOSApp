@@ -19,7 +19,6 @@
 #import "CPTDefinitions.h"
 #import "CPTExceptions.h"
 #import "CPTFill.h"
-#import "CPTFunctionDataSource.h"
 #import "CPTGradient.h"
 #import "CPTGraph.h"
 #import "CPTGraphHostingView.h"

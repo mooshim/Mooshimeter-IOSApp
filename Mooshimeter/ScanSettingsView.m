@@ -15,9 +15,6 @@
     self = [super initWithFrame:frame];
     self.userInteractionEnabled = YES;
     
-    // Initialize values and helpers
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    
     // Lay out the controls
     const int nrow = 2;
     const int ncol = 1;
