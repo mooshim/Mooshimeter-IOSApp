@@ -221,7 +221,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     if( g_meter->oad_mode ) {
         // We connected to a meter in OAD mode as requested previously.  Update firmware.
         NSLog(@"Connected in OAD mode");
-        if( [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
+        if( YES || [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
             NSLog(@"Starting upload");
             [self.oad_profile startUpload];
         } else {
@@ -229,8 +229,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             [g_meter.p disconnectWithCompletion:nil];
         }
     }
-    // Temporarily disabling firmware update checking since the only meters in the wild have compatible firmware and this triggers on build time
-    else if(  0 && [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
+    else if( [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
         // Require a firmware update!
         NSLog(@"FIRMWARE UPDATE REQUIRED.");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];

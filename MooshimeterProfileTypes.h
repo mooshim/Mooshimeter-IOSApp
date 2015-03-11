@@ -70,7 +70,7 @@ BUILD_TIME,\
   LOGGING_NO_MEDIA},\
 { LOGGING_OFF,\
   0,\
-  0} }
+  0xFFFFFFFF} }
 
 #define METER_SETTINGS_DEFAULT {\
   .ro={ .present_meter_state=METER_SHUTDOWN,}, \
@@ -151,9 +151,10 @@ typedef enum
 #endif
 {
   LOGGING_OFF=0,
-  LOGGING_CALC,      // The output of the computations specified by meter_settings to go in meter_sample are logged
-  LOGGING_BUF,       // TODO: The raw data buffers are logged
-  LOGGING_STREAMING  // TODO: The log is being streamed out to the BLE host
+  LOGGING_READY,
+  LOGGING_ACTIVE,
+  LOGGING_SAMPLING,
+  LOGGING_ASLEEP
 } logging_state_t;
 
 typedef enum 
@@ -161,8 +162,9 @@ typedef enum
 : uint8
 #endif
 {
-  LOGGING_NO_MEDIA=0,
-  LOGGING_READY,
+  LOGGING_OK=0,
+  LOGGING_NO_MEDIA,
+  LOGGING_MOUNT_FAIL,
   LOGGING_INSUFFICIENT_SPACE,
   LOGGING_WRITE_ERROR,
   LOGGING_END_OF_FILE,
@@ -172,7 +174,7 @@ typedef enum
 #define TRIGGER_SETTING_SRC_CH1      (0x01)
 #define TRIGGER_SETTING_SRC_CH2      (0x02)
 #define TRIGGER_SETTING_EDGE_RISING  (0x00 <<2)
-#define TRIGGER_SETTING_EDGE_FALLING (0x01 <<2)
+#define TRIGGER_SETTING_EDGE_FALLING (0x01 <<2) 
 #define TRIGGER_SETTING_EDGE_EITHER  (0x02 <<2)
 
 typedef struct {
