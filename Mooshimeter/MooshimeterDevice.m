@@ -51,6 +51,13 @@ MooshimeterDevice* g_meter;
     return self;
 }
 
+/*
+ For convenience, builds a dictionary of the LGCharacteristics based on the relevant
+ 2 bytes of their UUID
+ @param characteristics An array of LGCharacteristics
+ @return void
+ */
+
 -(void)populateLGDict:(NSArray*)characteristics {
     for (LGCharacteristic* c in characteristics) {
         NSLog(@"    Char: %@", c.UUIDString);
@@ -61,6 +68,11 @@ MooshimeterDevice* g_meter;
         [self.chars setObject:c forKey:key];
     }
 }
+
+/*
+ Connects to the Mooshimeter and syncs the major data structures.
+ Also updates the meter UTC time.
+ */
 
 -(void)connect {
     self.chars = [[NSMutableDictionary alloc] init];
@@ -115,36 +127,28 @@ MooshimeterDevice* g_meter;
     return [self.chars objectForKey:[NSNumber numberWithInt:UUID]];
 }
 
--(void)reqMeterInfo:(LGCharacteristicReadCallback)cb {
-    LGCharacteristic* c = [self getLGChar:METER_INFO];
+-(void)reqMeterStruct:(uint16)uuid target:(void*)target cb:(LGCharacteristicReadCallback)cb {
+    LGCharacteristic* c = [self getLGChar:uuid];
     [c readValueWithBlock:^(NSData *data, NSError *error) {
-        [data getBytes:&self->meter_info length:data.length];
+        [data getBytes:target length:data.length];
         cb(data,error);
     }];
+}
+
+-(void)reqMeterInfo:(LGCharacteristicReadCallback)cb {
+    [self reqMeterStruct:METER_INFO target:&self->meter_info cb:cb];
 }
 
 -(void)reqMeterSettings:(LGCharacteristicReadCallback)cb {
-    LGCharacteristic* c = [self getLGChar:METER_SETTINGS];
-    [c readValueWithBlock:^(NSData *data, NSError *error) {
-        [data getBytes:&self->meter_settings length:data.length];
-        cb(data,error);
-    }];
+    [self reqMeterStruct:METER_SETTINGS target:&self->meter_settings cb:cb];
 }
 
 -(void)reqMeterLogSettings:(LGCharacteristicReadCallback)cb {
-    LGCharacteristic* c = [self getLGChar:METER_LOG_SETTINGS];
-    [c readValueWithBlock:^(NSData *data, NSError *error) {
-        [data getBytes:&self->meter_log_settings length:data.length];
-        cb(data,error);
-    }];
+    [self reqMeterStruct:METER_LOG_SETTINGS target:&self->meter_log_settings cb:cb];
 }
 
 -(void)reqMeterSample:(LGCharacteristicReadCallback)cb {
-    LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
-    [c readValueWithBlock:^(NSData *data, NSError *error) {
-        [data getBytes:&self->meter_sample length:data.length];
-        cb(data,error);
-    }];
+    [self reqMeterStruct:METER_SAMPLE target:&self->meter_sample cb:cb];
 }
 
 -(void)reqMeterBatteryLevel:(LGCharacteristicReadCallback)cb {
@@ -366,8 +370,8 @@ MooshimeterDevice* g_meter;
     MeterSettings_t* const ms = &m->meter_settings;
     
     const BOOL ac_used = m->disp_settings.ac_display[0] || m->disp_settings.ac_display[1];
-    const int32 upper_limit_lsb =  0.9*(1<<22);
-    const int32 lower_limit_lsb = -0.9*(1<<22);
+    const int32 upper_limit_lsb =  0.85*(1<<22);
+    const int32 lower_limit_lsb = -0.85*(1<<22);
     
     // Autorange sample rate and buffer depth.
     // If anything is doing AC, we need a deep buffer and fast sample
@@ -588,6 +592,10 @@ MooshimeterDevice* g_meter;
     return [self lsbToNativeUnits:max ch:channel];
 }
 
+/*
+ Calculate the mean of the entire sample buffer
+ */
+
 -(double)getBufMean:(int)channel {
     int i;
     int avg = 0;
@@ -599,17 +607,26 @@ MooshimeterDevice* g_meter;
     return [self lsbToNativeUnits:avg ch:channel];
 }
 
+/*
+ Accessor for the channel buffers
+ @param channel The channel index (0 or 1)
+ @return double the value of the sample buffer at that index, in native units (volts, amps, ohms)
+ */
+
 -(double)getValAt:(int)channel i:(int)i {
     int24_test* buf = [self getBuf:channel];
     int val = [MooshimeterDevice to_int32:buf[i]];
     return [self lsbToNativeUnits:val ch:channel];
 }
 
+/*
+ Return a rough appoximation of the ENOB of the channel
+ For the purposes of figuring out how many digits to display
+ Based on ADS1292 datasheet and some special sauce.
+ And empirical measurement of CH1 (which is super noisy due to chopper)
+ */
+
 -(double)getENOB:(int)channel {
-    // Return a rough appoximation of the ENOB of the channel
-    // For the purposes of figuring out how many digits to display
-    // Based on ADS1292 datasheet and some special sauce.
-    // And empirical measurement of CH1 (which is super noisy due to chopper)
     const double base_enob_table[] = {
         20.10,
         19.58,
@@ -640,6 +657,12 @@ MooshimeterDevice* g_meter;
     return enob;
 }
 
+/*
+ Based on the ENOB and the measurement range, calculate the number of noise-free digits that can be displayed
+ @param channel Input channel index (0 or 1)
+ @return a SignificantDigits structure, with member max_dig indicating the number of digits left of the point and n_digits indicating the total number of digits
+ */
+
 -(SignificantDigits)getSigDigits:(int)channel {
     SignificantDigits retval;
     double enob = [self getENOB:channel];
@@ -650,6 +673,13 @@ MooshimeterDevice* g_meter;
     retval.n_digits = n_digits;
     return retval;
 }
+
+/*
+ Convert ADC counts to the voltage at the AFE input
+ @param reading_lsb reading from the ADC
+ @param channel input channel (0 or 1)
+ @return Voltage at the AFE input (before the PGA)
+ */
 
 -(double)lsbToADCInVoltage:(int)reading_lsb channel:(int)channel {
     // This returns the input voltage to the ADC,
@@ -671,6 +701,12 @@ MooshimeterDevice* g_meter;
     return ((double)reading_lsb/(double)(1<<23))*Vref/pga_gain;
 }
 
+/*
+ Convert voltage at the AFE input to voltage at the high voltage terminal
+ @param adc_voltage voltage at AFE (before PGA)
+ @return voltage in volts
+ */
+
 -(double)adcVoltageToHV:(double)adc_voltage {
     switch( (self->meter_settings.rw.adc_settings & ADC_SETTINGS_GPIO_MASK) >> 4 ) {
         case 0x00:
@@ -688,17 +724,36 @@ MooshimeterDevice* g_meter;
     }
 }
 
+/*
+ Convert voltage at the AFE input to current at the A terminal
+ @param adc_voltage voltage at AFE (before PGA)
+ @return Current in amps
+ */
+
 -(double)adcVoltageToCurrent:(double)adc_voltage {
     const double rs = 1e-3;
     const double amp_gain = 80.0;
     return adc_voltage/(amp_gain*rs);
 }
 
+/*
+ Convert voltage at the AFE input to ADC temperature
+ @param adc_voltage voltage at AFE (before PGA)
+ @return temperature in degrees C
+ */
+
 -(double)adcVoltageToTemp:(double)adc_voltage {
     adc_voltage -= 145.3e-3; // 145.3mV @ 25C
     adc_voltage /= 490e-6;   // 490uV / C
     return 25.0 + adc_voltage;
 }
+
+/*
+ Convert the input in ADC counts to native units at the input terminal.
+ @param lsb The value to be converted (in ADC counts)
+ @param ch The channel index
+ @return The value at the input terminal in native units (volts, amps, ohms, degrees C)
+ */
 
 -(double)lsbToNativeUnits:(int)lsb ch:(int)ch {
     double adc_volts = 0;
@@ -752,6 +807,12 @@ MooshimeterDevice* g_meter;
     }
 }
 
+/*
+ Return a verbose description of the channel and measurement settings
+ @param channel The channel index
+ @return String describing what the channel is measuring
+ */
+
 -(NSString*)getDescriptor:(int)channel {
     uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
     switch( channel_setting ) {
@@ -797,6 +858,12 @@ MooshimeterDevice* g_meter;
     }
 }
 
+/*
+ Returns the units label for the given channel
+ @param channel The input channel index
+ @return A string with the units (A, V, C, etc.)
+ */
+
 -(NSString*)getUnits:(int)channel {
     uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
     if(self->disp_settings.raw_hex[channel-1]) {
@@ -829,6 +896,10 @@ MooshimeterDevice* g_meter;
     }
 }
 
+/*
+ Returns a string describing the input terminal.  Can be V, A, Omega or Internal
+ */
+
 -(NSString*)getInputLabel:(int)channel {
     uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
     switch( channel_setting ) {
@@ -851,6 +922,11 @@ MooshimeterDevice* g_meter;
     }
 }
 
+/*
+ The advertised build time is built in to the advertising data sent by a Mooshimeter.
+ It is the UTC timestamp of the firmware image running on the meter.
+ If the meter has no valid firmware image, the OAD image will broadcast 0 as the build time.
+ */
 
 -(uint32) getAdvertisedBuildTime {
     uint32 build_time = 0;
@@ -861,6 +937,11 @@ MooshimeterDevice* g_meter;
     }
     return build_time;
 }
+
+/*
+ Examines meter settings and returns the current coming out of the ISRC in A
+ @returns current in A
+ */
 
 -(double)getIsrcCurrent {
     if( 0 == (meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_ON) ) {
@@ -873,12 +954,21 @@ MooshimeterDevice* g_meter;
     }
 }
 
+/*
+ Clears the stored offsets.  Does not interact with the meter.
+ */
+
 -(void)clearOffsets {
     offset_on = NO;
     self->ch1_offset = 0;
     self->ch2_offset = 0;
     self->ch3_offset = 0;
 }
+
+/*
+ Take the value of the auxiliary channel and save it as the ch3_offset.
+ Depending on the channel settings, ch3_offset can be stored as a resistance or as a voltage.
+ */
 
 -(void)auxZero:(int)c {
     int24_test tmp;

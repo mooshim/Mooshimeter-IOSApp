@@ -408,7 +408,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     } else {
         // If at the edge of your range, say overload
         // Remember the bounds are asymmetrical
-        const int32 upper_limit_lsb =  1.3*(1<<22);
+        const int32 upper_limit_lsb =  1.1*(1<<22);
         const int32 lower_limit_lsb = -0.9*(1<<22);
         
         if(   lsb_int > upper_limit_lsb
