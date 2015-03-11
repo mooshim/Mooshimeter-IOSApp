@@ -129,9 +129,9 @@ dispatch_semaphore_t tmp_sem;
     logging_state_t* s = &g_meter->meter_log_settings.rw.target_logging_state;
     switch(*s) {
         case LOGGING_OFF:
-            *s = LOGGING_CALC;
+            *s = LOGGING_SAMPLING;
             break;
-        case LOGGING_CALC:
+        case LOGGING_SAMPLING:
             *s = LOGGING_OFF;
             break;
         default:
@@ -139,20 +139,19 @@ dispatch_semaphore_t tmp_sem;
             break;
     }
     [g_meter sendMeterLogSettings:^(NSError *error) {
-        [g_meter reqMeterLogSettings:^(NSData *data, NSError *error) {
+        [g_meter performSelector:@selector(reqMeterLogSettings:) withObject:^(NSData *data, NSError *error) {
             [self refreshAllControls];
-            [self performSelector:@selector(refreshAllControls) withObject:nil afterDelay:1.0];
-        }];
+        } afterDelay:1.0];
     }];
 }
 -(void)logging_button_refresh {
-    logging_state_t* s = &g_meter->meter_log_settings.ro.present_logging_state;
+    logging_state_t* s = &g_meter->meter_log_settings.rw.target_logging_state;
     switch(*s) {
         case LOGGING_OFF:
             [self.logging_button setTitle:@"Logging:OFF" forState:UIControlStateNormal];
             [self.logging_button setBackgroundColor:[UIColor redColor]];
             break;
-        case LOGGING_CALC:
+        case LOGGING_SAMPLING:
             [self.logging_button setTitle:@"Logging:ON" forState:UIControlStateNormal];
             [self.logging_button setBackgroundColor:[UIColor greenColor]];
             break;
