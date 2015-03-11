@@ -239,11 +239,11 @@ MooshimeterDevice* g_meter;
         case 0x00:
             // Electrode input
             switch(channel) {
-                case 1:
+                case 0:
                     // We are measuring current.  We can boost PGA, but that's all.
                     channel_setting = [MooshimeterDevice pga_cycle:channel_setting inc:raise wrap:wrap];
                     break;
-                case 2:
+                case 1:
                     // Switch the ADC GPIO to activate dividers
                     // NOTE: Don't bother with the 1.2V range for now.  Having a floating autoranged input leads to glitchy behavior.
                     tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
@@ -307,7 +307,7 @@ MooshimeterDevice* g_meter;
         case 0x00:
             // Electrode input
             switch(channel) {
-                case 1:
+                case 0:
                     // We are measuring current.  We can boost PGA, but that's all.
                     switch(pga_setting) {
                         case 0x60:
@@ -318,7 +318,7 @@ MooshimeterDevice* g_meter;
                             return 0.25*(1<<22);
                     }
                     break;
-                case 2:
+                case 1:
                     // Switch the ADC GPIO to activate dividers
                     tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
                     switch(tmp) {
@@ -420,14 +420,14 @@ MooshimeterDevice* g_meter;
     uint16 buf_len_bytes = [self getBufLen]*sizeof(int24_test);
     uint8* target;
     NSLog(@"Buf: %d: %d", channel, buf_i);
-    if(channel == 1) {
+    if(channel == 0) {
         if(!ch1_last_received){buf_i = 0;}
         ch1_last_received = YES;
         target = (uint8*)self->sample_buf.CH1_buf;
         target+= buf_i;
         [data getBytes:target length:data.length];
         buf_i += data.length;
-    } else if(channel == 2) {
+    } else if(channel == 1) {
         if(ch1_last_received){buf_i = 0;}
         ch1_last_received = NO;
         target = (uint8*)self->sample_buf.CH2_buf;
@@ -449,10 +449,10 @@ MooshimeterDevice* g_meter;
     LGCharacteristic* c2 = [self getLGChar:METER_CH2BUF];
     [c1 setNotifyValue:on completion:^(NSError *error) {
         [c2 setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
-            [self handleBufStreamUpdate:data channel:2];
+            [self handleBufStreamUpdate:data channel:1];
         }];
     } onUpdate:^(NSData *data, NSError *error) {
-        [self handleBufStreamUpdate:data channel:1];
+        [self handleBufStreamUpdate:data channel:0];
     }];
 }
 
@@ -495,9 +495,9 @@ MooshimeterDevice* g_meter;
 
 -(int24_test*)getBuf:(int) channel {
     switch(channel) {
-        case 1:
+        case 0:
             return self->sample_buf.CH1_buf;
-        case 2:
+        case 1:
             return self->sample_buf.CH2_buf;
         default:
             DLog(@"SHould not be here");
@@ -511,9 +511,9 @@ MooshimeterDevice* g_meter;
 
 -(uint8)getChannelSetting:(int)ch {
     switch(ch) {
-        case 1:
+        case 0:
             return self->meter_settings.rw.ch1set;
-        case 2:
+        case 1:
             return self->meter_settings.rw.ch2set;
         default:
             DLog(@"Invalid channel");
@@ -523,10 +523,10 @@ MooshimeterDevice* g_meter;
 
 -(void)setChannelSetting:(int)ch set:(uint8)set {
     switch(ch) {
-        case 1:
+        case 0:
             self->meter_settings.rw.ch1set = set;
             break;
-        case 2:
+        case 1:
             self->meter_settings.rw.ch2set = set;
             break;
         default:
@@ -538,10 +538,10 @@ MooshimeterDevice* g_meter;
 -(double)getMean:(int)channel {
     int lsb;
     switch(channel) {
-        case 1:
+        case 0:
             lsb = [MooshimeterDevice to_int32:g_meter->meter_sample.ch1_reading_lsb];
             break;
-        case 2:
+        case 1:
             lsb = [MooshimeterDevice to_int32:g_meter->meter_sample.ch2_reading_lsb];
             break;
         default:
@@ -555,10 +555,10 @@ MooshimeterDevice* g_meter;
 -(double)getRMS:(int)channel {
     float lsb;
     switch(channel) {
-        case 1:
+        case 0:
             lsb = g_meter->meter_sample.ch1_ms;
             break;
-        case 2:
+        case 1:
             lsb = g_meter->meter_sample.ch2_ms;
             break;
         default:
@@ -650,7 +650,7 @@ MooshimeterDevice* g_meter;
     // Oversampling adds 1 ENOB per factor of 4
     enob += ((double)buffer_depth_log2)/2.0;
     //
-    if(channel == 1 && (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
+    if(channel == 0 && (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
         // This is compensation for a bug in RevH, where current sense chopper noise dominates
         enob -= 2;
     }
@@ -687,10 +687,10 @@ MooshimeterDevice* g_meter;
     const double pga_lookup[] = {6,1,2,3,4,8,12};
     int pga_setting=0;
     switch(channel) {
-        case 1:
+        case 0:
             pga_setting = self->meter_settings.rw.ch1set >> 4;
             break;
-        case 2:
+        case 1:
             pga_setting = self->meter_settings.rw.ch2set >> 4;
             break;
         default:
@@ -818,13 +818,13 @@ MooshimeterDevice* g_meter;
     switch( channel_setting ) {
         case 0x00:
             switch (channel) {
-                case 1:
+                case 0:
                     if(self->disp_settings.ac_display[channel-1]){
                         return @"Current AC";
                     } else {
                         return @"Current DC";
                     }
-                case 2:
+                case 1:
                     if(self->disp_settings.ac_display[channel-1]){
                         return @"Voltage AC";
                     } else {
@@ -905,9 +905,9 @@ MooshimeterDevice* g_meter;
     switch( channel_setting ) {
         case 0x00:
             switch (channel) {
-                case 1:
+                case 0:
                     return @"A";
-                case 2:
+                case 1:
                     return @"V";
                 default:
                     return @"?";

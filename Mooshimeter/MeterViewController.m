@@ -46,10 +46,10 @@ dispatch_semaphore_t tmp_sem;
 #define cg(nx,ny,nw,nh) CGRectMake(nx*w,ny*h,nw*w,nh*h)
 #define mb(x,y,w,h,s) [self makeButton:cg(x,y,w,h) cb:@selector(s)]
     
-    self.ch1_view = [[ChannelView alloc]initWithFrame:cg(0, 0, 6, 4) ch:1];
+    self.ch1_view = [[ChannelView alloc]initWithFrame:cg(0, 0, 6, 4) ch:0];
     [v addSubview:self.ch1_view];
     
-    self.ch2_view = [[ChannelView alloc]initWithFrame:cg(0, 4, 6, 4) ch:2];
+    self.ch2_view = [[ChannelView alloc]initWithFrame:cg(0, 4, 6, 4) ch:1];
     [v addSubview:self.ch2_view];
     
     UIView* sv = [[UIView alloc] initWithFrame:cg(0, 8, 6, 2)];

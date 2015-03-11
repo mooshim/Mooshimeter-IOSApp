@@ -117,14 +117,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     self->time[      buf_i] = [[NSDate date] timeIntervalSince1970] - self->start_time;
     if(g_meter->disp_settings.ac_display[0]) {
-        self->ch1_values[buf_i] = [g_meter getRMS:1];
+        self->ch1_values[buf_i] = [g_meter getRMS:0];
     } else {
-        self->ch1_values[buf_i] = [g_meter getMean:1];
+        self->ch1_values[buf_i] = [g_meter getMean:0];
     }
     if(g_meter->disp_settings.ac_display[1]) {
-        self->ch2_values[buf_i] = [g_meter getRMS:2];
+        self->ch2_values[buf_i] = [g_meter getRMS:1];
     } else {
-        self->ch2_values[buf_i] = [g_meter getMean:2];
+        self->ch2_values[buf_i] = [g_meter getMean:1];
     }
     buf_i++;
     buf_i %= N_POINTS_ONSCREEN;
@@ -220,8 +220,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
             for( int i = 0; i < [g_meter getBufLen]; i++ ) {
                 time[i] = t;
-                self->ch1_values[i] = [g_meter getValAt:1 i:i];
-                self->ch2_values[i] = [g_meter getValAt:2 i:i];
+                self->ch1_values[i] = [g_meter getValAt:0 i:i];
+                self->ch2_values[i] = [g_meter getValAt:1 i:i];
                 t+=dt;
             }
             [self initPlot];
@@ -462,7 +462,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     CPTXYAxis *x = axisSet.xAxis;
     x.axisConstraints = [CPTConstraints constraintWithLowerOffset:10.0];
     if( g_meter->disp_settings.xy_mode ) {
-        x.title = [g_meter getDescriptor:2];
+        x.title = [g_meter getDescriptor:1];
     } else {
         x.title = @"Time";
     }

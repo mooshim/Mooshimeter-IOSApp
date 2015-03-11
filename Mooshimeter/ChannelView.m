@@ -247,11 +247,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         case 0x00:
             // Electrode input
             switch(self->channel) {
-                case 1:
+                case 0:
                     // We are measuring current.  We can boost PGA, but that's all.
                     channel_setting = [self pga_cycle:channel_setting];
                     break;
-                case 2:
+                case 1:
                     // Switch the ADC GPIO to activate dividers
                     tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
                     tmp++;
@@ -305,7 +305,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         case 0x00:
             // Electrode input
             switch(self->channel) {
-                case 1:
+                case 0:
                     switch(channel_setting&METER_CH_SETTINGS_PGA_MASK) {
                         case 0x10:
                             lval = @"10A";
@@ -318,7 +318,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             break;
                     }
                     break;
-                case 2:
+                case 1:
                     switch(*adc_setting & ADC_SETTINGS_GPIO_MASK) {
                         case 0x00:
                             lval = @"1.2V";
@@ -392,11 +392,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     double val;
     int lsb_int;
     switch(channel) {
-        case 1:
+        case 0:
             if(ac) { lsb_int = (int)(sqrt(g_meter->meter_sample.ch1_ms)); }
             else   { lsb_int = [MooshimeterDevice to_int32:g_meter->meter_sample.ch1_reading_lsb]; }
             break;
-        case 2:
+        case 1:
             if(ac) { lsb_int = (int)(sqrt(g_meter->meter_sample.ch2_ms)); }
             else   { lsb_int = [MooshimeterDevice to_int32:g_meter->meter_sample.ch2_reading_lsb]; }
             break;
