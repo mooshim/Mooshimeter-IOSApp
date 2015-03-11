@@ -45,12 +45,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 nil];
     [loglen_apply_toolbar sizeToFit];
     
-    //NSArray* freq_options  = [NSArray arrayWithObjects:@"MAX", @"1s", @"10s", @"1m", nil];
-    //const uint16 period_values[] = {0, 1000, 10000, 60*1000};
-    //self.logging_period_control = [[UISegmentedControl alloc] initWithItems:freq_options];
+    NSArray* freq_options  = [NSArray arrayWithObjects:@"MAX", @"1s", @"10s", @"1m", nil];
+    const uint16 period_values[] = {0, 1000, 10000, 60*1000};
+    self.logging_period_control = [[UISegmentedControl alloc] initWithItems:freq_options];
     
     // Lay out the controls
-    const int nrow = 3;
+    const int nrow = 4;
     const int ncol = 1;
     
     float h = frame.size.height/nrow;
@@ -58,10 +58,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
 #define cg(nx,ny,nw,nh) CGRectMake(nx*w,ny*h,nw*w,nh*h)
     self.name_control            = [[UITextField         alloc]initWithFrame:cg(0,0,1,1)];
-    //self.logging_period_control.frame =                                     cg(0,1,1,1);
-    //self.logging_time_control   = [[UITextField         alloc]initWithFrame:cg(0,2,1,1)];
-    self.hibernate_button        = [[UIButton            alloc]initWithFrame:cg(0,1,1,1)];
-    self.force_rotation_button   = [[UIButton            alloc]initWithFrame:cg(0,2,1,1)];
+    self.logging_period_control.frame =                                      cg(0,1,1,1);
+    //self.logging_time_control    = [[UITextField         alloc]initWithFrame:cg(0,2,1,1)];
+    self.hibernate_button        = [[UIButton            alloc]initWithFrame:cg(0,2,1,1)];
+    self.force_rotation_button   = [[UIButton            alloc]initWithFrame:cg(0,3,1,1)];
 #undef cg
     
     // Set properties
@@ -73,7 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.name_control addTarget:self action:@selector(nameDeselected) forControlEvents:UIControlEventEditingDidEnd];
     self.name_control.delegate = self;
     self.name_control.inputAccessoryView = name_apply_toolbar;
-    /*
+    
     [self.logging_period_control addTarget:self action:@selector(loggingPeriodSet) forControlEvents:UIControlEventValueChanged];
     for(int i = 0; i < [freq_options count]; i++) {
         if(g_meter->meter_log_settings.rw.logging_period_ms <= period_values[i]) {
@@ -82,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
     }
     
-    [self.logging_time_control setText:@"Logging Time (hours)"];
+    /*[self.logging_time_control setText:@"Logging Time (hours)"];
     [self.logging_time_control setFont:[UIFont systemFontOfSize:24]];
     [self.logging_time_control setTextColor:[UIColor lightGrayColor]];
     [self.logging_time_control setTextAlignment:NSTextAlignmentCenter];
@@ -90,8 +90,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.logging_time_control addTarget:self action:@selector(loggingTimeSet) forControlEvents:UIControlEventEditingDidEnd];
     self.logging_time_control.keyboardType = UIKeyboardTypeNumberPad;
     self.logging_time_control.delegate = self;
-    self.logging_time_control.inputAccessoryView = loglen_apply_toolbar;
-    */
+    self.logging_time_control.inputAccessoryView = loglen_apply_toolbar;*/
+    
     
     [self.hibernate_button addTarget:self action:@selector(hibernateSet) forControlEvents:UIControlEventTouchUpInside];
     [self.hibernate_button setTitle:@"Hibernate" forState:UIControlStateNormal];
@@ -109,7 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     // Add as subviews
     [self addSubview:self.name_control];
-    //[self addSubview:self.logging_period_control];
+    [self addSubview:self.logging_period_control];
     //[self addSubview:self.logging_time_control];
     [self addSubview:self.hibernate_button];
     [self addSubview:self.force_rotation_button];
@@ -148,15 +148,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)nameCancel {
     [self.name_control resignFirstResponder];
 }
-/*
+
 -(void)loggingPeriodSet {
     const uint16 period_values[] = {0, 1000, 10000, 60*1000};
     const uint16 period_ms = period_values[self.logging_period_control.selectedSegmentIndex];
     g_meter->meter_log_settings.rw.logging_period_ms = period_ms;
+    [g_meter sendMeterLogSettings:^(NSError *error) {
+        DLog(@"Log settings sent");
+    }];
     // This cascades in to the number of samples we want to take
-    [self loggingTimeSet];
+    //[self loggingTimeSet];
 }
-
+/*
 -(void)loggingTimeSelected {
     [self.logging_time_control setText:@""];
     [self.logging_time_control setTextColor:[UIColor blackColor]];

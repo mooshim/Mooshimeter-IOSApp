@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @interface MeterSettingsView : UIView <UITextFieldDelegate,UIAlertViewDelegate>
 
 @property (strong,nonatomic) UITextField*           name_control;
-//@property (strong,nonatomic) UISegmentedControl*    logging_period_control;
+@property (strong,nonatomic) UISegmentedControl*    logging_period_control;
 //@property (strong,nonatomic) UITextField*           logging_time_control;
 @property (strong,nonatomic) UIButton*              hibernate_button;
 @property (strong,nonatomic) UIButton*              force_rotation_button;
