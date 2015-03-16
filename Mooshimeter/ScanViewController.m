@@ -65,7 +65,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         // If we've appeared, disconnect whatever we were talking to.
         [g_meter.p disconnectWithCompletion:nil];
     }
-    [self reloadData];
+    // Start a new scan for meters
+    [self.delegate handleScanViewRefreshRequest];
 }
 
 -(BOOL)shouldAutorotate { return NO; }

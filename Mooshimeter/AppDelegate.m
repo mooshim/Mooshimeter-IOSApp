@@ -80,9 +80,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.oad_profile.navCtrl = self.nav;
     
     [self.window setRootViewController:self.nav];
-    
-    // Start scanning for meters
-    [self scanForMeters];
     return YES;
 }
 							
