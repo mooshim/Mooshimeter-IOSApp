@@ -45,6 +45,7 @@ typedef struct {
     MeterLogSettings_t   meter_log_settings;
     MeterInfo_t          meter_info;
     MeterMeasurement_t   meter_sample;
+    int32_t              meter_utc_time;
     double               bat_voltage;
     struct {
         int24_test                CH1_buf[N_ADC_SAMPLES];
@@ -138,9 +139,12 @@ typedef struct {
 
 -(LGCharacteristic*)getLGChar:(uint16)UUID;
 
+-(double)getSampleRate;
 -(uint32) getAdvertisedBuildTime;
 -(double)getIsrcCurrent;
 -(void)clearOffsets;
+
+-(void)handleBufStreamUpdate:(NSData*) data channel:(int)channel;
 
 @end
 

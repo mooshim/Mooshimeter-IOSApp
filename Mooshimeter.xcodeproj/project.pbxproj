@@ -23,6 +23,7 @@
 		0C78967717DE74B800D1439E /* MooshimeterDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78967617DE74B700D1439E /* MooshimeterDevice.m */; };
 		0C78972317E378FE00D1439E /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C78972217E378FE00D1439E /* GraphViewController.m */; };
 		4A29DD581A5CAA4D001126A8 /* Mooshimeter.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A29DD571A5CAA4D001126A8 /* Mooshimeter.bin */; };
+		4A5F55581AB784B100212D1D /* MooshimeterDeviceSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5F55571AB784B100212D1D /* MooshimeterDeviceSimulator.m */; };
 		4A6716D71A8AC85E000A4F52 /* ScanSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A6716D61A8AC85E000A4F52 /* ScanSettingsView.m */; };
 		4A6B13CA1A2EA97C000AF17B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */; };
 		4A6B13CC1A2FE808000AF17B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A6B13CB1A2FE808000AF17B /* Images.xcassets */; };
@@ -171,6 +172,8 @@
 		4A29DD571A5CAA4D001126A8 /* Mooshimeter.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = Mooshimeter.bin; sourceTree = SOURCE_ROOT; };
 		4A29DD591A5CAC88001126A8 /* MooshimeterProfileTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterProfileTypes.h; sourceTree = SOURCE_ROOT; };
 		4A29DD5A1A5CAE74001126A8 /* MooshimeterFlashLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MooshimeterFlashLayout.h; sourceTree = SOURCE_ROOT; };
+		4A5F55561AB784B100212D1D /* MooshimeterDeviceSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MooshimeterDeviceSimulator.h; sourceTree = "<group>"; };
+		4A5F55571AB784B100212D1D /* MooshimeterDeviceSimulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MooshimeterDeviceSimulator.m; sourceTree = "<group>"; };
 		4A6716D51A8AC85E000A4F52 /* ScanSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanSettingsView.h; sourceTree = "<group>"; };
 		4A6716D61A8AC85E000A4F52 /* ScanSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanSettingsView.m; sourceTree = "<group>"; };
 		4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -497,6 +500,8 @@
 				0C78967617DE74B700D1439E /* MooshimeterDevice.m */,
 				0C78962117D7E56A00D1439E /* BLEUtility.h */,
 				0C78962217D7E56A00D1439E /* BLEUtility.m */,
+				4A5F55561AB784B100212D1D /* MooshimeterDeviceSimulator.h */,
+				4A5F55571AB784B100212D1D /* MooshimeterDeviceSimulator.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -662,6 +667,7 @@
 				4A777EA71A09B2F2007FEEB9 /* ScanTableViewCell.m in Sources */,
 				4AA9EA2C1A12B54E0031C12B /* CBUUID+StringExtraction.m in Sources */,
 				4ABE541E1A080A9000277456 /* OADProfile.m in Sources */,
+				4A5F55581AB784B100212D1D /* MooshimeterDeviceSimulator.m in Sources */,
 				4ACF8AE11A0C918B00EC402B /* SmartNavigationController.m in Sources */,
 				4AF4D8DD1A2BCD2600622F58 /* MeterSettingsView.m in Sources */,
 				0C63853D17D694DC00D3FB31 /* AppDelegate.m in Sources */,

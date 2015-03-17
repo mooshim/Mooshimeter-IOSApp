@@ -608,6 +608,16 @@ MooshimeterDevice* g_meter;
 }
 
 /*
+ Give the sample rate of the meter in Hz
+ */
+-(double)getSampleRate {
+    double rval = 125.0;
+    int mult = 1;
+    mult <<= (meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK);
+    return rval*mult;
+}
+
+/*
  Accessor for the channel buffers
  @param channel The channel index (0 or 1)
  @return double the value of the sample buffer at that index, in native units (volts, amps, ohms)
