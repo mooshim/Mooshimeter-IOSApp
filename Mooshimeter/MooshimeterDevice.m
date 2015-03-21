@@ -386,7 +386,7 @@ MooshimeterDevice* g_meter;
         else        ms->rw.calc_settings |= 5; // 32 samples
     }
     for(uint8 i = 0; i < 2; i++) {
-        int32 inner_limit_lsb = 0.7*[self getLowerRange:i+1];
+        int32 inner_limit_lsb = 0.7*[self getLowerRange:i];
         if(m->disp_settings.auto_range[i]) {
             // Note that the ranges are asymmetrical - we have 1.8V of headroom above and 1.2V below
             int32 mean_lsb;
@@ -405,7 +405,7 @@ MooshimeterDevice* g_meter;
             if(   mean_lsb > upper_limit_lsb
                || mean_lsb < lower_limit_lsb
                || rms_lsb*sqrt(2.) > ABS(lower_limit_lsb) ) {
-                [m bumpRange:i+1 raise:YES wrap:NO];
+                [m bumpRange:i raise:YES wrap:NO];
             } else if(   ABS(mean_lsb)    < inner_limit_lsb
                       && rms_lsb*sqrt(2.) < inner_limit_lsb ) {
                 [m bumpRange:i+1 raise:NO wrap:NO];
@@ -777,12 +777,12 @@ MooshimeterDevice* g_meter;
         case 0x00:
             // Regular electrode input
             switch(ch) {
-                case 1:
+                case 0:
                     // FIXME: CH1 offset is treated as an extrinsic offset because it's dominated by drift in the isns amp
                     adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
                     adc_volts -= self->ch1_offset;
                     return [self adcVoltageToCurrent:adc_volts];
-                case 2:
+                case 1:
                     lsb -= self->ch2_offset;
                     adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
                     return [self adcVoltageToHV:adc_volts];
@@ -882,11 +882,12 @@ MooshimeterDevice* g_meter;
     switch( channel_setting ) {
         case 0x00:
             switch (channel) {
-                case 1:
+                case 0:
                     return @"A";
-                case 2:
+                case 1:
                     return @"V";
                 default:
+                    DLog(@"Invalid channel");
                     return @"?";
             }
         case 0x04:
