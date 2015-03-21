@@ -124,7 +124,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)forceRotation {
     const UIApplication* app = [UIApplication sharedApplication];
     const AppDelegate* ad = (AppDelegate*)(app.delegate);
-    [ad switchToGraphView];
+    [ad switchToGraphView:UIInterfaceOrientationLandscapeLeft];
 }
 
 -(void)nameSelected {

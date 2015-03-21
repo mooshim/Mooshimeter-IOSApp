@@ -286,10 +286,11 @@ dispatch_semaphore_t tmp_sem;
 { return UIInterfaceOrientationPortrait; }
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIDeviceOrientation o = [[UIDevice currentDevice] orientation];
+    if(UIInterfaceOrientationIsLandscape(o)) {
         NSLog(@"Seguing to graph");
         [self pause];
-        [self.delegate switchToGraphView];
+        [self.delegate switchToGraphView:o];
     }
 }
 

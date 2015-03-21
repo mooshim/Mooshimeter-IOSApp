@@ -193,12 +193,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma mark MeterViewControllerDelegate
 
--(void)switchToGraphView {
+-(void)switchToGraphView:(UIDeviceOrientation)new_o {
     // We are here because the meter view rotated to horizontal.
     // Load the scatter view and push it.
     if( [self.nav topViewController] != self.graph_vc ) {
         self.nav.navigationBar.hidden = YES;
-        NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeLeft];
+        NSNumber *value = [NSNumber numberWithInt:new_o];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
         [self.nav pushViewController:self.graph_vc animated:YES];
     }
