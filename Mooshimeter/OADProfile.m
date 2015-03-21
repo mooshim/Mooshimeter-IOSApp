@@ -19,12 +19,16 @@
         self.canceled = FALSE;
         self.inProgramming = FALSE;
         self.start = YES;
-        self.imageData = [NSData dataWithContentsOfFile:filename];
-        //NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-latest.bin";
-        //NSURL  *url = [NSURL URLWithString:stringURL];
-        //self.imageData = [NSData dataWithContentsOfURL:url];
+        NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-latest.bin";
+        NSURL  *url = [NSURL URLWithString:stringURL];
+        self.imageData = [NSData dataWithContentsOfURL:url];
         NSLog(@"Loaded firmware \"%@\"of size : %d",filename,(int)self.imageData.length);
-        [self.imageData getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
+        if(self.imageData.length==0) {
+            // We failed to load the firmware.  Should we do something?
+            self->imageHeader.build_time=0;
+        } else {
+            [self.imageData getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
+        }
     }
     return self;
 }
