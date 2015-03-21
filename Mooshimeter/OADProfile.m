@@ -19,9 +19,12 @@
         self.canceled = FALSE;
         self.inProgramming = FALSE;
         self.start = YES;
-        self.imageFile = [NSData dataWithContentsOfFile:filename];
-        NSLog(@"Loaded firmware \"%@\"of size : %d",filename,(int)self.imageFile.length);
-        [self.imageFile getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
+        self.imageData = [NSData dataWithContentsOfFile:filename];
+        //NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-latest.bin";
+        //NSURL  *url = [NSURL URLWithString:stringURL];
+        //self.imageData = [NSData dataWithContentsOfURL:url];
+        NSLog(@"Loaded firmware \"%@\"of size : %d",filename,(int)self.imageData.length);
+        [self.imageData getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
     }
     return self;
 }
@@ -69,8 +72,8 @@
     self.inProgramming = YES;
     self.canceled = NO;
     
-    unsigned char imageFileData[self.imageFile.length];
-    [self.imageFile getBytes:imageFileData length:self.imageFile.length];
+    unsigned char imageFileData[self.imageData.length];
+    [self.imageData getBytes:imageFileData length:self.imageData.length];
     uint8_t requestData[OAD_IMG_HDR_SIZE + 2 + 2]; // 12Bytes
     
     for(int ii = 0; ii < 20; ii++) {
@@ -123,8 +126,8 @@
         return;
     }
     
-    unsigned char imageFileData[self.imageFile.length];
-    [self.imageFile getBytes:imageFileData length:self.imageFile.length];
+    unsigned char imageFileData[self.imageData.length];
+    [self.imageData getBytes:imageFileData length:self.imageData.length];
     
     NSLog(@"Sending block %d of %d", self.iBlocks, self.nBlocks);
     

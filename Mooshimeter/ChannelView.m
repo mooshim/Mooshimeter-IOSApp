@@ -72,13 +72,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 -(void)auto_manual_button_press{
-    BOOL* b = &g_meter->disp_settings.auto_range[self->channel-1];
+    BOOL* b = &g_meter->disp_settings.auto_range[self->channel];
     *b = !*b;
     [self refreshAllControls];
 }
 
 -(void)auto_manual_button_refresh {
-    BOOL* b = &g_meter->disp_settings.auto_range[self->channel-1];
+    BOOL* b = &g_meter->disp_settings.auto_range[self->channel];
     [MeterViewController style_auto_button:self.auto_manual_button on:*b];
 }
 
@@ -87,7 +87,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // If reading CH3, cycle from VauxDC->VauxAC->Resistance->Diode
     // If reading temp, do nothing
     uint8 setting = [g_meter getChannelSetting:self->channel] & METER_CH_SETTINGS_INPUT_MASK;
-    BOOL* const ac_setting = &g_meter->disp_settings.ac_display[self->channel-1];
+    BOOL* const ac_setting = &g_meter->disp_settings.ac_display[self->channel];
     uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
     uint8* const measure_setting  = &g_meter->meter_settings.rw.measure_settings;
     switch(setting) {
@@ -146,7 +146,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 setting &= ~METER_CH_SETTINGS_INPUT_MASK;
                 setting |= 0x04;
                 // Turn off AC analysis - no such thing as AC temperature
-                g_meter->disp_settings.ac_display[self->channel-1] = NO;
+                g_meter->disp_settings.ac_display[self->channel] = NO;
                 // Temp input - set to PGA gain 1 always
                 setting &=~METER_CH_SETTINGS_PGA_MASK;
                 setting |= 0x10;
@@ -161,7 +161,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             setting |= 0x04;
             // FIXME: Repeated code
             // Turn off AC analysis - no such thing as AC temperature
-            g_meter->disp_settings.ac_display[self->channel-1] = NO;
+            g_meter->disp_settings.ac_display[self->channel] = NO;
             // Temp input - set to PGA gain 1 always
             setting &=~METER_CH_SETTINGS_PGA_MASK;
             setting |= 0x10;
@@ -184,14 +184,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)units_button_press {
-    BOOL* b = &g_meter->disp_settings.raw_hex[self->channel-1];
+    BOOL* b = &g_meter->disp_settings.raw_hex[self->channel];
     *b=!*b;
     [self refreshAllControls];
 }
 
 -(void)units_button_refresh {
     NSString* unit_str;
-    if(!g_meter->disp_settings.raw_hex[self->channel-1]) {
+    if(!g_meter->disp_settings.raw_hex[self->channel]) {
         SignificantDigits digits = [g_meter getSigDigits:self->channel];
         const NSString* prefixes[] = {@"μ",@"m",@"",@"k",@"M"};
         uint8 prefix_i = 2;
@@ -239,7 +239,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
     uint8 tmp;
     
-    if(g_meter->disp_settings.auto_range[self->channel-1]) {
+    if(g_meter->disp_settings.auto_range[self->channel]) {
         return;
     }
     
@@ -316,6 +316,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         case 0x60:
                             lval = @"1A";
                             break;
+                        default:
+                            DLog(@"Invalid channel setting");
+                            break;
                     }
                     break;
                 case 1:
@@ -379,7 +382,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             break;
     }
     [self.range_button setTitle:lval forState:UIControlStateNormal];
-    if(g_meter->disp_settings.auto_range[self->channel-1]) {
+    if(g_meter->disp_settings.auto_range[self->channel]) {
         [self.range_button setBackgroundColor:[UIColor lightGrayColor]];
     } else {
         [self.range_button setBackgroundColor:[UIColor whiteColor]];
@@ -388,7 +391,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void)value_label_refresh {
     const int c = self->channel;
-    const BOOL ac = g_meter->disp_settings.ac_display[c-1];
+    const BOOL ac = g_meter->disp_settings.ac_display[c];
     double val;
     int lsb_int;
     switch(channel) {
@@ -402,7 +405,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             break;
     }
     
-    if(g_meter->disp_settings.raw_hex[c-1]) {
+    if(g_meter->disp_settings.raw_hex[c]) {
         lsb_int &= 0x00FFFFFF;
         self.value_label.text = [NSString stringWithFormat:@"%06X", lsb_int];
     } else {

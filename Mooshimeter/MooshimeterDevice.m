@@ -118,6 +118,10 @@ MooshimeterDevice* g_meter;
     }];
 }
 
+-(void)disconnect:(LGPeripheralConnectionCallback)aCallback {
+    [p disconnectWithCompletion:aCallback];
+}
+
 -(void)accidentalDisconnect:(NSError*)error {
     DLog(@"Accidental disconnect!");
     [self.delegate meterDisconnected];
@@ -408,7 +412,7 @@ MooshimeterDevice* g_meter;
                 [m bumpRange:i raise:YES wrap:NO];
             } else if(   ABS(mean_lsb)    < inner_limit_lsb
                       && rms_lsb*sqrt(2.) < inner_limit_lsb ) {
-                [m bumpRange:i+1 raise:NO wrap:NO];
+                [m bumpRange:i raise:NO wrap:NO];
             }
         }
     }
@@ -770,7 +774,7 @@ MooshimeterDevice* g_meter;
     const double ptc_resistance = 7.9;
     const double isrc_current = [self getIsrcCurrent];
     uint8 channel_setting = [self getChannelSetting:ch] & METER_CH_SETTINGS_INPUT_MASK;
-    if(self->disp_settings.raw_hex[ch-1]) {
+    if(self->disp_settings.raw_hex[ch]) {
         return lsb;
     }
     switch(channel_setting) {
@@ -829,13 +833,13 @@ MooshimeterDevice* g_meter;
         case 0x00:
             switch (channel) {
                 case 0:
-                    if(self->disp_settings.ac_display[channel-1]){
+                    if(self->disp_settings.ac_display[channel]){
                         return @"Current AC";
                     } else {
                         return @"Current DC";
                     }
                 case 1:
-                    if(self->disp_settings.ac_display[channel-1]){
+                    if(self->disp_settings.ac_display[channel]){
                         return @"Voltage AC";
                     } else {
                         return @"Voltage DC";
@@ -851,7 +855,7 @@ MooshimeterDevice* g_meter;
             // Channel 3 in
             switch( self->disp_settings.ch3_mode ) {
                 case CH3_VOLTAGE:
-                    if(self->disp_settings.ac_display[channel-1]){
+                    if(self->disp_settings.ac_display[channel]){
                         return @"Aux Voltage AC";
                     } else {
                         return @"Aux Voltage DC";
@@ -876,7 +880,7 @@ MooshimeterDevice* g_meter;
 
 -(NSString*)getUnits:(int)channel {
     uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
-    if(self->disp_settings.raw_hex[channel-1]) {
+    if(self->disp_settings.raw_hex[channel]) {
         return @"RAW";
     }
     switch( channel_setting ) {
@@ -990,7 +994,7 @@ MooshimeterDevice* g_meter;
     if( meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_ON ) {
         double isrc_current = [self getIsrcCurrent];
         // Save aux offset as a resistance
-        self->ch3_offset = [self lsbToNativeUnits:lsb ch:c+1]; // FIXME: Inconsistent channel addressing
+        self->ch3_offset = [self lsbToNativeUnits:lsb ch:c];
         if( disp_settings.ch3_mode != CH3_RESISTANCE ) {
             self->ch3_offset /= isrc_current;
         }

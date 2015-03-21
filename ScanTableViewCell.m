@@ -34,35 +34,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void) setPeripheral:(LGPeripheral *)device {
+    uint32 build_time = 0;
+    NSData* tmp;
+    NSString* name_str;
+    NSString* build_str;
+    UIColor* back_color;
+    
     self.p = device;
-    self.textLabel.text = [NSString stringWithFormat:@"%@",self.p.name];
     
     UIActivityIndicatorView* spinner = (UIActivityIndicatorView*)self.accessoryView;
     
-    switch(self.p.cbPeripheral.state) {
-        case CBPeripheralStateDisconnected:
-            self.backgroundColor = [UIColor whiteColor];
-            [spinner stopAnimating];
-            break;
-        case CBPeripheralStateConnecting:
-            self.backgroundColor = [UIColor orangeColor];
-            [spinner startAnimating];
-            break;
-        case CBPeripheralStateConnected:
-            self.backgroundColor = [UIColor greenColor];
-            [spinner stopAnimating];
-            break;
+    if(device != nil) {
+        
+        switch(self.p.cbPeripheral.state) {
+            case CBPeripheralStateDisconnected:
+                self.backgroundColor = [UIColor whiteColor];
+                [spinner stopAnimating];
+                break;
+            case CBPeripheralStateConnecting:
+                self.backgroundColor = [UIColor orangeColor];
+                [spinner startAnimating];
+                break;
+            case CBPeripheralStateConnected:
+                self.backgroundColor = [UIColor greenColor];
+                [spinner stopAnimating];
+                break;
+        }
+        
+        tmp = [self.p.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
+        if( tmp != nil ) {
+            [tmp getBytes:&build_time length:4];
+        }
+        
+        self.textLabel.text = [NSString stringWithFormat:@"%@",self.p.name];
+        self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",(int)self.p.RSSI, build_time];
+    } else {
+        // THIS IS A SIMULATED METER
+        self.backgroundColor = [UIColor yellowColor];
+        self.textLabel.text = @"SIMULATED METER";
+        self.detailTextLabel.text = @"RSSI: n/a        FW Build: n/a";
     }
-    
-    uint32 build_time = 0;
-    NSData* tmp;
-    
-    tmp = [self.p.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
-    if( tmp != nil ) {
-        [tmp getBytes:&build_time length:4];
-    }
-
-    self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",(int)self.p.RSSI, build_time];
 }
 
 - (void)awakeFromNib {

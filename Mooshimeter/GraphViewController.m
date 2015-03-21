@@ -481,7 +481,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // 4 - Configure y-axis 1
     CPTXYAxis *y1 = axisSet.yAxis;
     y1.axisConstraints = [CPTConstraints constraintWithLowerOffset:20.0];
-    y1.title = [g_meter getDescriptor:1];
+    y1.title = [g_meter getDescriptor:0];
     y1.titleTextStyle = ch1AxisTextStyle;
     y1.titleOffset = -35.0f;
     y1.axisLineStyle = axisLineStyle;
@@ -503,7 +503,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         axisSet.axes = [NSArray arrayWithObjects:axisSet.xAxis, axisSet.yAxis, y2, nil];
         y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:20.0];
         y2.plotSpace = self.space2;
-        y2.title = [g_meter getDescriptor:2];
+        y2.title = [g_meter getDescriptor:1];
         y2.titleTextStyle = ch2AxisTextStyle;
         y2.titleOffset = -35.0f;
         y2.axisLineStyle = axisLineStyle;

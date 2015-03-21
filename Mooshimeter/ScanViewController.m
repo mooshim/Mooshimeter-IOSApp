@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "ScanViewController.h"
-
 #import "meterViewController.h"
+
+// Uncomment if you want a simulated meter to appear in the scan list
+#define SIMULATED_METER
 
 @interface ScanViewController () {
     NSMutableArray *_objects;
@@ -63,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self setTitle:@"Swipe down to scan"];
     if(g_meter) {
         // If we've appeared, disconnect whatever we were talking to.
-        [g_meter.p disconnectWithCompletion:nil];
+        [g_meter disconnect:nil];
     }
     // Start a new scan for meters
     [self.delegate handleScanViewRefreshRequest];
@@ -105,13 +107,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSLog(@"RowCount");
+#ifdef SIMULATED_METER
+    return self.peripherals.count+1;
+#else
     return self.peripherals.count;
+#endif
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    LGPeripheral* p;
     NSLog(@"Cell %d",(int)indexPath.row);
-    LGPeripheral* p = [self.peripherals objectAtIndex:indexPath.row];
+    if(indexPath.row >= self.peripherals.count) {
+        p = nil;
+    } else {
+        p = [self.peripherals objectAtIndex:indexPath.row];
+    }
     
     ScanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     

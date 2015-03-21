@@ -87,6 +87,7 @@ typedef struct {
 -(MooshimeterDevice*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDeviceDelegate>)delegate;
 
 -(void)connect;
+-(void)disconnect:(LGPeripheralConnectionCallback)aCallback;
 
 -(void)reqMeterInfo:(LGCharacteristicReadCallback)cb;
 -(void)reqMeterSettings:(LGCharacteristicReadCallback)cb;

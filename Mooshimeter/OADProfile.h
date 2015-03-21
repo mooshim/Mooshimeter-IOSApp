@@ -18,7 +18,7 @@
     img_hdr_t imageHeader;
 }
 
-@property (strong,nonatomic) NSData *imageFile;
+@property (strong,nonatomic) NSData *imageData;
 
 @property int nBlocks;
 @property int nBytes;

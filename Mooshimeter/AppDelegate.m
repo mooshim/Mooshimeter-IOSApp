@@ -177,7 +177,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             break;}
         case CBPeripheralStateDisconnected:{
             NSLog(@"Connecting new...");
-            g_meter = [[MooshimeterDevice alloc] init:p delegate:self];
+            if(p==nil) {
+                // Simulated meter
+                g_meter = [[MooshimeterDeviceSimulator alloc] init:p delegate:self];
+            } else {
+                // Real meter
+                g_meter = [[MooshimeterDevice alloc] init:p delegate:self];
+            }
+            
             [g_meter connect];
             [self.scan_vc reloadData];
             break;}
