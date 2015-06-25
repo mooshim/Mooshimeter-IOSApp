@@ -233,7 +233,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             [g_meter.p disconnectWithCompletion:nil];
         }
     }
-    else if( [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
+    else if( NO && [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
         // Require a firmware update!
         NSLog(@"FIRMWARE UPDATE REQUIRED.");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
