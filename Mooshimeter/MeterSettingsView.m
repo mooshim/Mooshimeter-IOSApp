@@ -150,7 +150,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)loggingPeriodSet {
-    const uint16 period_values[] = {0, 1000, 10000, 60*1000};
+    const uint16 period_values[] = {0, 1000, 10*1000, 60*1000};
     const uint16 period_ms = period_values[self.logging_period_control.selectedSegmentIndex];
     g_meter->meter_log_settings.rw.logging_period_ms = period_ms;
     [g_meter sendMeterLogSettings:^(NSError *error) {
