@@ -115,12 +115,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             switch(*ch3_mode) {
                 case CH3_VOLTAGE:
                     *measure_setting &=~METER_MEASURE_SETTINGS_ISRC_ON;
+                    *measure_setting &=~METER_MEASURE_SETTINGS_ISRC_LVL;
+                    g_meter->meter_settings.rw.calc_settings    &=~METER_CALC_SETTINGS_RES;
                     break;
                 case CH3_RESISTANCE:
                     *measure_setting |= METER_MEASURE_SETTINGS_ISRC_ON;
+                    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_RES;
                     break;
                 case CH3_DIODE:
                     *measure_setting |= METER_MEASURE_SETTINGS_ISRC_ON;
+                    g_meter->meter_settings.rw.calc_settings &=~METER_CALC_SETTINGS_RES;
                     break;
             }
             [g_meter clearOffsets];
@@ -211,80 +215,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.units_button setTitle:unit_str forState:UIControlStateNormal];
 }
 
--(uint8)pga_cycle:(uint8)chx_set {
-    uint8 tmp;
-    tmp = chx_set & METER_CH_SETTINGS_PGA_MASK;
-    tmp >>=4;
-    switch(tmp) {
-        case 1:
-            tmp=4;
-            break;
-        case 4:
-            tmp=6;
-            break;
-        case 6:
-        default:
-            tmp=1;
-            break;
-    }
-    tmp <<= 4;
-    chx_set &=~METER_CH_SETTINGS_PGA_MASK;
-    chx_set |= tmp;
-    return chx_set;
-}
-
 -(void)range_button_press {
     uint8 channel_setting = [g_meter getChannelSetting:self->channel];
-    uint8* const adc_setting = &g_meter->meter_settings.rw.adc_settings;
-    uint8* const ch3_mode  = &g_meter->disp_settings.ch3_mode;
-    uint8 tmp;
     
     if(g_meter->disp_settings.auto_range[self->channel]) {
         return;
     }
     
-    switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
-        case 0x00:
-            // Electrode input
-            switch(self->channel) {
-                case 0:
-                    // We are measuring current.  We can boost PGA, but that's all.
-                    channel_setting = [self pga_cycle:channel_setting];
-                    break;
-                case 1:
-                    // Switch the ADC GPIO to activate dividers
-                    tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
-                    tmp++;
-                    tmp %= 3;
-                    tmp<<=4;
-                    *adc_setting &= ~ADC_SETTINGS_GPIO_MASK;
-                    *adc_setting |= tmp;
-                    channel_setting &=~METER_CH_SETTINGS_PGA_MASK;
-                    channel_setting |= 0x10;
-                    break;
-            }
-            break;
-        case 0x04:
-            // Temp input
-            break;
-        case 0x09:
-            switch(*ch3_mode) {
-                case CH3_VOLTAGE:
-                    channel_setting = [self pga_cycle:channel_setting];
-                    break;
-                case CH3_RESISTANCE:
-                case CH3_DIODE:
-                    channel_setting = [self pga_cycle:channel_setting];
-                    tmp = channel_setting & METER_CH_SETTINGS_PGA_MASK;
-                    tmp >>=4;
-                    if(tmp == 1) {
-                        // Change the current source setting
-                        g_meter->meter_settings.rw.measure_settings ^= METER_MEASURE_SETTINGS_ISRC_LVL;
-                    }
-                    break;
-            }
-            break;
-    }
+    [g_meter bumpRange:self->channel raise:YES wrap:YES];
     [g_meter setChannelSetting:self->channel set:channel_setting];
     [g_meter sendMeterSettings:^(NSError *error) {
         [self refreshAllControls];
@@ -357,23 +295,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                     break;
                 case CH3_RESISTANCE:
-                    switch((channel_setting&METER_CH_SETTINGS_PGA_MASK) | (measure_setting&METER_MEASURE_SETTINGS_ISRC_LVL)) {
-                        case 0x12:
+                    switch((channel_setting&METER_CH_SETTINGS_PGA_MASK) | (measure_setting & (METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL))) {
+                        case 0x13:
                             lval = @"10kΩ";
                             break;
-                        case 0x42:
+                        case 0x43:
                             lval = @"2.5kΩ";
                             break;
-                        case 0x62:
+                        case 0x63:
                             lval = @"1kΩ";
                             break;
-                        case 0x10:
+                        case 0x12:
+                            lval = @"250kΩ";
+                            break;
+                        case 0x42:
+                            lval = @"100kΩ";
+                            break;
+                        case 0x62:
+                            lval = @"25kΩ";
+                            break;
+                        case 0x11:
                             lval = @"10MΩ";
                             break;
-                        case 0x40:
+                        case 0x41:
                             lval = @"2.5MΩ";
                             break;
-                        case 0x60:
+                        case 0x61:
                             lval = @"1MΩ";
                             break;
                     }
@@ -418,7 +365,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
            || lsb_int < lower_limit_lsb ) {
             self.value_label.text = @"OVERLOAD";
         } else {
-            val = [g_meter lsbToNativeUnits:lsb_int ch:c];
+            // FIXME: Resistance measurement completely breaks all our idioms because it is presented
+            // by the meter in native units AND as LSB.  This is a transitional issue... future firmware
+            // versions will be sending native units across the link, but we're stuck in the in-between
+            // right now.
+            uint8 chset = c?g_meter->meter_settings.rw.ch2set:g_meter->meter_settings.rw.ch1set;
+            if(    0x09==(chset&METER_CH_SETTINGS_INPUT_MASK)
+               &&  0x00!=(g_meter->meter_settings.rw.calc_settings&METER_CALC_SETTINGS_RES) ) {
+                // FIXME: We're packing the calculated resistance in to the mean-square field!
+                val = c?g_meter->meter_sample.ch2_ms:g_meter->meter_sample.ch1_ms;
+            } else {
+                val = [g_meter lsbToNativeUnits:lsb_int ch:c];
+            }
+
             self.value_label.text = [MeterViewController formatReading:val digits:[g_meter getSigDigits:c] ];
         }
     }

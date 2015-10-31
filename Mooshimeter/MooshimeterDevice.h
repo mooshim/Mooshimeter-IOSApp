@@ -111,6 +111,8 @@ typedef struct {
 
 -(int)getBufLen;
 -(void)setZero;
+-(void)bumpRange:(int)channel raise:(BOOL)expand wrap:(BOOL)wrap;
++(uint8)pga_cycle:(uint8)chx_set inc:(BOOL)inc wrap:(BOOL)wrap;
 
 // These refer to the meter sample, which is calculated on the meter itself
 -(double)getMean:(int)channel;
