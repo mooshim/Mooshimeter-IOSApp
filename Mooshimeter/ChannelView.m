@@ -370,8 +370,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             // versions will be sending native units across the link, but we're stuck in the in-between
             // right now.
             uint8 chset = c?g_meter->meter_settings.rw.ch2set:g_meter->meter_settings.rw.ch1set;
-            if(    0x09==(chset&METER_CH_SETTINGS_INPUT_MASK)
-               &&  0x00!=(g_meter->meter_settings.rw.calc_settings&METER_CALC_SETTINGS_RES) ) {
+            if(    0x09==(chset&METER_CH_SETTINGS_INPUT_MASK)   // If we're measuring CH3
+               &&  (g_meter->meter_info.build_time > 1445139447)  // And we have a firmware version late enough that the resistance is calculated in firmware
+               &&  0x00!=(g_meter->meter_settings.rw.calc_settings&METER_CALC_SETTINGS_RES) ) { // And the resistance calculation flag is set
                 // FIXME: We're packing the calculated resistance in to the mean-square field!
                 val = c?g_meter->meter_sample.ch2_ms:g_meter->meter_sample.ch1_ms;
             } else {
