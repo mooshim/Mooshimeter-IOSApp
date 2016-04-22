@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "MooshimeterDevice.h"
-#import "MooshimeterDeviceSimulator.h"
+#import "LegacyMooshimeterDevice.h"
 #import "LGBluetooth.h"
 
 #import "ScanViewController.h"
@@ -35,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @class OADProfile;
 @class BLETIOADProgressViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, ScanViewControllerDelegate, MeterViewControllerDelegate, MooshimeterDeviceDelegate, ScatterViewControllerDelegate, UIAlertViewDelegate, NSObject>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, ScanViewControllerDelegate, MeterViewControllerDelegate, MooshimeterDelegateProtocol, ScatterViewControllerDelegate, UIAlertViewDelegate, NSObject>
 {
     @public
     bool reboot_into_oad;

@@ -10,7 +10,7 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BLETIOADProgressDialog.h"
 #import "BLETIOADProgressViewController.h"
-#import "MooshimeterDevice.h"
+#import "LegacyMooshimeterDevice.h"
 #import "oad.h"
 
 @class BLETIOADProgressViewController;

@@ -22,8 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
-#define SET_W_MASK(target, val, mask) target ^= (mask)&((val)^target)
-
 #ifndef __IAR_SYSTEMS_ICC__
 #define LO_UINT16(i) ((i   ) & 0xFF)
 #define HI_UINT16(i) ((i>>8) & 0xFF)
@@ -51,64 +49,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define OAD_IMAGE_BLOCK_REQ 0xFFC2
 #define OAD_REBOOT          0xFFC3
 
-#define METER_NAME_LEN 16
-#define METER_NAME_DEFAULT "Mooshimeter V.1"
-
 #define N_ADC_SAMPLES_LOG2 8
 #define N_ADC_SAMPLES      (1<<N_ADC_SAMPLES_LOG2)
-                                    
-#define METER_INFO_DEFAULT {\
-METER_PCB_VERSION,\
-0,\
-0,\
-BUILD_TIME,\
-{0,0,0,0,0,0,0,0,0,0,0,0}}
 
-#define LOG_SETTINGS_DEFAULT {\
-{ 0,\
-  LOGGING_OFF,\
-  LOGGING_NO_MEDIA},\
-{ LOGGING_OFF,\
-  0,\
-  0xFFFFFFFF} }
-
-#define METER_SETTINGS_DEFAULT {\
-  .ro={ .present_meter_state=METER_SHUTDOWN,}, \
-  .rw={ .target_meter_state=METER_SHUTDOWN,\
-        .trigger_settings={.setting=0,.x_offset=0,.crossing={.bytes={0,0,0}}},\
-        .measure_settings=0x00,\
-        .calc_settings=0x06,\
-        .ch1set=0x10,\
-        .ch2set=0x10,\
-        .adc_settings=0x00, } }
-
-#define METER_FAKE_CAL { \
-0,\
-0,\
-{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
-{0,0,0,0,0,0,0},\
-{{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}},\
-{{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000},{0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,}},\
-0x8000,\
-0x8000,\
-0x8000,\
-0x8000,\
-0x8000\
-}
-
-#define METER_EMPTY_CAL { \
-0xFFFFFFFF,\
-0xFFFF,\
-{{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF}},\
-{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},\
-{{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF}},\
-{{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF},{0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,}},\
-0xFFFF,\
-0xFFFF,\
-0xFFFF,\
-0xFFFF,\
-0xFFFF\
-}
+typedef enum {
+    CH1,
+    CH2,
+    MATH,
+} Channel;
 
 
 #ifdef __IAR_SYSTEMS_ICC__
@@ -284,10 +232,8 @@ __attribute__((packed))
 MeterLogSettings_t;
 
 typedef struct {
-    int24_test ch1_reading_lsb; // Mean of the sample buffer
-    int24_test ch2_reading_lsb; // Mean of the sample buffer
-    float ch1_ms;       // Mean square of the buffer.  Square root it on the other size.
-    float ch2_ms;
+    int24_test ch_reading_lsb[2]; // Mean of the sample buffer
+    float ch_ms[2];       // Mean square of the buffer.  Square root it on the other size.
 }
 #ifndef __IAR_SYSTEMS_ICC__
 __attribute__((packed)) 

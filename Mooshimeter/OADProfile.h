@@ -8,7 +8,7 @@
  */
 
 #import "OADProgressViewController.h"
-#import "MooshimeterDevice.h"
+#import "LegacyMooshimeterDevice.h"
 #import "oad.h"
 
 @class BLETIOADProgressViewController;

@@ -177,14 +177,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             break;}
         case CBPeripheralStateDisconnected:{
             NSLog(@"Connecting new...");
-            if(p==nil) {
-                // Simulated meter
-                g_meter = [[MooshimeterDeviceSimulator alloc] init:p delegate:self];
-            } else {
-                // Real meter
-                g_meter = [[MooshimeterDevice alloc] init:p delegate:self];
-            }
-            
+            g_meter = [[LegacyMooshimeterDevice alloc] init:p delegate:self];
+
             [g_meter connect];
             [self.scan_vc reloadData];
             break;}
@@ -233,27 +227,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             [g_meter.p disconnectWithCompletion:nil];
         }
     }
-    else if( NO && [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
+    else if( [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
         // Require a firmware update!
-        NSLog(@"FIRMWARE UPDATE REQUIRED.");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"This meter requires a firmware update.  This will take about a minute.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
+        NSLog(@"FIRMWARE OLD");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"A new firmware version is available.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
         [alert show];
     } else {
-        // We have a connected meter with the correct firmware.
-        // Display the meter view.
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(meterDisconnected)
-                                                     name:kLGPeripheralDidDisconnect
-                                                   object:nil];
-        const double bat_pcnt = 100*[AppDelegate alkSocEstimate:(g_meter->bat_voltage/2)];
-        NSString* bat_str = [NSString stringWithFormat:@"Bat:%d%%", (int)bat_pcnt];
-        [self.bat_label setText:bat_str];
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
-        NSLog(@"Pushing meter view controller");
-        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-        [self.nav pushViewController:self.meter_vc animated:YES];
-        NSLog(@"Did push meter view controller");
+        [self transitionToMeterView];
     }
+}
+
+-(void)transitionToMeterView {
+    // We have a connected meter with the correct firmware.
+    // Display the meter view.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(meterDisconnected)
+                                                 name:kLGPeripheralDidDisconnect
+                                               object:nil];
+    const double bat_pcnt = 100*[AppDelegate alkSocEstimate:(g_meter->bat_voltage/2)];
+    NSString* bat_str = [NSString stringWithFormat:@"Bat:%d%%", (int)bat_pcnt];
+    [self.bat_label setText:bat_str];
+    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
+    NSLog(@"Pushing meter view controller");
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    [self.nav pushViewController:self.meter_vc animated:YES];
+    NSLog(@"Did push meter view controller");
 }
 
 -(void)meterDisconnected {
@@ -295,11 +293,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     DLog(@"in alert view delegate");
     if(buttonIndex == 0) {
-        [g_meter.p disconnectWithCompletion:^(NSError *error) {
-            [self.scan_vc reloadData];
-        }];
+        // Cancel was pressed, just try to read the meter and hope for the best
+        [self transitionToMeterView];
     } else {
         self->reboot_into_oad = YES;
+        // Cancel any disconnect handling
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
         // This will reboot the meter.  We will have 5 seconds to reconnect to it in OAD mode.
         [g_meter setMeterState:METER_SHUTDOWN cb:^(NSError *error) {
             [g_meter.p disconnectWithCompletion:^(NSError *error) {

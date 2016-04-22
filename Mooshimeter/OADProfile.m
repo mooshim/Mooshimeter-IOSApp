@@ -20,6 +20,7 @@
         self.inProgramming = FALSE;
         self.start = YES;
         NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-latest.bin";
+        //NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-beta.bin";
         NSURL  *url = [NSURL URLWithString:stringURL];
         self->imageHeader.build_time=0;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{

@@ -344,11 +344,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     switch(channel) {
         case 0:
             if(ac) { lsb_int = (int)(sqrt(g_meter->meter_sample.ch1_ms)); }
-            else   { lsb_int = [MooshimeterDevice to_int32:g_meter->meter_sample.ch1_reading_lsb]; }
+            else   { lsb_int = [LegacyMooshimeterDevice to_int32:g_meter->meter_sample.ch1_reading_lsb]; }
             break;
         case 1:
             if(ac) { lsb_int = (int)(sqrt(g_meter->meter_sample.ch2_ms)); }
-            else   { lsb_int = [MooshimeterDevice to_int32:g_meter->meter_sample.ch2_reading_lsb]; }
+            else   { lsb_int = [LegacyMooshimeterDevice to_int32:g_meter->meter_sample.ch2_reading_lsb]; }
             break;
     }
     

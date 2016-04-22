@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "meterViewController.h"
 
 // Uncomment if you want a simulated meter to appear in the scan list
-#define SIMULATED_METER
+//#define SIMULATED_METER
 
 @interface ScanViewController () {
     NSMutableArray *_objects;

@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "MeterViewController.h"
 
-dispatch_semaphore_t tmp_sem;
-
 @implementation MeterViewController
 
 -(BOOL)prefersStatusBarHidden { return YES; }

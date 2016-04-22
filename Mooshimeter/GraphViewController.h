@@ -18,12 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <UIKit/UIKit.h>
 #import "CorePlot-CocoaTouch.h"
-#import "MooshimeterDevice.h"
+#import "LegacyMooshimeterDevice.h"
 #import "GraphSettingsView.h"
 
 #define N_POINTS_ONSCREEN 1024
 
-@class MooshimeterDevice;
+@class LegacyMooshimeterDevice;
 
 @protocol ScatterViewControllerDelegate <NSObject>
 @required
