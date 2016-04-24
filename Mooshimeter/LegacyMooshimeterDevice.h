@@ -41,7 +41,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     // These reflect values internal to the app that determine how to display the data
     bool oad_mode;
-    double offsets[2];
+    float offsets[2];
+    float bat_voltage;
     @protected
     Chooser* input_descriptors[2];
 }

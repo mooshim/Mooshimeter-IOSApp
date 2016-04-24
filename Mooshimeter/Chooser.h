@@ -13,6 +13,8 @@
 -(void)add:(id) new_value;
 -(id)get:(int) i;
 -(void)clear;
--(id)choose:(int) i;
+-(id)chooseByIndex:(int) i;
+-(id)chooseObject:(id) obj;
 -(id)getChosen;
+-(int)getNChoices;
 @end

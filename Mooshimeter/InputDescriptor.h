@@ -10,5 +10,5 @@
 @interface InputDescriptor : NSObject
 @property NSString* name;
 @property NSString* units;
-@property Chooser* chooser;
+@property Chooser* ranges;
 @end

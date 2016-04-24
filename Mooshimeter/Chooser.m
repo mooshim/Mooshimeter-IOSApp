@@ -16,8 +16,12 @@
 -(void)clear{
     [self.choices removeAllObjects];
 }
--(id)choose:(int) i {
+-(id)chooseByIndex:(int) i {
     self.chosen_i=i;
+    return [self getChosen];
+}
+-(id)chooseObject:(id) obj {
+    self.chosen_i = [self.choices indexOfObject:obj];
     return [self getChosen];
 }
 -(id)getChosen {

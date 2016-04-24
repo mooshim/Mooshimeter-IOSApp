@@ -4,6 +4,7 @@
 //
 
 #import "MooshimeterDeviceBase.h"
+#import "LGCharacteristic.h"
 
 
 @implementation MooshimeterDeviceBase

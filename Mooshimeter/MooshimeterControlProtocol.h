@@ -72,11 +72,11 @@
         -(MeterReading*) getValue:(Channel)c;
 
         NSString*       getRangeLabel(Channel c);
-        -(int)         setRange:(Channel)c rd:(id)rd;
+        -(int)         setRange:(Channel)c rd:(RangeDescriptor*)rd;
         -(NSArray<NSString*>*) getRangeList:(Channel)c;
 
         -(NSString*) getInputLabel:(Channel)c;
-        -(int)setInput:(Channel)c descriptor:(id)descriptor;
+        -(int)setInput:(Channel)c descriptor:(InputDescriptor*)descriptor;
         -(NSArray *) getInputList:(Channel)c;
-        -(id) getSelectedDescriptor:(Channel)c;
+        -(InputDescriptor*) getSelectedDescriptor:(Channel)c;
 @end

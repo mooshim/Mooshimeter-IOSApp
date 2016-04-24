@@ -57,6 +57,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 @end
 @implementation myRangeDescriptor
 -(id)init {
+    self = [super init];
     self.chset = 0;
     self.gpio=GPIO_IGNORE;
     self.isrc=ISRC_IGNORE;
@@ -120,7 +121,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     ret.gpio = gpio;
     ret.isrc = isrc;
     ret.converter = conv;
-    [ranges add:ret];
+    [self.ranges add:ret];
 }
 @end
 
@@ -137,28 +138,28 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 -(myInputDescriptor *)getSelectedDescriptor:(Channel)c {
     return [self->input_descriptors[c] getChosen];
 }
+-(myRangeDescriptor *)getSelectedRange:(Channel)c {
+    InputDescriptor *i = [self getSelectedDescriptor:c];
+    return [i.ranges getChosen];
+}
 
 -(float) getMaxRangeForChannel:(Channel)c {
-    fewafewafewa
+    InputDescriptor *i = [self getSelectedDescriptor:c];
+    int n_choices = [i.ranges getNChoices];
+    RangeDescriptor *rval = [i.ranges get:n_choices-1];
+    return rval.max;
 }
 
 -(MeterReading*)wrapMeterReading:(float)val c:(Channel)c {
-    myInputDescriptor id = [self getSelectedDescriptor:c];
+    myInputDescriptor *id = [self getSelectedDescriptor:c];
     float enob = [self getENOB:c];
-    self getR
-    float max = getMaxRangeForChannel(c);
-    MeterReading rval;
-
-    rval = new MeterReading(val,
-            (int)Math.log10(Math.pow(2.0, enob)),
-            max,
-            id.units);
+    float max = [self getMaxRangeForChannel:c];
 
     MeterReading* rval = [[MeterReading alloc]
             initWithValue:val
-             n_digits_arg:<#(int)n_digits_arg#>
-                  max_arg:<#(float)max_arg#>
-                units_arg:<#(NSString*)units_arg#>];
+             n_digits_arg:(int)log10(pow(2.0, enob))
+                  max_arg:max
+                units_arg:id.units];
     return rval;
 }
 
@@ -192,6 +193,9 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     return ((float)lsb/(float)(1<<23))*Vref;
 }
 
+// Callback triggered by sample received
+void (^sample_handler)(NSData*,NSError*);
+
 -(LegacyMooshimeterDevice*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate {
     // Check for issues with struct packing.
     BUILD_BUG_ON(sizeof(trigger_settings_t) != 6);
@@ -200,13 +204,35 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     BUILD_BUG_ON(sizeof(MeterLogSettings_t) != 16);
     self = [super init];
 
-    self.p = periph;
+    self.periph = periph;
     self.chars = nil;
 
     self->input_descriptors[0] = [[Chooser alloc]init];
     self->input_descriptors[1] = [[Chooser alloc]init];
 
+    sample_handler = ^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_sample length:data.length];
+        uint32 utc_time = [[NSDate date] timeIntervalSince1970];
+        [self.delegate onSampleReceived:utc_time c:CH1  val:[self getValue:CH1]];
+        [self.delegate onSampleReceived:utc_time c:CH2  val:[self getValue:CH2]];
+        [self.delegate onSampleReceived:utc_time c:MATH val:[self getValue:MATH]];
+    };
+
     return self;
+}
+
+
+long to_int32(int24_test arg) {
+    long int retval;
+    memcpy(&retval, &arg, 3);
+    ((char*)&retval)[3] = retval & 0x00800000 ? 0xFF:0x00;
+    return retval;
+}
+
+int24_test to_int24_test(long arg) {
+    int24_test retval;
+    memcpy(&retval, &arg, 3);
+    return retval;
 }
 
 /*
@@ -235,9 +261,9 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 -(void)connect {
     self.chars = [[NSMutableDictionary alloc] init];
     
-    [self.p connectWithTimeout:5 completion:^(NSError *error) {
+    [self.periph connectWithTimeout:5 completion:^(NSError *error) {
         NSLog(@"Discovering services");
-        [self.p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
+        [self.periph discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
             for (LGService *service in services) {
                 if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:METER_SERVICE_UUID]]) {
                     NSLog(@"METER SERVICE FOUND. Discovering characteristics.");
@@ -251,7 +277,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
                                     [weakSelf reqMeterBatteryLevel:^(NSData *data, NSError *error) {
                                         uint32 utc_time = [[NSDate date] timeIntervalSince1970];
                                         [weakSelf setMeterTime:utc_time cb:^(NSError *error) {
-                                            [weakSelf.p registerDisconnectHandler:^(NSError *error) {
+                                            [weakSelf.periph registerDisconnectHandler:^(NSError *error) {
                                                 [weakSelf accidentalDisconnect:error];
                                             }];
                                             [weakSelf.delegate onInit];
@@ -277,7 +303,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 }
 
 -(void)disconnect:(LGPeripheralConnectionCallback)aCallback {
-    [p disconnectWithCompletion:aCallback];
+    [self.periph disconnectWithCompletion:aCallback];
 }
 
 -(void)accidentalDisconnect:(NSError*)error {
@@ -286,7 +312,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 }
 
 -(LGCharacteristic*)getLGChar:(uint16)UUID {
-    return [self.chars objectForKey:[NSNumber numberWithInt:UUID]];
+    return self.chars[[NSNumber numberWithInt:UUID]];
 }
 
 -(void)reqMeterStruct:(uint16)uuid target:(void*)target cb:(LGCharacteristicReadCallback)cb {
@@ -348,183 +374,21 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     [c writeValue:v completion:cb];
 }
 
--(void)enableStreamMeterSample:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb update:(BufferDownloadCompleteCB)update {
-    self->sample_cb = update;
-    LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
-    [c setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
-        [data getBytes:&self->meter_sample length:data.length];
-        if(update) update();
-    }];
-}
-
-+(uint8)pga_cycle:(uint8)chx_set inc:(BOOL)inc wrap:(BOOL)wrap {
-    // These are the PGA settings we will entertain
-    const uint8 ps[] = {0x60,0x40,0x10};
-    int8 i;
-    // Find the index of the present PGA setting
-    for(i = 0; i < sizeof(ps); i++) {
-        if(ps[i] == (chx_set & METER_CH_SETTINGS_PGA_MASK)) break;
-    }
-    
-    if(i>=sizeof(ps)) {
-        // If we didn't find it, default to setting 0
-        i = 0;
-    } else {
-        // Increment or decrement the PGA setting
-        if(inc){
-            if(++i >= sizeof(ps)) {
-                if(wrap){i=0;}
-                else    {i--;}
-            }
-        }
-        else {
-            if(--i < 0) {
-                if(wrap){i=sizeof(ps)-1;}
-                else    {i++;}
-            }
-        }
-    }
-    // Mask the new setting back in
-    chx_set &=~METER_CH_SETTINGS_PGA_MASK;
-    chx_set |= ps[i];
-    return chx_set;
-}
-
--(int) getResLvl {
-    int rval = meter_settings.rw.measure_settings & (METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL);
-    return rval;
-}
--(void)  setResLvl:(int) new_lvl {
-    meter_settings.rw.measure_settings &=~(METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL);
-    meter_settings.rw.measure_settings |= new_lvl;
-}
-
--(void) bumpResLvl:(BOOL)expand wrap:(BOOL)wrap {
-    int lvl = [self getResLvl];
-    if(expand) {
-        if(--lvl==0) {
-            if(wrap) {lvl=3;}
-            else     {lvl++;}
-        }
-    } else {
-        if(++lvl==4) {
-            if(wrap) {lvl=1;}
-            else     {lvl--;}
-        }
-    }
-    [self setResLvl:lvl];
-}
-
 // Returns the maximum value of the next measurement range down superimposed on the current range
 
--(int32)getLowerRange:(int)channel {
+-(RangeDescriptor*)getLowerRange:(int)channel {
     uint8 const pga_setting    = [self getChannelSetting:channel]&METER_CH_SETTINGS_PGA_MASK;
     uint8* const adc_setting = &self->meter_settings.rw.adc_settings;
     uint8* const ch3_mode    = &self->disp_settings.ch3_mode;
     uint8* const measure_setting = &self->meter_settings.rw.measure_settings;
     int8 tmp;
-    
-    switch([self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK) {
-        case 0x00:
-            // Electrode input
-            switch(channel) {
-                case 0:
-                    // We are measuring current.  We can boost PGA, but that's all.
-                    switch(pga_setting) {
-                        case 0x60:
-                            return 0;
-                        case 0x40:
-                            return 0.33*(1<<22);
-                        case 0x10:
-                            return 0.25*(1<<22);
-                    }
-                    break;
-                case 1:
-                    // Switch the ADC GPIO to activate dividers
-                    tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
-                    switch(tmp) {
-                        case 1:
-                            return 0;
-                        case 2:
-                            return 0.1*(1<<22);
-                    }
-                    break;
-            }
-            break;
-        case 0x04:
-            // Temp input
-            return 0;
-            break;
-        case 0x09:
-            switch(*ch3_mode) {
-                case CH3_VOLTAGE:
-                    switch(pga_setting) {
-                        case 0x60:
-                            return 0;
-                        case 0x40:
-                            return 0.33*(1<<22);
-                        case 0x10:
-                            return 0.25*(1<<22);
-                    }
-                    break;
-                case CH3_RESISTANCE:
-                case CH3_DIODE:
-                    if(meter_info.pcb_version==7) {
-                        switch(pga_setting) {
-                            case 0x60:
-                                if(0==(meter_settings.rw.measure_settings&METER_MEASURE_SETTINGS_ISRC_LVL))
-                                {return (int)(0.012*(1<<22));}
-                                else {return 0;}
-                            case 0x40:
-                                return (int)(0.33*(1<<22));
-                            case 0x10:
-                                return (int)(0.25*(1<<22));
-                        }
-                    } else {
-                        // Assuming RevI
-                        int lvl = [self getResLvl];
-                        switch(lvl) {
-                            case 0:
-                                switch(pga_setting) {
-                                    case 0x60:
-                                        return 0;
-                                    case 0x40:
-                                        return (int) (0.33 * (1 << 22));
-                                    case 0x10:
-                                        return (int) (0.25 * (1 << 22));
-                                }
-                            case 1:
-                                switch(pga_setting) {
-                                    case 0x60:
-                                    case 0x40:
-                                        return (int) (0.33 * (1 << 22));
-                                    case 0x10:
-                                        return (int) (0.25 * (1 << 22));
-                                }
-                            case 2:
-                                switch(pga_setting) {
-                                    case 0x60:
-                                    case 0x40:
-                                        return (int) (0.33 * (1 << 22));
-                                    case 0x10:
-                                        return (int) (0.25 * (1 << 22));
-                                }
-                            case 3:
-                                switch(pga_setting) {
-                                    case 0x60:
-                                        return 0;
-                                    case 0x40:
-                                        return (int) (0.33 * (1 << 22));
-                                    case 0x10:
-                                        return (int) (0.25 * (1 << 22));
-                                }
-                        }
-                    }
-                    break;
-            }
-            break;
+
+    InputDescriptor *i = [self getSelectedDescriptor:channel];
+    int to_choose = i.ranges.chosen_i;
+    if(to_choose>0) {
+        to_choose--;
     }
-    return 0;
+    return [i.ranges get:to_choose]
 }
 
 -(bool)applyRateAndDepthChange {
@@ -554,23 +418,15 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 
     myInputDescriptor* active_id = [self getSelectedDescriptor:c];
 
-    const int32 upper_limit_lsb =  0.85*(1<<22);
-    const int32 lower_limit_lsb = -0.85*(1<<22);
-
-    int32 inner_limit_lsb = 0.7*[self getLowerRange:i];
+    float outer_limit = ((RangeDescriptor *)[active_id.ranges getChosen]).max;
+    float inner_limit = (float)0.7*[self getLowerRange:c].max;
     // Note that the ranges are asymmetrical - we have 1.8V of headroom above and 1.2V below
-    int32 mean_lsb;
-    double rms_lsb;
-    mean_lsb = to_int32(self->meter_sample.ch_reading_lsb[c]);
-    rms_lsb  = sqrt(self->meter_sample.ch_ms[c]);
+    float val = ABS([self getValue:c].value);
 
-    if(   mean_lsb > upper_limit_lsb
-       || mean_lsb < lower_limit_lsb
-       || rms_lsb*sqrt(2.) > ABS(lower_limit_lsb) ) {
-        [self bumpRange:c expand:YES];
-    } else if(   ABS(mean_lsb)    < inner_limit_lsb
-              && rms_lsb*sqrt(2.) < inner_limit_lsb ) {
+    if(val < inner_limit) {
         [self bumpRange:c expand:NO];
+    } else if(val > outer_limit) {
+        [self bumpRange:c expand:YES];
     }
 }
 
@@ -603,35 +459,9 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     }
 }
 
--(void)enableStreamMeterBuf:(BOOL)on cb:(LGCharacteristicNotifyCallback)cb complete_buffer_cb:(BufferDownloadCompleteCB)complete_buffer_cb {
-    self->buffer_cb = complete_buffer_cb;
-    LGCharacteristic* c1 = [self getLGChar:METER_CH1BUF];
-    LGCharacteristic* c2 = [self getLGChar:METER_CH2BUF];
-    [c1 setNotifyValue:on completion:^(NSError *error) {
-        [c2 setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
-            [self handleBufStreamUpdate:data channel:1];
-        }];
-    } onUpdate:^(NSData *data, NSError *error) {
-        [self handleBufStreamUpdate:data channel:0];
-    }];
-}
-
 -(void)setMeterState:(int)new_state cb:(LGCharacteristicWriteCallback)cb {
     self->meter_settings.rw.target_meter_state = new_state;
     [self sendMeterSettings:cb];
-}
-
-long to_int32(int24_test arg) {
-    long int retval;
-    memcpy(&retval, &arg, 3);
-    ((char*)&retval)[3] = retval & 0x00800000 ? 0xFF:0x00;
-    return retval;
-}
-
-int24_test to_int24_test(long arg) {
-    int24_test retval;
-    memcpy(&retval, &arg, 3);
-    return retval;
 }
 
 -(int24_test*)getBuf:(int) channel {
@@ -655,20 +485,6 @@ int24_test to_int24_test(long arg) {
         default:
             DLog(@"Invalid channel");
             return 0;
-    }
-}
-
--(void)setChannelSetting:(int)ch set:(uint8)set {
-    switch(ch) {
-        case 0:
-            self->meter_settings.rw.ch1set = set;
-            break;
-        case 1:
-            self->meter_settings.rw.ch2set = set;
-            break;
-        default:
-            DLog(@"Invalid channel");
-            break;
     }
 }
 
@@ -716,7 +532,7 @@ int24_test to_int24_test(long arg) {
  @return a SignificantDigits structure, with member max_dig indicating the number of digits left of the point and n_digits indicating the total number of digits
  */
 
--(SignificantDigits)getSigDigits:(int)channel {
+-(SignificantDigits*)getSigDigits:(int)channel {
     SignificantDigits retval;
     double enob = [self getENOB:channel];
     double max = [self lsbToNativeUnits:(1<<22) ch:channel];
@@ -777,51 +593,6 @@ int24_test to_int24_test(long arg) {
     }
 }
 
-/*
- Convert voltage at the AFE input to current at the A terminal
- @param adc_voltage voltage at AFE (before PGA)
- @return Current in amps
- */
-
--(double)adcVoltageToCurrent:(double)adc_voltage {
-    double rs;
-    double amp_gain;
-    if(meter_info.pcb_version==7){
-        rs = 1e-3;
-        amp_gain = 80.0;
-    } else if(meter_info.pcb_version==8) {
-        rs = 10e-3;
-        amp_gain = 1.0;
-    } else {
-        // We want to raise an error
-        rs=0;
-        amp_gain=0;
-    }
-    return adc_voltage/(amp_gain*rs);
-}
-
-/*
- Examines the meter settings to determine the current source resistance on the RevI Mooshimeter
- Should never be called when talking to a RevH Mooshimeter
- @param none
- @return Source resistance of the current source on the RevI Mooshimeter
- */
-
--(double) getIsrcRes {
-    int tmp = meter_settings.rw.measure_settings & (METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL);
-    if(tmp == 0) {
-        raise(1);
-    } else if(tmp == METER_MEASURE_SETTINGS_ISRC_ON) {
-        return 10e6+10e3+7.9;
-    } else if(tmp == METER_MEASURE_SETTINGS_ISRC_LVL) {
-        return 300e3+10e3+7.9;
-    } else if(tmp == (METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL)) {
-        return 10e3+7.9;
-    } else {
-        raise(1);
-    }
-}
-
 
 /*
  Convert voltage at the AFE input to ADC temperature
@@ -842,188 +613,9 @@ int24_test to_int24_test(long arg) {
  @return The value at the input terminal in native units (volts, amps, ohms, degrees C)
  */
 
--(double)lsbToNativeUnits:(int)lsb ch:(int)ch {
-    double adc_volts = 0;
-    const double ptc_resistance = 7.9;
-    double ohms = 0;
-    uint8 channel_setting = [self getChannelSetting:ch] & METER_CH_SETTINGS_INPUT_MASK;
-    if(self->disp_settings.raw_hex[ch]) {
-        return lsb;
-    }
-    switch(channel_setting) {
-        case 0x00:
-            // Regular electrode input
-            switch(ch) {
-                case 0:
-                    if(meter_info.pcb_version==7){
-                        // CH1 offset is treated as an extrinsic offset because it's dominated by drift in the isns amp
-                        adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-                        adc_volts -= ch1_offset;
-                        return [self adcVoltageToCurrent:adc_volts];
-                    } else {
-                        lsb -= ch1_offset;
-                        adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-                        return [self adcVoltageToCurrent:adc_volts];
-                    }
-                case 1:
-                    lsb -= ch2_offset;
-                    adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-                    return [self adcVoltageToHV:adc_volts];
-                default:
-                    DLog(@"Invalid channel");
-                    return 0;
-            }
-        case 0x04:
-            adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-            return [self adcVoltageToTemp:adc_volts];
-        case 0x09:
-            // Channel 3 is complicated.  When measuring aux voltage, offset is dominated by intrinsic offsets in the ADC
-            // When measuring resistance, offset is a resistance and must be treated as such
-            if( 0 != (meter_settings.rw.measure_settings & (METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL) ) ) {
-                if(meter_info.pcb_version == 7) {
-                    const double isrc_current = [self getIsrcCurrent];
-                    adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-                    adc_volts -= ptc_resistance*isrc_current;
-                    adc_volts -= ch3_offset*isrc_current;
-                    ohms = adc_volts/isrc_current;
-                } else {
-                    const double isrc_res = [self getIsrcRes];
-                    const double avdd=3-1.21;
-                    
-                    adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-                    ohms = ((adc_volts/(avdd-adc_volts))*isrc_res)-ptc_resistance;
-                }
-            } else {
-                // Current source is off, offset is intrinsic
-                lsb -= ch3_offset;
-                adc_volts = [self lsbToADCInVoltage:lsb channel:ch];
-                ohms=0;
-            }
-            if(disp_settings.ch3_mode == CH3_RESISTANCE) {
-                return ohms;
-            } else {
-                return adc_volts;
-            }
-        default:
-            DLog(@"Unrecognized channel setting");
-            return adc_volts;
-    }
-}
-
-/*
- Return a verbose description of the channel and measurement settings
- @param channel The channel index
- @return String describing what the channel is measuring
- */
-
--(NSString*)getDescriptor:(int)channel {
-    uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
-    switch( channel_setting ) {
-        case 0x00:
-            switch (channel) {
-                case 0:
-                    if(self->disp_settings.ac_display[channel]){
-                        return @"Current AC";
-                    } else {
-                        return @"Current DC";
-                    }
-                case 1:
-                    if(self->disp_settings.ac_display[channel]){
-                        return @"Voltage AC";
-                    } else {
-                        return @"Voltage DC";
-                    }
-                default:
-                    return @"Invalid";
-            }
-        case 0x04:
-            // Temperature sensor
-            return @"Temperature";
-            break;
-        case 0x09:
-            // Channel 3 in
-            switch( self->disp_settings.ch3_mode ) {
-                case CH3_VOLTAGE:
-                    if(self->disp_settings.ac_display[channel]){
-                        return @"Aux Voltage AC";
-                    } else {
-                        return @"Aux Voltage DC";
-                    }
-                case CH3_RESISTANCE:
-                    return @"Resistance";
-                case CH3_DIODE:
-                    return @"Diode Test";
-            }
-            break;
-        default:
-            NSLog(@"Unrecognized setting");
-            return @"";
-    }
-}
-
-/*
- Returns the units label for the given channel
- @param channel The input channel index
- @return A string with the units (A, V, C, etc.)
- */
-
--(NSString*)getUnits:(int)channel {
-    uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
-    if(self->disp_settings.raw_hex[channel]) {
-        return @"RAW";
-    }
-    switch( channel_setting ) {
-        case 0x00:
-            switch (channel) {
-                case 0:
-                    return @"A";
-                case 1:
-                    return @"V";
-                default:
-                    DLog(@"Invalid channel");
-                    return @"?";
-            }
-        case 0x04:
-            return @"C";
-        case 0x09:
-            switch( self->disp_settings.ch3_mode ) {
-                case CH3_VOLTAGE:
-                    return @"V";
-                case CH3_RESISTANCE:
-                    return @"Ω";
-                case CH3_DIODE:
-                    return @"V";
-            }
-        default:
-            NSLog(@"Unrecognized CH1SET setting");
-            return @"";
-    }
-}
-
-/*
- Returns a string describing the input terminal.  Can be V, A, Omega or Internal
- */
-
--(NSString*)getInputLabel:(int)channel {
-    uint8 channel_setting = [self getChannelSetting:channel] & METER_CH_SETTINGS_INPUT_MASK;
-    switch( channel_setting ) {
-        case 0x00:
-            switch (channel) {
-                case 0:
-                    return @"A";
-                case 1:
-                    return @"V";
-                default:
-                    return @"?";
-            }
-        case 0x04:
-            return @"INT";
-        case 0x09:
-            return @"Ω";
-        default:
-            NSLog(@"Unrecognized setting");
-            return @"";
-    }
+-(float) lsbToNativeUnits:(int)lsb channel:(Channel)c {
+    myRangeDescriptor * tmp = [self getSelectedRange:c];
+    return tmp.converter(lsb);
 }
 
 /*
@@ -1035,27 +627,11 @@ int24_test to_int24_test(long arg) {
 -(uint32) getAdvertisedBuildTime {
     uint32 build_time = 0;
     NSData* tmp;
-    tmp = [self->p.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
+    tmp = [self.periph.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
     if( tmp != nil ) {
         [tmp getBytes:&build_time length:4];
     }
     return build_time;
-}
-
-/*
- Examines meter settings and returns the current coming out of the ISRC in A
- @returns current in A
- */
-
--(double)getIsrcCurrent {
-    if( 0 == (meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_ON) ) {
-        return 0;
-    }
-    if( 0 != (meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL) ) {
-        return 100e-6;
-    } else {
-        return 100e-9;
-    }
 }
 
 #pragma mark MooshimeterControlProtocol_methods
@@ -1072,86 +648,69 @@ int24_test to_int24_test(long arg) {
 // Autoranging
 //////////////////////////////////////
 
--(bool)bumpRange:(Channel)channel expand:(bool)expand {
-    uint8 channel_setting    = [self getChannelSetting:channel];
-    uint8* const adc_setting = &self->meter_settings.rw.adc_settings;
-    uint8* const ch3_mode    = &self->disp_settings.ch3_mode;
-    int8 tmp;
+-(int)setRange:(Channel)c rangeDescriptor:(myRangeDescriptor *)rd {
+    Chooser* chooser = [self getSelectedDescriptor:c];
+    [chooser chooseObject:rd];
 
-    switch(channel_setting & METER_CH_SETTINGS_INPUT_MASK) {
-        case 0x00:
-            // Electrode input
-            switch(channel) {
-                case CH1:
-                    // We are measuring current.  We can boost PGA, but that's all.
-                    channel_setting = [LegacyMooshimeterDevice pga_cycle:channel_setting inc:expand wrap:wrap];
-                    break;
-                case CH2:
-                    // Switch the ADC GPIO to activate dividers
-                    // NOTE: Don't bother with the 1.2V range for now.  Having a floating autoranged input leads to glitchy behavior.
-                    tmp = (*adc_setting & ADC_SETTINGS_GPIO_MASK)>>4;
-                    if(raise) {
-                        if(++tmp >= 3) {
-                            tmp--;
-                        }
-                    } else {
-                        if(--tmp < 1) {
-                            tmp++;
-                        }
-                    }
-                    tmp<<=4;
-                    *adc_setting &= ~ADC_SETTINGS_GPIO_MASK;
-                    *adc_setting |= tmp;
-                    channel_setting &=~METER_CH_SETTINGS_PGA_MASK;
-                    channel_setting |= 0x10;
-                    break;
-            }
+    meter_settings.rw.chset[c] = rd.chset;
+    switch(rd.isrc) {
+        case ISRC_IGNORE:
             break;
-        case 0x04:
-            // Temp input
+        case ISRC_OFF:
+            self->meter_settings.rw.measure_settings=0;
             break;
-        case 0x09:
-            switch(*ch3_mode) {
-                case CH3_VOLTAGE:
-                    channel_setting = [LegacyMooshimeterDevice pga_cycle:channel_setting inc:expand wrap:wrap];
-                    break;
-                case CH3_RESISTANCE:
-                case CH3_DIODE:
-                    if(meter_info.pcb_version==7) {
-                        // This case is annoying.  We want PGA to always wrap if we are in the low range and going up OR in the high range and going down
-                        if( 0 != ((expand?0:METER_MEASURE_SETTINGS_ISRC_LVL) ^ (meter_settings.rw.measure_settings & METER_MEASURE_SETTINGS_ISRC_LVL))) {
-                            wrap = true;
-                        }
-                        channel_setting = [LegacyMooshimeterDevice pga_cycle:channel_setting inc:expand wrap:wrap];
-                        tmp = channel_setting & METER_CH_SETTINGS_PGA_MASK;
-                        tmp >>=4;
-                        if(   ( expand && tmp == 6) || (!expand && tmp == 1) ) {
-                            meter_settings.rw.measure_settings ^= METER_MEASURE_SETTINGS_ISRC_LVL;
-                        }
-                    } else {
-                        int lvl = [self getResLvl];
-                        BOOL inner_wrap = true;
-                        if(lvl==1) {
-                            // Res src is 10M
-                            if(expand) {inner_wrap = wrap;}
-                        } else if(lvl==3) {
-                            // Res src is 10k
-                            if(!expand) {inner_wrap = wrap;}
-                        }
-                        channel_setting = [LegacyMooshimeterDevice pga_cycle:channel_setting inc:expand wrap:inner_wrap];
-                        tmp = channel_setting & METER_CH_SETTINGS_PGA_MASK;
-                        tmp >>=4;
-                        if( (expand && (tmp == 6)) || (!expand && (tmp == 1))) {
-                            // The PGA wrapped, bump the macro range
-                            [self bumpResLvl:expand wrap:wrap];
-                        }
-                    }
-                    break;
-
-            }
+        case ISRC_LOW:
+            self->meter_settings.rw.measure_settings=METER_MEASURE_SETTINGS_ISRC_ON;
+            break;
+        case ISRC_MID:
+            self->meter_settings.rw.measure_settings=METER_MEASURE_SETTINGS_ISRC_LVL;
+            break;
+        case ISRC_HIGH:
+            self->meter_settings.rw.measure_settings=METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL;
+            break;
+        default:
+            NSLog(@"Invalid ISRC setting");
             break;
     }
-    [g_meter setChannelSetting:channel set:channel_setting];
+    switch(rd.gpio){
+        case GPIO_IGNORE:
+            break;
+        case GPIO0:
+            self->meter_settings.rw.adc_settings&=~ADC_SETTINGS_GPIO_MASK;
+            break;
+        case GPIO1:
+            self->meter_settings.rw.adc_settings&=~ADC_SETTINGS_GPIO_MASK;
+            self->meter_settings.rw.adc_settings |= 0x10;
+            break;
+        case GPIO2:
+            self->meter_settings.rw.adc_settings&=~ADC_SETTINGS_GPIO_MASK;
+            self->meter_settings.rw.adc_settings |= 0x20;
+            break;
+        case GPIO3:
+            self->meter_settings.rw.adc_settings&=~ADC_SETTINGS_GPIO_MASK;
+            self->meter_settings.rw.adc_settings |= 0x30;
+            break;
+        default:
+            NSLog(@"Invalid GPIO setting");
+    }
+    [self.delegate onRangeChange:c new_range:rd];
+    return 0;
+}
+
+-(bool)bumpRange:(Channel)channel expand:(bool)expand {
+    InputDescriptor * inputDescriptor = [self getSelectedDescriptor:channel];
+    Chooser* ranges = inputDescriptor.ranges;
+    if(!expand && ranges.chosen_i>0) {
+        [ranges chooseByIndex:ranges.chosen_i-1];
+        [self setRange:channel rangeDescriptor:[ranges getChosen]];
+        return YES;
+    }
+    if(expand && ranges.chosen_i< [ranges getNChoices]-1) {
+        [ranges chooseByIndex:ranges.chosen_i+1];
+        [self setRange:channel rangeDescriptor:[ranges getChosen]];
+        return YES;
+    }
+    return NO;
 }
 
 +(Lsb2NativeConverter)makeSimpleConverter:(float)mult pga:(PGA_GAIN)pga {
@@ -1290,30 +849,61 @@ int24_test to_int24_test(long arg) {
 }
 
 // Return true if settings changed
--(bool)applyAutorange;
+-(bool)applyAutorange {
+    bool rval = NO;
+    rval|=[self applyAutorange:CH1];
+    rval|=[self applyAutorange:CH2];
+    rval|=[self applyRateAndDepthChange];
+    if(rval) {
+        [self sendMeterSettings:nil];
+    }
+    return rval;
+}
 
 //////////////////////////////////////
 // Interacting with the Mooshimeter itself
 //////////////////////////////////////
 
--(void)setName:(NSString*)name;
--(NSString*)getName;
+-(void)setName:(NSString*)name {
+    [self sendMeterName:name cb:nil];
+}
+-(NSString*)getName {
+    ]
+}
 
--(void)pause;
--(void)oneShot;
--(void)stream;
+-(void)pause {
+    self->meter_settings.rw.target_meter_state = METER_PAUSED;
+    [self sendMeterSettings:nil];
+}
+-(void)oneShot {
+    self->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
+    self->meter_settings.rw.target_meter_state = METER_RUNNING;
+    [self sendMeterSettings:nil];
+}
 
--(void)enterShippingMode;
+-(void)stream {
+    self->meter_settings.rw.calc_settings &=~METER_CALC_SETTINGS_ONESHOT;
+    self->meter_settings.rw.target_meter_state = METER_RUNNING;
+    [self sendMeterSettings:nil];
+    LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
+    [c setNotifyValue:YES completion:nil onUpdate:sample_handler];
+}
+
+-(void)enterShippingMode {
+    self->meter_settings.rw.target_meter_state = METER_HIBERNATE;
+    [self sendMeterSettings:nil];
+}
 
 -(int)getPCBVersion {
     return meter_info.pcb_version;
 }
 
 -(double)getUTCTime {
-    return
+    [self getLGChar:METER_UTC_TIME];
+    fewafewafewa
 }
 -(void)setTime:(double) utc_time {
-
+    [self setMeterTime:(uint32)utc_time cb:nil];
 }
 
 -(MeterReading*) getOffset:(Channel)c {
@@ -1334,7 +924,7 @@ int24_test to_int24_test(long arg) {
 -(int)setSampleRateIndex:(int)i {
     meter_settings.rw.adc_settings &=(~ADC_SETTINGS_SAMPLERATE_MASK);
     meter_settings.rw.adc_settings |= i;
-    sendMeterSettings();
+    [self sendMeterSettings:nil];
 }
 -(NSArray<NSString*>*) getSampleRateList {
     static const int l[] = {125,250,500,1000,2000,4000,8000};
@@ -1365,7 +955,42 @@ int24_test to_int24_test(long arg) {
 }
 
 -(void)setBufferMode:(Channel)c on:(bool)on {
-    fewafewa
+    /**
+     * Downloads the complete sample buffer from the Mooshimeter.
+     * This interaction spans many connection intervals, the exact length depends on the number of samples in the buffer
+     * @param onReceived Called when the complete buffer has been downloaded
+     */
+    LGCharacteristic* s  = [self getLGChar:METER_SAMPLE];
+    LGCharacteristic* c1 = [self getLGChar:METER_CH1BUF];
+    LGCharacteristic* c2 = [self getLGChar:METER_CH2BUF];
+
+    if(on) {
+        // Set up for oneshot, turn off all math in firmware
+        if (([self getAdvertisedBuildTime] < 1424473383)
+                && (0 == (self->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_ONESHOT))) {
+            // Avoid sending the same meter settings over and over - check and see if we're set up for oneshot
+            // and if we are, don't send the meter settings again.  Due to a firmware bug in the wild (Feb 2 2015)
+            // sending meter settings will cause the ADC to run for one buffer fill even if the state is METER_PAUSED
+            meter_settings.rw.calc_settings &= ~(METER_CALC_SETTINGS_MS | METER_CALC_SETTINGS_MEAN);
+            meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
+        } else if (meter_settings.ro.present_meter_state != METER_PAUSED) {
+            //meter_settings.target_meter_state = METER_PAUSED;
+            //meter_settings.send();
+        }
+
+        [s setNotifyValue:NO completion:nil];
+        [c1 setNotifyValue:on completion:^(NSError *error) {
+            [c2 setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
+                [self handleBufStreamUpdate:data channel:1];
+            }];
+        } onUpdate:^(NSData *data, NSError *error) {
+            [self handleBufStreamUpdate:data channel:0];
+        }];
+    } else {
+        [s setNotifyValue:YES completion:nil onUpdate:<#(LGCharacteristicReadCallback)uCallback#>];
+        [c1 setNotifyValue:NO completion:nil];
+        [c2 setNotifyValue:NO completion:nil];
+    }
 }
 
 -(bool)getLoggingOn {
@@ -1375,7 +1000,7 @@ int24_test to_int24_test(long arg) {
 }
 -(void)setLoggingOn:(bool)on {
     meter_log_settings.rw.target_logging_state = on?LOGGING_SAMPLING:LOGGING_OFF;
-    sendLogSettings
+    [self sendMeterLogSettings:nil];
 }
 -(int)getLoggingStatus {
     return meter_log_settings.ro.logging_error;
@@ -1387,12 +1012,12 @@ int24_test to_int24_test(long arg) {
         "LOGGING_MOUNT_FAIL",
         "LOGGING_INSUFFICIENT_SPACE",
         "LOGGING_WRITE_ERROR",
-        "LOGGING_END_OF_FILE", }
+        "LOGGING_END_OF_FILE", };
     return [NSString stringWithUTF8String:messages[[self getLoggingStatus]]];
 }
 -(void)setLoggingInterval:(int)ms {
-meter_log_settings.rw.logging_period_ms=ms;
-    sendlogsettings;
+    meter_log_settings.rw.logging_period_ms=ms;
+    [self sendMeterLogSettings:nil];
 }
 -(int)getLoggingIntervalMS {
     return meter_log_settings.rw.logging_period_ms;
@@ -1403,34 +1028,100 @@ meter_log_settings.rw.logging_period_ms=ms;
         case CH1:
         case CH2:
             if(((myInputDescriptor *)[self getSelectedDescriptor:c]).is_ac) {
-                return [self wrapMeterReading:[self lsbToNativeUnits:sqrt(meter_sample.ch_ms[c]) ch:c] c:c];
+                return [self wrapMeterReading:[self lsbToNativeUnits:(int)sqrt(meter_sample.ch_ms[c]) channel:c] c:c];
             } else {
-                return [self wrapMeterReading:[self lsbToNativeUnits:meter_sample.ch_reading_lsb[c] ch:c]+[self getOffset:c].value c:c];
+                return [self wrapMeterReading:[self lsbToNativeUnits:to_int32(meter_sample.ch_reading_lsb[c]) channel:c]+[self getOffset:c].value c:c];
             }
-        case MATH:
-            MathInputDescriptor id = (MathInputDescriptor)input_descriptors.get(Channel.MATH).getChosen();
-            if(id.meterSettingsAreValid()) {
-                return id.calculate();
+            break;
+        case MATH: {
+            MathInputDescriptor *d = (MathInputDescriptor *) [input_descriptors[c] getChosen];
+            if (d.meterSettingsAreValid()) {
+                return d.calculate();
             } else {
-                MeterReading rval = invalid_inputs;
-                return rval;
+                return [[MeterReading alloc]
+                        initWithValue:0
+                         n_digits_arg:1
+                              max_arg:1
+                            units_arg:@"INVALID"];
             }
+        } break;
     }
-    return new MeterReading();
+    return [[MeterReading alloc]
+            initWithValue:0
+             n_digits_arg:1
+                  max_arg:1
+                units_arg:@"INVALID"];
 }
 
--(InputDescriptor*) getSelectedDescriptor:(Channel)c {
-    InputDescriptor * rval = [input_descriptors[c] getChosen];
+-(NSString*) getRangeLabel:(Channel) c {
+    return [self getSelectedRange:c].name;
+}
+-(int)         setRange:(Channel)c rd:(id)rd {
+    InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
+    [inputDescriptor.ranges chooseObject:rd];
+}
+-(NSArray<NSString*>*) getRangeList:(Channel)c {
+    InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
+    Chooser* r = inputDescriptor.ranges;
+    NSMutableArray<NSString*>* rval = [NSMutableArray arrayWithCapacity:[r getNChoices] ];
+    for(unsigned int i = 0; i < [r getNChoices]; i++) {
+        RangeDescriptor * rd = [r get:i];
+        rval[i] = rd.name;
+    }
     return rval;
 }
 
--(NSString*) getRangeLabel:(Channel) c;
--(int)         setRange:(Channel)c rd:(id)rd;
--(NSArray<NSString*>*) getRangeList:(Channel)c;
+-(NSString*) getInputLabel:(Channel)c {
+    InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
+    return inputDescriptor.name;
+}
 
--(NSString*) getInputLabel:(Channel)c;
--(int)setInput:(Channel)c descriptor:(id)descriptor;
--(NSArray *) getInputList:(Channel)c;
--(id) getSelectedDescriptor:(Channel)c;
+bool isSharedInput(INPUT_MODE i) {
+    return  (i==RESISTANCE) ||
+            (i==AUX_V) ||
+            (i==DIODE);
+};
+
+-(int)setInput:(Channel)c descriptor:(InputDescriptor*)new_id {
+    Chooser* id_chooser = self->input_descriptors[c];
+    myInputDescriptor * cast = (myInputDescriptor *)new_id;
+    switch(c) {
+        case CH1:
+        case CH2:
+            if([id_chooser getChosen]==new_id) {
+                // No action required
+                return 0;
+            }
+
+            if(isSharedInput(cast.input)) {
+                // Make sure we're not about to jump on to a channel that's in use
+                Channel other = c==CH1?CH2:CH1;
+                myInputDescriptor * other_id = [self getSelectedDescriptor:other];
+                if(isSharedInput(other_id.input)) {
+                    NSLog(@"Tried to select an input already in use!");
+                    return -1;
+                }
+            }
+
+            [id_chooser chooseObject:cast];
+            [self.delegate onInputChange:c descriptor:new_id];
+            [self setRange:c rangeDescriptor:[new_id.ranges get:0]];
+            return 0;
+        case MATH:
+            [(MathInputDescriptor*)new_id onChosen];
+            [id_chooser chooseObject:new_id];
+            return 0;
+    }
+    return 0;
+}
+-(NSArray *) getInputList:(Channel)c {
+    Chooser* r = self->input_descriptors[c];
+    NSMutableArray<NSString*>* rval = [NSMutableArray arrayWithCapacity:[r getNChoices] ];
+    for(unsigned int i = 0; i < [r getNChoices]; i++) {
+        InputDescriptor * rd = [r get:i];
+        rval[i] = rd.name;
+    }
+    return rval;
+}
 
 @end

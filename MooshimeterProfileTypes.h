@@ -194,8 +194,7 @@ typedef struct {
     trigger_settings_t trigger_settings; // Trigger control
     uint8 measure_settings;              // Specifies features to turn on and off.  Note that voltage gain is controlled through ADC settings
     uint8 calc_settings;                 // Specifies what analysis to run on captured data
-    uint8 ch1set;
-    uint8 ch2set;
+    uint8 chset[2];
     uint8 adc_settings;
   } rw;
 }
