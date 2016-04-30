@@ -81,6 +81,12 @@ typedef void (^LGCharacteristicWriteCallback) (NSError *error);
  */
 - (void)readValueWithBlock:(LGCharacteristicReadCallback)aCallback;
 
+/**
+ * Reads characteristic value
+ * Blocks thread
+ * returns nil on failure
+ */
+- (NSData*)readValue;
 
 // ----- Used for input events -----/
 

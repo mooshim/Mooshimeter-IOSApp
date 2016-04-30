@@ -7,6 +7,7 @@
 #import <Foundation/Foundation.h>
 #import "MooshimeterDelegateProtocol.h"
 #import "MeterReading.h"
+#import "LGCharacteristic.h"
 
 @protocol MooshimeterControlProtocol <NSObject>
 
@@ -21,6 +22,7 @@
         ////////////////////////////////
 
         -(bool)isInOADMode;
+        -(LGCharacteristic*)getLGChar:(uint16_t)UUID;
 
         //////////////////////////////////////
         // Autoranging
@@ -71,12 +73,14 @@
 
         -(MeterReading*) getValue:(Channel)c;
 
-        NSString*       getRangeLabel(Channel c);
+        -(NSString*)   getRangeLabel:(Channel)c;
         -(int)         setRange:(Channel)c rd:(RangeDescriptor*)rd;
-        -(NSArray<NSString*>*) getRangeList:(Channel)c;
+        -(NSArray<RangeDescriptor*>*)getRangeList:(Channel)c;
+        -(NSArray<NSString*>*)getRangeNameList:(Channel)c;
 
         -(NSString*) getInputLabel:(Channel)c;
         -(int)setInput:(Channel)c descriptor:(InputDescriptor*)descriptor;
-        -(NSArray *) getInputList:(Channel)c;
+        -(NSArray*)getInputList:(Channel)c;
+        -(NSArray*)getInputNameList:(Channel)c;
         -(InputDescriptor*) getSelectedDescriptor:(Channel)c;
 @end

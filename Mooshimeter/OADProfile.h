@@ -21,23 +21,20 @@
 @property (strong,nonatomic) NSData *imageData;
 
 @property int nBlocks;
-@property int nBytes;
 @property int iBlocks;
 @property int iBytes;
 @property BOOL canceled;
 @property BOOL inProgramming;
 @property BOOL start;
-@property (nonatomic,retain) NSTimer *imageDetectTimer;
 @property UINavigationController *navCtrl;
 
-@property (strong,nonatomic) BLETIOADProgressViewController *progressView;
+@property id<MooshimeterControlProtocol> meter;
 
+@property (strong,nonatomic) BLETIOADProgressViewController *progressView;
 @property (strong,nonatomic) dispatch_semaphore_t pacer_sem;
 
--(instancetype) init:(NSString*) filename;
-
+-(instancetype) init:(id<MooshimeterControlProtocol>)new_meter;
 -(void) startUpload;
-
 -(void) completionDialog;
 
 @end

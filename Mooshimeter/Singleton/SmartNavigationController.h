@@ -25,4 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @property (strong,nonatomic) AppDelegate* app;
 
++(instancetype)getSharedInstance;
+
+-(instancetype)initWithRootViewController:(UIViewController*)vc;
+
 @end

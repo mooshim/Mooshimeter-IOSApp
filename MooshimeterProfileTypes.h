@@ -53,7 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define N_ADC_SAMPLES      (1<<N_ADC_SAMPLES_LOG2)
 
 typedef enum {
-    CH1,
+    CH1=0,
     CH2,
     MATH,
 } Channel;

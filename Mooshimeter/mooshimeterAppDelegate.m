@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     self.cman   = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
     self.meters = [[NSMutableArray alloc] init];
-    
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
@@ -86,24 +86,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(UINavigationController*)getNav {
     mooshimeterAppDelegate* t = [self getApp];
     return t.window.rootViewController.navigationController;
-}
-
-- (void)scanForMeters
-{
-    uint16 tmp = CFSwapInt16(OAD_SERVICE_UUID);
-    
-    NSArray* services = [NSArray arrayWithObjects:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID], [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID], [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]], nil];
-    NSLog(@"Refresh requested");
-    [self.cman stopScan];
-    [self.meters removeAllObjects];
-    // Manually re-add connected meter if we have one
-    if(self.active_meter.p.state == CBPeripheralStateConnected) {
-        [self.meters addObject:self.active_meter];
-    }
-    [self.cman scanForPeripheralsWithServices:services options:nil];
-    [self.scan_vc reloadData];
-    [self performSelector:@selector(endScan) withObject:nil afterDelay:10.f];
-    [self.scan_vc.refreshControl beginRefreshing];
 }
 
 - (void)endScan {

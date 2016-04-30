@@ -18,15 +18,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <UIKit/UIKit.h>
 #import "LegacyMooshimeterDevice.h"
+#import "MeterViewController.h"
 
-@interface MeterSettingsView : UIView <UITextFieldDelegate,UIAlertViewDelegate>
+@interface ChannelView : UIView
 
-@property (strong,nonatomic) UITextField*           name_control;
-@property (strong,nonatomic) UISegmentedControl*    logging_period_control;
-//@property (strong,nonatomic) UITextField*           logging_time_control;
-@property (strong,nonatomic) UIButton*              hibernate_button;
-@property (strong,nonatomic) UIButton*              force_rotation_button;
+-(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch  meter:(MooshimeterDeviceBase *)meter;
+-(void)value_label_refresh;
+-(void)refreshAllControls;
 
-@property id<MooshimeterControlProtocol> meter;
+@property NSUInteger channel;
+@property MooshimeterDeviceBase * meter;
+
+@property (strong,nonatomic) UILabel*  value_label;
+@property (strong,nonatomic) UIButton* units_button;
+@property (strong,nonatomic) UIButton* display_set_button;
+@property (strong,nonatomic) UIButton* input_set_button;
+@property (strong,nonatomic) UIButton* auto_manual_button;
+@property (strong,nonatomic) UIButton* range_button;
 
 @end

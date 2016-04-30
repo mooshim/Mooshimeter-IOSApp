@@ -65,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #undef cg
     
     // Set properties
-    [self.name_control setText:g_meter.p.cbPeripheral.name];
+    [self.name_control setText:[self.meter getName]];
     [self.name_control setFont:[UIFont systemFontOfSize:24]];
     [self.name_control setTextColor:[UIColor lightGrayColor]];
     [self.name_control setTextAlignment:NSTextAlignmentCenter];
@@ -76,7 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     [self.logging_period_control addTarget:self action:@selector(loggingPeriodSet) forControlEvents:UIControlEventValueChanged];
     for(int i = 0; i < [freq_options count]; i++) {
-        if(g_meter->meter_log_settings.rw.logging_period_ms <= period_values[i]) {
+        if([self.meter getLoggingIntervalMS] <= period_values[i]) {
             [self.logging_period_control setSelectedSegmentIndex:i];
             break;
         }
@@ -124,7 +124,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)forceRotation {
     const UIApplication* app = [UIApplication sharedApplication];
     const AppDelegate* ad = (AppDelegate*)(app.delegate);
-    [ad switchToGraphView:UIInterfaceOrientationLandscapeLeft];
+    //FIXME
+    //[ad switchToGraphView:UIInterfaceOrientationLandscapeLeft];
 }
 
 -(void)nameSelected {
@@ -138,9 +139,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"%@", new_name);
     if(new_name.length != 0) {
         new_name = [new_name substringToIndex: MIN(16, [new_name length])];
-        [g_meter sendMeterName:new_name cb:^(NSError *error) {
-            DLog(@"Name send complete");
-        }];
+        [self.meter setName:new_name];
     }
     [self.name_control resignFirstResponder];
 }
@@ -152,10 +151,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)loggingPeriodSet {
     const uint16 period_values[] = {0, 1000, 10*1000, 60*1000};
     const uint16 period_ms = period_values[self.logging_period_control.selectedSegmentIndex];
-    g_meter->meter_log_settings.rw.logging_period_ms = period_ms;
-    [g_meter sendMeterLogSettings:^(NSError *error) {
-        DLog(@"Log settings sent");
-    }];
+    [self.meter setLoggingInterval:period_ms];
     // This cascades in to the number of samples we want to take
     //[self loggingTimeSet];
 }
@@ -166,13 +162,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)loggingTimeSet {
-    const int sample_freq = 125<<(g_meter->meter_settings.rw.adc_settings&ADC_SETTINGS_SAMPLERATE_MASK);
+    const int sample_freq = 125<<(self.meter->meter_settings.rw.adc_settings&ADC_SETTINGS_SAMPLERATE_MASK);
     const double new_time_hours = [self.logging_time_control.text doubleValue];
-    const double sample_interval_ms = g_meter->meter_log_settings.rw.logging_period_ms + ([g_meter getBufLen]/sample_freq);
+    const double sample_interval_ms = self.meter->meter_log_settings.rw.logging_period_ms + ([self.meter getBufLen]/sample_freq);
     const double new_time_ms = new_time_hours*60*60*1000;
     const int n_samples = new_time_ms/sample_interval_ms;
-    g_meter->meter_log_settings.rw.logging_n_cycles = n_samples;
-    [g_meter sendMeterLogSettings:^(NSError *error) {
+    self.meter->meter_log_settings.rw.logging_n_cycles = n_samples;
+    [self.meter sendMeterLogSettings:^(NSError *error) {
         DLog(@"Log settings send");
     }];
     [self.logging_time_control resignFirstResponder];
@@ -191,10 +187,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     DLog(@"Confirm");
     if(buttonIndex) {
-        g_meter->meter_settings.rw.target_meter_state = METER_HIBERNATE;
-        [g_meter sendMeterSettings:^(NSError *error) {
-            DLog(@"Sent");
-        }];
+        [self.meter enterShippingMode];
     }
 }
 

@@ -41,8 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @property (strong,nonatomic) UIWindow *window;
 @property (strong,nonatomic) CBCentralManager *cman;
-@property (strong,nonatomic) NSMutableArray *meters;
-@property (strong,nonatomic) MooshimeterDevice* active_meter;
 @property (strong,nonatomic) BLETIOADProfile* oad_profile;
 
 @property (strong,nonatomic) UINavigationController* nav;

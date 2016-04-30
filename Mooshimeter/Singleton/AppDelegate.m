@@ -22,18 +22,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self->reboot_into_oad = NO;
-    
     [LGCentralManager sharedInstance];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     
-    self.scan_vc    = [[ScanViewController alloc] initWithDelegate:self];
-    self.meter_vc = [[MeterViewController alloc] initWithDelegate:self];
-    self.oad_vc     = [[BLETIOADProgressViewController alloc] init];
-    self.graph_vc = [[GraphViewController alloc] initWithDelegate:self];
+    self.scan_vc    = [[ScanViewController alloc] init];
     
     self.nav = [[SmartNavigationController alloc] initWithRootViewController:self.scan_vc];
     self.nav.app = self;
@@ -78,8 +73,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.oad_profile = [[OADProfile alloc]init:path];
     self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
     self.oad_profile.navCtrl = self.nav;
-    
+
     [self.window setRootViewController:self.nav];
+    [self.window makeKeyAndVisible];
     return YES;
 }
 							
@@ -114,77 +110,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"Main app settings button press");
     [self.nav.topViewController performSelector:@selector(settings_button_press)];
 }
-
-#pragma mark - Random utility functions
-
--(UINavigationController*)getNav {
-    return self.window.rootViewController.navigationController;
-}
-
-- (void)scanForMeters
-{
-    uint16 tmp = CFSwapInt16(OAD_SERVICE_UUID);
-    LGCentralManager* c = [LGCentralManager sharedInstance];
-    
-    if(c.isScanning) {
-        // Wait for the previous scan to finish.
-        NSLog(@"Already scanning. Swipe ignored.");
-        return;
-    }
-    
-    NSArray* services = [NSArray arrayWithObjects:[BLEUtility expandToMooshimUUID:METER_SERVICE_UUID], [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID], [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]], nil];
-    NSLog(@"Refresh requested");
-    
-    [self.scan_vc.refreshControl beginRefreshing];
-    
-    NSTimer* refresh_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self.scan_vc selector:@selector(reloadData) userInfo:nil repeats:YES];
-    
-    //self.scan_vc.title = @"Scan in progress...";
-    self.nav.navigationItem.title = @"Scan in progress...";
-    
-    [c scanForPeripheralsByInterval:5
-        services:services
-        options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES}
-        completion:^(NSArray *peripherals) {
-            NSLog(@"Found: %d", (int)peripherals.count);
-            [refresh_timer invalidate];
-            [self.scan_vc.refreshControl endRefreshing];
-            [self.scan_vc reloadData];
-            self.nav.navigationItem.title = @"Pull down to scan";
-    }];
-}
-
-#pragma mark ScanViewDelegate
-
--(void)handleScanViewRefreshRequest {
-    [self scanForMeters];
-}
-
--(void)handleScanViewSelect:(LGPeripheral*)p {
-    switch( p.cbPeripheral.state ) {
-        case CBPeripheralStateConnected:{
-            // We selected one that's already connected, disconnect
-            [p disconnectWithCompletion:^(NSError *error) {
-                [self meterDisconnected];
-            }];
-            break;}
-        case CBPeripheralStateConnecting:{
-            //What should we do if you click a connecting meter?
-            NSLog(@"Already connecting...");
-            [p disconnectWithCompletion:^(NSError *error) {
-                [self meterDisconnected];
-            }];
-            break;}
-        case CBPeripheralStateDisconnected:{
-            NSLog(@"Connecting new...");
-            g_meter = [[LegacyMooshimeterDevice alloc] init:p delegate:self];
-
-            [g_meter connect];
-            [self.scan_vc reloadData];
-            break;}
-    }
-}
-
+/*
 #pragma mark MeterViewControllerDelegate
 
 -(void)switchToGraphView:(UIDeviceOrientation)new_o {
@@ -211,32 +137,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 
-#pragma mark MooshimeterDeviceDelegate
-
--(void)finishedMeterSetup {
-    NSLog(@"Finished meter setup");
-    [self.scan_vc reloadData];
-    if( g_meter->oad_mode ) {
-        // We connected to a meter in OAD mode as requested previously.  Update firmware.
-        NSLog(@"Connected in OAD mode");
-        if( YES || [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
-            NSLog(@"Starting upload");
-            [self.oad_profile startUpload];
-        } else {
-            NSLog(@"We connected to an up-to-date meter in OAD mode.  Disconnecting.");
-            [g_meter.p disconnectWithCompletion:nil];
-        }
-    }
-    else if( [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
-        // Require a firmware update!
-        NSLog(@"FIRMWARE OLD");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"A new firmware version is available.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
-        [alert show];
-    } else {
-        [self transitionToMeterView];
-    }
-}
-
 -(void)transitionToMeterView {
     // We have a connected meter with the correct firmware.
     // Display the meter view.
@@ -252,17 +152,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     [self.nav pushViewController:self.meter_vc animated:YES];
     NSLog(@"Did push meter view controller");
-}
-
--(void)meterDisconnected {
-    // Allow screen dimming again
-    [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-    [self.bat_label setText:@""];
-    [self.rssi_label setText:@""];
-    [NSTimer cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateRSSI) object:nil];
-    [self.nav popToViewController:self.scan_vc animated:YES];
-    [self.scan_vc reloadData];
-    g_meter = nil;
 }
 
 -(void)updateRSSI {
@@ -290,6 +179,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 #pragma mark UIAlertViewDelegate
+
+// This delegate responds to the firmware update dialog
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     DLog(@"in alert view delegate");
     if(buttonIndex == 0) {
@@ -307,6 +198,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }];
         }];
     }
-}
+}*/
 
 @end

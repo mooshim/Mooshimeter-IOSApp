@@ -17,10 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "ScanViewController.h"
-#import "meterViewController.h"
-
-// Uncomment if you want a simulated meter to appear in the scan list
-//#define SIMULATED_METER
+#import "MeterView/MeterViewController.h"
+#import "MeterDirectory.h"
+#import "SmartNavigationController.h"
 
 @interface ScanViewController () {
     NSMutableArray *_objects;
@@ -29,16 +28,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @implementation ScanViewController
 
--(instancetype)initWithDelegate:(id)d {
-    self=[super init];
-    self.delegate = d;
-    self.peripherals = nil;
-    return self;
-}
-
 - (void)awakeFromNib
 {
     [super awakeFromNib];
+}
+
+- (void)scan
+{
+    uint16 tmp = CFSwapInt16(OAD_SERVICE_UUID);
+    LGCentralManager* c = [LGCentralManager sharedInstance];
+
+    if(c.isScanning) {
+        // Wait for the previous scan to finish.
+        NSLog(@"Already scanning. Swipe ignored.");
+        return;
+    }
+
+    NSArray* services = @[
+            [BLEUtility expandToMooshimUUID:METER_SERVICE_UUID],
+            [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID],
+            [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]]];
+    NSLog(@"Refresh requested");
+
+    [self.refreshControl beginRefreshing];
+
+    NSTimer* refresh_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(reloadData) userInfo:nil repeats:YES];
+
+    //self.title = @"Scan in progress...";
+    //self.nav.navigationItem.title = @"Scan in progress...";
+
+    [c scanForPeripheralsByInterval:5
+                           services:services
+                            options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES}
+                         completion:^(NSArray *peripherals) {
+                             NSLog(@"Found: %d", (int)peripherals.count);
+                             [refresh_timer invalidate];
+                             [self.refreshControl endRefreshing];
+                             [self reloadData];
+                             //self.nav.navigationItem.title = @"Pull down to scan";
+                         }];
 }
 
 -(void)reloadData {
@@ -46,6 +74,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     LGCentralManager* c = [LGCentralManager sharedInstance];
     self.peripherals = [c.peripherals copy];
     [self.tableView reloadData];
+}
+
+-(void)handleScanViewRefreshRequest {
+    [self scan];
+}
+
+dispatch_time_t dtime(int ms) {
+    return dispatch_time(DISPATCH_TIME_NOW,ms*NSEC_PER_MSEC);
+}
+
+void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback) {
+    LGService * service = services[i];
+    i++;
+    if(i == [services count]) {
+        [service discoverCharacteristicsWithCompletion:aCallback];
+    } else {
+        [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
+            discoverRecursively(services, i, aCallback);
+        }];
+    }
+
+}
+
+-(void)handleScanViewSelect:(LGPeripheral*)p {
+    switch( p.cbPeripheral.state ) {
+        case CBPeripheralStateConnected:{
+            // We selected one that's already connected, disconnect
+            [p disconnectWithCompletion:^(NSError *error) {
+                [self reloadData];
+            }];
+            break;}
+        case CBPeripheralStateConnecting:{
+            //What should we do if you click a connecting meter?
+            NSLog(@"Already connecting...");
+            [p disconnectWithCompletion:^(NSError *error) {
+                [self reloadData];
+            }];
+            break;}
+        case CBPeripheralStateDisconnected:{
+            NSLog(@"Connecting new...");
+            [p connectWithTimeout:5 completion:^(NSError *error) {
+                NSLog(@"Discovering services");
+                [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
+                    discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
+                        MooshimeterDeviceBase * meter = [MooshimeterDeviceBase chooseSubClass:p];
+                        NSLog(@"Wrapped in meter!");
+                        [self transitionToMeterView:meter]; // TODO handle OAD
+                    });
+                }];
+            }];
+            [self reloadData];
+            break;}
+    }
 }
 
 - (void)viewDidLoad
@@ -56,19 +137,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     NSLog(@"Creating refresh handler...");
     UIRefreshControl *rescan_control = [[UIRefreshControl alloc] init];
-    [rescan_control addTarget:self.delegate action:@selector(handleScanViewRefreshRequest) forControlEvents:UIControlEventValueChanged];
+    [rescan_control addTarget:self action:@selector(handleScanViewRefreshRequest) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = rescan_control;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [self setTitle:@"Swipe down to scan"];
-    if(g_meter) {
-        // If we've appeared, disconnect whatever we were talking to.
-        [g_meter disconnect:nil];
-    }
     // Start a new scan for meters
-    [self.delegate handleScanViewRefreshRequest];
+    [self handleScanViewRefreshRequest];
 }
 
 -(BOOL)shouldAutorotate { return NO; }
@@ -106,12 +183,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"RowCount");
-#ifdef SIMULATED_METER
-    return self.peripherals.count+1;
-#else
+    NSLog(@"RowCount %d",self.peripherals.count);
     return self.peripherals.count;
-#endif
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -141,8 +214,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"You clicked a meter");
-    ScanTableViewCell* c = (ScanTableViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-    [self.delegate handleScanViewSelect:c.p];
+    ScanTableViewCell* c = [self.tableView cellForRowAtIndexPath:indexPath];
+    [self handleScanViewSelect:c.p];
+}
+
+-(void)transitionToMeterView:(MooshimeterDeviceBase*)meter {
+    // We have a connected meter with the correct firmware.
+    // Display the meter view.
+    /*[[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(meterDisconnected)
+                                                 name:kLGPeripheralDidDisconnect
+                                               object:nil];*/
+    //const double bat_pcnt = 100*[AppDelegate alkSocEstimate:(g_meter->bat_voltage/2)];
+    //NSString* bat_str = [NSString stringWithFormat:@"Bat:%d%%", (int)bat_pcnt];
+    //[self.bat_label setText:bat_str];
+    //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];TODO
+    NSLog(@"Pushing meter view controller");
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+    MeterViewController * mvc = [[MeterViewController alloc] initWithMeter:meter];
+    [nav pushViewController:mvc animated:YES];
+    NSLog(@"Did push meter view controller");
+}
+
+-(void)handlePeripheralConnected:(LGPeripheral*)p{
+    [self reloadData];
+    NSLog(@"Wrapping in Meter");
+
+    /*
+    if( g_meter->oad_mode ) {
+        // We connected to a meter in OAD mode as requested previously.  Update firmware.
+        NSLog(@"Connected in OAD mode");
+        if( YES || [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
+            NSLog(@"Starting upload");
+            [self.oad_profile startUpload];
+        } else {
+            NSLog(@"We connected to an up-to-date meter in OAD mode.  Disconnecting.");
+            [g_meter.p disconnectWithCompletion:nil];
+        }
+    }
+    else if( [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
+        // Require a firmware update!
+        NSLog(@"FIRMWARE OLD");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"A new firmware version is available.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
+        [alert show];
+    } else {
+        [self transitionToMeterView];
+    }*/
 }
 
 @end

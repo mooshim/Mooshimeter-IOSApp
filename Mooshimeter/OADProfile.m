@@ -8,14 +8,14 @@
  */
 
 #import "OADProfile.h"
-#import "BLEUtility.h"
-
+#import "MooshimeterControlProtocol.h"
 
 @implementation OADProfile
 
--(id) init:(NSString*) filename {
+-(id) init:(id<MooshimeterControlProtocol>)new_meter {
     self = [super init];
     if (self) {
+        self.meter = new_meter;
         self.canceled = FALSE;
         self.inProgramming = FALSE;
         self.start = YES;
@@ -25,7 +25,7 @@
         self->imageHeader.build_time=0;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             self.imageData = [NSData dataWithContentsOfURL:url];
-            NSLog(@"Loaded firmware \"%@\"of size : %d",filename,(int)self.imageData.length);
+            NSLog(@"Loaded firmware of size : %d",(int)self.imageData.length);
             if(self.imageData.length==0) {
                 // We failed to load the firmware.  Should we do something?
             } else {
@@ -39,8 +39,8 @@
 -(void) startUpload {
     NSLog(@"Configuring OAD Profile");
     self.start = YES;
-    LGCharacteristic* image_notify = [g_meter getLGChar:OAD_IMAGE_NOTIFY];
-    LGCharacteristic* image_block  = [g_meter getLGChar:OAD_IMAGE_BLOCK_REQ];
+    LGCharacteristic* image_notify = [self.meter getLGChar:OAD_IMAGE_NOTIFY];
+    LGCharacteristic* image_block  = [self.meter getLGChar:OAD_IMAGE_BLOCK_REQ];
     self.pacer_sem = dispatch_semaphore_create(8);
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -107,11 +107,10 @@
     requestData[OAD_IMG_HDR_SIZE + 1] = HI_UINT16(15);
 
     
-    LGCharacteristic* image_notify = [g_meter getLGChar:OAD_IMAGE_NOTIFY];
+    LGCharacteristic* image_notify = [self.meter getLGChar:OAD_IMAGE_NOTIFY];
     [image_notify writeValue:[NSData dataWithBytes:requestData length:OAD_IMG_HDR_SIZE + 2 + 2] completion:nil];
     
     self.nBlocks = imgHeader.len / (OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE);
-    self.nBytes = imgHeader.len * HAL_FLASH_WORD_SIZE;
     self.iBlocks = 0;
     self.iBytes = 0;
    
@@ -146,7 +145,7 @@
     
     memcpy(&requestData[2] , &imageFileData[self.iBytes], OAD_BLOCK_SIZE);
     
-    LGCharacteristic* image_block_req = [g_meter getLGChar:OAD_IMAGE_BLOCK_REQ];
+    LGCharacteristic* image_block_req = [self.meter getLGChar:OAD_IMAGE_BLOCK_REQ];
     
     dispatch_semaphore_wait(self.pacer_sem, DISPATCH_TIME_FOREVER);
     [image_block_req writeValue:[NSData dataWithBytes:requestData length:2 + OAD_BLOCK_SIZE] completion:nil];

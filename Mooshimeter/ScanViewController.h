@@ -23,20 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "ScanTableViewCell.h"
 #import "ScanSettingsView.h"
 
-@protocol ScanViewControllerDelegate <NSObject>
-@required
--(void)handleScanViewRefreshRequest;
--(void)handleScanViewSelect:(LGPeripheral*)p;
-@end
+@interface ScanViewController : UITableViewController <UIAlertViewDelegate,MooshimeterDelegateProtocol>
 
-@interface ScanViewController : UITableViewController <UIAlertViewDelegate>
-
-@property (strong,nonatomic) id<ScanViewControllerDelegate> delegate;
 @property (strong,nonatomic) NSArray* peripherals;
-
-@property (strong, nonatomic) ScanSettingsView* settings_view;
-
--(instancetype)initWithDelegate:(id)d;
--(void)reloadData;
-
+@property (strong,nonatomic) ScanSettingsView* settings_view;
 @end

@@ -24,6 +24,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @implementation SmartNavigationController
 
+static SmartNavigationController *shared = nil;
+
++ (instancetype)getSharedInstance {
+    return shared;
+}
+
+-(instancetype)initWithRootViewController:(UIViewController*)vc {
+    if(shared != nil) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                       reason:@"init for this singleton should not be called more than once!"
+                                     userInfo:nil];
+    } else {
+        // Do actual initialization
+        self = [super initWithRootViewController:vc];
+        shared = self;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -40,11 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration NS_DEPRECATED_IOS(2_0,8_0, "Implement viewWillTransitionToSize:withTransitionCoordinator: instead") {
     return [self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
-#if 0
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator NS_AVAILABLE_IOS(8_0) {
-    NSLog(@"TODO!");
-}
-#endif
+
 /*
 #pragma mark - Navigation
 

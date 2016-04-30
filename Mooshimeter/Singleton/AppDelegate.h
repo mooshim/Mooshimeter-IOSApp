@@ -17,23 +17,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import <UIKit/UIKit.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 #import "LegacyMooshimeterDevice.h"
+#import "LGBluetooth.h"
+
+#import "ScanViewController.h"
 #import "MeterViewController.h"
+#import "../GraphViewController.h"
+#import "SmartNavigationController.h"
 
-@interface ChannelView : UIView {
-    @public
-        NSInteger      channel;
-}
+#import "OADProgressViewController.h"
+#import "OADProfile.h"
 
--(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch;
--(void)value_label_refresh;
--(void)refreshAllControls;
+@class SmartNavigationController;
+@class ScanViewController;
+@class OADProfile;
+@class BLETIOADProgressViewController;
 
-@property (strong,nonatomic) UILabel*  value_label;
-@property (strong,nonatomic) UIButton* units_button;
-@property (strong,nonatomic) UIButton* display_set_button;
-@property (strong,nonatomic) UIButton* input_set_button;
-@property (strong,nonatomic) UIButton* auto_manual_button;
-@property (strong,nonatomic) UIButton* range_button;
+@interface AppDelegate : UIResponder <UIApplicationDelegate, NSObject>
+
+@property (strong,nonatomic) UIWindow *window;
+@property (strong,nonatomic) OADProfile* oad_profile;
+
+@property (strong,nonatomic) SmartNavigationController*      nav;
+@property (strong,nonatomic) ScanViewController*             scan_vc;
+
+@property (strong,nonatomic) UILabel* bat_label;
+@property (strong,nonatomic) UILabel* rssi_label;
+@property (strong,nonatomic) UIButton* settings_button;
 
 @end

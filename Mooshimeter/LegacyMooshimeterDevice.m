@@ -61,7 +61,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     self.chset = 0;
     self.gpio=GPIO_IGNORE;
     self.isrc=ISRC_IGNORE;
-    self.converter=^Lsb2NativeConverter{
+    self.converter=^float(int lsb){
         return 0;
     };
     return self;
@@ -196,7 +196,53 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 // Callback triggered by sample received
 void (^sample_handler)(NSData*,NSError*);
 
--(LegacyMooshimeterDevice*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate {
+-(void)finishInit{
+    // This should be called after connect and discovery are done
+    float i_gain;
+    switch(meter_info.pcb_version){
+        case 7:
+            i_gain = (float)(1/80e-3);
+            break;
+        case 8:
+            i_gain = (float)(1/10e-3);
+            break;
+        default:
+            NSLog(@"UNSUPPORTED:Unknown board type");
+            i_gain = 0;
+            break;
+    }
+
+    Chooser* c = input_descriptors[0];
+
+    Lsb2NativeConverter (^simple_converter)(float mult) = ^Lsb2NativeConverter(float mult) {
+        return [LegacyMooshimeterDevice makeSimpleConverter:mult pga:PGA_GAIN_1];
+    };
+
+    // Add channel 1 ranges and inputs
+    myInputDescriptor *descriptor;
+
+    descriptor = [[myInputDescriptor alloc] initWithName:@"CURRENT DC" units:@"A" input:NATIVE is_ac:NO];
+    [descriptor addRange:@"10" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
+    [c add:descriptor];
+    descriptor = [[myInputDescriptor alloc] initWithName:@"CURRENT AC" units:@"A" input:NATIVE is_ac:YES];
+    [descriptor addRange:@"10" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
+    [c add:descriptor];
+    [self addSharedInputs:c];
+
+    // Add channel 2 ranges and inputs
+    c = input_descriptors[1];
+    descriptor = [[myInputDescriptor alloc] initWithName:@"VOLTAGE DC" units:@"V" input:NATIVE is_ac:NO];
+    [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
+    [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
+    [c add:descriptor];
+    descriptor = [[myInputDescriptor alloc] initWithName:@"VOLTAGE AC" units:@"V" input:NATIVE is_ac:YES];
+    [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
+    [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
+    [c add:descriptor];
+    [self addSharedInputs:c];
+}
+
+-(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate {
     // Check for issues with struct packing.
     BUILD_BUG_ON(sizeof(trigger_settings_t) != 6);
     BUILD_BUG_ON(sizeof(MeterSettings_t)    != 13);
@@ -205,11 +251,37 @@ void (^sample_handler)(NSData*,NSError*);
     self = [super init];
 
     self.periph = periph;
-    self.chars = nil;
+    self.chars = [[NSMutableDictionary alloc]init];
 
     self->input_descriptors[0] = [[Chooser alloc]init];
     self->input_descriptors[1] = [[Chooser alloc]init];
 
+    // Populate our characteristic array
+    for(LGService * service in periph.services) {
+        if ([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:METER_SERVICE_UUID]]) {
+            [self populateLGDict:service.characteristics];
+            break;
+        }
+    }
+    [self reqMeterInfo:^(NSData *data, NSError *error) {
+        [self reqMeterSettings:^(NSData *data, NSError *error) {
+            [self reqMeterLogSettings:^(NSData *data, NSError *error) {
+                [self reqMeterBatteryLevel:^(NSData *data, NSError *error) {
+                    uint32 utc_time = [[NSDate date] timeIntervalSince1970];
+                    [self setTime:utc_time];
+                    [self.periph registerDisconnectHandler:^(NSError *error) {
+                        [self accidentalDisconnect:error];
+                    }];
+                    [self finishInit];
+                    [self.delegate onInit];
+                }];
+            }];
+        }];
+    }];
+
+
+    // This is a block that gets run every time a sample is received
+    // Since blocks can't be declared statically, I must instantiate here
     sample_handler = ^(NSData *data, NSError *error) {
         [data getBytes:&self->meter_sample length:data.length];
         uint32 utc_time = [[NSDate date] timeIntervalSince1970];
@@ -249,57 +321,8 @@ int24_test to_int24_test(long arg) {
         [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
         lookup = NSSwapShort(lookup);
         NSNumber* key = [NSNumber numberWithInt:lookup];
-        [self.chars setObject:c forKey:key];
+        self.chars[key] = c;
     }
-}
-
-/*
- Connects to the Mooshimeter and syncs the major data structures.
- Also updates the meter UTC time.
- */
-
--(void)connect {
-    self.chars = [[NSMutableDictionary alloc] init];
-    
-    [self.periph connectWithTimeout:5 completion:^(NSError *error) {
-        NSLog(@"Discovering services");
-        [self.periph discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
-            for (LGService *service in services) {
-                if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:METER_SERVICE_UUID]]) {
-                    NSLog(@"METER SERVICE FOUND. Discovering characteristics.");
-                    self->oad_mode = NO;
-                    [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
-                        __unsafe_unretained typeof(self) weakSelf = self;
-                        [weakSelf populateLGDict:characteristics];
-                        [weakSelf reqMeterInfo:^(NSData *data, NSError *error) {
-                            [weakSelf reqMeterSettings:^(NSData *data, NSError *error) {
-                                [weakSelf reqMeterLogSettings:^(NSData *data, NSError *error) {
-                                    [weakSelf reqMeterBatteryLevel:^(NSData *data, NSError *error) {
-                                        uint32 utc_time = [[NSDate date] timeIntervalSince1970];
-                                        [weakSelf setMeterTime:utc_time cb:^(NSError *error) {
-                                            [weakSelf.periph registerDisconnectHandler:^(NSError *error) {
-                                                [weakSelf accidentalDisconnect:error];
-                                            }];
-                                            [weakSelf.delegate onInit];
-                                        }];
-                                    }];
-                                }];
-                            }];
-                        }];
-                    }];
-                } else if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:OAD_SERVICE_UUID]]) {
-                    NSLog(@"OAD SERVICE FOUND");
-                    self->oad_mode = YES;
-                    [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
-                        [self populateLGDict:characteristics];
-                        [self.delegate onInit];
-                    }];
-                } else {
-                    NSLog(@"Service I don't care about found.");
-                }
-            }
-        }];
-    }];
 }
 
 -(void)disconnect:(LGPeripheralConnectionCallback)aCallback {
@@ -322,23 +345,18 @@ int24_test to_int24_test(long arg) {
         cb(data,error);
     }];
 }
-
 -(void)reqMeterInfo:(LGCharacteristicReadCallback)cb {
     [self reqMeterStruct:METER_INFO target:&self->meter_info cb:cb];
 }
-
 -(void)reqMeterSettings:(LGCharacteristicReadCallback)cb {
     [self reqMeterStruct:METER_SETTINGS target:&self->meter_settings cb:cb];
 }
-
 -(void)reqMeterLogSettings:(LGCharacteristicReadCallback)cb {
     [self reqMeterStruct:METER_LOG_SETTINGS target:&self->meter_log_settings cb:cb];
 }
-
 -(void)reqMeterSample:(LGCharacteristicReadCallback)cb {
     [self reqMeterStruct:METER_SAMPLE target:&self->meter_sample cb:cb];
 }
-
 -(void)reqMeterBatteryLevel:(LGCharacteristicReadCallback)cb {
     LGCharacteristic* c = [self getLGChar:METER_BAT];
     [c readValueWithBlock:^(NSData *data, NSError *error) {
@@ -349,25 +367,16 @@ int24_test to_int24_test(long arg) {
         cb(data,error);
     }];
 }
-
--(void)setMeterTime:(uint32)utc_time cb:(LGCharacteristicWriteCallback)cb {
-    LGCharacteristic* c = [self getLGChar:METER_UTC_TIME];
-    NSData *bytes = [NSData dataWithBytes:&utc_time length:4];
-    [c writeValue:bytes completion:cb];
-}
-
 -(void)sendMeterName:(NSString*)name cb:(LGCharacteristicWriteCallback)cb {
     LGCharacteristic* c = [self getLGChar:METER_NAME];
     NSData *bytes = [name dataUsingEncoding:NSUTF8StringEncoding];
     [c writeValue:bytes completion:cb];
 }
-
 -(void)sendMeterSettings:(LGCharacteristicWriteCallback)cb {
     LGCharacteristic* c = [self getLGChar:METER_SETTINGS];
     NSData* v = [NSData dataWithBytes:&self->meter_settings length:sizeof(self->meter_settings)];
     [c writeValue:v completion:cb];
 }
-
 -(void)sendMeterLogSettings:(LGCharacteristicWriteCallback)cb {
     LGCharacteristic* c = [self getLGChar:METER_LOG_SETTINGS];
     NSData* v = [NSData dataWithBytes:&self->meter_log_settings length:sizeof(self->meter_log_settings)];
@@ -377,18 +386,12 @@ int24_test to_int24_test(long arg) {
 // Returns the maximum value of the next measurement range down superimposed on the current range
 
 -(RangeDescriptor*)getLowerRange:(int)channel {
-    uint8 const pga_setting    = [self getChannelSetting:channel]&METER_CH_SETTINGS_PGA_MASK;
-    uint8* const adc_setting = &self->meter_settings.rw.adc_settings;
-    uint8* const ch3_mode    = &self->disp_settings.ch3_mode;
-    uint8* const measure_setting = &self->meter_settings.rw.measure_settings;
-    int8 tmp;
-
     InputDescriptor *i = [self getSelectedDescriptor:channel];
     int to_choose = i.ranges.chosen_i;
     if(to_choose>0) {
         to_choose--;
     }
-    return [i.ranges get:to_choose]
+    return [i.ranges get:to_choose];
 }
 
 -(bool)applyRateAndDepthChange {
@@ -430,10 +433,19 @@ int24_test to_int24_test(long arg) {
     }
 }
 
+-(NSArray<NSNumber*>*)legacyBufferToNative:(Channel)c input_data:(int24_test*) in {
+    int n_samples = [self getBufferDepth];
+    NSMutableArray * rval = [[NSMutableArray alloc] initWithCapacity:n_samples];
+    for(unsigned int i = 0; i < n_samples; i++) {
+        rval[i] = [NSNumber numberWithFloat:[self lsbToNativeUnits:to_int32(in[i]) channel:c]];
+    }
+    return rval;
+}
+
 -(void)handleBufStreamUpdate:(NSData*) data channel:(int)channel {
     static BOOL ch1_last_received = NO;
     static int buf_i = 0;
-    uint16 buf_len_bytes = [self getBufLen]*sizeof(int24_test);
+    uint16 buf_len_bytes = [self getBufferDepth]*sizeof(int24_test);
     uint8* target;
     NSLog(@"Buf: %d: %d", channel, buf_i);
     if(channel == 0) {
@@ -452,39 +464,14 @@ int24_test to_int24_test(long arg) {
         buf_i += data.length;
         if(buf_i >= buf_len_bytes) {
             NSLog(@"Complete buffer received!");
-            if(self->buffer_cb) self->buffer_cb();
+            // Now we must translate the samples to native units
+            float dt = 1./[self getSampleRateHz];
+            uint32 utc_time = [[NSDate date] timeIntervalSince1970];
+            [self.delegate onBufferReceived:utc_time c:CH1 dt:dt val:[self legacyBufferToNative:CH1 input_data:self->sample_buf.CH1_buf]];
+            [self.delegate onBufferReceived:utc_time c:CH2 dt:dt val:[self legacyBufferToNative:CH2 input_data:self->sample_buf.CH2_buf]];
         }
     } else {
         NSLog(@"WTF");
-    }
-}
-
--(void)setMeterState:(int)new_state cb:(LGCharacteristicWriteCallback)cb {
-    self->meter_settings.rw.target_meter_state = new_state;
-    [self sendMeterSettings:cb];
-}
-
--(int24_test*)getBuf:(int) channel {
-    switch(channel) {
-        case 0:
-            return self->sample_buf.CH1_buf;
-        case 1:
-            return self->sample_buf.CH2_buf;
-        default:
-            DLog(@"SHould not be here");
-            return self->sample_buf.CH1_buf;
-    }
-}
-
--(uint8)getChannelSetting:(int)ch {
-    switch(ch) {
-        case 0:
-            return self->meter_settings.rw.ch1set;
-        case 1:
-            return self->meter_settings.rw.ch2set;
-        default:
-            DLog(@"Invalid channel");
-            return 0;
     }
 }
 
@@ -508,7 +495,7 @@ int24_test to_int24_test(long arg) {
     const int samplerate_setting =self->meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK;
     const int buffer_depth_log2 = self->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2;
     double enob = base_enob_table[ samplerate_setting ];
-    int pga_setting = channel==1? self->meter_settings.rw.ch1set:self->meter_settings.rw.ch2set;
+    int pga_setting = self->meter_settings.rw.chset[channel];
     pga_setting &= METER_CH_SETTINGS_PGA_MASK;
     pga_setting >>= 4;
     int pga_gain = pga_gain_table[pga_setting];
@@ -519,91 +506,11 @@ int24_test to_int24_test(long arg) {
     // Oversampling adds 1 ENOB per factor of 4
     enob += ((double)buffer_depth_log2)/2.0;
     //
-    if(meter_info.pcb_version==7 && channel == 0 && (self->meter_settings.rw.ch1set & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
+    if(meter_info.pcb_version==7 && channel == 0 && (self->meter_settings.rw.chset[CH1] & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
         // This is compensation for a bug in RevH, where current sense chopper noise dominates
         enob -= 2;
     }
     return enob;
-}
-
-/*
- Based on the ENOB and the measurement range, calculate the number of noise-free digits that can be displayed
- @param channel Input channel index (0 or 1)
- @return a SignificantDigits structure, with member max_dig indicating the number of digits left of the point and n_digits indicating the total number of digits
- */
-
--(SignificantDigits*)getSigDigits:(int)channel {
-    SignificantDigits retval;
-    double enob = [self getENOB:channel];
-    double max = [self lsbToNativeUnits:(1<<22) ch:channel];
-    double max_dig  = log10(max);
-    double n_digits = log10(pow(2.0,enob));
-    retval.high = max_dig+1;
-    retval.n_digits = n_digits;
-    return retval;
-}
-
-/*
- Convert ADC counts to the voltage at the AFE input
- @param reading_lsb reading from the ADC
- @param channel input channel (0 or 1)
- @return Voltage at the AFE input (before the PGA)
- */
-
--(double)lsbToADCInVoltage:(int)reading_lsb channel:(int)channel {
-    // This returns the input voltage to the ADC,
-    const double Vref = meter_info.pcb_version==7 ? 2.5:2.42;
-    const double pga_lookup[] = {6,1,2,3,4,8,12};
-    int pga_setting=0;
-    switch(channel) {
-        case 0:
-            pga_setting = self->meter_settings.rw.ch1set >> 4;
-            break;
-        case 1:
-            pga_setting = self->meter_settings.rw.ch2set >> 4;
-            break;
-        default:
-            DLog(@"Should not be here");
-            break;
-    }
-    double pga_gain = pga_lookup[pga_setting];
-    return ((double)reading_lsb/(double)(1<<23))*Vref/pga_gain;
-}
-
-/*
- Convert voltage at the AFE input to voltage at the high voltage terminal
- @param adc_voltage voltage at AFE (before PGA)
- @return voltage in volts
- */
-
--(double)adcVoltageToHV:(double)adc_voltage {
-    switch( (self->meter_settings.rw.adc_settings & ADC_SETTINGS_GPIO_MASK) >> 4 ) {
-        case 0x00:
-            // 1.2V range
-            return adc_voltage;
-        case 0x01:
-            // 60V range
-            return ((10e6+160e3)/(160e3)) * adc_voltage;
-        case 0x02:
-            // 1000V range
-            return ((10e6+11e3)/(11e3)) * adc_voltage;
-        default:
-            DLog(@"Invalid setting!");
-            return 0.0;
-    }
-}
-
-
-/*
- Convert voltage at the AFE input to ADC temperature
- @param adc_voltage voltage at AFE (before PGA)
- @return temperature in degrees C
- */
-
--(double)adcVoltageToTemp:(double)adc_voltage {
-    adc_voltage -= 145.3e-3; // 145.3mV @ 25C
-    adc_voltage /= 490e-6;   // 490uV / C
-    return 25.0 + adc_voltage;
 }
 
 /*
@@ -801,53 +708,6 @@ int24_test to_int24_test(long arg) {
     [chooser add:descriptor];
 }
 
--(int)initialize {
-    // This should be called after connect and discovery are done
-
-    float i_gain;
-    switch(meter_info.pcb_version){
-        case 7:
-            i_gain = (float)(1/80e-3);
-            break;
-        case 8:
-            i_gain = (float)(1/10e-3);
-            break;
-        default:
-            NSLog(@"UNSUPPORTED:Unknown board type");
-            i_gain = 0;
-            break;
-    }
-
-    Chooser* c = input_descriptors[0];
-
-    Lsb2NativeConverter (^simple_converter)(float mult) = ^Lsb2NativeConverter(float mult) {
-        return [LegacyMooshimeterDevice makeSimpleConverter:mult pga:PGA_GAIN_1];
-    };
-
-    // Add channel 1 ranges and inputs
-    myInputDescriptor *descriptor;
-
-    descriptor = [[myInputDescriptor alloc] initWithName:@"CURRENT DC" units:@"A" input:NATIVE is_ac:NO];
-    [descriptor addRange:@"10" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
-    [c add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"CURRENT AC" units:@"A" input:NATIVE is_ac:YES];
-    [descriptor addRange:@"10" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
-    [c add:descriptor];
-    [self addSharedInputs:c];
-
-    // Add channel 2 ranges and inputs
-    c = input_descriptors[1];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"VOLTAGE DC" units:@"V" input:NATIVE is_ac:NO];
-    [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
-    [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
-    [c add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"VOLTAGE AC" units:@"V" input:NATIVE is_ac:YES];
-    [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
-    [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
-    [c add:descriptor];
-    [self addSharedInputs:c];
-}
-
 // Return true if settings changed
 -(bool)applyAutorange {
     bool rval = NO;
@@ -868,7 +728,13 @@ int24_test to_int24_test(long arg) {
     [self sendMeterName:name cb:nil];
 }
 -(NSString*)getName {
-    ]
+    LGCharacteristic* c = [self getLGChar:METER_NAME];
+    NSData* name = [c readValue];
+    if(name==nil) {
+        return @"";
+    }
+    NSString * rval = [[NSString alloc] initWithData:name encoding:NSASCIIStringEncoding];
+    return rval;
 }
 
 -(void)pause {
@@ -899,11 +765,16 @@ int24_test to_int24_test(long arg) {
 }
 
 -(double)getUTCTime {
-    [self getLGChar:METER_UTC_TIME];
-    fewafewafewa
+    // Maybe implement this some time
+    // Haha, get it?  Time?  Because it's a time function?
+    // If this engineering thing doesn't work out I have a bright future in comedy.
+    return 0;
 }
 -(void)setTime:(double) utc_time {
-    [self setMeterTime:(uint32)utc_time cb:nil];
+    uint32 time_int = (uint32)utc_time;
+    LGCharacteristic* c = [self getLGChar:METER_UTC_TIME];
+    NSData *bytes = [NSData dataWithBytes:&time_int length:4];
+    [c writeValue:bytes completion:nil];
 }
 
 -(MeterReading*) getOffset:(Channel)c {
@@ -930,7 +801,7 @@ int24_test to_int24_test(long arg) {
     static const int l[] = {125,250,500,1000,2000,4000,8000};
     NSMutableArray<NSString*>* rval = [[NSArray alloc]init];
     for(int i = 0; i < sizeof(l)/sizeof(l[0]); i++) {
-        NSString* element = [NSString stringWithFormat:@"%d", l[i]]
+        NSString* element = [NSString stringWithFormat:@"%d", l[i]];
         [rval addObject:element];
     }
     return rval;
@@ -948,7 +819,7 @@ int24_test to_int24_test(long arg) {
     static const int l[] = {1,2,4,8,16,32,64,128,256};
     NSMutableArray<NSString*>* rval = [[NSArray alloc]init];
     for(int i = 0; i < sizeof(l)/sizeof(l[0]); i++) {
-        NSString* element = [NSString stringWithFormat:@"%d", l[i]]
+        NSString* element = [NSString stringWithFormat:@"%d", l[i]];
         [rval addObject:element];
     }
     return rval;
@@ -980,14 +851,14 @@ int24_test to_int24_test(long arg) {
 
         [s setNotifyValue:NO completion:nil];
         [c1 setNotifyValue:on completion:^(NSError *error) {
-            [c2 setNotifyValue:on completion:cb onUpdate:^(NSData *data, NSError *error) {
+            [c2 setNotifyValue:on completion:nil onUpdate:^(NSData *data, NSError *error) {
                 [self handleBufStreamUpdate:data channel:1];
             }];
         } onUpdate:^(NSData *data, NSError *error) {
             [self handleBufStreamUpdate:data channel:0];
         }];
     } else {
-        [s setNotifyValue:YES completion:nil onUpdate:<#(LGCharacteristicReadCallback)uCallback#>];
+        [s setNotifyValue:YES completion:nil onUpdate:sample_handler];
         [c1 setNotifyValue:NO completion:nil];
         [c2 setNotifyValue:NO completion:nil];
     }
@@ -1060,7 +931,12 @@ int24_test to_int24_test(long arg) {
     InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
     [inputDescriptor.ranges chooseObject:rd];
 }
--(NSArray<NSString*>*) getRangeList:(Channel)c {
+-(NSArray<RangeDescriptor*>*)getRangeList:(Channel)c {
+    InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
+    Chooser* r = inputDescriptor.ranges;
+    return [r.choices copy];
+}
+-(NSArray<NSString*>*)getRangeNameList:(Channel)c {
     InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
     Chooser* r = inputDescriptor.ranges;
     NSMutableArray<NSString*>* rval = [NSMutableArray arrayWithCapacity:[r getNChoices] ];
@@ -1114,7 +990,11 @@ bool isSharedInput(INPUT_MODE i) {
     }
     return 0;
 }
--(NSArray *) getInputList:(Channel)c {
+-(NSArray *)getInputList:(Channel)c {
+    Chooser* r = self->input_descriptors[c];
+    return [r.choices copy];
+}
+-(NSArray *)getInputNameList:(Channel)c {
     Chooser* r = self->input_descriptors[c];
     NSMutableArray<NSString*>* rval = [NSMutableArray arrayWithCapacity:[r getNChoices] ];
     for(unsigned int i = 0; i < [r getNChoices]; i++) {

@@ -66,7 +66,7 @@
     }
 
     +(MeterReading*) mult:(MeterReading*)m0 m1:(MeterReading*)m1 {
-        MeterReading* rval = [[MeterReading alloc] init:(m0.value*m1.value)
+        MeterReading* rval = [[MeterReading alloc] initWithValue:(m0.value*m1.value)
                                        n_digits_arg:((m0.n_digits+m1.n_digits)/2)
                                             max_arg:(m0.max*m1.max)
                                           units_arg:[m0.units stringByAppendingString:m1.units]

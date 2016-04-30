@@ -134,6 +134,22 @@
     [self.cbCharacteristic.service.peripheral readValueForCharacteristic:self.cbCharacteristic];
 }
 
+-(NSData*)readValue {
+    dispatch_semaphore_t s = dispatch_semaphore_create(0);
+    NSMutableArray * data_wrapper = [[NSMutableArray alloc] init];
+    [self readValueWithBlock:^(NSData* data,NSError* error){
+        [data_wrapper addObject:data];
+        dispatch_semaphore_signal(s);
+    }];
+    // Wait for inner block to run, timeout 1s
+    if(dispatch_semaphore_wait(s,dispatch_time(DISPATCH_TIME_NOW,1*NSEC_PER_SEC))) {
+        //Timeout occurred
+        return nil;
+    } else {
+        return data_wrapper[0];
+    }
+}
+
 /*----------------------------------------------------*/
 #pragma mark - Private Methods -
 /*----------------------------------------------------*/

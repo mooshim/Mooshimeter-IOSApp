@@ -20,24 +20,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "BLEUtility.h"
 #import "LegacyMooshimeterDevice.h"
 #import "ChannelView.h"
-#import "MeterSettingsView.h"
+#import "../MeterSettingsView.h"
 
 @class ChannelView;
-@class MeterSettingsView;
-
-@protocol MeterViewControllerDelegate <NSObject>
-@required
--(void)switchToGraphView:(UIDeviceOrientation)new_o;
-@end
 
 @interface MeterViewController : UIViewController <UISplitViewControllerDelegate>
-{
-@public
-    BOOL play;
-    // A place to stash settings
-    MeterSettings_t      meter_settings;
-}
-@property (strong, nonatomic) id <MeterViewControllerDelegate> delegate;
+
+// Housekeeping
+@property bool play;
+@property MooshimeterDeviceBase * meter;
+
+// GUI widgets
+
 @property (strong, nonatomic) ChannelView* ch1_view;
 @property (strong, nonatomic) ChannelView* ch2_view;
 @property (strong, nonatomic) UIButton* rate_auto_button;
@@ -47,10 +41,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic) UIButton* logging_button;
 @property (strong, nonatomic) UIButton* zero_button;
 
-@property (strong, nonatomic) MeterSettingsView* settings_view;
+//@property (strong, nonatomic) MeterSettingsView* settings_view;
 
--(instancetype)initWithDelegate:(id<MeterViewControllerDelegate>)delegate;
+-(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter;
 +(void)style_auto_button:(UIButton*)b on:(BOOL)on;
-+(NSString*) formatReading:(double)val digits:(SignificantDigits)digits;
 
 @end

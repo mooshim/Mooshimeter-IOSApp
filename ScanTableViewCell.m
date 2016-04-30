@@ -35,7 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void) setPeripheral:(LGPeripheral *)device {
     uint32 build_time = 0;
-    NSData* tmp;
     NSString* name_str;
     NSString* build_str;
     UIColor* back_color;
@@ -60,19 +59,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 [spinner stopAnimating];
                 break;
         }
-        
-        tmp = [self.p.advertisingData valueForKey:@"kCBAdvDataManufacturerData"];
-        if( tmp != nil ) {
-            [tmp getBytes:&build_time length:4];
-        }
-        
+
+        build_time = [MooshimeterDeviceBase getBuildTimeFromPeripheral:self.p];
         self.textLabel.text = [NSString stringWithFormat:@"%@",self.p.name];
         self.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %d        FW Build: %u",(int)self.p.RSSI, build_time];
     } else {
-        // THIS IS A SIMULATED METER
-        self.backgroundColor = [UIColor yellowColor];
-        self.textLabel.text = @"SIMULATED METER";
-        self.detailTextLabel.text = @"RSSI: n/a        FW Build: n/a";
+        NSLog(@"Shouldn't have received a nil device");
     }
 }
 
