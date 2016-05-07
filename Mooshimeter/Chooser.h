@@ -8,12 +8,12 @@
 
 @interface Chooser : NSObject
 @property (strong,atomic) NSMutableArray * choices;
-@property int chosen_i;
+@property unsigned int chosen_i;
 
 -(void)add:(id) new_value;
 -(id)get:(int) i;
 -(void)clear;
--(id)chooseByIndex:(int) i;
+-(id)chooseByIndex:(unsigned int) i;
 -(id)chooseObject:(id) obj;
 -(id)getChosen;
 -(int)getNChoices;

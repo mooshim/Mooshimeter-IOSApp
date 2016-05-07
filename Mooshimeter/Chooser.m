@@ -7,6 +7,11 @@
 
 
 @implementation Chooser
+-(instancetype)init {
+    self.choices = [[NSMutableArray alloc]init];
+    self.chosen_i = 0;
+    return self;
+}
 -(void)add:(id)new_value {
     [self.choices addObject:new_value];
 }
@@ -16,7 +21,7 @@
 -(void)clear{
     [self.choices removeAllObjects];
 }
--(id)chooseByIndex:(int) i {
+-(id)chooseByIndex:(unsigned int) i {
     self.chosen_i=i;
     return [self getChosen];
 }
@@ -25,6 +30,11 @@
     return [self getChosen];
 }
 -(id)getChosen {
-    return [self.choices objectAtIndex:self.chosen_i];
+    return self.choices[self.chosen_i];
 }
+
+- (int)getNChoices {
+    return [self.choices count];
+}
+
 @end

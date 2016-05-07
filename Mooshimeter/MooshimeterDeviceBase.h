@@ -22,7 +22,9 @@
 @property LGPeripheral* periph;
 @property NSMutableDictionary <NSNumber*,LGCharacteristic*>* chars;
 
-+(MooshimeterDeviceBase *)chooseSubClass:(LGPeripheral *)connected_peripheral;
++(Class)chooseSubClass:(LGPeripheral *)connected_peripheral;
+
+-(MooshimeterDeviceBase*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
 
 -(void)addDelegate:(id<MooshimeterDelegateProtocol>)d;
 -(void)removeDelegate;

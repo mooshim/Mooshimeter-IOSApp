@@ -27,4 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @property (strong,nonatomic) NSArray* peripherals;
 @property (strong,nonatomic) ScanSettingsView* settings_view;
+
+@property (strong,atomic)  MooshimeterDeviceBase* active_meter;
+
 @end

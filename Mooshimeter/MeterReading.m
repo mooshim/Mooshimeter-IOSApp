@@ -33,7 +33,7 @@
         self.format_mult *= 1000;
     }
 
-    self.format = [NSString stringWithFormat:@"0%d.%df", high, self.n_digits-high];
+    self.format = [NSString stringWithFormat:@"%%0%d.%df", high, self.n_digits-high];
     return self;
 }
 
@@ -55,7 +55,7 @@
         if(abs(lval) > 1.2*self.max) {
             return @"OUT OF RANGE";
         }
-        NSMutableString* rval = [NSMutableString init];
+        NSMutableString* rval = [[NSMutableString alloc] init];
         if(lval>=0) {
             [rval appendString:@" "]; // Space for neg sign
         }

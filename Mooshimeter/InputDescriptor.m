@@ -6,7 +6,8 @@
 #import "InputDescriptor.h"
 
 @implementation InputDescriptor
--(InputDescriptor*)init:(NSString*)name units_arg:(NSString*)units {
+-(instancetype)initWithName:(NSString*)name units_arg:(NSString*)units {
+    self = [super init];
     self.name=name;
     self.units=units;
     self.ranges = [[Chooser alloc] init];

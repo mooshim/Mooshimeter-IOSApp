@@ -35,16 +35,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define mb(nx,ny,nw,nh,s) [self makeButton:cg(nx,ny,nw,nh) cb:@selector(s)]
 
     self.display_set_button = mb(0,0,4,1,display_set_button_press);
-    self.input_set_button   = mb(4,0,2,1,input_set_button_press);
-    self.auto_manual_button = mb(0,3,1,1,auto_manual_button_press);
-    self.range_button       = mb(1,3,2,1,range_button_press);
-    self.units_button       = mb(3,3,3,1,units_button_press);
-    
+    self.range_button       = mb(4,0,2,1,range_button_press);
+    self.zero_button        = mb(0,3,3,1,zero_button_press);
+    self.sound_button       = mb(3,3,3,1,sound_button_press);
+
     l = [[UILabel alloc] initWithFrame:cg(0,1,6,2)];
     l.textColor = [UIColor blackColor];
     l.textAlignment = NSTextAlignmentCenter;
     l.font = [UIFont fontWithName:@"Courier New" size:65];
     l.text = @"0.00000";
+    l.adjustsFontSizeToFitWidth = YES;
     [self addSubview:l];
     self.value_label = l;
     
@@ -53,7 +53,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     [[self layer] setBorderWidth:5];
     [[self layer] setBorderColor:[UIColor blackColor].CGColor];
-    [self refreshAllControls];
     return self;
 }
 
@@ -67,19 +66,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [[b layer] setBorderWidth:2];
     [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
+    b.titleLabel.adjustsFontSizeToFitWidth = YES;
     b.frame = frame;
     [self addSubview:b];
     return b;
-}
-
-
--(void)auto_manual_button_press{
-    self.meter.range_auto[self.channel] = !self.meter.range_auto[self.channel];
-    [self refreshAllControls];
-}
-
--(void)auto_manual_button_refresh {
-    [MeterViewController style_auto_button:self.auto_manual_button on:self.meter.range_auto[self.channel]];
 }
 
 -(void)display_set_button_press {
@@ -99,23 +89,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void)display_set_button_refresh {
     [self.display_set_button setTitle:[self.meter getInputLabel:self.channel] forState:UIControlStateNormal];
-}
-
--(void)input_set_button_press {
-    //fewafwafewa
-}
-
--(void)input_set_button_refresh {
-    // NO LONGER RELEVANT
-    //[self.input_set_button setTitle:[g_meter getInputLabel:self.channel] forState:UIControlStateNormal];
-}
-
--(void)units_button_press {
-    // NO LONGER RELEVANT
-}
-
--(void)units_button_refresh {
-    // NO LONGER RELEVANT
 }
 
 -(void)range_button_press {
@@ -138,17 +111,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 
--(void)value_label_refresh {
-    self.value_label.text = [[self.meter getValue:self.channel] toString];
+-(void)value_label_refresh:(MeterReading*)value {
+    self.value_label.text = [value toString];
 }
 
--(void)refreshAllControls {
-    [self display_set_button_refresh];
-    [self input_set_button_refresh];
-    [self auto_manual_button_refresh];
-    [self units_button_refresh];
-    [self range_button_refresh];
-    [self value_label_refresh];
+-(void) zero_button_press {
+    NSLog(@"zero");
 }
+
+-(void) sound_button_press {
+    NSLog(@"sound");
+};
 
 @end

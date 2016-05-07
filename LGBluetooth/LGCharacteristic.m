@@ -107,11 +107,19 @@
 - (void)writeValue:(NSData *)data
         completion:(LGCharacteristicWriteCallback)aCallback
 {
+    // Strange issue: May 6 2016: The meter doesn't seem to respond to CBCharacteristicWriteWithoutResponse
+    // So I will shove in a fake CB to force a writewithresponse with minimal changes to LGBluetooth
+    if(aCallback==nil) {
+        aCallback = ^(NSError * error) {NSLog(@"DummyCB");};
+    }
     CBCharacteristicWriteType type =  aCallback ?
     CBCharacteristicWriteWithResponse : CBCharacteristicWriteWithoutResponse;
     
     if (aCallback) {
+        NSLog(@"ResponseWrite");
         [self push:aCallback toArray:self.writeOperationStack];
+    } else {
+        NSLog(@"NoResponseWrite");
     }
     [self.cbCharacteristic.service.peripheral writeValue:data
                                        forCharacteristic:self.cbCharacteristic

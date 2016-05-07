@@ -50,7 +50,7 @@ typedef enum {
 typedef float (^Lsb2NativeConverter)(int lsb);
 
 @interface myRangeDescriptor:RangeDescriptor
-@property (atomic, assign) char chset;
+@property (atomic, assign) uint8 chset;
 @property (atomic, assign) GPIO_SETTING gpio;
 @property (atomic, assign) ISRC_SETTING isrc;
 @property (atomic, strong) Lsb2NativeConverter converter;
@@ -68,17 +68,15 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 }
 @end
 
-@interface myInputDescriptor:InputDescriptor
+@interface LegacyInputDescriptor:InputDescriptor
 @property (atomic,assign) INPUT_MODE input;
 @property (atomic,assign) bool is_ac;
--(id) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(bool)is_ac;
+-(instancetype) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(bool)is_ac;
 -(void) addRange:(NSString*)name converter:(Lsb2NativeConverter)conv max:(float)max gain:(PGA_GAIN)gain gpio:(GPIO_SETTING)gpio isrc:(ISRC_SETTING)isrc;
 @end
-@implementation myInputDescriptor
--(id) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(bool)is_ac {
-    self = [super init];
-    self.name = name;
-    self.units = units;
+@implementation LegacyInputDescriptor
+-(instancetype) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(bool)is_ac {
+    self = [super initWithName:name units_arg:units];
     self.input = input;
     self.is_ac = is_ac;
     return self;
@@ -135,12 +133,16 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 
 @implementation LegacyMooshimeterDevice
 
--(myInputDescriptor *)getSelectedDescriptor:(Channel)c {
+-(LegacyInputDescriptor *)getSelectedDescriptor:(Channel)c {
     return [self->input_descriptors[c] getChosen];
 }
 -(myRangeDescriptor *)getSelectedRange:(Channel)c {
     InputDescriptor *i = [self getSelectedDescriptor:c];
-    return [i.ranges getChosen];
+    myRangeDescriptor * rval = [i.ranges getChosen];
+    if(rval==nil) {
+        NSLog(@"Nil range!");
+    }
+    return rval;
 }
 
 -(float) getMaxRangeForChannel:(Channel)c {
@@ -151,7 +153,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 }
 
 -(MeterReading*)wrapMeterReading:(float)val c:(Channel)c {
-    myInputDescriptor *id = [self getSelectedDescriptor:c];
+    LegacyInputDescriptor *id = [self getSelectedDescriptor:c];
     float enob = [self getENOB:c];
     float max = [self getMaxRangeForChannel:c];
 
@@ -212,35 +214,109 @@ void (^sample_handler)(NSData*,NSError*);
             break;
     }
 
-    Chooser* c = input_descriptors[0];
+    Chooser* c = self->input_descriptors[CH1];
 
-    Lsb2NativeConverter (^simple_converter)(float mult) = ^Lsb2NativeConverter(float mult) {
-        return [LegacyMooshimeterDevice makeSimpleConverter:mult pga:PGA_GAIN_1];
+    Lsb2NativeConverter (^simple_converter)(float) = ^Lsb2NativeConverter(float mult) {
+        return [self makeSimpleConverter:mult pga:PGA_GAIN_1];
     };
 
     // Add channel 1 ranges and inputs
-    myInputDescriptor *descriptor;
+    LegacyInputDescriptor *descriptor;
 
-    descriptor = [[myInputDescriptor alloc] initWithName:@"CURRENT DC" units:@"A" input:NATIVE is_ac:NO];
-    [descriptor addRange:@"10" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"CURRENT DC" units:@"A" input:NATIVE is_ac:NO];
+    [descriptor addRange:@"10A" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
     [c add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"CURRENT AC" units:@"A" input:NATIVE is_ac:YES];
-    [descriptor addRange:@"10" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"CURRENT AC" units:@"A" input:NATIVE is_ac:YES];
+    [descriptor addRange:@"10A" converter:simple_converter(i_gain) max:10 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
     [c add:descriptor];
     [self addSharedInputs:c];
 
     // Add channel 2 ranges and inputs
-    c = input_descriptors[1];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"VOLTAGE DC" units:@"V" input:NATIVE is_ac:NO];
+    c = self->input_descriptors[CH2];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"VOLTAGE DC" units:@"V" input:NATIVE is_ac:NO];
     [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
     [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
     [c add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"VOLTAGE AC" units:@"V" input:NATIVE is_ac:YES];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"VOLTAGE AC" units:@"V" input:NATIVE is_ac:YES];
     [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
     [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
     [c add:descriptor];
     [self addSharedInputs:c];
+
+    // Add channel 2 ranges and inputs
+    c = self->input_descriptors[MATH];
+    MathInputDescriptor *md = [[MathInputDescriptor alloc] initWithName:@"Power" units_arg:@"W"];
+    md.meterSettingsAreValid = ^bool(){return true;};
+    md.onChosen = ^(){};
+    md.calculate = ^MeterReading *(){
+        // TODO
+        return [[MeterReading alloc] initWithValue:0.0
+                                      n_digits_arg:2
+                                           max_arg:100
+                                         units_arg:@"W"];
+    };
+    [c add:md];
+
+    [self determineInputDescriptorIndex:CH1];
+    [self determineInputDescriptorIndex:CH2];
 }
+
+-(void)determineInputDescriptorIndex:(Channel)c {
+    GPIO_SETTING gs = GPIO_IGNORE;
+    ISRC_SETTING is = ISRC_IGNORE;
+    switch(meter_settings.rw.chset[c]&METER_CH_SETTINGS_INPUT_MASK) {
+        case 0x00:
+            if(c==CH2) {
+                switch(meter_settings.rw.adc_settings&ADC_SETTINGS_GPIO_MASK) {
+                    case 0x00:
+                        gs=GPIO0;
+                        break;
+                    case 0x10:
+                        gs=GPIO1;
+                        break;
+                    case 0x20:
+                        gs=GPIO2;
+                        break;
+                    case 0x30:
+                        gs=GPIO3;
+                        break;
+                }
+            }
+            break;
+        case 0x04:
+            break;
+        case 0x09:
+            switch(meter_settings.rw.adc_settings) {
+                case 0:
+                    break;
+                case METER_MEASURE_SETTINGS_ISRC_ON:
+                    is=ISRC_LOW;
+                    break;
+                case METER_MEASURE_SETTINGS_ISRC_LVL:
+                    is=ISRC_MID;
+                    break;
+                case METER_MEASURE_SETTINGS_ISRC_ON|METER_MEASURE_SETTINGS_ISRC_LVL:
+                    is=ISRC_HIGH;
+                    break;
+            }
+            break;
+    }
+    bool found=false;
+    for(LegacyInputDescriptor* inp in self->input_descriptors[c].choices) {
+        for(myRangeDescriptor * rd in inp.ranges.choices) {
+            if(     rd.chset   == meter_settings.rw.chset[c]
+                    && rd.gpio == gs
+                    && rd.isrc == is) {
+                [self->input_descriptors[c] chooseObject:inp];
+                [inp.ranges chooseObject:rd];
+                found=YES;
+                break;
+            }
+        }
+        if(found) { break; }
+    }
+}
+
 
 -(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate {
     // Check for issues with struct packing.
@@ -253,8 +329,16 @@ void (^sample_handler)(NSData*,NSError*);
     self.periph = periph;
     self.chars = [[NSMutableDictionary alloc]init];
 
-    self->input_descriptors[0] = [[Chooser alloc]init];
-    self->input_descriptors[1] = [[Chooser alloc]init];
+    self.range_auto[0] = YES;
+    self.range_auto[1] = YES;
+    self.rate_auto     = YES;
+    self.depth_auto    = YES;
+
+    [self addDelegate:delegate];
+
+    self->input_descriptors[CH1]  = [[Chooser alloc]init];
+    self->input_descriptors[CH2]  = [[Chooser alloc]init];
+    self->input_descriptors[MATH] = [[Chooser alloc]init];
 
     // Populate our characteristic array
     for(LGService * service in periph.services) {
@@ -398,8 +482,8 @@ int24_test to_int24_test(long arg) {
     // Autorange sample rate and buffer depth.
     // If anything is doing AC, we need a deep buffer and fast sample
     bool ac_used = NO;
-    ac_used |= ((myInputDescriptor *)[self getSelectedDescriptor:CH1]).is_ac;
-    ac_used |= ((myInputDescriptor *)[self getSelectedDescriptor:CH2]).is_ac;
+    ac_used |= ((LegacyInputDescriptor *)[self getSelectedDescriptor:CH1]).is_ac;
+    ac_used |= ((LegacyInputDescriptor *)[self getSelectedDescriptor:CH2]).is_ac;
     MeterSettings_t tmp = self->meter_settings;
     MeterSettings_t* ms = &self->meter_settings;
     if(self.rate_auto) {
@@ -412,14 +496,15 @@ int24_test to_int24_test(long arg) {
         if(ac_used) ms->rw.calc_settings |= 8; // 256 samples
         else        ms->rw.calc_settings |= 5; // 32 samples
     }
-    // TODO: Should we send the structure here?
-    return 0 != memcmp(&tmp,ms,sizeof(MeterSettings_t));
+    int diff = memcmp(&tmp,ms,sizeof(MeterSettings_t));
+    return 0 != diff;
 }
 
 -(bool)applyAutorange:(Channel) c {
-    MeterSettings_t* const ms = &self->meter_settings;
+    MeterSettings_t tmp = self->meter_settings;
+    MeterSettings_t* ms = &self->meter_settings;
 
-    myInputDescriptor* active_id = [self getSelectedDescriptor:c];
+    LegacyInputDescriptor* active_id = [self getSelectedDescriptor:c];
 
     float outer_limit = ((RangeDescriptor *)[active_id.ranges getChosen]).max;
     float inner_limit = (float)0.7*[self getLowerRange:c].max;
@@ -431,6 +516,8 @@ int24_test to_int24_test(long arg) {
     } else if(val > outer_limit) {
         [self bumpRange:c expand:YES];
     }
+    int diff = memcmp(&tmp,ms,sizeof(MeterSettings_t));
+    return 0 != diff;
 }
 
 -(NSArray<NSNumber*>*)legacyBufferToNative:(Channel)c input_data:(int24_test*) in {
@@ -555,10 +642,14 @@ int24_test to_int24_test(long arg) {
 // Autoranging
 //////////////////////////////////////
 
+-(int)setRange:(Channel)c rd:(RangeDescriptor*)rd {
+    // Wrapper
+    return [self setRange:c rangeDescriptor:(myRangeDescriptor *)rd];
+}
 -(int)setRange:(Channel)c rangeDescriptor:(myRangeDescriptor *)rd {
-    Chooser* chooser = [self getSelectedDescriptor:c];
+    Chooser* chooser = [self getSelectedDescriptor:c].ranges;
     [chooser chooseObject:rd];
-
+    [self applyRateAndDepthChange];
     meter_settings.rw.chset[c] = rd.chset;
     switch(rd.isrc) {
         case ISRC_IGNORE:
@@ -600,7 +691,9 @@ int24_test to_int24_test(long arg) {
         default:
             NSLog(@"Invalid GPIO setting");
     }
-    [self.delegate onRangeChange:c new_range:rd];
+    [self sendMeterSettings:^(NSError *error) {
+        [self.delegate onRangeChange:c new_range:rd];
+    }];
     return 0;
 }
 
@@ -620,7 +713,7 @@ int24_test to_int24_test(long arg) {
     return NO;
 }
 
-+(Lsb2NativeConverter)makeSimpleConverter:(float)mult pga:(PGA_GAIN)pga {
+-(Lsb2NativeConverter)makeSimpleConverter:(float)mult pga:(PGA_GAIN)pga {
     // "mult" should be the multiple to convert from voltage at the input to the ADC (after PGA)
     // to native units
     float pga_mult = 1/[LegacyMooshimeterDevice pgaGain:pga];
@@ -632,7 +725,7 @@ int24_test to_int24_test(long arg) {
     return rval;
 };
 
-+(Lsb2NativeConverter)makeResistiveConverter:(ISRC_SETTING)isrc pga:(PGA_GAIN)pga {
+-(Lsb2NativeConverter)makeResistiveConverter:(ISRC_SETTING)isrc pga:(PGA_GAIN)pga {
     // "mult" should be the multiple to convert from voltage at the input to the ADC (after PGA)
     // to native units
     float pga_mult = 1/[LegacyMooshimeterDevice pgaGain:pga];
@@ -664,41 +757,41 @@ int24_test to_int24_test(long arg) {
 
 -(void)addSharedInputs:(Chooser*)chooser {
 
-    myInputDescriptor *descriptor;
-    descriptor = [[myInputDescriptor alloc] initWithName:@"AUX VOLTAGE DC" units:@"V" input:AUX_V is_ac:NO];
-    [descriptor addRange:@"100mV" converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:0.1 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_OFF];
-    [descriptor addRange:@"300mV" converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_4 ] max:0.3 gain:PGA_GAIN_4  gpio:GPIO_IGNORE isrc:ISRC_OFF];
-    [descriptor addRange:@"1.2V"  converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_1 ] max:1.2 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_OFF];
+    LegacyInputDescriptor *descriptor;
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"AUX VOLTAGE DC" units:@"V" input:AUX_V is_ac:NO];
+    [descriptor addRange:@"100mV" converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:0.1 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_OFF];
+    [descriptor addRange:@"300mV" converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_4 ] max:0.3 gain:PGA_GAIN_4  gpio:GPIO_IGNORE isrc:ISRC_OFF];
+    [descriptor addRange:@"1.2V"  converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_1 ] max:1.2 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_OFF];
     [chooser add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"AUX VOLTAGE AC" units:@"V" input:AUX_V is_ac:YES];
-    [descriptor addRange:@"100mV" converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:0.1 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_OFF];
-    [descriptor addRange:@"300mV" converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_4 ] max:0.3 gain:PGA_GAIN_4  gpio:GPIO_IGNORE isrc:ISRC_OFF];
-    [descriptor addRange:@"1.2V"  converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_1 ] max:1.2 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_OFF];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"AUX VOLTAGE AC" units:@"V" input:AUX_V is_ac:YES];
+    [descriptor addRange:@"100mV" converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:0.1 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_OFF];
+    [descriptor addRange:@"300mV" converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_4 ] max:0.3 gain:PGA_GAIN_4  gpio:GPIO_IGNORE isrc:ISRC_OFF];
+    [descriptor addRange:@"1.2V"  converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_1 ] max:1.2 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_OFF];
     [chooser add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"RESISTANCE" units:@"Ω" input:RESISTANCE is_ac:NO];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"RESISTANCE" units:@"Ω" input:RESISTANCE is_ac:NO];
 
     switch (meter_info.pcb_version) {
         case 7:
-            [descriptor addRange:@"1kΩ"   converter:[LegacyMooshimeterDevice makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-            [descriptor addRange:@"10kΩ"  converter:[LegacyMooshimeterDevice makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-            [descriptor addRange:@"100kΩ" converter:[LegacyMooshimeterDevice makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_12] max:1e5 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
-            [descriptor addRange:@"1MΩ"   converter:[LegacyMooshimeterDevice makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_12] max:1e6 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
-            [descriptor addRange:@"10MΩ"  converter:[LegacyMooshimeterDevice makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_1 ] max:1e7 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"1kΩ"   converter:[self makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+            [descriptor addRange:@"10kΩ"  converter:[self makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+            [descriptor addRange:@"100kΩ" converter:[self makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_12] max:1e5 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"1MΩ"   converter:[self makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_12] max:1e6 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"10MΩ"  converter:[self makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_1 ] max:1e7 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_LOW];
         case 8:
-            [descriptor addRange:@"1kΩ"   converter:[LegacyMooshimeterDevice makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-            [descriptor addRange:@"10kΩ"  converter:[LegacyMooshimeterDevice makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-            [descriptor addRange:@"100kΩ" converter:[LegacyMooshimeterDevice makeResistiveConverter:ISRC_LOW  pga:PGA_GAIN_12] max:1e5 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
-            [descriptor addRange:@"1MΩ"   converter:[LegacyMooshimeterDevice makeResistiveConverter:ISRC_LOW  pga:PGA_GAIN_12] max:1e6 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
-            [descriptor addRange:@"10MΩ"  converter:[LegacyMooshimeterDevice makeResistiveConverter:ISRC_LOW  pga:PGA_GAIN_1 ] max:1e7 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"1kΩ"   converter:[self makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+            [descriptor addRange:@"10kΩ"  converter:[self makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+            [descriptor addRange:@"100kΩ" converter:[self makeResistiveConverter:ISRC_LOW  pga:PGA_GAIN_12] max:1e5 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"1MΩ"   converter:[self makeResistiveConverter:ISRC_LOW  pga:PGA_GAIN_12] max:1e6 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"10MΩ"  converter:[self makeResistiveConverter:ISRC_LOW  pga:PGA_GAIN_1 ] max:1e7 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_LOW];
             break;
         default:
             NSLog(@"Unrecognized PCB type");
             break;
     }
-    descriptor = [[myInputDescriptor alloc] initWithName:@"DIODE DROP" units:@"V" input:DIODE is_ac:NO];
-    [descriptor addRange:@"1.7V" converter:[LegacyMooshimeterDevice makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:1.7 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"DIODE DROP" units:@"V" input:DIODE is_ac:NO];
+    [descriptor addRange:@"1.7V" converter:[self makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:1.7 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
     [chooser add:descriptor];
-    descriptor = [[myInputDescriptor alloc] initWithName:@"INTERNAL TEMP" units:@"K" input:TEMP is_ac:NO];
+    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"INTERNAL TEMP" units:@"K" input:TEMP is_ac:NO];
     Lsb2NativeConverter temp_converter = ^float(int lsb) {
         float volts = [self lsb2PGAVoltage:lsb];
         // PGA gain is 1, so PGA voltage=ADC voltage
@@ -748,11 +841,12 @@ int24_test to_int24_test(long arg) {
 }
 
 -(void)stream {
+    self->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MEAN|METER_CALC_SETTINGS_MS;
     self->meter_settings.rw.calc_settings &=~METER_CALC_SETTINGS_ONESHOT;
     self->meter_settings.rw.target_meter_state = METER_RUNNING;
-    [self sendMeterSettings:nil];
     LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
     [c setNotifyValue:YES completion:nil onUpdate:sample_handler];
+    [self sendMeterSettings:nil];
 }
 
 -(void)enterShippingMode {
@@ -795,16 +889,13 @@ int24_test to_int24_test(long arg) {
 -(int)setSampleRateIndex:(int)i {
     meter_settings.rw.adc_settings &=(~ADC_SETTINGS_SAMPLERATE_MASK);
     meter_settings.rw.adc_settings |= i;
-    [self sendMeterSettings:nil];
+    [self sendMeterSettings:^(NSError *error) {
+        [self.delegate onSampleRateChanged:i sample_rate_hz:(125*(1<<i))];
+    }];
 }
 -(NSArray<NSString*>*) getSampleRateList {
-    static const int l[] = {125,250,500,1000,2000,4000,8000};
-    NSMutableArray<NSString*>* rval = [[NSArray alloc]init];
-    for(int i = 0; i < sizeof(l)/sizeof(l[0]); i++) {
-        NSString* element = [NSString stringWithFormat:@"%d", l[i]];
-        [rval addObject:element];
-    }
-    return rval;
+    NSArray* l = @[@"125",@"250",@"500",@"1000",@"2000",@"4000",@"8000"];
+    return [l mutableCopy];
 }
 
 -(int)getBufferDepth {
@@ -814,15 +905,13 @@ int24_test to_int24_test(long arg) {
 -(int)setBufferDepthIndex:(int)i {
     self->meter_settings.rw.calc_settings &=~METER_CALC_SETTINGS_DEPTH_LOG2;
     self->meter_settings.rw.calc_settings |= i;
+    [self sendMeterSettings:^(NSError *error) {
+        [self.delegate onBufferDepthChanged:i buffer_depth:1<<i];
+    }];
 }
 -(NSArray<NSString*>*) getBufferDepthList {
-    static const int l[] = {1,2,4,8,16,32,64,128,256};
-    NSMutableArray<NSString*>* rval = [[NSArray alloc]init];
-    for(int i = 0; i < sizeof(l)/sizeof(l[0]); i++) {
-        NSString* element = [NSString stringWithFormat:@"%d", l[i]];
-        [rval addObject:element];
-    }
-    return rval;
+    NSArray* l = @[@"1",@"2",@"4",@"8",@"16",@"32",@"64",@"128",@"256"];
+    return [l mutableCopy];
 }
 
 -(void)setBufferMode:(Channel)c on:(bool)on {
@@ -898,7 +987,7 @@ int24_test to_int24_test(long arg) {
     switch(c) {
         case CH1:
         case CH2:
-            if(((myInputDescriptor *)[self getSelectedDescriptor:c]).is_ac) {
+            if(((LegacyInputDescriptor *)[self getSelectedDescriptor:c]).is_ac) {
                 return [self wrapMeterReading:[self lsbToNativeUnits:(int)sqrt(meter_sample.ch_ms[c]) channel:c] c:c];
             } else {
                 return [self wrapMeterReading:[self lsbToNativeUnits:to_int32(meter_sample.ch_reading_lsb[c]) channel:c]+[self getOffset:c].value c:c];
@@ -926,10 +1015,6 @@ int24_test to_int24_test(long arg) {
 
 -(NSString*) getRangeLabel:(Channel) c {
     return [self getSelectedRange:c].name;
-}
--(int)         setRange:(Channel)c rd:(id)rd {
-    InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
-    [inputDescriptor.ranges chooseObject:rd];
 }
 -(NSArray<RangeDescriptor*>*)getRangeList:(Channel)c {
     InputDescriptor * inputDescriptor = [self getSelectedDescriptor:c];
@@ -960,7 +1045,7 @@ bool isSharedInput(INPUT_MODE i) {
 
 -(int)setInput:(Channel)c descriptor:(InputDescriptor*)new_id {
     Chooser* id_chooser = self->input_descriptors[c];
-    myInputDescriptor * cast = (myInputDescriptor *)new_id;
+    LegacyInputDescriptor * cast = (LegacyInputDescriptor *)new_id;
     switch(c) {
         case CH1:
         case CH2:
@@ -972,7 +1057,7 @@ bool isSharedInput(INPUT_MODE i) {
             if(isSharedInput(cast.input)) {
                 // Make sure we're not about to jump on to a channel that's in use
                 Channel other = c==CH1?CH2:CH1;
-                myInputDescriptor * other_id = [self getSelectedDescriptor:other];
+                LegacyInputDescriptor * other_id = (LegacyInputDescriptor *)[self getSelectedDescriptor:other];
                 if(isSharedInput(other_id.input)) {
                     NSLog(@"Tried to select an input already in use!");
                     return -1;

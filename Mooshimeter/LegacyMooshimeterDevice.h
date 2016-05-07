@@ -43,11 +43,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     bool oad_mode;
     float offsets[2];
     float bat_voltage;
-    @protected
-    Chooser* input_descriptors[2];
+    Chooser* input_descriptors[3];
 }
-
--(LegacyMooshimeterDevice*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
 
 @end
 

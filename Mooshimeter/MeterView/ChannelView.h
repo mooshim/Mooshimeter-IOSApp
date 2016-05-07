@@ -23,17 +23,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @interface ChannelView : UIView
 
 -(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch  meter:(MooshimeterDeviceBase *)meter;
--(void)value_label_refresh;
--(void)refreshAllControls;
+-(void)value_label_refresh:(MeterReading*)value;
+-(void)range_button_refresh;
+-(void)display_set_button_refresh;
 
 @property NSUInteger channel;
 @property MooshimeterDeviceBase * meter;
 
 @property (strong,nonatomic) UILabel*  value_label;
-@property (strong,nonatomic) UIButton* units_button;
 @property (strong,nonatomic) UIButton* display_set_button;
-@property (strong,nonatomic) UIButton* input_set_button;
-@property (strong,nonatomic) UIButton* auto_manual_button;
 @property (strong,nonatomic) UIButton* range_button;
+@property (strong,nonatomic) UIButton* zero_button;
+@property (strong,nonatomic) UIButton* sound_button;
 
 @end

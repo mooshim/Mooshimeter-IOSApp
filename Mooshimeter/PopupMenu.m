@@ -8,7 +8,12 @@
 @implementation PopupMenu
 
 +(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options callback:(void(^)(int))callback {
-    return [[PopupMenu alloc] initWithParent:parent title:title options:options callback:callback];
+    // We maintain this strong reference here because we don't want to force the higher level
+    // to maintain a strongref to it.  And the ActionSheet only weakly references the delegate, so if
+    // we don't maintain a strongref to it somewhere the result of the actionsheet never lands anywhere.
+    static PopupMenu * active_ref = nil;
+    active_ref = [[PopupMenu alloc] initWithParent:parent title:title options:options callback:callback];
+    return active_ref;
 }
 
 -(instancetype)initWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options callback:(void(^)(int))callback {
@@ -24,12 +29,14 @@
         [self.sheet addButtonWithTitle:option];
     }
     [self.sheet showInView:parent];
+    return self;
 }
 
 #pragma mark UIActionSheetDelegate methods
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"Action sheet selected %d", buttonIndex);
+    self.select_cb(buttonIndex);
 }
 
 -(void)actionSheetCancel:(UIActionSheet *)actionSheet {

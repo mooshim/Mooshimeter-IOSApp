@@ -24,10 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @class ChannelView;
 
-@interface MeterViewController : UIViewController <UISplitViewControllerDelegate>
+@interface MeterViewController : UIViewController <MooshimeterDelegateProtocol>
 
 // Housekeeping
-@property bool play;
 @property MooshimeterDeviceBase * meter;
 
 // GUI widgets
@@ -40,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
 @property (strong, nonatomic) UIButton* zero_button;
+@property (strong, nonatomic) UIButton* graph_button;
 
 //@property (strong, nonatomic) MeterSettingsView* settings_view;
 

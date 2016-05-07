@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "MeterViewController.h"
 #import "PopupMenu.h"
+#import "SmartNavigationController.h"
 
 @implementation MeterViewController
 
@@ -26,7 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter{
     self = [super init];
     self.meter = meter;
-    self.play = NO;
     return self;
 }
 
@@ -56,13 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     sv.userInteractionEnabled = YES;
     [[sv layer] setBorderWidth:5];
     [[sv layer] setBorderColor:[UIColor blackColor].CGColor];
-    
-    self.rate_auto_button        = mb(0,0,1,1,rate_auto_button_press);
-    self.rate_button             = mb(1,0,2,1,rate_button_press);
+
+    self.rate_button             = mb(0,0,3,1,rate_button_press);
     self.logging_button          = mb(3,0,3,1,logging_button_press);
-    self.depth_auto_button       = mb(0,1,1,1,depth_auto_button_press);
-    self.depth_button            = mb(1,1,2,1,depth_button_press);
-    self.zero_button             = mb(3,1,3,1,zero_button_press);
+    self.depth_button            = mb(0,1,3,1,depth_button_press);
+    self.graph_button            = mb(3,1,3,1,graph_button_press);
     
     [self.zero_button setTitle:@"Zero" forState:UIControlStateNormal];
     
@@ -77,10 +75,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     [v addSubview:sv];
     [self.view addSubview:v];
+
+    [self.meter addDelegate:self];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
-    [self pause];
+    [self.meter pause];
 }
 
 +(void)style_auto_button:(UIButton*)b on:(BOOL)on {
@@ -149,7 +149,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [PopupMenu displayOptionsWithParent:self.view title:@"Buffer Depth" options:[self.meter getBufferDepthList] callback:^(int i) {
         NSLog(@"Received %d", i);
         [self.meter setBufferDepthIndex:i];
-        [self refreshAllControls];
     }];
 }
 -(void)depth_button_refresh {
@@ -194,8 +193,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self depth_auto_button_refresh];
     [self depth_button_refresh];
     [self logging_button_refresh];
-    [self.ch1_view refreshAllControls];
-    [self.ch2_view refreshAllControls];
+    [self.ch1_view range_button_refresh];
+    [self.ch1_view display_set_button_refresh];
+    [self.ch2_view range_button_refresh];
+    [self.ch2_view display_set_button_refresh];
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
@@ -208,6 +209,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [[b layer] setBorderWidth:2];
     [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
+    b.titleLabel.adjustsFontSizeToFitWidth = YES;
     b.frame = frame;
     return b;
 }
@@ -224,26 +226,94 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 { return UIInterfaceOrientationPortrait; }
 
+#pragma mark MooshimeterDelegateProtocol methods
 
--(void) play {
-    NSLog(@"In Play");
-    [self.meter stream];
+- (void)onInit {
+    NSLog(@"onInit");
 }
 
--(void) pause {
-    [self.meter pause];
+- (void)onDisconnect {
+    NSLog(@"onDisconnect");
+    SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+    [nav popToRootViewControllerAnimated:YES];
 }
 
--(void) updateReadings {
-    NSLog(@"Updating measurements...");
-    [self.ch1_view value_label_refresh];
-    [self.ch2_view value_label_refresh];
-    
-    // Handle autoranging
-    if([self.meter applyAutorange]) {
-        // Something changed, refresh to be safe
-        [self refreshAllControls];
+- (void)onRssiReceived:(int)rssi {
+    //Update the title bar
+}
+
+- (void)onBatteryVoltageReceived:(float)voltage {
+    //Update the title bar
+}
+
+- (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
+    NSLog(@"Updating measurements for %d...",c);
+    switch(c) {
+        case CH1:
+            [self.ch1_view value_label_refresh:val];
+            break;
+        case CH2:
+            [self.ch2_view value_label_refresh:val];
+            // Handle autoranging
+            if([self.meter applyAutorange]) {
+                // Something changed, refresh to be safe
+                [self refreshAllControls];
+            }
+            break;
+        case MATH:
+            //TODO
+            //[self.ch2_view value_label_refresh:val];
+            break;
     }
 }
+
+- (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
+    NSLog(@"Shouldn't receive a buffer in MeterViewController");
+}
+
+- (void)onSampleRateChanged:(int)i sample_rate_hz:(int)sample_rate_hz {
+    [self rate_button_refresh];
+}
+
+- (void)onBufferDepthChanged:(int)i buffer_depth:(int)buffer_depth {
+    [self depth_button_refresh];
+}
+
+- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {
+    [self logging_button_refresh];
+}
+
+- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {
+    switch(c) {
+        case CH1:
+            [self.ch1_view range_button_refresh];
+            break;
+        case CH2:
+            [self.ch2_view range_button_refresh];
+            break;
+        case MATH:
+            NSLog(@"TODO");
+            break;
+    }
+}
+
+- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {
+    switch(c) {
+        case CH1:
+            [self.ch1_view display_set_button_refresh];
+            break;
+        case CH2:
+            [self.ch2_view display_set_button_refresh];
+            break;
+        case MATH:
+            NSLog(@"TODO");
+            break;
+    }
+}
+
+- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {
+    //todo
+}
+
 
 @end

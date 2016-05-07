@@ -21,11 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "MeterDirectory.h"
 #import "SmartNavigationController.h"
 
-@interface ScanViewController () {
-    NSMutableArray *_objects;
-}
-@end
-
 @implementation ScanViewController
 
 - (void)awakeFromNib
@@ -118,9 +113,9 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                 NSLog(@"Discovering services");
                 [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
                     discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
-                        MooshimeterDeviceBase * meter = [MooshimeterDeviceBase chooseSubClass:p];
+                        Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
+                        self.active_meter = [(MooshimeterDeviceBase *) [meter_class alloc] init:p delegate:self];
                         NSLog(@"Wrapped in meter!");
-                        [self transitionToMeterView:meter]; // TODO handle OAD
                     });
                 }];
             }];
@@ -139,6 +134,8 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     UIRefreshControl *rescan_control = [[UIRefreshControl alloc] init];
     [rescan_control addTarget:self action:@selector(handleScanViewRefreshRequest) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = rescan_control;
+
+    self.active_meter = nil;
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -190,7 +187,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     LGPeripheral* p;
-    NSLog(@"Cell %d",(int)indexPath.row);
+    //NSLog(@"Cell %d",(int)indexPath.row);
     if(indexPath.row >= self.peripherals.count) {
         p = nil;
     } else {
@@ -237,11 +234,11 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     NSLog(@"Did push meter view controller");
 }
 
--(void)handlePeripheralConnected:(LGPeripheral*)p{
+
+/*-(void)handlePeripheralConnected:(LGPeripheral*)p{
     [self reloadData];
     NSLog(@"Wrapping in Meter");
 
-    /*
     if( g_meter->oad_mode ) {
         // We connected to a meter in OAD mode as requested previously.  Update firmware.
         NSLog(@"Connected in OAD mode");
@@ -260,7 +257,13 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         [alert show];
     } else {
         [self transitionToMeterView];
-    }*/
+    }
+}*/
+
+#pragma mark MooshimeterDelegateProtocol methods
+- (void)onInit {
+    NSLog(@"Meter init finished, transitioning");
+    [self transitionToMeterView:self.active_meter];
 }
 
 @end

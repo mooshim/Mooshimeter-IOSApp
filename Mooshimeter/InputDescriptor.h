@@ -11,4 +11,7 @@
 @property NSString* name;
 @property NSString* units;
 @property Chooser* ranges;
+
+-(instancetype)initWithName:(NSString*)name units_arg:(NSString*)units;
+
 @end

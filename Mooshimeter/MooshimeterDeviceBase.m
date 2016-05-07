@@ -46,13 +46,17 @@
         NSLog(@"Can't decide subclass until after connection!");
         return nil;
     }
-    MooshimeterDeviceBase * rval = nil;
+    Class rval = nil;
     if([self isPeripheralInOADMode:connected_peripheral]) {
         NSLog(@"Wrapping as an OADDevice (LegacyMeter)");
-        rval = [[LegacyMooshimeterDevice alloc] init:connected_peripheral delegate:nil];
+        rval = [LegacyMooshimeterDevice class];
+        //rval = [[LegacyMooshimeterDevice alloc] init:connected_peripheral delegate:nil];
     } else if([self getBuildTimeFromPeripheral:connected_peripheral] < 1454355414) {
-        rval = [[LegacyMooshimeterDevice alloc] init:connected_peripheral delegate:nil];
+        NSLog(@"Wrapping as a LegacyMeter");
+        rval = [LegacyMooshimeterDevice class];
+        //rval = [[LegacyMooshimeterDevice alloc] init:connected_peripheral delegate:nil];
     } else {
+        rval = nil;
         //fixme
         //IMPLEMENT ME - NEW STYLE MOOSHIMETERDEVICE
     }
