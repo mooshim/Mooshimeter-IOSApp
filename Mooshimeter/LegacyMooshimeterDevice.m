@@ -246,19 +246,52 @@ void (^sample_handler)(NSData*,NSError*);
     // Add channel 2 ranges and inputs
     c = self->input_descriptors[MATH];
     MathInputDescriptor *md = [[MathInputDescriptor alloc] initWithName:@"Power" units_arg:@"W"];
-    md.meterSettingsAreValid = ^bool(){return true;};
-    md.onChosen = ^(){};
+    md.meterSettingsAreValid = ^bool(){
+        bool rval =
+                [[self getSelectedDescriptor:CH1].units isEqualToString:@"A"]
+            &&  [[self getSelectedDescriptor:CH2].units isEqualToString:@"V"];
+        return rval;
+    };
+    md.onChosen = ^(){
+        NSLog(@"OnChosen");
+    };
     md.calculate = ^MeterReading *(){
-        // TODO
-        return [[MeterReading alloc] initWithValue:0.0
-                                      n_digits_arg:2
-                                           max_arg:100
-                                         units_arg:@"W"];
+        MeterReading* ch1 = [self getValue:CH1];
+        MeterReading* ch2 = [self getValue:CH2];
+
+        MeterReading * rval = [MeterReading mult:ch1 m1:ch2];
+        rval.units = @"W";
+        return rval;
     };
     [c add:md];
 
     [self determineInputDescriptorIndex:CH1];
     [self determineInputDescriptorIndex:CH2];
+
+    [self updateRSSI];
+    [self updateBattery];
+}
+
+-(void)updateBattery {
+    if(self.periph.cbPeripheral.state != CBPeripheralStateConnected) {
+        return;
+    }
+    [self reqMeterBatteryLevel:^(NSData *data, NSError *error) {
+        [self.delegate onBatteryVoltageReceived:self->bat_voltage];
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateBattery) userInfo:nil repeats:NO];
+    }];
+}
+
+-(void)updateRSSI {
+    if(self.periph.cbPeripheral.state != CBPeripheralStateConnected) {
+        return;
+    }
+    [self.periph readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
+        if(RSSI) {
+            [self.delegate onRssiReceived:RSSI];
+        }
+        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
+    }];
 }
 
 -(void)determineInputDescriptorIndex:(Channel)c {
@@ -286,8 +319,9 @@ void (^sample_handler)(NSData*,NSError*);
         case 0x04:
             break;
         case 0x09:
-            switch(meter_settings.rw.adc_settings) {
+            switch(meter_settings.rw.measure_settings) {
                 case 0:
+                    is=ISRC_OFF;
                     break;
                 case METER_MEASURE_SETTINGS_ISRC_ON:
                     is=ISRC_LOW;
@@ -317,7 +351,6 @@ void (^sample_handler)(NSData*,NSError*);
     }
 }
 
-
 -(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate {
     // Check for issues with struct packing.
     BUILD_BUG_ON(sizeof(trigger_settings_t) != 6);
@@ -342,11 +375,23 @@ void (^sample_handler)(NSData*,NSError*);
 
     // Populate our characteristic array
     for(LGService * service in periph.services) {
-        if ([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:METER_SERVICE_UUID]]) {
+        if (        [service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:OAD_SERVICE_UUID]]
+                ||  [service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:METER_SERVICE_UUID]]) {
             [self populateLGDict:service.characteristics];
             break;
         }
     }
+
+    // This is a block that gets run every time a sample is received
+    // Since blocks can't be declared statically, I must instantiate here
+    sample_handler = ^(NSData *data, NSError *error) {
+        [data getBytes:&self->meter_sample length:data.length];
+        uint32 utc_time = [[NSDate date] timeIntervalSince1970];
+        [self.delegate onSampleReceived:utc_time c:CH1  val:[self getValue:CH1]];
+        [self.delegate onSampleReceived:utc_time c:CH2  val:[self getValue:CH2]];
+        [self.delegate onSampleReceived:utc_time c:MATH val:[self getValue:MATH]];
+    };
+
     [self reqMeterInfo:^(NSData *data, NSError *error) {
         [self reqMeterSettings:^(NSData *data, NSError *error) {
             [self reqMeterLogSettings:^(NSData *data, NSError *error) {
@@ -362,17 +407,6 @@ void (^sample_handler)(NSData*,NSError*);
             }];
         }];
     }];
-
-
-    // This is a block that gets run every time a sample is received
-    // Since blocks can't be declared statically, I must instantiate here
-    sample_handler = ^(NSData *data, NSError *error) {
-        [data getBytes:&self->meter_sample length:data.length];
-        uint32 utc_time = [[NSDate date] timeIntervalSince1970];
-        [self.delegate onSampleReceived:utc_time c:CH1  val:[self getValue:CH1]];
-        [self.delegate onSampleReceived:utc_time c:CH2  val:[self getValue:CH2]];
-        [self.delegate onSampleReceived:utc_time c:MATH val:[self getValue:MATH]];
-    };
 
     return self;
 }
@@ -497,10 +531,18 @@ int24_test to_int24_test(long arg) {
         else        ms->rw.calc_settings |= 5; // 32 samples
     }
     int diff = memcmp(&tmp,ms,sizeof(MeterSettings_t));
+    if(0!=diff) {
+        [self.delegate onSampleRateChanged:[self getSampleRateHz]];
+        [self.delegate onBufferDepthChanged:[self getBufferDepth]];
+    }
     return 0 != diff;
 }
 
 -(bool)applyAutorange:(Channel) c {
+    if(!self.range_auto[c]) {
+        return NO;
+    }
+
     MeterSettings_t tmp = self->meter_settings;
     MeterSettings_t* ms = &self->meter_settings;
 
@@ -508,8 +550,8 @@ int24_test to_int24_test(long arg) {
 
     float outer_limit = ((RangeDescriptor *)[active_id.ranges getChosen]).max;
     float inner_limit = (float)0.7*[self getLowerRange:c].max;
-    // Note that the ranges are asymmetrical - we have 1.8V of headroom above and 1.2V below
-    float val = ABS([self getValue:c].value);
+    // Compensate for any software offset
+    float val = ABS([self getValue:c].value + [self getOffset:c].value);
 
     if(val < inner_limit) {
         [self bumpRange:c expand:NO];
@@ -629,14 +671,6 @@ int24_test to_int24_test(long arg) {
 }
 
 #pragma mark MooshimeterControlProtocol_methods
-
-////////////////////////////////
-// Convenience functions
-////////////////////////////////
-
--(bool)isInOADMode {
-    return self->oad_mode;
-}
 
 //////////////////////////////////////
 // Autoranging
@@ -769,7 +803,6 @@ int24_test to_int24_test(long arg) {
     [descriptor addRange:@"1.2V"  converter:[self  makeSimpleConverter:1 pga:PGA_GAIN_1 ] max:1.2 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_OFF];
     [chooser add:descriptor];
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"RESISTANCE" units:@"Ω" input:RESISTANCE is_ac:NO];
-
     switch (meter_info.pcb_version) {
         case 7:
             [descriptor addRange:@"1kΩ"   converter:[self makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
@@ -788,6 +821,7 @@ int24_test to_int24_test(long arg) {
             NSLog(@"Unrecognized PCB type");
             break;
     }
+    [chooser add:descriptor];
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"DIODE DROP" units:@"V" input:DIODE is_ac:NO];
     [descriptor addRange:@"1.7V" converter:[self makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:1.7 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
     [chooser add:descriptor];
@@ -876,8 +910,12 @@ int24_test to_int24_test(long arg) {
 }
 
 -(void)setOffset:(Channel)c offset:(float)offset {
+    if(((LegacyInputDescriptor *)[self getSelectedDescriptor:c]).is_ac) {
+        // Can't offset an AC reading
+        offset = 0;
+    }
     self->offsets[c]=offset;
-    return;
+    [self.delegate onOffsetChange:c offset:[self getOffset:c]];
 }
 
 -(int)getSampleRateHz {
@@ -890,7 +928,7 @@ int24_test to_int24_test(long arg) {
     meter_settings.rw.adc_settings &=(~ADC_SETTINGS_SAMPLERATE_MASK);
     meter_settings.rw.adc_settings |= i;
     [self sendMeterSettings:^(NSError *error) {
-        [self.delegate onSampleRateChanged:i sample_rate_hz:(125*(1<<i))];
+        [self.delegate onSampleRateChanged:(125*(1<<i))];
     }];
 }
 -(NSArray<NSString*>*) getSampleRateList {
@@ -906,7 +944,7 @@ int24_test to_int24_test(long arg) {
     self->meter_settings.rw.calc_settings &=~METER_CALC_SETTINGS_DEPTH_LOG2;
     self->meter_settings.rw.calc_settings |= i;
     [self sendMeterSettings:^(NSError *error) {
-        [self.delegate onBufferDepthChanged:i buffer_depth:1<<i];
+        [self.delegate onBufferDepthChanged:1<<i];
     }];
 }
 -(NSArray<NSString*>*) getBufferDepthList {
@@ -990,7 +1028,7 @@ int24_test to_int24_test(long arg) {
             if(((LegacyInputDescriptor *)[self getSelectedDescriptor:c]).is_ac) {
                 return [self wrapMeterReading:[self lsbToNativeUnits:(int)sqrt(meter_sample.ch_ms[c]) channel:c] c:c];
             } else {
-                return [self wrapMeterReading:[self lsbToNativeUnits:to_int32(meter_sample.ch_reading_lsb[c]) channel:c]+[self getOffset:c].value c:c];
+                return [self wrapMeterReading:[self lsbToNativeUnits:to_int32(meter_sample.ch_reading_lsb[c]) channel:c]-[self getOffset:c].value c:c];
             }
             break;
         case MATH: {
@@ -1067,10 +1105,13 @@ bool isSharedInput(INPUT_MODE i) {
             [id_chooser chooseObject:cast];
             [self.delegate onInputChange:c descriptor:new_id];
             [self setRange:c rangeDescriptor:[new_id.ranges get:0]];
+            [self setOffset:c offset:0];
+            [self.delegate onInputChange:c descriptor:new_id];
             return 0;
         case MATH:
             [(MathInputDescriptor*)new_id onChosen];
             [id_chooser chooseObject:new_id];
+            [self.delegate onInputChange:c descriptor:new_id];
             return 0;
     }
     return 0;

@@ -33,12 +33,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @property (strong, nonatomic) ChannelView* ch1_view;
 @property (strong, nonatomic) ChannelView* ch2_view;
+
+@property (strong,nonatomic) UILabel*  math_label;
+@property (strong,nonatomic) UIButton*  math_button;
+
 @property (strong, nonatomic) UIButton* rate_auto_button;
 @property (strong, nonatomic) UIButton* rate_button;
 @property (strong, nonatomic) UIButton* depth_auto_button;
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
-@property (strong, nonatomic) UIButton* zero_button;
 @property (strong, nonatomic) UIButton* graph_button;
 
 //@property (strong, nonatomic) MeterSettingsView* settings_view;

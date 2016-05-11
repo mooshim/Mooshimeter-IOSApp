@@ -26,6 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)value_label_refresh:(MeterReading*)value;
 -(void)range_button_refresh;
 -(void)display_set_button_refresh;
+-(void)zero_button_refresh;
+
+-(void)refreshAllControls;
 
 @property NSUInteger channel;
 @property MooshimeterDeviceBase * meter;

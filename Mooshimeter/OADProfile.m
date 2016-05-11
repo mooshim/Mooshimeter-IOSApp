@@ -8,7 +8,8 @@
  */
 
 #import "OADProfile.h"
-#import "MooshimeterControlProtocol.h"
+#import "SmartNavigationController.h"
+#import "FirmwareImageDownloader.h"
 
 @implementation OADProfile
 
@@ -18,27 +19,17 @@
         self.meter = new_meter;
         self.canceled = FALSE;
         self.inProgramming = FALSE;
-        self.start = YES;
-        NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-latest.bin";
-        //NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-beta.bin";
-        NSURL  *url = [NSURL URLWithString:stringURL];
-        self->imageHeader.build_time=0;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            self.imageData = [NSData dataWithContentsOfURL:url];
-            NSLog(@"Loaded firmware of size : %d",(int)self.imageData.length);
-            if(self.imageData.length==0) {
-                // We failed to load the firmware.  Should we do something?
-            } else {
-                [self.imageData getBytes:&self->imageHeader length:sizeof(img_hdr_t)];
-            }
-        });
     }
     return self;
 }
 
 -(void) startUpload {
+    if(![FirmwareImageDownloader isFirmwareDownloadComplete]) {
+        NSLog(@"Can't start firmware upload over BLE because I don't have an image to upload!");
+        return;
+    }
+
     NSLog(@"Configuring OAD Profile");
-    self.start = YES;
     LGCharacteristic* image_notify = [self.meter getLGChar:OAD_IMAGE_NOTIFY];
     LGCharacteristic* image_block  = [self.meter getLGChar:OAD_IMAGE_BLOCK_REQ];
     self.pacer_sem = dispatch_semaphore_create(8);
@@ -67,7 +58,7 @@
     if(self.iBlocks == self.nBlocks) {
         // We finished before disconnecting, don't display a failure.
     }
-    [self.navCtrl popToRootViewControllerAnimated:YES];
+
     UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"FW Upgrade Failed !" message:@"Device disconnected during programming, firmware upgrade was not finished !" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
     alertView.tag = 0;
     [alertView show];
@@ -78,9 +69,10 @@
 -(void) uploadImage {
     self.inProgramming = YES;
     self.canceled = NO;
-    
-    unsigned char imageFileData[self.imageData.length];
-    [self.imageData getBytes:imageFileData length:self.imageData.length];
+
+    NSData* imageData = [FirmwareImageDownloader getFirmwareImageData];
+    unsigned char imageFileData[imageData.length];
+    [imageData getBytes:imageFileData length:imageData.length];
     uint8_t requestData[OAD_IMG_HDR_SIZE + 2 + 2]; // 12Bytes
     
     for(int ii = 0; ii < 20; ii++) {
@@ -113,11 +105,6 @@
     self.nBlocks = imgHeader.len / (OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE);
     self.iBlocks = 0;
     self.iBytes = 0;
-   
-    if (self.start) {
-        self.start = NO;
-        [self.navCtrl pushViewController:self.progressView animated:YES];
-    }
   
     [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgressBars:) userInfo:nil repeats:YES];
     dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
@@ -131,31 +118,35 @@
         self.canceled = FALSE;
         return;
     }
-    
-    unsigned char imageFileData[self.imageData.length];
-    [self.imageData getBytes:imageFileData length:self.imageData.length];
+
+    NSData* imageData = [FirmwareImageDownloader getFirmwareImageData];
     
     NSLog(@"Sending block %d of %d", self.iBlocks, self.nBlocks);
     
     //Prepare Block
-    uint8_t requestData[2 + OAD_BLOCK_SIZE];
+    struct {
+        uint16 bnum;
+        uint8  payload[OAD_BLOCK_SIZE];
+    } __attribute__((packed)) requestData;
     
-    requestData[0] = LO_UINT16(self.iBlocks);
-    requestData[1] = HI_UINT16(self.iBlocks);
-    
-    memcpy(&requestData[2] , &imageFileData[self.iBytes], OAD_BLOCK_SIZE);
+    //requestData[0] = LO_UINT16(self.iBlocks);
+    //requestData[1] = HI_UINT16(self.iBlocks);
+    requestData.bnum = self.iBlocks;
+    [imageData getBytes:requestData.payload range:NSMakeRange(self.iBytes,OAD_BLOCK_SIZE)];
     
     LGCharacteristic* image_block_req = [self.meter getLGChar:OAD_IMAGE_BLOCK_REQ];
     
     dispatch_semaphore_wait(self.pacer_sem, DISPATCH_TIME_FOREVER);
-    [image_block_req writeValue:[NSData dataWithBytes:requestData length:2 + OAD_BLOCK_SIZE] completion:nil];
+    //[image_block_req writeValue:[NSData dataWithBytes:&requestData length:sizeof(requestData)] completion:nil];
+    [image_block_req writeValueNoResponse:[NSData dataWithBytes:&requestData length:sizeof(requestData)]];
     
     self.iBlocks++;
     self.iBytes += OAD_BLOCK_SIZE;
     
     if(self.iBlocks == self.nBlocks) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [self.navCtrl popToRootViewControllerAnimated:YES];
+        SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+        [nav popToRootViewControllerAnimated:YES];
         self.inProgramming = NO;
         dispatch_queue_t mq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async(mq, ^{

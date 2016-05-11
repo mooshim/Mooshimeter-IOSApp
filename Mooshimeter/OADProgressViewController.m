@@ -1,5 +1,5 @@
 //
-//  BLETIOADProgressViewController.m
+//  OADViewController.m
 //  TI BLE Multitool
 //
 //  Created by Ole Andreas Torvmark on 7/16/13.
@@ -8,39 +8,43 @@
 
 #import "OADProgressViewController.h"
 
-@implementation BLETIOADProgressViewController
+@implementation OADViewController
 
-- (id)init
+
+- (instancetype)initWithMeter:(MooshimeterDeviceBase*)meter
 {
     self = [super init];
-    if (self) {
-        // Initialization code
-        self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-        self.view.backgroundColor = [UIColor whiteColor];
-        
-        self.label1 = [[UILabel alloc]init];
-        self.label2 = [[UILabel alloc]init];
-        self.label1.textAlignment = NSTextAlignmentCenter;
-        self.label2.textAlignment = NSTextAlignmentCenter;
-        self.label1.textColor = [UIColor blackColor];
-        self.label2.textColor = [UIColor blackColor];
-        self.label1.backgroundColor = [UIColor clearColor];
-        self.label2.backgroundColor = [UIColor clearColor];
-        self.label1.font = [UIFont boldSystemFontOfSize:14.0f];
-        self.label2.font = [UIFont boldSystemFontOfSize:14.0f];
-        self.label1.textAlignment = NSTextAlignmentCenter;
-        self.label2.textAlignment = NSTextAlignmentCenter;
-        
-        [self setupView];
-        
-        [self.view addSubview:self.progressBar];
-        [self.view addSubview:self.label1];
-        [self.view addSubview:self.label2];
-        
-        self.title = @"Firmware upload in progress";
-        self.label1.text = @"0%";
-        [self.view setNeedsLayout];
-    }
+    // Initialization code
+    self.meter = meter;
+    self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    self.label1 = [[UILabel alloc]init];
+    self.label2 = [[UILabel alloc]init];
+    self.label1.textAlignment = NSTextAlignmentCenter;
+    self.label2.textAlignment = NSTextAlignmentCenter;
+    self.label1.textColor = [UIColor blackColor];
+    self.label2.textColor = [UIColor blackColor];
+    self.label1.backgroundColor = [UIColor clearColor];
+    self.label2.backgroundColor = [UIColor clearColor];
+    self.label1.font = [UIFont boldSystemFontOfSize:14.0f];
+    self.label2.font = [UIFont boldSystemFontOfSize:14.0f];
+    self.label1.textAlignment = NSTextAlignmentCenter;
+    self.label2.textAlignment = NSTextAlignmentCenter;
+
+    [self setupView];
+
+    [self.view addSubview:self.progressBar];
+    [self.view addSubview:self.label1];
+    [self.view addSubview:self.label2];
+
+    self.title = @"Firmware upload in progress";
+    self.label1.text = @"0%";
+    [self.view setNeedsLayout];
+
+    self.oad_profile = [[OADProfile alloc] init:self.meter];
+    self.oad_profile.progressView = self;
+
     return self;
 }
 
@@ -54,7 +58,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
-    [self setupView];
+    [self.oad_profile startUpload];
 }
 
 -(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {

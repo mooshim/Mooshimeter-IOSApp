@@ -83,4 +83,10 @@
         -(NSArray*)getInputList:(Channel)c;
         -(NSArray*)getInputNameList:(Channel)c;
         -(InputDescriptor*) getSelectedDescriptor:(Channel)c;
+
+        // Preference management helpers
+        -(NSString*)getPreferenceKeyString:(NSString*)tail;
+        -(bool)getPreference:(NSString*)shortkey def:(bool)def;
+        -(bool)getPreference:(NSString*)shortkey;
+        -(void)setPreference:(NSString*)shortkey value:(bool)value;
 @end

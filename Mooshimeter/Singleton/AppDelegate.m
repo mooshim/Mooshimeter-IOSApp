@@ -17,13 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "AppDelegate.h"
+#import "FirmwareImageDownloader.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Init singletons
     [LGCentralManager sharedInstance];
-    
+    [FirmwareImageDownloader initSingleton];
+
+    // Init navbar
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
@@ -54,7 +58,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     nav_size.origin.y    += 5;
     nav_size.size.width  -= 10;
     nav_size.size.height -= 10;
-    
+
+    // Add settings button to navbar
     UIButton* b;
     b = [UIButton buttonWithType:UIButtonTypeSystem];
     b.userInteractionEnabled = YES;
@@ -68,11 +73,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.settings_button = b;
     [self.nav.navigationBar addSubview:self.settings_button];
     
-    NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
-    [path appendString:@"/Mooshimeter.bin"];
-    self.oad_profile = [[OADProfile alloc]init:path];
-    self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
-    self.oad_profile.navCtrl = self.nav;
+    //NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
+    //[path appendString:@"/Mooshimeter.bin"];
 
     [self.window setRootViewController:self.nav];
     [self.window makeKeyAndVisible];

@@ -58,6 +58,8 @@ typedef void (^LGCharacteristicWriteCallback) (NSError *error);
             completion:(LGCharacteristicNotifyCallback)aCallback
               onUpdate:(LGCharacteristicReadCallback)uCallback;
 
+- (void)writeValueNoResponse:(NSData *)data;
+
 /**
  * Writes input data to characteristic
  * @param data NSData object representing bytes that needs to be written

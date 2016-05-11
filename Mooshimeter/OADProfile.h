@@ -11,26 +11,19 @@
 #import "LegacyMooshimeterDevice.h"
 #import "oad.h"
 
-@class BLETIOADProgressViewController;
+@class OADViewController;
 
-@interface OADProfile : NSObject <UIActionSheetDelegate,UIAlertViewDelegate,CBPeripheralDelegate> {
-    @public
-    img_hdr_t imageHeader;
-}
-
-@property (strong,nonatomic) NSData *imageData;
+@interface OADProfile : NSObject <UIActionSheetDelegate,UIAlertViewDelegate,CBPeripheralDelegate>
 
 @property int nBlocks;
 @property int iBlocks;
 @property int iBytes;
 @property BOOL canceled;
 @property BOOL inProgramming;
-@property BOOL start;
-@property UINavigationController *navCtrl;
 
 @property id<MooshimeterControlProtocol> meter;
 
-@property (strong,nonatomic) BLETIOADProgressViewController *progressView;
+@property (strong,nonatomic) OADViewController *progressView;
 @property (strong,nonatomic) dispatch_semaphore_t pacer_sem;
 
 -(instancetype) init:(id<MooshimeterControlProtocol>)new_meter;

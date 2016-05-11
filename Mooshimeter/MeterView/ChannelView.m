@@ -92,12 +92,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)range_button_press {
+    NSArray* range_list = [self.meter getRangeNameList:self.channel];
     [PopupMenu displayOptionsWithParent:self
                                   title:@"Range"
-                                options:[self.meter getRangeNameList:self.channel]
+                                options:range_list
+                                 cancel:@"AUTORANGE"
                                callback:^(int i) {
-                                   NSArray<RangeDescriptor*>* choices = [self.meter getRangeList:self.channel];
-                                   [self.meter setRange:self.channel rd:choices[i]];
+                                   if(i>= [range_list count]) {
+                                       self.meter.range_auto[self.channel]=YES;
+                                   } else {
+                                       self.meter.range_auto[self.channel]=NO;
+                                       NSArray<RangeDescriptor*>* choices = [self.meter getRangeList:self.channel];
+                                       [self.meter setRange:self.channel rd:choices[i]];
+                                   }
                                }];
 }
 
@@ -116,11 +123,55 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void) zero_button_press {
-    NSLog(@"zero");
+    MeterReading * offset = [self.meter getOffset:self.channel];
+    if(offset==nil || offset.value==0) {
+        // No offset is set
+        MeterReading * val = [self.meter getValue:self.channel];
+        [self.meter setOffset:self.channel offset:val.value];
+    } else {
+        // Clear the offset
+        [self.meter setOffset:self.channel offset:0];
+    }
+}
+
+-(void) zero_button_refresh {
+    MeterReading * offset = [self.meter getOffset:self.channel];
+    if(offset==nil || offset.value==0) {
+        // No offset is set
+        [self.zero_button setTitle:@"ZERO" forState:UIControlStateNormal];
+    } else {
+        [self.zero_button setTitle:[offset toString] forState:UIControlStateNormal];
+    }
 }
 
 -(void) sound_button_press {
     NSLog(@"sound");
+    uint8 other_channel = (self.channel+1)%2;
+    self.meter.speech_on[self.channel] = !self.meter.speech_on[self.channel];
+    if(self.meter.speech_on[self.channel]) {
+        self.meter.speech_on[other_channel] = NO;
+    }
+    [self sound_button_refresh];
 };
+
+-(void)sound_button_refresh {
+    // Toggle sound setting for meter
+    uint8 other_channel = (self.channel+1)%2;
+    NSString* title;
+
+    if(self.meter.speech_on[self.channel]) {
+        title = @"SOUND:ON";
+    } else {
+        title = @"SOUND:OFF";
+    }
+    [self.sound_button setTitle:title forState:UIControlStateNormal];
+}
+
+-(void)refreshAllControls {
+    [self display_set_button_refresh];
+    [self range_button_refresh];
+    [self zero_button_refresh];
+    [self sound_button_refresh];
+}
 
 @end

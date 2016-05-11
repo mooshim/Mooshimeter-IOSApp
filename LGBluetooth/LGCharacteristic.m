@@ -104,6 +104,14 @@
                                            forCharacteristic:self.cbCharacteristic];
 }
 
+- (void)writeValueNoResponse:(NSData *)data
+{
+    CBCharacteristicWriteType type =  CBCharacteristicWriteWithoutResponse;
+    [self.cbCharacteristic.service.peripheral writeValue:data
+                                       forCharacteristic:self.cbCharacteristic
+                                                    type:type];
+}
+
 - (void)writeValue:(NSData *)data
         completion:(LGCharacteristicWriteCallback)aCallback
 {

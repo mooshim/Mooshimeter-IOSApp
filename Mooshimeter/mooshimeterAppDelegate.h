@@ -28,7 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @class MooshimeterDevice;
 @class ScanViewController;
 @class BLETIOADProgressViewController;
-@class BLETIOADProfile;
 
 #define AUTO_UPDATE_FIRMWARE
 
@@ -41,7 +40,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @property (strong,nonatomic) UIWindow *window;
 @property (strong,nonatomic) CBCentralManager *cman;
-@property (strong,nonatomic) BLETIOADProfile* oad_profile;
 
 @property (strong,nonatomic) UINavigationController* nav;
 @property (strong,nonatomic) ScanViewController* scan_vc;

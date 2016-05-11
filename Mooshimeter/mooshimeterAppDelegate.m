@@ -185,13 +185,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         NSLog(@"Connected in OAD mode");
 #ifdef AUTO_UPDATE_FIRMWARE
         if(self.nav.topViewController != self.oad_vc) {
-            self.oad_profile = [[BLETIOADProfile alloc]initWithDevice:d];
-            self.oad_profile.progressView = [[BLETIOADProgressViewController alloc]init];
-            [self.oad_profile makeConfigurationForProfile];
-            self.oad_profile.navCtrl = self.nav;
-            [self.oad_profile configureProfile];
-            self.oad_profile.view = self.nav.topViewController.view;
-            [self.oad_profile selectImagePressed:self];
+            fewafewaf
         }
 #endif
     }

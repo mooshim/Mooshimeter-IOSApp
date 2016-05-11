@@ -14,6 +14,10 @@
 @property float format_mult;
 @property int format_prefix;
 @property NSString* units;
+
 -(MeterReading*)initWithValue:(float)value_arg n_digits_arg:(int)n_digits_arg max_arg:(float)max_arg units_arg:(NSString*)units_arg;
 -(NSString*)toString;
+
++(MeterReading*) mult:(MeterReading*)m0 m1:(MeterReading*)m1;
+
 @end

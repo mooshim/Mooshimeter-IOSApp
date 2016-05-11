@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "ScanViewController.h"
 #import "MeterView/MeterViewController.h"
-#import "MeterDirectory.h"
+#import "OADDevice.h"
 #import "SmartNavigationController.h"
 
 @implementation ScanViewController
@@ -114,7 +114,10 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                 [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
                     discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
                         Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
-                        self.active_meter = [(MooshimeterDeviceBase *) [meter_class alloc] init:p delegate:self];
+                        // We need to split alloc and init here because of some confusing callback issues
+                        // that might reference self.active_meter
+                        self.active_meter = [meter_class alloc];
+                        [(MooshimeterDeviceBase *)self.active_meter init:p delegate:self];
                         NSLog(@"Wrapped in meter!");
                     });
                 }];
@@ -136,6 +139,13 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     self.refreshControl = rescan_control;
 
     self.active_meter = nil;
+
+    // Make footerview so it fill up size of the screen
+    // The button is aligned to bottom of the footerview
+    // using autolayout constraints
+    self.tableView.tableFooterView = nil;
+    self.footerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.tableView.frame.size.height - self.tableView.contentSize.height - self.footerView.frame.size.height)
+    self.tableView.tableFooterView = self.footerView
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -222,10 +232,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                                              selector:@selector(meterDisconnected)
                                                  name:kLGPeripheralDidDisconnect
                                                object:nil];*/
-    //const double bat_pcnt = 100*[AppDelegate alkSocEstimate:(g_meter->bat_voltage/2)];
-    //NSString* bat_str = [NSString stringWithFormat:@"Bat:%d%%", (int)bat_pcnt];
-    //[self.bat_label setText:bat_str];
-    //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];TODO
     NSLog(@"Pushing meter view controller");
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
@@ -234,6 +240,14 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     NSLog(@"Did push meter view controller");
 }
 
+-(void)transitionToOADView:(MooshimeterDeviceBase*)meter {
+    NSLog(@"Pushing OAD view controller");
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+    OADViewController * mvc = [[OADViewController alloc] initWithMeter:meter];
+    [nav pushViewController:mvc animated:YES];
+    NSLog(@"Did push OAD view controller");
+}
 
 /*-(void)handlePeripheralConnected:(LGPeripheral*)p{
     [self reloadData];
@@ -263,7 +277,13 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 #pragma mark MooshimeterDelegateProtocol methods
 - (void)onInit {
     NSLog(@"Meter init finished, transitioning");
-    [self transitionToMeterView:self.active_meter];
+    if([self.active_meter isKindOfClass:OADDevice.class]) {
+        // Start OAD activity
+        [self transitionToOADView:self.active_meter];
+    } else {
+        // Start Meter activity
+        [self transitionToMeterView:self.active_meter];
+    }
 }
 
 @end

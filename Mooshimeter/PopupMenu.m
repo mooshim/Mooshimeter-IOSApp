@@ -8,15 +8,24 @@
 @implementation PopupMenu
 
 +(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options callback:(void(^)(int))callback {
+    return [PopupMenu displayOptionsWithParent:parent title:title options:options cancel:nil callback:callback];
+}
+
++(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options cancel:(NSString*)cancel callback:(void(^)(int))callback {
     // We maintain this strong reference here because we don't want to force the higher level
     // to maintain a strongref to it.  And the ActionSheet only weakly references the delegate, so if
     // we don't maintain a strongref to it somewhere the result of the actionsheet never lands anywhere.
     static PopupMenu * active_ref = nil;
-    active_ref = [[PopupMenu alloc] initWithParent:parent title:title options:options callback:callback];
+    active_ref = [[PopupMenu alloc]
+            initWithParent:parent
+                     title:title
+                   options:options
+                    cancel:cancel
+                  callback:callback];
     return active_ref;
 }
 
--(instancetype)initWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options callback:(void(^)(int))callback {
+-(instancetype)initWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options cancel:(NSString*)cancel callback:(void(^)(int))callback {
     self = [super init];
     self.select_cb = callback;
     self.sheet = [[UIActionSheet alloc]
@@ -27,6 +36,10 @@
         otherButtonTitles:nil];
     for(NSString* option in options) {
         [self.sheet addButtonWithTitle:option];
+    }
+    if(cancel!=nil) {
+        [self.sheet addButtonWithTitle:cancel];
+        [self.sheet setCancelButtonIndex:[options count]];
     }
     [self.sheet showInView:parent];
     return self;

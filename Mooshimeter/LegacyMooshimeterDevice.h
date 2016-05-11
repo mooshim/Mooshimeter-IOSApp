@@ -40,7 +40,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     } sample_buf;
     
     // These reflect values internal to the app that determine how to display the data
-    bool oad_mode;
     float offsets[2];
     float bat_voltage;
     Chooser* input_descriptors[3];

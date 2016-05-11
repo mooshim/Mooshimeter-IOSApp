@@ -16,34 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "LegacyMooshimeterDevice.h"
 #import "LGBluetooth.h"
+#import "BLEUtility.h"
+#import "MooshimeterProfileTypes.h"
+#import "MooshimeterDeviceBase.h"
 
-#import "ScanViewController.h"
-#import "MeterViewController.h"
-#import "../GraphViewController.h"
-#import "SmartNavigationController.h"
+#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+#define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 
-#import "OADProgressViewController.h"
-#import "OADProfile.h"
-
-@class SmartNavigationController;
-@class ScanViewController;
-@class OADProfile;
-@class OADViewController;
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate, NSObject>
-
-@property (strong,nonatomic) UIWindow *window;
-@property (strong,nonatomic) OADProfile* oad_profile;
-
-@property (strong,nonatomic) SmartNavigationController*      nav;
-@property (strong,nonatomic) ScanViewController*             scan_vc;
-
-@property (strong,nonatomic) UILabel* bat_label;
-@property (strong,nonatomic) UILabel* rssi_label;
-@property (strong,nonatomic) UIButton* settings_button;
+@interface OADDevice : MooshimeterDeviceBase
 
 @end
+

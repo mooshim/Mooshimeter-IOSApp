@@ -36,10 +36,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"Meter view loaded!");
     [super viewDidLoad];
 
-    float h = (self.view.bounds.size.height - self.navigationController.navigationBar.frame.size.height)/10;
-    float w = (self.view.bounds.size.width)/6;
+#define N_ROWS 11
+#define N_COLS 6
+
+    float h = (self.view.bounds.size.height - self.navigationController.navigationBar.frame.size.height)/N_ROWS;
+    float w = (self.view.bounds.size.width)/N_COLS;
     
-    UIView* v = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, 6*w, 10*h)];
+    UIView* v = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, N_COLS*w, N_ROWS*h)];
     v.userInteractionEnabled = YES;
     v.backgroundColor = [UIColor whiteColor];
 
@@ -52,27 +55,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.ch2_view = [[ChannelView alloc]initWithFrame:cg(0, 4, 6, 4) ch:1 meter:self.meter];
     [v addSubview:self.ch2_view];
     
-    UIView* sv = [[UIView alloc] initWithFrame:cg(0, 8, 6, 2)];
+    UIView* sv = [[UIView alloc] initWithFrame:cg(0, 8, 6, 3)];
     sv.userInteractionEnabled = YES;
     [[sv layer] setBorderWidth:5];
     [[sv layer] setBorderColor:[UIColor blackColor].CGColor];
 
-    self.rate_button             = mb(0,0,3,1,rate_button_press);
-    self.logging_button          = mb(3,0,3,1,logging_button_press);
-    self.depth_button            = mb(0,1,3,1,depth_button_press);
-    self.graph_button            = mb(3,1,3,1,graph_button_press);
-    
-    [self.zero_button setTitle:@"Zero" forState:UIControlStateNormal];
-    
-    [sv addSubview:self.rate_auto_button];
+    self.math_label = [[UILabel alloc] initWithFrame:cg(0,0,4,1)];
+    self.math_label.textColor = [UIColor blackColor];
+    self.math_label.textAlignment = NSTextAlignmentCenter;
+    self.math_label.font = [UIFont fontWithName:@"Courier New" size:65];
+    self.math_label.text = @"0.00000";
+    self.math_label.adjustsFontSizeToFitWidth = YES;
+
+    self.math_button             = mb(4,0,2,1,math_button_press);
+
+    self.rate_button             = mb(0,1,3,1,rate_button_press);
+    self.logging_button          = mb(3,1,3,1,logging_button_press);
+    self.depth_button            = mb(0,2,3,1,depth_button_press);
+    self.graph_button            = mb(3,2,3,1,graph_button_press);
+
+    [self.graph_button setTitle:@"OPEN GRAPH" forState:UIControlStateNormal];
+
+    [sv addSubview:self.math_label];
+    [sv addSubview:self.math_button];
     [sv addSubview:self.rate_button];
     [sv addSubview:self.logging_button];
-    [sv addSubview:self.depth_auto_button];
     [sv addSubview:self.depth_button];
-    [sv addSubview:self.zero_button];
+    [sv addSubview:self.graph_button];
 #undef cg
 #undef mb
-    
+#undef N_ROWS
+#undef N_COLS
+
     [v addSubview:sv];
     [self.view addSubview:v];
 
@@ -93,19 +107,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 
--(void)rate_auto_button_press{
-    self.meter.rate_auto = !self.meter.rate_auto;
-    [self refreshAllControls];
-}
 -(void)rate_auto_button_refresh{
     [MeterViewController style_auto_button:self.rate_auto_button on:self.meter.rate_auto];
 }
 -(void)rate_button_press {
     // TODO: Add autorange handling
-    [PopupMenu displayOptionsWithParent:self.view title:@"Sample Rate" options:[self.meter getSampleRateList] callback:^(int i) {
+
+    NSMutableArray * options = [[self.meter getSampleRateList] mutableCopy];
+    [options addObjectsFromArray:[self.meter getSampleRateList]];
+    [PopupMenu displayOptionsWithParent:self.view title:@"Sample Rate" options:[self.meter getSampleRateList] cancel:@"AUTORANGE" callback:^(int i) {
         NSLog(@"Received %d",i);
-        [self.meter setSampleRateIndex:i];
-        [self refreshAllControls];
+        if(i>= [[self.meter getSampleRateList]count]) {
+            // Cancel button pressed, which we're using for autorange
+            self.meter.rate_auto = YES;
+        } else {
+            self.meter.rate_auto = NO;
+            [self.meter setSampleRateIndex:i];
+        }
     }];
 }
 -(void)rate_button_refresh {
@@ -138,17 +156,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     [self.logging_button setTitle:title forState:UIControlStateNormal];
 }
--(void)depth_auto_button_press {
-    self.meter.depth_auto = !self.meter.depth_auto;
-    [self refreshAllControls];
-}
 -(void)depth_auto_button_refresh {
     [MeterViewController style_auto_button:self.depth_auto_button on:self.meter.depth_auto];
 }
 -(void)depth_button_press {
-    [PopupMenu displayOptionsWithParent:self.view title:@"Buffer Depth" options:[self.meter getBufferDepthList] callback:^(int i) {
+    [PopupMenu displayOptionsWithParent:self.view title:@"Buffer Depth" options:[self.meter getBufferDepthList] cancel:@"AUTORANGE" callback:^(int i) {
         NSLog(@"Received %d", i);
-        [self.meter setBufferDepthIndex:i];
+        if(i>= [[self.meter getBufferDepthList]count]){
+            self.meter.depth_auto=YES;
+        } else {
+            self.meter.depth_auto=NO;
+            [self.meter setBufferDepthIndex:i];
+        }
     }];
 }
 -(void)depth_button_refresh {
@@ -186,6 +205,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     //[self.settings_button setBackgroundColor:[UIColor lightGrayColor]];
 }
 
+-(void)math_label_refresh:(MeterReading*)val {
+    [self.math_label setText:[val toString]];
+}
+
+-(void)graph_button_press {
+    NSLog(@"Transition to graph view");
+}
+
+-(void)math_button_refresh {
+    [self.math_button setTitle:[self.meter getInputLabel:MATH] forState:UIControlStateNormal];
+
+}
+
+-(void)math_button_press {
+    [PopupMenu displayOptionsWithParent:self.view
+                                  title:@"Math Options"
+                                options:[self.meter getInputNameList:MATH]
+                               callback:^(int i) {
+                                   NSLog(@"Received %d", i);
+                                   [self.meter setInput:MATH
+                                             descriptor:[self.meter getInputList:MATH][i]];
+                               }];
+}
+
 -(void) refreshAllControls {
     // Make all controls reflect the state of the meter
     [self rate_auto_button_refresh];
@@ -193,10 +236,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self depth_auto_button_refresh];
     [self depth_button_refresh];
     [self logging_button_refresh];
-    [self.ch1_view range_button_refresh];
-    [self.ch1_view display_set_button_refresh];
-    [self.ch2_view range_button_refresh];
-    [self.ch2_view display_set_button_refresh];
+    [self math_button_refresh];
+    [self.ch1_view refreshAllControls];
+    [self.ch2_view refreshAllControls];
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
@@ -218,6 +260,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"Meter View about to appear");
     // Display done.  Check the meter settings.
     [self.meter stream];
+    [self refreshAllControls];
 }
 
 -(BOOL)shouldAutorotate { return YES; }
@@ -261,8 +304,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
             break;
         case MATH:
-            //TODO
-            //[self.ch2_view value_label_refresh:val];
+            [self math_label_refresh:val];
             break;
     }
 }
@@ -271,11 +313,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"Shouldn't receive a buffer in MeterViewController");
 }
 
-- (void)onSampleRateChanged:(int)i sample_rate_hz:(int)sample_rate_hz {
+- (void)onSampleRateChanged:(int)sample_rate_hz {
     [self rate_button_refresh];
 }
 
-- (void)onBufferDepthChanged:(int)i buffer_depth:(int)buffer_depth {
+- (void)onBufferDepthChanged:(int)buffer_depth {
     [self depth_button_refresh];
 }
 
@@ -306,13 +348,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             [self.ch2_view display_set_button_refresh];
             break;
         case MATH:
-            NSLog(@"TODO");
+            [self math_button_refresh];
             break;
     }
 }
 
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {
-    //todo
+    switch(c) {
+        case CH1:
+            [self.ch1_view zero_button_refresh];
+            break;
+        case CH2:
+            [self.ch2_view zero_button_refresh];
+            break;
+        case MATH:
+            NSLog(@"IMPOSSIBRUUU");
+            break;
+    }
 }
 
 
