@@ -58,18 +58,4 @@ static SmartNavigationController *shared = nil;
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration NS_DEPRECATED_IOS(2_0,8_0, "Implement viewWillTransitionToSize:withTransitionCoordinator: instead") {
     return [self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
-
-#define TAG_FOR_REMOVAL 55
--(void)clearNavBar {
-    for(UIView* v in self.navigationBar.subviews) {
-        if(v.tag == TAG_FOR_REMOVAL) {
-            [v removeFromSuperview];
-        }
-    }
-}
--(void)addToNavBar:(UIView*)to_be_added {
-    to_be_added.tag = TAG_FOR_REMOVAL;
-    [self.navigationBar addSubview:to_be_added];
-}
-
 @end

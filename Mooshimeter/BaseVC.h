@@ -18,5 +18,6 @@
                   width:(int)col_w height:(int)row_h;
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb;
+-(void)addToNavBar:(UIView*)new_item;
 
 @end

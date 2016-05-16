@@ -168,7 +168,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
     // Start a new scan for meters
     [self handleScanViewRefreshRequest];
 }
@@ -184,22 +183,14 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 -(void)populateNavBar {
     // Called from base class, overridden to give custom navbar behavior
-    SmartNavigationController *nav = [SmartNavigationController getSharedInstance];
-    [nav clearNavBar];
-    CGRect nav_size = nav.navigationBar.bounds;
-    int w = nav_size.size.width/4;
-
-    nav_size.origin.x   = 3*w;
-    nav_size.size.width = w;
-    nav_size = CGRectInset(nav_size,5,5);
 
     // Add settings button to navbar
     UIButton* b = [WidgetFactory makeButton:@"\u2699" callback:^{
         SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
         GlobalPreferenceVC * vc = [[GlobalPreferenceVC alloc] init];
         [gnav pushViewController:vc animated:YES];
-    } frame:nav_size];
-    [nav addToNavBar:b];
+    } frame:CGRectMake(0,0,35,35)];
+    [self addToNavBar:b];
 }
 
 #pragma mark - Table View Delegate

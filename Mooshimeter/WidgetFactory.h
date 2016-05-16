@@ -5,6 +5,15 @@
 
 #import <Foundation/Foundation.h>
 
+@interface CG
+
++(CGRect)centerIn:(CGRect)in new_size:(CGSize)new_size;
++(CGRect)alignLeft:(CGRect)from to:(CGRect)to;
++(CGRect)alignRight:(CGRect)from to:(CGRect)to;
++(CGRect)alignBottom:(CGRect)from to:(CGRect)to;
++(CGRect)alignTop:(CGRect)from to:(CGRect)to;
+@end
+
 // Makes widgets and applies standard styling
 
 @interface WidgetFactory : NSObject
@@ -16,4 +25,6 @@
 
 +(UIAlertView*)makeCancelContinueAlert:(NSString*)title msg:(NSString*)msg callback:(void(^)(bool proceed))callback;
 +(UIAlertView*)makeTextInputBox:(NSString*)title msg:(NSString*)msg callback:(void(^)(NSString*))callback;
+
++(UIView*)makePopoverFromView:(Class)view_class size:(CGSize)size;
 @end

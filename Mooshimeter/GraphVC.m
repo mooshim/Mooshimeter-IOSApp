@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "GraphVC.h"
 #import "WidgetFactory.h"
-#import "GraphSettingsVC.h"
-#import "WYPopoverController.h"
+#import "GraphSettingsView.h"
 
 @implementation XYPoint
 +(XYPoint*)make:(float)x y:(float)y {
@@ -36,7 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(BOOL)prefersStatusBarHidden { return YES; }
 -(BOOL)shouldAutorotate { return YES; }
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations { return UIInterfaceOrientationMaskLandscape; }
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations { return UIInterfaceOrientationMaskLandscape; }
+-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationLandscapeRight;
+}
 
 #pragma mark - UIViewController lifecycle methods
 
@@ -81,6 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.meter pause];
+    self.navigationController.navigationBar.hidden = NO;
 }
 
 -(void)handleBackgroundTap {
@@ -188,26 +191,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     self.hostView = [[CPTGraphHostingView alloc] initWithFrame:self.view.bounds];
     self.hostView.allowPinchScaling = YES;
+    [self.view addSubview:self.hostView];
 
-    __weak typeof(self) ws=self;
     // Set up the config button
     UIButton* b = [WidgetFactory makeButton:@"Config" callback:^{
         // Open the config popover
-        NSLog(@"Config popover");
-        GraphSettingsVC * vc = [[GraphSettingsVC alloc] init];
-
-        //[self.view addSubview:[[WYPopoverController alloc] initWithContentViewController:vc]];
-        self.popover = [[WYPopoverController alloc] initWithContentViewController:vc];
-        vc.popover = self.popover;
-
-        [self.popover setDelegate:ws];
-
-        [self.popover setPopoverContentSize:CGSizeMake(300, 300)];
-        [self.popover presentPopoverAsDialogAnimated:YES];
-        //[self.popover presentPopoverFromRect:CGRectMake(801, 401, 300, 200) inView:ws.view permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
-    } frame:CGRectMake(self.view.bounds.size.width-80, self.view.bounds.size.height-40, 80, 40)];
+        UIView* v = [WidgetFactory makePopoverFromView:[GraphSettingsView class]size:CGSizeMake(300,300)];
+        v.backgroundColor = [UIColor whiteColor];
+    }];
+    b.backgroundColor = [UIColor whiteColor];
+    b.frame = CGRectMake(0,0,80,40);
+    b.frame = [CG alignRight:b.frame to:self.view.bounds];
+    b.frame = [CG alignBottom:b.frame to:self.view.bounds];
     self.config_button = b;
-    [self.view addSubview:self.hostView];
+    [self.view addSubview:b];
+
+    // Set up the back button
+    __weak typeof(self) ws = self;
+    b = [WidgetFactory makeButton:@"Back" callback:^{
+        // Pushed and Modally presented have different dismissal routines.  Because apple.
+        //[ws.navigationController popViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    b.backgroundColor = [UIColor whiteColor];
+    b.frame = CGRectMake(0,0,80,40);
+    b.frame = [CG alignLeft:b.frame to:self.view.bounds];
+    b.frame = [CG alignBottom:b.frame to:self.view.bounds];
+    self.config_button = b;
     [self.view addSubview:b];
 }
 
@@ -589,32 +599,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
 
 }
-
-#pragma mark WYPopoverControllerDelegate methods
-
-- (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)popoverController {
-    return NO;
-}
-
-- (void)popoverControllerDidPresentPopover:(WYPopoverController *)popoverController {
-    NSLog(@"Presented");
-}
-
-- (void)popoverControllerDidDismissPopover:(WYPopoverController *)popoverController {
-    NSLog(@"Dismissed");
-}
-
-- (void)popoverController:(WYPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView **)view {
-    NSLog(@"Will reposition");
-}
-
-- (BOOL)popoverControllerShouldIgnoreKeyboardBounds:(WYPopoverController *)popoverController {
-    NSLog(@"Should ignore");
-    return NO;
-}
-
-- (void)popoverController:(WYPopoverController *)popoverController willTranslatePopoverWithYOffset:(float *)value {
-    NSLog(@"Will translate");
-}
-
 @end

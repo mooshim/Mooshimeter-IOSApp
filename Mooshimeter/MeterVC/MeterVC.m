@@ -37,8 +37,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)viewDidLoad {
     [super viewDidLoad];
 
-    [[SmartNavigationController getSharedInstance] clearNavBar];
-
     self.nrow = 11;
     self.ncol = 6;
 
@@ -105,7 +103,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)populateNavBar {
     // Called from base class, overridden to give custom navbar behavior
     SmartNavigationController *nav = [SmartNavigationController getSharedInstance];
-    [nav clearNavBar];
     CGRect nav_size = nav.navigationBar.bounds;
     int x = nav_size.size.width;
 
@@ -120,28 +117,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
         MeterPreferenceVC * vc = [[MeterPreferenceVC alloc] initWithMeter:meter];
         [gnav pushViewController:vc animated:YES];
-    } frame:s];
-    [nav addToNavBar:b];
+    } frame:CGRectMake(0,0,35,35)];
+    [self addToNavBar:b];
 
     UIImageView* bat_icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bat_icon_0.png"]];
     x-=bat_icon.bounds.size.width;
-    s = CGRectMake(x,0,bat_icon.bounds.size.width,bat_icon.bounds.size.height);
+    s = CGRectMake(0,0,bat_icon.bounds.size.width,bat_icon.bounds.size.height);
     [bat_icon setFrame:s];
-    [nav addToNavBar:bat_icon];
+    [self addToNavBar:bat_icon];
     self.bat_icon = bat_icon;
 
     UIImageView* sig_icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sig_icon_0.png"]];
     x-=sig_icon.bounds.size.width;
-    s = CGRectMake(x,0,sig_icon.bounds.size.width,sig_icon.bounds.size.height);
+    s = CGRectMake(0,0,sig_icon.bounds.size.width,sig_icon.bounds.size.height);
     [sig_icon setFrame:s];
-    [nav addToNavBar:sig_icon];
+    [self addToNavBar:sig_icon];
     self.sig_icon = sig_icon;
 
     // Use the rest of the space for title
-    UILabel * name = [[UILabel alloc] initWithFrame:CGRectMake(0,0,x,nav_size.size.height)];
-    [name setText:[self.meter getName]];
-    [name setAdjustsFontSizeToFitWidth:YES];
-    [nav addToNavBar:name];
+    //UILabel * name = [[UILabel alloc] initWithFrame:CGRectMake(0,0,x,nav_size.size.height)];
+    //[name setText:[self.meter getName]];
+    [self setTitle:[self.meter getName]];
+    //[name setAdjustsFontSizeToFitWidth:YES];
+    //[nav addToNavBar:name];
 }
 
 //////////////////////
@@ -245,7 +243,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)graph_button_press {
     NSLog(@"Transition to graph view");
     GraphVC* vc = [[GraphVC alloc] initWithMeter:self.meter];
-    [self.navigationController pushViewController:vc animated:YES];
+    //[self.navigationController pushViewController:vc animated:YES];
+    [self presentViewController:vc animated:YES completion:^{
+        NSLog(@"modal finish");
+    }];
 }
 
 -(void)math_button_refresh {

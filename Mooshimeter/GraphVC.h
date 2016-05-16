@@ -20,17 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "CorePlot-CocoaTouch.h"
 #import "LegacyMooshimeterDevice.h"
 #import "BaseVC.h"
-#import "WYPopoverController.h"
 
 @class LegacyMooshimeterDevice;
-@class GraphSettingsVC;
+@class GraphSettingsView;
 
 @interface XYPoint:NSObject
 @property NSNumber *x,*y;
 +(XYPoint*)make:(float)x y:(float)y;
 @end
 
-@interface GraphVC : BaseVC <CPTPlotDataSource,MooshimeterDelegateProtocol,WYPopoverControllerDelegate>
+@interface GraphVC : BaseVC <CPTPlotDataSource,MooshimeterDelegateProtocol>
 
 @property MooshimeterDeviceBase * meter;
 
@@ -38,8 +37,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic) CPTGraphHostingView *hostView;
 @property (strong, nonatomic) CPTPlotSpace* space2; //remove this hack
 @property (strong, nonatomic) UIButton* config_button;
-
-@property WYPopoverController* popover;
 
 // GUI config values
 

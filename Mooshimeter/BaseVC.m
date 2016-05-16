@@ -36,15 +36,15 @@
     self.view.userInteractionEnabled = YES;
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.content_view];
+    // Should be overridden by base classes
+    [self populateNavBar];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSLog(@"View %@ will appear!",NSStringFromClass([self class]));
     // Always clear the navigation bar
-    [[SmartNavigationController getSharedInstance] clearNavBar];
-    // Should be overridden by base classes
-    [self populateNavBar];
+    //[[SmartNavigationController getSharedInstance] clearNavBar];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -94,6 +94,18 @@
 
 - (void)populateNavBar {
     NSLog(@"Override populateNavBar in the subclasses!");
+}
+
+-(void)addToNavBar:(UIView*)new_item {
+    NSMutableArray * items;
+    if(self.navigationItem.rightBarButtonItems==nil) {
+        items = [NSMutableArray array];
+    } else {
+        items = [self.navigationItem.rightBarButtonItems mutableCopy];
+    }
+    UIBarButtonItem * barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:new_item];
+    [items addObject:barButtonItem];
+    self.navigationItem.rightBarButtonItems = items;
 }
 
 @end

@@ -2,119 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f28ffdf-ad84-4a8f-bcf6-c3edc7016e8d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/BaseVC.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/BaseVC.m" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/AlertBox.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/AlertBox.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/GraphSettingsView.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/ScanSettingsView.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/ScanSettingsView.m" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/BLEUtility.h" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/BLEUtility.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/BLEUtility.m" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/BLEUtility.m" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/GraphSettingsView.h" afterPath="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/GraphViewController.h" afterPath="$PROJECT_DIR$/Mooshimeter/GraphVC.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/GraphViewController.m" afterPath="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterView/ChannelView.h" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterView/ChannelView.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterView/MeterViewController.h" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterView/MeterViewController.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/ScanViewController.h" afterPath="$PROJECT_DIR$/Mooshimeter/ScanVC.h" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/ScanViewController.m" afterPath="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAnimation.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAnimation.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAnimationOperation.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAnimationOperation.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAnimationPeriod.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAnimationPeriod.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAnnotation.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAnnotation.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAnnotationHostLayer.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAnnotationHostLayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAxis.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAxis.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAxisLabel.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAxisLabel.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTAxisSet.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTAxisSet.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTBarPlot.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTBarPlot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTBorderedLayer.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTBorderedLayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTCalendarFormatter.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTCalendarFormatter.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTColor.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTColor.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTColorSpace.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTColorSpace.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTConstraints.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTConstraints.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTDataSourceTestCase.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTDataSourceTestCase.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTDefinitions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTDefinitions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTExceptions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTExceptions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTFill.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTFill.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTGradient.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTGradient.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTGraph.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTGraph.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTGraphHostingView.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTGraphHostingView.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTGridLineGroup.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTGridLineGroup.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTGridLines.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTGridLines.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTImage.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTImage.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLayer.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLayerAnnotation.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLayerAnnotation.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLegend.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLegend.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLegendEntry.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLegendEntry.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLimitBand.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLimitBand.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLineCap.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLineCap.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTLineStyle.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTLineStyle.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableLineStyle.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableLineStyle.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableNumericData.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableNumericData.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTMutablePlotRange.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTMutablePlotRange.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableShadow.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableShadow.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableTextStyle.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTMutableTextStyle.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTNumericData+TypeConversion.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTNumericData+TypeConversion.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTNumericData.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTNumericData.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTNumericDataType.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTNumericDataType.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPathExtensions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPathExtensions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPieChart.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPieChart.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlatformSpecificCategories.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlatformSpecificCategories.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlatformSpecificDefines.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlatformSpecificDefines.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlatformSpecificFunctions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlatformSpecificFunctions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlot.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotArea.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotArea.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotAreaFrame.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotAreaFrame.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotGroup.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotGroup.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotRange.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotRange.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotSpace.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotSpace.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotSpaceAnnotation.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotSpaceAnnotation.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotSymbol.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTPlotSymbol.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTRangePlot.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTRangePlot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTResponder.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTResponder.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTScatterPlot.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTScatterPlot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTShadow.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTShadow.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTTextLayer.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTTextLayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTTextStyle.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTTextStyle.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTTextStylePlatformSpecific.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTTextStylePlatformSpecific.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTTheme.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTTheme.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTTimeFormatter.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTTimeFormatter.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTTradingRangePlot.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTTradingRangePlot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTUtilities.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTUtilities.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTXYAxis.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTXYAxis.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTXYAxisSet.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTXYAxisSet.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTXYGraph.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTXYGraph.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CPTXYPlotSpace.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CPTXYPlotSpace.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/CorePlot-CocoaTouch.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/CorePlot-CocoaTouch.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/NSCoderExtensions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/NSCoderExtensions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/NSDecimalNumberExtensions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/NSDecimalNumberExtensions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/NSNumberExtensions.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/NSNumberExtensions.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CorePlotHeaders/mainpage.h" afterPath="$PROJECT_DIR$/CorePlotHeaders/mainpage.h" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/WYPopoverController/WYPopoverController.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/WYPopoverController/WYPopoverController.m" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/WYPopoverController/WYStoryboardPopoverSegue.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/WYPopoverController/WYStoryboardPopoverSegue.m" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Mooshimeter-IOSApp.iml" afterPath="$PROJECT_DIR$/.idea/Mooshimeter-IOSApp.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/Mooshimeter.xcodeproj/project.pbxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" afterPath="$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MeterReading.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterReading.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/BaseVC.h" afterPath="$PROJECT_DIR$/Mooshimeter/BaseVC.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/BaseVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/BaseVC.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/GraphVC.h" afterPath="$PROJECT_DIR$/Mooshimeter/GraphVC.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/GraphVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist" afterPath="$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterControlProtocol.h" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterControlProtocol.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/OADDevice.m" afterPath="$PROJECT_DIR$/Mooshimeter/OADDevice.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.h" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/ScanVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/en.lproj/MainStoryboard_iPad.storyboard" afterPath="$PROJECT_DIR$/Mooshimeter/en.lproj/MainStoryboard_iPad.storyboard" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/mooshimeterAppDelegate.h" afterPath="$PROJECT_DIR$/Mooshimeter/mooshimeterAppDelegate.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/mooshimeterAppDelegate.m" afterPath="$PROJECT_DIR$/Mooshimeter/mooshimeterAppDelegate.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ScanTableViewCell.m" afterPath="$PROJECT_DIR$/ScanTableViewCell.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" afterPath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" afterPath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
     </list>
     <ignored path="Mooshimeter-IOSApp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -138,36 +45,142 @@
       <file leaf-file-name="GraphVC.m" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.m">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="199" column="8" selection-start-line="199" selection-start-column="8" selection-end-line="199" selection-end-column="20" />
+            <state relative-caret-position="308">
+              <caret line="209" column="31" selection-start-line="209" selection-start-column="31" selection-end-line="209" selection-end-column="31" />
               <folding>
                 <element signature="e#770#789#0" expanded="true" />
-                <element signature="e#4245#5914#0" expanded="true" />
+                <element signature="e#4394#6063#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GraphSettingsVC.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h">
+      <file leaf-file-name="MeterVC.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="102" selection-start-line="9" selection-start-column="102" selection-end-line="9" selection-end-column="102" />
+            <state relative-caret-position="148">
+              <caret line="247" column="31" selection-start-line="247" selection-start-column="31" selection-end-line="247" selection-end-column="31" />
               <folding>
-                <element signature="e#97#130#0" expanded="true" />
+                <element signature="e#0#768#0" expanded="false" />
+                <element signature="e#5356#5659#0" expanded="false" />
+                <element signature="e#5661#5774#0" expanded="false" />
+                <element signature="e#5775#6416#0" expanded="false" />
+                <element signature="e#6084#6412#0" expanded="false" />
+                <element signature="e#6417#6816#0" expanded="false" />
+                <element signature="e#6817#7020#0" expanded="false" />
+                <element signature="e#7021#7530#0" expanded="false" />
+                <element signature="e#7531#7648#0" expanded="false" />
+                <element signature="e#7649#8080#0" expanded="false" />
+                <element signature="e#7818#8076#0" expanded="false" />
+                <element signature="e#8081#8488#0" expanded="false" />
+                <element signature="e#8891#9017#0" expanded="false" />
+                <element signature="e#9019#9528#0" expanded="false" />
+                <element signature="e#9267#9524#0" expanded="false" />
+                <element signature="e#9530#9903#0" expanded="false" />
+                <element signature="e#10030#10070#0" expanded="false" />
+                <element signature="e#10072#10256#0" expanded="false" />
+                <element signature="e#11461#11621#0" expanded="false" />
+                <element signature="e#11623#11706#0" expanded="false" />
+                <element signature="e#11708#11791#0" expanded="false" />
+                <element signature="e#11793#11924#0" expanded="false" />
+                <element signature="e#11926#12263#0" expanded="false" />
+                <element signature="e#12265#12628#0" expanded="false" />
+                <element signature="e#12630#12965#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GraphSettingsVC.m" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m">
+      <file leaf-file-name="SmartNavigationController.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
+            <state relative-caret-position="360">
+              <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WidgetFactory.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="179" column="0" selection-start-line="179" selection-start-column="0" selection-end-line="179" selection-end-column="0" />
               <folding>
-                <element signature="e#97#124#0" expanded="true" />
+                <element signature="e#97#122#0" expanded="true" />
+                <element signature="e#3699#3871#0" expanded="false" />
+                <element signature="e#4156#4650#0" expanded="false" />
+                <element signature="e#4652#5335#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SmartNavigationController.m" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="59" column="1" selection-start-line="59" selection-start-column="1" selection-end-line="59" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ScanVC.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="158">
+              <caret line="188" column="47" selection-start-line="188" selection-start-column="47" selection-end-line="188" selection-end-column="47" />
+              <folding>
+                <element signature="e#1003#3641#0" expanded="false" />
+                <element signature="e#4084#4140#0" expanded="false" />
+                <element signature="e#4142#4583#0" expanded="false" />
+                <element signature="e#4585#6211#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/main.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GraphSettingsView.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
+              <folding>
+                <element signature="e#97#126#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseVC.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="520">
+              <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+              <folding>
+                <element signature="e#1391#1545#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseVC.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -180,9 +193,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/LGBluetooth/LGCharacteristic.m" />
-        <option value="$PROJECT_DIR$/LGBluetooth/LGCharacteristic.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/OADProfile.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterDelegateProtocol.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/PopupMenu.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterView/ChannelView.m" />
@@ -200,22 +210,15 @@
         <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceView.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceView.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/ScanSettingsView.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/ScanVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/GlobalPreferenceVC.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/GlobalPreferenceVC.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterReading.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/GraphViewController.h" />
@@ -226,11 +229,21 @@
         <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/OADDevice.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m" />
+        <option value="$PROJECT_DIR$/WYPopoverController/WYPopoverController.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" />
       </list>
     </option>
   </component>
@@ -331,6 +344,28 @@
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="OAD" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ViewControllers" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="MeterVC" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
             </PATH_ELEMENT>
@@ -401,34 +436,6 @@
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Mooshimeter" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Frameworks" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Mooshimeter" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Cidr.FilesView" />
@@ -437,7 +444,7 @@
   <component name="PropertiesComponent">
     <property name="FullScreen" value="true" />
     <property name="OBJC.PRESERVED_TARGET_SELECTION" value="Mooshimeter" />
-    <property name="SearchEverywhereHistoryKey" value="GraphSe&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;BaseVC.h&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;BaseVC.m&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.m&#10;GraphSettings&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;Graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;Graphv&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.m&#10;wid&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.h&#10;base&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.m&#10;Story&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/en.lproj/MainStoryboard_iPad.storyboard&#10;appde&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/Singleton/AppDelegate.m&#10;channel&#9;null&#9;null&#10;scan&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;scanview&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;app&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/AppDelegate.m&#10;SignificantDigits&#9;null&#9;null&#10;Mooshimeter.bin&#9;null&#9;null&#10;int24&#9;null&#9;null&#10;sendMeterSettings&#9;null&#9;null&#10;send&#9;null&#9;null&#10;g_meter&#9;null&#9;null&#10;g_meter =&#9;null&#9;null&#10;[MooshimeterDevice&#9;null&#9;null&#10;MooshimeterDevice init&#9;null&#9;null&#10;formatstring&#9;null&#9;null&#10;to live is to suffer&#9;null&#9;null&#10;nsarray&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="base&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;AppDe&#9;null&#9;null&#10;GraphSe&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;BaseVC.h&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;BaseVC.m&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.m&#10;GraphSettings&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;Graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;Graphv&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.m&#10;wid&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.h&#10;Story&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/en.lproj/MainStoryboard_iPad.storyboard&#10;appde&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/Singleton/AppDelegate.m&#10;channel&#9;null&#9;null&#10;scan&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;scanview&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;app&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/AppDelegate.m&#10;SignificantDigits&#9;null&#9;null&#10;Mooshimeter.bin&#9;null&#9;null&#10;int24&#9;null&#9;null&#10;sendMeterSettings&#9;null&#9;null&#10;send&#9;null&#9;null&#10;g_meter&#9;null&#9;null&#10;g_meter =&#9;null&#9;null&#10;[MooshimeterDevice&#9;null&#9;null&#10;MooshimeterDevice init&#9;null&#9;null&#10;formatstring&#9;null&#9;null&#10;to live is to suffer&#9;null&#9;null&#10;nsarray&#9;null&#9;null" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/WYPopoverController" />
   </component>
   <component name="RecentsManager">
@@ -520,10 +527,10 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27836505" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35060242" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35060242" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3987952" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3987952" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -545,7 +552,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="168" />
+      <option name="time" value="193" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="AppleRunConfiguration">
@@ -553,45 +560,14 @@
         <watch expression="self.view.frame" language="ObjectiveC" />
         <watch expression="self.view.bounds" language="ObjectiveC" />
         <watch expression="self.interfaceOrientation" language="ObjectiveC" />
+        <watch expression="self.navigationController" language="ObjectiveC" />
+        <watch expression="self.navigationController.navigationBar.subviews" language="ObjectiveC" />
+        <watch expression="self.navigationController.navigationBarHidden" language="ObjectiveC" />
+        <watch expression="[self.navigationController.navigationBar.subviews[4] isHidden]" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/BLEUtility.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="28" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="28" />
-          <folding>
-            <element signature="e#770#793#0" expanded="false" />
-            <marker date="1463098119000" expanded="true" signature="885:987" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/AlertBox.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-405">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/AlertBox.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -616,14 +592,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="116" selection-start-line="16" selection-start-column="116" selection-end-line="16" selection-end-column="116" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -632,38 +600,6 @@
             <element signature="e#770#800#0" expanded="true" />
             <element signature="e#914#1173#0" expanded="false" />
             <element signature="e#1175#1301#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="65" column="28" selection-start-line="65" selection-start-column="28" selection-end-line="65" selection-end-column="28" />
-          <folding>
-            <element signature="e#97#122#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="193" column="41" selection-start-line="193" selection-start-column="41" selection-end-line="193" selection-end-column="41" />
-          <folding>
-            <element signature="e#770#788#0" expanded="false" />
-            <element signature="e#4585#6211#0" expanded="false" />
-            <marker date="1463181873000" expanded="true" signature="949:11941" placeholder="..." />
-            <marker date="1463181873000" expanded="true" signature="972:1001" placeholder="{...}" />
-            <marker date="1463181873000" expanded="false" signature="1016:3641" placeholder="{...}" />
-            <marker date="1463181873000" expanded="false" signature="4120:4140" placeholder="{...}" />
-            <marker date="1463181873000" expanded="false" signature="4243:4583" placeholder="{...}" />
-            <marker date="1463181873000" expanded="true" signature="6233:6878" placeholder="{...}" />
-            <marker date="1463181873000" expanded="true" signature="6916:7032" placeholder="{...}" />
-            <marker date="1463181873000" expanded="true" signature="7074:7146" placeholder="{...}" />
-            <marker date="1463181873000" expanded="true" signature="7209:7259" placeholder="{...}" />
-            <marker date="1463181873000" expanded="true" signature="8118:8135" placeholder="{...}" />
-            <marker date="1463181873000" expanded="true" signature="11635:11939" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -968,92 +904,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="310" column="16" selection-start-line="310" selection-start-column="8" selection-end-line="310" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#768#0" expanded="false" />
-            <element signature="e#770#789#0" expanded="true" />
-            <element signature="e#1118#2889#0" expanded="false" />
-            <element signature="e#2891#2999#0" expanded="false" />
-            <element signature="e#5372#5675#0" expanded="false" />
-            <element signature="e#5677#5790#0" expanded="false" />
-            <element signature="e#5791#6432#0" expanded="false" />
-            <element signature="e#6100#6428#0" expanded="false" />
-            <element signature="e#6433#6832#0" expanded="false" />
-            <element signature="e#6833#7036#0" expanded="false" />
-            <element signature="e#7037#7546#0" expanded="false" />
-            <element signature="e#7547#7664#0" expanded="false" />
-            <element signature="e#7665#8096#0" expanded="false" />
-            <element signature="e#7834#8092#0" expanded="false" />
-            <element signature="e#8097#8504#0" expanded="false" />
-            <element signature="e#8803#8929#0" expanded="false" />
-            <element signature="e#8931#9440#0" expanded="false" />
-            <element signature="e#9179#9436#0" expanded="false" />
-            <element signature="e#9442#9815#0" expanded="false" />
-            <element signature="e#9942#9982#0" expanded="false" />
-            <element signature="e#9984#10168#0" expanded="false" />
-            <element signature="e#10758#11371#0" expanded="false" />
-            <element signature="e#11373#11533#0" expanded="false" />
-            <element signature="e#11535#11618#0" expanded="false" />
-            <element signature="e#11620#11703#0" expanded="false" />
-            <element signature="e#11705#11836#0" expanded="false" />
-            <element signature="e#11838#12175#0" expanded="false" />
-            <element signature="e#12177#12540#0" expanded="false" />
-            <element signature="e#12542#12877#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WYPopoverController/WYStoryboardPopoverSegue.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-576">
-          <caret line="33" column="44" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="44" />
-          <folding>
-            <element signature="e#1389#1543#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/main.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="25" column="53" selection-start-line="25" selection-start-column="53" selection-end-line="25" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="e#770#793#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WYPopoverController/WYPopoverController.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1801">
-          <caret line="1963" column="6" selection-start-line="1963" selection-start-column="6" selection-end-line="1963" selection-end-column="6" />
           <folding />
         </state>
       </provider>
@@ -1074,42 +928,186 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WYPopoverController/WYPopoverController.h">
+    <entry file="file://$PROJECT_DIR$/WYPopoverController-hurrrrr/demos/Demo/WYPopoverDemo/WYAllDirectionsViewController.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="93" column="11" selection-start-line="93" selection-start-column="11" selection-end-line="93" selection-end-column="11" />
+        <state relative-caret-position="361">
+          <caret line="117" column="8" selection-start-line="117" selection-start-column="8" selection-end-line="119" selection-end-column="118" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h">
+    <entry file="file://$PROJECT_DIR$/WYPopoverController/WYPopoverController.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="102" selection-start-line="9" selection-start-column="102" selection-end-line="9" selection-end-column="102" />
+        <state relative-caret-position="152">
+          <caret line="171" column="8" selection-start-line="171" selection-start-column="8" selection-end-line="171" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WYPopoverController/WYPopoverController.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-727">
+          <caret line="1952" column="35" selection-start-line="1952" selection-start-column="35" selection-end-line="1952" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="e#97#130#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.m">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="199" column="8" selection-start-line="199" selection-start-column="8" selection-end-line="199" selection-end-column="20" />
+        <state relative-caret-position="247">
+          <caret line="31" column="74" selection-start-line="31" selection-start-column="74" selection-end-line="31" selection-end-column="74" />
           <folding>
-            <element signature="e#770#789#0" expanded="true" />
-            <element signature="e#4245#5914#0" expanded="true" />
+            <element signature="e#770#793#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
+        <state relative-caret-position="150">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="13" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
           <folding>
-            <element signature="e#97#124#0" expanded="true" />
+            <element signature="e#97#126#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/main.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+          <folding>
+            <element signature="e#1391#1545#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="179" column="0" selection-start-line="179" selection-start-column="0" selection-end-line="179" selection-end-column="0" />
+          <folding>
+            <element signature="e#97#122#0" expanded="true" />
+            <element signature="e#3699#3871#0" expanded="false" />
+            <element signature="e#4156#4650#0" expanded="false" />
+            <element signature="e#4652#5335#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="188" column="47" selection-start-line="188" selection-start-column="47" selection-end-line="188" selection-end-column="47" />
+          <folding>
+            <element signature="e#1003#3641#0" expanded="false" />
+            <element signature="e#4084#4140#0" expanded="false" />
+            <element signature="e#4142#4583#0" expanded="false" />
+            <element signature="e#4585#6211#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="148">
+          <caret line="247" column="31" selection-start-line="247" selection-start-column="31" selection-end-line="247" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#768#0" expanded="false" />
+            <element signature="e#5356#5659#0" expanded="false" />
+            <element signature="e#5661#5774#0" expanded="false" />
+            <element signature="e#5775#6416#0" expanded="false" />
+            <element signature="e#6084#6412#0" expanded="false" />
+            <element signature="e#6417#6816#0" expanded="false" />
+            <element signature="e#6817#7020#0" expanded="false" />
+            <element signature="e#7021#7530#0" expanded="false" />
+            <element signature="e#7531#7648#0" expanded="false" />
+            <element signature="e#7649#8080#0" expanded="false" />
+            <element signature="e#7818#8076#0" expanded="false" />
+            <element signature="e#8081#8488#0" expanded="false" />
+            <element signature="e#8891#9017#0" expanded="false" />
+            <element signature="e#9019#9528#0" expanded="false" />
+            <element signature="e#9267#9524#0" expanded="false" />
+            <element signature="e#9530#9903#0" expanded="false" />
+            <element signature="e#10030#10070#0" expanded="false" />
+            <element signature="e#10072#10256#0" expanded="false" />
+            <element signature="e#11461#11621#0" expanded="false" />
+            <element signature="e#11623#11706#0" expanded="false" />
+            <element signature="e#11708#11791#0" expanded="false" />
+            <element signature="e#11793#11924#0" expanded="false" />
+            <element signature="e#11926#12263#0" expanded="false" />
+            <element signature="e#12265#12628#0" expanded="false" />
+            <element signature="e#12630#12965#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="209" column="31" selection-start-line="209" selection-start-column="31" selection-end-line="209" selection-end-column="31" />
+          <folding>
+            <element signature="e#770#789#0" expanded="true" />
+            <element signature="e#4394#6063#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="59" column="1" selection-start-line="59" selection-start-column="1" selection-end-line="59" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
