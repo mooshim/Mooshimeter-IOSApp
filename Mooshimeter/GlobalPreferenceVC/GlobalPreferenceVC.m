@@ -16,18 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
-#import <UIKit/UIKit.h>
-#import <CoreBluetooth/CoreBluetooth.h>
-#import "LGPeripheral.h"
-#import "LegacyMooshimeterDevice.h"
-#import "ScanTableViewCell.h"
-#import "ScanSettingsView.h"
+#import "GlobalPreferenceVC.h"
 
-@interface ScanViewController : UITableViewController <UIAlertViewDelegate,MooshimeterDelegateProtocol>
+@implementation GlobalPreferenceVC
 
-@property (strong,nonatomic) NSArray* peripherals;
-@property (strong,nonatomic) ScanSettingsView* settings_view;
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.ncol = 1;
+    self.nrow = 1;
 
-@property (strong,atomic)  MooshimeterDeviceBase* active_meter;
+    self.scroll_view = [[UIScrollView alloc] initWithFrame:[self get]]
+}
 
 @end

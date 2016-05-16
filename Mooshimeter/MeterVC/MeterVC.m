@@ -16,11 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
-#import "MeterViewController.h"
+#import "MeterVC.h"
 #import "PopupMenu.h"
 #import "SmartNavigationController.h"
 
-@implementation MeterViewController
+@implementation MeterVC
 
 -(BOOL)prefersStatusBarHidden { return YES; }
 
@@ -36,17 +36,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"Meter view loaded!");
     [super viewDidLoad];
 
-#define N_ROWS 11
-#define N_COLS 6
-
-    float h = (self.view.bounds.size.height - self.navigationController.navigationBar.frame.size.height)/N_ROWS;
-    float w = (self.view.bounds.size.width)/N_COLS;
+    self.nrow = 11;
+    self.ncol = 6;
     
-    UIView* v = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height, N_COLS*w, N_ROWS*h)];
-    v.userInteractionEnabled = YES;
-    v.backgroundColor = [UIColor whiteColor];
+    UIView* v = self.content_view;
 
-#define cg(nx,ny,nw,nh) CGRectMake(nx*w,ny*h,nw*w,nh*h)
+#define cg(nx,ny,nw,nh) [self makeRectInGrid:nx row_off:ny width:nw height:nh]
 #define mb(x,y,w,h,s) [self makeButton:cg(x,y,w,h) cb:@selector(s)]
     
     self.ch1_view = [[ChannelView alloc]initWithFrame:cg(0, 0, 6, 4) ch:0 meter:self.meter];
@@ -84,8 +79,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [sv addSubview:self.graph_button];
 #undef cg
 #undef mb
-#undef N_ROWS
-#undef N_COLS
 
     [v addSubview:sv];
     [self.view addSubview:v];
@@ -108,11 +101,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)rate_auto_button_refresh{
-    [MeterViewController style_auto_button:self.rate_auto_button on:self.meter.rate_auto];
+    [MeterVC style_auto_button:self.rate_auto_button on:self.meter.rate_auto];
 }
 -(void)rate_button_press {
-    // TODO: Add autorange handling
-
     NSMutableArray * options = [[self.meter getSampleRateList] mutableCopy];
     [options addObjectsFromArray:[self.meter getSampleRateList]];
     [PopupMenu displayOptionsWithParent:self.view title:@"Sample Rate" options:[self.meter getSampleRateList] cancel:@"AUTORANGE" callback:^(int i) {
@@ -157,7 +148,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.logging_button setTitle:title forState:UIControlStateNormal];
 }
 -(void)depth_auto_button_refresh {
-    [MeterViewController style_auto_button:self.depth_auto_button on:self.meter.depth_auto];
+    [MeterVC style_auto_button:self.depth_auto_button on:self.meter.depth_auto];
 }
 -(void)depth_button_press {
     [PopupMenu displayOptionsWithParent:self.view title:@"Buffer Depth" options:[self.meter getBufferDepthList] cancel:@"AUTORANGE" callback:^(int i) {
@@ -241,21 +232,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.ch2_view refreshAllControls];
 }
 
--(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
-    UIButton* b;
-    b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.userInteractionEnabled = YES;
-    [b addTarget:self action:cb forControlEvents:UIControlEventTouchUpInside];
-    [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitle:@"TBD" forState:UIControlStateNormal];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    b.titleLabel.adjustsFontSizeToFitWidth = YES;
-    b.frame = frame;
-    return b;
-}
-
 - (void) viewWillAppear:(BOOL)animated {
     NSLog(@"Meter View about to appear");
     // Display done.  Check the meter settings.
@@ -263,8 +239,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self refreshAllControls];
 }
 
--(BOOL)shouldAutorotate { return YES; }
-- (NSUInteger)supportedInterfaceOrientations { return UIInterfaceOrientationMaskAll; }
+-(BOOL)shouldAutorotate { return NO; }
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations { return UIInterfaceOrientationMaskPortrait; }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 { return UIInterfaceOrientationPortrait; }
@@ -310,7 +286,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
-    NSLog(@"Shouldn't receive a buffer in MeterViewController");
+    NSLog(@"Shouldn't receive a buffer in MeterVC");
 }
 
 - (void)onSampleRateChanged:(int)sample_rate_hz {

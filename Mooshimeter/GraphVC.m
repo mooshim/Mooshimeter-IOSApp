@@ -16,13 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
-#import "GraphViewController.h"
+#import "GraphVC.h"
 
-@interface GraphViewController ()
+@interface GraphVC
 
 @end
 
-@implementation GraphViewController
+@implementation GraphVC
 
 @synthesize hostView = hostView_;
 

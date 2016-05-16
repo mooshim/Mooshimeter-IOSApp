@@ -17,14 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import <UIKit/UIKit.h>
-#import "LegacyMooshimeterDevice.h"
+#import "BaseVC.h"
 
-@interface GraphSettingsView : UIView
-
-@property (strong, nonatomic)UIButton* trend_or_burst_button;
-@property (strong, nonatomic)UIButton* ch1_on_button;
-@property (strong, nonatomic)UIButton* ch2_on_button;
-@property (strong, nonatomic)UIButton* xy_on_button;
-@property (strong, nonatomic)UIButton* force_rotation_button;
+@interface MeterPreferenceVC : BaseVC <UIScrollViewDelegate>
 
 @end

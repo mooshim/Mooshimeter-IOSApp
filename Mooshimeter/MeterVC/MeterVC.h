@@ -21,10 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "LegacyMooshimeterDevice.h"
 #import "ChannelView.h"
 #import "../MeterSettingsView.h"
+#import "BaseViewController.h"
 
 @class ChannelView;
 
-@interface MeterViewController : UIViewController <MooshimeterDelegateProtocol>
+@interface MeterVC : BaseViewController <MooshimeterDelegateProtocol>
 
 // Housekeeping
 @property MooshimeterDeviceBase * meter;

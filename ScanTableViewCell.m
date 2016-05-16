@@ -35,9 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void) setPeripheral:(LGPeripheral *)device {
     uint32 build_time = 0;
-    NSString* name_str;
-    NSString* build_str;
-    UIColor* back_color;
     
     self.p = device;
     
@@ -46,6 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     if(device != nil) {
         
         switch(self.p.cbPeripheral.state) {
+            case CBPeripheralStateDisconnecting:
             case CBPeripheralStateDisconnected:
                 self.backgroundColor = [UIColor whiteColor];
                 [spinner stopAnimating];

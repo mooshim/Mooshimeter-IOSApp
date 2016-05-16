@@ -20,17 +20,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "CorePlot-CocoaTouch.h"
 #import "LegacyMooshimeterDevice.h"
 #import "GraphSettingsView.h"
+#import "BaseVC.h"
 
 #define N_POINTS_ONSCREEN 1024
 
 @class LegacyMooshimeterDevice;
 
-@protocol ScatterViewControllerDelegate <NSObject>
-@required
--(void)switchToMeterView;
-@end
-
-@interface GraphViewController : UIViewController <CPTPlotDataSource>
+@interface GraphVC : BaseVC <CPTPlotDataSource>
 {
 @public
     // A place to stash settings
@@ -41,12 +37,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     int          buf_i;
     int          buf_n;
     BOOL         play;
-    BOOL         is_redrawing;
 }
 
--(instancetype)initWithDelegate:(id<ScatterViewControllerDelegate>)delegate;
+@property MooshimeterDeviceBase * meter;
 
-@property (strong, nonatomic) id<ScatterViewControllerDelegate> delegate;
 @property (strong, nonatomic) UITapGestureRecognizer *tapButton;
 @property (strong, nonatomic) CPTGraphHostingView *hostView;
 @property (strong, nonatomic) CPTPlotSpace* space2; //remove this hack

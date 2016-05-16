@@ -16,12 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
-#import "ScanViewController.h"
-#import "MeterView/MeterViewController.h"
+#import "ScanVC.h"
+#import "MeterVC.h"
 #import "OADDevice.h"
 #import "SmartNavigationController.h"
 
-@implementation ScanViewController
+@implementation ScanVC
 
 - (void)awakeFromNib
 {
@@ -45,12 +45,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]]];
     NSLog(@"Refresh requested");
 
-    [self.refreshControl beginRefreshing];
-
     NSTimer* refresh_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(reloadData) userInfo:nil repeats:YES];
 
-    //self.title = @"Scan in progress...";
-    //self.nav.navigationItem.title = @"Scan in progress...";
+    NSTimer *dot_timer = [NSTimer scheduledTimerWithTimeInterval:1
+                                                      target:[NSBlockOperation blockOperationWithBlock:^{
+                                                          static int i = 0;
+                                                          NSMutableString* title = [NSMutableString stringWithString:@"Scanning."];
+                                                          for(int j=0; j<i; j++) {
+                                                              [title appendString:@"."];
+                                                          }
+                                                          for(int j=0; j<3-i; j++) {
+                                                              [title appendString:@" "];
+                                                          }
+                                                          i++;
+                                                          i%=3;
+                                                          [self.scanButton setTitle:title forState:UIControlStateNormal];
+                                                      }]
+                                                    selector:@selector(main)
+                                                    userInfo:nil
+                                                     repeats:YES];
 
     [c scanForPeripheralsByInterval:5
                            services:services
@@ -58,25 +71,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                          completion:^(NSArray *peripherals) {
                              NSLog(@"Found: %d", (int)peripherals.count);
                              [refresh_timer invalidate];
-                             [self.refreshControl endRefreshing];
+                             [dot_timer invalidate];
                              [self reloadData];
-                             //self.nav.navigationItem.title = @"Pull down to scan";
+                             [self.scanButton setTitle:@"Start Scan" forState:UIControlStateNormal];
                          }];
 }
 
 -(void)reloadData {
-    NSLog(@"Reload requested");
     LGCentralManager* c = [LGCentralManager sharedInstance];
     self.peripherals = [c.peripherals copy];
     [self.tableView reloadData];
+    if(self.peripherals.count==0) {
+        [self setTitle:@"No meters Found"];
+    } else {
+        [self setTitle:[NSString stringWithFormat:@"Found %d meters", self.peripherals.count]];
+    }
 }
 
 -(void)handleScanViewRefreshRequest {
     [self scan];
-}
-
-dispatch_time_t dtime(int ms) {
-    return dispatch_time(DISPATCH_TIME_NOW,ms*NSEC_PER_MSEC);
 }
 
 void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback) {
@@ -107,6 +120,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                 [self reloadData];
             }];
             break;}
+        case CBPeripheralStateDisconnecting:
         case CBPeripheralStateDisconnected:{
             NSLog(@"Connecting new...");
             [p connectWithTimeout:5 completion:^(NSError *error) {
@@ -130,34 +144,30 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+    self.nrow = 8;
+    self.ncol = 1;
+
+    self.scanButton = [self makeButton:[self makeRectInGrid:0 row_off:7 width:1 height:1] cb:@selector(handleScanViewRefreshRequest)];
+    [self.scanButton setTitle:@"Start Scan" forState:UIControlStateNormal];
+
+    self.tableView  = [[UITableView alloc] initWithFrame:[self makeRectInGrid:0 row_off:0 width:1 height:7]];
+    [self.content_view addSubview:self.tableView];
+
     [self.tableView registerClass:[ScanTableViewCell class] forCellReuseIdentifier:@"Cell"];
-    
-    NSLog(@"Creating refresh handler...");
-    UIRefreshControl *rescan_control = [[UIRefreshControl alloc] init];
-    [rescan_control addTarget:self action:@selector(handleScanViewRefreshRequest) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = rescan_control;
+    [self.tableView setDelegate:self];
+    [self.tableView setDataSource:self];
 
     self.active_meter = nil;
-
-    // Make footerview so it fill up size of the screen
-    // The button is aligned to bottom of the footerview
-    // using autolayout constraints
-    self.tableView.tableFooterView = nil;
-    self.footerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.tableView.frame.size.height - self.tableView.contentSize.height - self.footerView.frame.size.height)
-    self.tableView.tableFooterView = self.footerView
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [self setTitle:@"Swipe down to scan"];
     // Start a new scan for meters
     [self handleScanViewRefreshRequest];
 }
 
--(BOOL)shouldAutorotate { return NO; }
-
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
 
@@ -181,7 +191,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     
 }
 
-#pragma mark - Table View
+#pragma mark - Table View Delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -190,7 +200,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"RowCount %d",self.peripherals.count);
     return self.peripherals.count;
 }
 
@@ -235,7 +244,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     NSLog(@"Pushing meter view controller");
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-    MeterViewController * mvc = [[MeterViewController alloc] initWithMeter:meter];
+    MeterVC * mvc = [[MeterVC alloc] initWithMeter:meter];
     [nav pushViewController:mvc animated:YES];
     NSLog(@"Did push meter view controller");
 }
