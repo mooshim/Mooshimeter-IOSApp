@@ -26,8 +26,5 @@
 
 -(MooshimeterDeviceBase*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
 
--(void)addDelegate:(id<MooshimeterDelegateProtocol>)d;
--(void)removeDelegate;
-
 +(uint32)getBuildTimeFromPeripheral:(LGPeripheral *)periph;
 @end

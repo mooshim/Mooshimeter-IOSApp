@@ -21,11 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "LegacyMooshimeterDevice.h"
 #import "ChannelView.h"
 #import "../MeterSettingsView.h"
-#import "BaseViewController.h"
+#import "BaseVC.h"
 
 @class ChannelView;
 
-@interface MeterVC : BaseViewController <MooshimeterDelegateProtocol>
+@interface MeterVC : BaseVC <MooshimeterDelegateProtocol>
 
 // Housekeeping
 @property MooshimeterDeviceBase * meter;
@@ -44,6 +44,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
 @property (strong, nonatomic) UIButton* graph_button;
+
+@property UIImageView* bat_icon;
+@property UIImageView* sig_icon;
 
 //@property (strong, nonatomic) MeterSettingsView* settings_view;
 

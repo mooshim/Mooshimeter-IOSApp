@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "MeterVC.h"
 #import "OADDevice.h"
 #import "SmartNavigationController.h"
+#import "GlobalPreferenceVC.h"
+#import "WidgetFactory.h"
 
 @implementation ScanVC
 
@@ -83,8 +85,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.tableView reloadData];
     if(self.peripherals.count==0) {
         [self setTitle:@"No meters Found"];
+    } else if (self.peripherals.count==1){
+        [self setTitle:@"Found 1 meter"];
     } else {
-        [self setTitle:[NSString stringWithFormat:@"Found %d meters", self.peripherals.count]];
+        [self setTitle:[NSString stringWithFormat:@"Found %d meters",self.peripherals.count]];
     }
 }
 
@@ -163,32 +167,39 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+
     // Start a new scan for meters
     [self handleScanViewRefreshRequest];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self setTitle:@"Scan"];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
 
--(void)settings_button_press {
-    if(!self.settings_view) {
-        CGRect frame = self.view.frame;
-        frame.origin.x += .05*frame.size.width;
-        frame.origin.y += (frame.size.height - 250)/2;
-        frame.size.width  *= 0.9;
-        frame.size.height =  250;
-        ScanSettingsView* g = [[ScanSettingsView alloc] initWithFrame:frame];
-        [g setBackgroundColor:[UIColor whiteColor]];
-        [g setAlpha:0.9];
-        self.settings_view = g;
-    }
-    if([self.view.subviews containsObject:self.settings_view]) {
-        [self.settings_view removeFromSuperview];
-    } else {
-        [self.view addSubview:self.settings_view];
-    }
-    
+-(void)populateNavBar {
+    // Called from base class, overridden to give custom navbar behavior
+    SmartNavigationController *nav = [SmartNavigationController getSharedInstance];
+    [nav clearNavBar];
+    CGRect nav_size = nav.navigationBar.bounds;
+    int w = nav_size.size.width/4;
+
+    nav_size.origin.x   = 3*w;
+    nav_size.size.width = w;
+    nav_size = CGRectInset(nav_size,5,5);
+
+    // Add settings button to navbar
+    UIButton* b = [WidgetFactory makeButton:@"\u2699" callback:^{
+        SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
+        GlobalPreferenceVC * vc = [[GlobalPreferenceVC alloc] init];
+        [gnav pushViewController:vc animated:YES];
+    } frame:nav_size];
+    [nav addToNavBar:b];
 }
 
 #pragma mark - Table View Delegate

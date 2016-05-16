@@ -145,17 +145,10 @@ typedef float (^Lsb2NativeConverter)(int lsb);
     return rval;
 }
 
--(float) getMaxRangeForChannel:(Channel)c {
-    InputDescriptor *i = [self getSelectedDescriptor:c];
-    int n_choices = [i.ranges getNChoices];
-    RangeDescriptor *rval = [i.ranges get:n_choices-1];
-    return rval.max;
-}
-
 -(MeterReading*)wrapMeterReading:(float)val c:(Channel)c {
     LegacyInputDescriptor *id = [self getSelectedDescriptor:c];
     float enob = [self getENOB:c];
-    float max = [self getMaxRangeForChannel:c];
+    float max = [self getSelectedRange:c].max;
 
     MeterReading* rval = [[MeterReading alloc]
             initWithValue:val
@@ -270,6 +263,22 @@ void (^sample_handler)(NSData*,NSError*);
 
     [self updateRSSI];
     [self updateBattery];
+    [self updateLoggingStatus];
+}
+
+-(void)updateLoggingStatus {
+    if(self.periph.cbPeripheral.state != CBPeripheralStateConnected) {
+        return;
+    }
+    MeterLogSettings_t stash = meter_log_settings;
+    [self reqMeterLogSettings:^(NSData *data, NSError *error) {
+        if(memcmp(&stash,&meter_log_settings,sizeof(MeterLogSettings_t))!=0) {
+            [self.delegate onLoggingStatusChanged:[self getLoggingOn]
+                                        new_state:[self getLoggingStatus]
+                                          message:[self getLoggingStatusMessage]];
+        }
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateLoggingStatus) userInfo:nil repeats:NO];
+    }];
 }
 
 -(void)updateBattery {
@@ -288,7 +297,7 @@ void (^sample_handler)(NSData*,NSError*);
     }
     [self.periph readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
         if(RSSI) {
-            [self.delegate onRssiReceived:RSSI];
+            [self.delegate onRssiReceived:[RSSI intValue]];
         }
         [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
     }];
@@ -367,7 +376,7 @@ void (^sample_handler)(NSData*,NSError*);
     self.rate_auto     = YES;
     self.depth_auto    = YES;
 
-    [self addDelegate:delegate];
+    [self setDelegate:delegate];
 
     self->input_descriptors[CH1]  = [[Chooser alloc]init];
     self->input_descriptors[CH2]  = [[Chooser alloc]init];
@@ -395,15 +404,13 @@ void (^sample_handler)(NSData*,NSError*);
     [self reqMeterInfo:^(NSData *data, NSError *error) {
         [self reqMeterSettings:^(NSData *data, NSError *error) {
             [self reqMeterLogSettings:^(NSData *data, NSError *error) {
-                [self reqMeterBatteryLevel:^(NSData *data, NSError *error) {
-                    uint32 utc_time = [[NSDate date] timeIntervalSince1970];
-                    [self setTime:utc_time];
-                    [self.periph registerDisconnectHandler:^(NSError *error) {
-                        [self accidentalDisconnect:error];
-                    }];
-                    [self finishInit];
-                    [self.delegate onInit];
+                uint32 utc_time = [[NSDate date] timeIntervalSince1970];
+                [self setTime:utc_time];
+                [self.periph registerDisconnectHandler:^(NSError *error) {
+                    [self accidentalDisconnect:error];
                 }];
+                [self finishInit];
+                [self.delegate onInit];
             }];
         }];
     }];
@@ -611,7 +618,7 @@ int24_test to_int24_test(long arg) {
  And empirical measurement of CH1 (which is super noisy due to chopper)
  */
 
--(double)getENOB:(int)channel {
+-(float)getENOB:(int)channel {
     const double base_enob_table[] = {
         20.10,
         19.58,
@@ -805,11 +812,12 @@ int24_test to_int24_test(long arg) {
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"RESISTANCE" units:@"Ω" input:RESISTANCE is_ac:NO];
     switch (meter_info.pcb_version) {
         case 7:
-            [descriptor addRange:@"1kΩ"   converter:[self makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-            [descriptor addRange:@"10kΩ"  converter:[self makeSimpleConverter:(1/100e-6) pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-            [descriptor addRange:@"100kΩ" converter:[self makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_12] max:1e5 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
-            [descriptor addRange:@"1MΩ"   converter:[self makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_12] max:1e6 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
-            [descriptor addRange:@"10MΩ"  converter:[self makeSimpleConverter:(1/100e-9) pga:PGA_GAIN_1 ] max:1e7 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"1kΩ"   converter:[self makeSimpleConverter:(1/100e-6f) pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+            [descriptor addRange:@"10kΩ"  converter:[self makeSimpleConverter:(1/100e-6f) pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+            [descriptor addRange:@"100kΩ" converter:[self makeSimpleConverter:(1/100e-9f) pga:PGA_GAIN_12] max:1e5 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"1MΩ"   converter:[self makeSimpleConverter:(1/100e-9f) pga:PGA_GAIN_12] max:1e6 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            [descriptor addRange:@"10MΩ"  converter:[self makeSimpleConverter:(1/100e-9f) pga:PGA_GAIN_1 ] max:1e7 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_LOW];
+            break;
         case 8:
             [descriptor addRange:@"1kΩ"   converter:[self makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_12] max:1e3 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
             [descriptor addRange:@"10kΩ"  converter:[self makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_1 ] max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
@@ -823,7 +831,7 @@ int24_test to_int24_test(long arg) {
     }
     [chooser add:descriptor];
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"DIODE DROP" units:@"V" input:DIODE is_ac:NO];
-    [descriptor addRange:@"1.7V" converter:[self makeSimpleConverter:1 pga:PGA_GAIN_12 ] max:1.7 gain:PGA_GAIN_12 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
+    [descriptor addRange:@"1.7V" converter:[self makeSimpleConverter:1 pga:PGA_GAIN_1 ] max:1.7 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_HIGH];
     [chooser add:descriptor];
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"INTERNAL TEMP" units:@"K" input:TEMP is_ac:NO];
     Lsb2NativeConverter temp_converter = ^float(int lsb) {
@@ -881,6 +889,11 @@ int24_test to_int24_test(long arg) {
     LGCharacteristic* c = [self getLGChar:METER_SAMPLE];
     [c setNotifyValue:YES completion:nil onUpdate:sample_handler];
     [self sendMeterSettings:nil];
+}
+
+-(bool)isStreaming {
+    return self->meter_settings.rw.target_meter_state==METER_RUNNING
+        && !(self->meter_settings.rw.calc_settings&METER_CALC_SETTINGS_ONESHOT);
 }
 
 -(void)enterShippingMode {

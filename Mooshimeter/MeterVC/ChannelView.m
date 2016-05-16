@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "ChannelView.h"
 #import "PopupMenu.h"
+#import "WidgetFactory.h"
 
 @implementation ChannelView
 
@@ -50,24 +51,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
 #undef cg
 #undef mb
-    
-    [[self layer] setBorderWidth:5];
-    [[self layer] setBorderColor:[UIColor blackColor].CGColor];
     return self;
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
     UIButton* b;
-    b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.userInteractionEnabled = YES;
-    [b addTarget:self action:cb forControlEvents:UIControlEventTouchUpInside];
-    [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitle:@"T" forState:UIControlStateNormal];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    b.titleLabel.adjustsFontSizeToFitWidth = YES;
-    b.frame = frame;
+    __weak id weakself=self;
+    b=[WidgetFactory makeButton:@"FILL" callback:^{
+        if(weakself==nil){return;}
+        if(![weakself respondsToSelector:cb]){return;}
+        [weakself performSelector:cb];
+    } frame:frame];
     [self addSubview:b];
     return b;
 }

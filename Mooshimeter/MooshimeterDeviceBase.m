@@ -34,9 +34,6 @@
 - (bool *)range_auto {return _range_auto;}
 
 #pragma mark MooshimeterControlProtocol_methods
--(void)addDelegate:(id<MooshimeterDelegateProtocol>)d {
-    self.delegate = d;
-}
 -(void)removeDelegate {
     self.delegate = [[DummyDelegate alloc]init];
 }

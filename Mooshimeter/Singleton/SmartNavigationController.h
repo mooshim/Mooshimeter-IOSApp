@@ -23,10 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @interface SmartNavigationController : UINavigationController
 
-@property (strong,nonatomic) AppDelegate* app;
-
 +(instancetype)getSharedInstance;
 
--(instancetype)initWithRootViewController:(UIViewController*)vc;
+-(void)clearNavBar;
+-(void)addToNavBar:(UIView*)to_be_added;
 
 @end

@@ -4,20 +4,22 @@
 //
 
 #import "BaseVC.h"
-
+#import "SmartNavigationController.h"
+#import "WidgetFactory.h"
 
 @implementation BaseVC
+
+/////////////////
+// Lifecycle
+/////////////////
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    // For debug
     NSLog(@"View %@ loaded!",NSStringFromClass([self class]));
 
-    volatile CGRect frame  = self.view.frame;
-    volatile CGRect bounds = self.view.bounds;
-
-    //self.visible_h = (self.view.bounds.size.height - self.navigationController.navigationBar.frame.size.height)-status_bar_offset;
+    // Calculate the content area to save the subclasses some math
     self.visible_h = (self.view.bounds.size.height);
     self.visible_w = (self.view.bounds.size.width);
     self.ncol = 0;
@@ -39,6 +41,10 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSLog(@"View %@ will appear!",NSStringFromClass([self class]));
+    // Always clear the navigation bar
+    [[SmartNavigationController getSharedInstance] clearNavBar];
+    // Should be overridden by base classes
+    [self populateNavBar];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -75,19 +81,19 @@
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
-    UIButton* b;
-    b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.userInteractionEnabled = YES;
-    [b addTarget:self action:cb forControlEvents:UIControlEventTouchUpInside];
-    [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitle:@"TBD" forState:UIControlStateNormal];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    b.titleLabel.adjustsFontSizeToFitWidth = YES;
-    b.frame = frame;
+    __weak id weakself = self;
+    UIButton *b = [WidgetFactory makeButton:@"Refactor!" callback:^{
+        if(weakself != nil && [weakself respondsToSelector:cb]) {
+            [weakself performSelector:cb];
+        }
+    }];
+    [b setFrame:frame];
     [self.content_view addSubview:b];
     return b;
+}
+
+- (void)populateNavBar {
+    NSLog(@"Override populateNavBar in the subclasses!");
 }
 
 @end

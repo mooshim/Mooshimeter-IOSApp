@@ -19,25 +19,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import <UIKit/UIKit.h>
 #import "CorePlot-CocoaTouch.h"
 #import "LegacyMooshimeterDevice.h"
-#import "GraphSettingsView.h"
 #import "BaseVC.h"
-
-#define N_POINTS_ONSCREEN 1024
+#import "WYPopoverController.h"
 
 @class LegacyMooshimeterDevice;
+@class GraphSettingsVC;
 
-@interface GraphVC : BaseVC <CPTPlotDataSource>
-{
-@public
-    // A place to stash settings
-    double       start_time;
-    double       time[      N_POINTS_ONSCREEN];
-    double       ch1_values[N_POINTS_ONSCREEN];
-    double       ch2_values[N_POINTS_ONSCREEN];
-    int          buf_i;
-    int          buf_n;
-    BOOL         play;
-}
+@interface XYPoint:NSObject
+@property NSNumber *x,*y;
++(XYPoint*)make:(float)x y:(float)y;
+@end
+
+@interface GraphVC : BaseVC <CPTPlotDataSource,MooshimeterDelegateProtocol,WYPopoverControllerDelegate>
 
 @property MooshimeterDeviceBase * meter;
 
@@ -45,6 +38,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic) CPTGraphHostingView *hostView;
 @property (strong, nonatomic) CPTPlotSpace* space2; //remove this hack
 @property (strong, nonatomic) UIButton* config_button;
-@property (strong, nonatomic) GraphSettingsView* config_view;
+
+@property WYPopoverController* popover;
+
+// GUI config values
+
+@property double start_time;
+@property int max_points_onscreen;
+@property bool xy_mode;
+@property bool buffer_mode;
+@property bool ch1_on;
+@property bool ch2_on;
+@property bool math_on;
+@property bool scroll_lock;
+
+@property bool left_axis_auto;
+@property bool right_axis_auto;
+
+// Data stashing
+
+@property NSMutableArray<XYPoint*>* left_vals;
+@property NSMutableArray<XYPoint*>* right_vals;
+
+-(instancetype)initWithMeter:(MooshimeterDeviceBase*)meter;
 
 @end

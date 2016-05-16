@@ -18,7 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <UIKit/UIKit.h>
 #import "BaseVC.h"
+#import "MooshimeterDeviceBase.h"
 
-@interface MeterPreferenceVC : BaseVC <UIScrollViewDelegate>
-
+@interface MeterPreferenceVC : BaseVC
+@property MooshimeterDeviceBase* meter;
+-(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter;
 @end

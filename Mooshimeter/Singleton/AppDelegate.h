@@ -21,26 +21,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "LegacyMooshimeterDevice.h"
 #import "LGBluetooth.h"
 
-#import "ScanViewController.h"
-#import "MeterViewController.h"
-#import "../GraphViewController.h"
+#import "ScanVC.h"
+#import "MeterVC.h"
+#import "../GraphVC.h"
 #import "SmartNavigationController.h"
 
 #import "OADProgressViewController.h"
 #import "OADProfile.h"
 
 @class SmartNavigationController;
-@class ScanViewController;
+@class ScanVC;
 @class OADProfile;
 @class OADViewController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, NSObject>
 
 @property (strong,nonatomic) UIWindow *window;
-@property (strong,nonatomic) OADProfile* oad_profile;
 
 @property (strong,nonatomic) SmartNavigationController*      nav;
-@property (strong,nonatomic) ScanViewController*             scan_vc;
+@property (strong,nonatomic) ScanVC*             scan_vc;
 
 @property (strong,nonatomic) UILabel* bat_label;
 @property (strong,nonatomic) UILabel* rssi_label;

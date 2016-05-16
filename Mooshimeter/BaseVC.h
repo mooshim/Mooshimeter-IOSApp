@@ -12,6 +12,8 @@
 @property int nrow,ncol;
 @property UIView *content_view; // Portion of the view below the nav controller
 
+-(void)populateNavBar;
+
 -(CGRect)makeRectInGrid:(int)col_off row_off:(int)row_off
                   width:(int)col_w height:(int)row_h;
 

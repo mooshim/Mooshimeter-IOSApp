@@ -40,11 +40,6 @@
     ////////////////////////////////
     // Convenience functions
     ////////////////////////////////
-
-    -(float)getMax {
-        return self.max;
-    }
-
     -(NSString*) toString {
         if(self.max==0) {
             return self.units;
@@ -52,7 +47,7 @@
 
         static const NSString* prefixes[] = {@"n",@"\u03bc",@"m",@"",@"k",@"M",@"G"};
         float lval = self.value;
-        if(abs(lval) > 1.2*self.max) {
+        if(fabs(lval) > 1.2*self.max) {
             return @"OUT OF RANGE";
         }
         NSMutableString* rval = [[NSMutableString alloc] init];

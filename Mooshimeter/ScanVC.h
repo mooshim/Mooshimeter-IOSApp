@@ -21,13 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "LGPeripheral.h"
 #import "LegacyMooshimeterDevice.h"
 #import "ScanTableViewCell.h"
-#import "ScanSettingsView.h"
-#import "BaseViewController.h"
+#import "BaseVC.h"
 
-@interface ScanVC : BaseViewController <UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate,MooshimeterDelegateProtocol>
+@interface ScanVC : BaseVC <UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate,MooshimeterDelegateProtocol>
 
 @property (strong,nonatomic) NSArray* peripherals;
-@property (strong,nonatomic) ScanSettingsView* settings_view;
 
 @property UITableView* tableView;
 @property UIButton* scanButton;

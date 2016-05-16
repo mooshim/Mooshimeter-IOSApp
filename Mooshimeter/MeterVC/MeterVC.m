@@ -19,10 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "MeterVC.h"
 #import "PopupMenu.h"
 #import "SmartNavigationController.h"
+#import "MeterPreferenceVC.h"
+#import "WidgetFactory.h"
 
 @implementation MeterVC
 
--(BOOL)prefersStatusBarHidden { return YES; }
+////////////////////
+// Lifecycle
+////////////////////
 
 -(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter{
     self = [super init];
@@ -30,15 +34,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     return self;
 }
 
-
-- (void)viewDidLoad
-{
-    NSLog(@"Meter view loaded!");
+-(void)viewDidLoad {
     [super viewDidLoad];
+
+    [[SmartNavigationController getSharedInstance] clearNavBar];
 
     self.nrow = 11;
     self.ncol = 6;
-    
+
     UIView* v = self.content_view;
 
 #define cg(nx,ny,nw,nh) [self makeRectInGrid:nx row_off:ny width:nw height:nh]
@@ -52,8 +55,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     UIView* sv = [[UIView alloc] initWithFrame:cg(0, 8, 6, 3)];
     sv.userInteractionEnabled = YES;
-    [[sv layer] setBorderWidth:5];
-    [[sv layer] setBorderColor:[UIColor blackColor].CGColor];
 
     self.math_label = [[UILabel alloc] initWithFrame:cg(0,0,4,1)];
     self.math_label.textColor = [UIColor blackColor];
@@ -69,7 +70,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.depth_button            = mb(0,2,3,1,depth_button_press);
     self.graph_button            = mb(3,2,3,1,graph_button_press);
 
-    [self.graph_button setTitle:@"OPEN GRAPH" forState:UIControlStateNormal];
+    [self.graph_button setTitle:@"GRAPH" forState:UIControlStateNormal];
 
     [sv addSubview:self.math_label];
     [sv addSubview:self.math_button];
@@ -82,13 +83,78 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     [v addSubview:sv];
     [self.view addSubview:v];
-
-    [self.meter addDelegate:self];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self.meter pause];
 }
+
+-(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    // Display done.  Check the meter settings.
+    [self.meter setDelegate:self];
+    [self.meter stream];
+    [self refreshAllControls];
+}
+
+////////////////////
+// BaseVC callbacks
+////////////////////
+
+-(void)populateNavBar {
+    // Called from base class, overridden to give custom navbar behavior
+    SmartNavigationController *nav = [SmartNavigationController getSharedInstance];
+    [nav clearNavBar];
+    CGRect nav_size = nav.navigationBar.bounds;
+    int x = nav_size.size.width;
+
+    x-=60;
+    CGRect s = CGRectMake(x,0,60,nav_size.size.height);
+    s.origin.x = x;
+    s = CGRectInset(s,5,5);
+
+    // Add settings button to navbar
+    MooshimeterDeviceBase * meter = self.meter;
+    UIButton* b = [WidgetFactory makeButton:@"\u2699" callback:^{
+        SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
+        MeterPreferenceVC * vc = [[MeterPreferenceVC alloc] initWithMeter:meter];
+        [gnav pushViewController:vc animated:YES];
+    } frame:s];
+    [nav addToNavBar:b];
+
+    UIImageView* bat_icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bat_icon_0.png"]];
+    x-=bat_icon.bounds.size.width;
+    s = CGRectMake(x,0,bat_icon.bounds.size.width,bat_icon.bounds.size.height);
+    [bat_icon setFrame:s];
+    [nav addToNavBar:bat_icon];
+    self.bat_icon = bat_icon;
+
+    UIImageView* sig_icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sig_icon_0.png"]];
+    x-=sig_icon.bounds.size.width;
+    s = CGRectMake(x,0,sig_icon.bounds.size.width,sig_icon.bounds.size.height);
+    [sig_icon setFrame:s];
+    [nav addToNavBar:sig_icon];
+    self.sig_icon = sig_icon;
+
+    // Use the rest of the space for title
+    UILabel * name = [[UILabel alloc] initWithFrame:CGRectMake(0,0,x,nav_size.size.height)];
+    [name setText:[self.meter getName]];
+    [name setAdjustsFontSizeToFitWidth:YES];
+    [nav addToNavBar:name];
+}
+
+//////////////////////
+// UIViewController callbacks
+//////////////////////
+
+-(BOOL)shouldAutorotate { return NO; }
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations { return UIInterfaceOrientationMaskPortrait; }
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation { return UIInterfaceOrientationPortrait; }
+
+/////////////////
+// Button push handlers
+/////////////////
 
 +(void)style_auto_button:(UIButton*)b on:(BOOL)on {
     if(on) {
@@ -172,36 +238,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 
--(void)settings_button_press {
-    /*
-    if(!self.settings_view) {
-        CGRect frame = self.view.frame;
-        frame.origin.x += .05*frame.size.width;
-        frame.origin.y += (frame.size.height - 250)/2;
-        frame.size.width  *= 0.9;
-        frame.size.height =  250;
-        MeterSettingsView* g = [[MeterSettingsView alloc] initWithFrame:frame];
-        [g setBackgroundColor:[UIColor whiteColor]];
-        [g setAlpha:0.9];
-        self.settings_view = g;
-    }
-    if([self.view.subviews containsObject:self.settings_view]) {
-        [self.settings_view removeFromSuperview];
-    } else {
-        [self.view addSubview:self.settings_view];
-    }*/
-}
--(void)settings_button_refresh {
-    DLog(@"Disp");
-    //[self.settings_button setBackgroundColor:[UIColor lightGrayColor]];
-}
-
 -(void)math_label_refresh:(MeterReading*)val {
     [self.math_label setText:[val toString]];
 }
 
 -(void)graph_button_press {
     NSLog(@"Transition to graph view");
+    GraphVC* vc = [[GraphVC alloc] initWithMeter:self.meter];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)math_button_refresh {
@@ -232,19 +276,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.ch2_view refreshAllControls];
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    NSLog(@"Meter View about to appear");
-    // Display done.  Check the meter settings.
-    [self.meter stream];
-    [self refreshAllControls];
-}
-
--(BOOL)shouldAutorotate { return NO; }
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations { return UIInterfaceOrientationMaskPortrait; }
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{ return UIInterfaceOrientationPortrait; }
-
+/////////////////
+// MooshimeterDelegateProtocol methods
+/////////////////
 #pragma mark MooshimeterDelegateProtocol methods
 
 - (void)onInit {
@@ -259,10 +293,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (void)onRssiReceived:(int)rssi {
     //Update the title bar
+    NSLog(@"rssi:%d",rssi);
+    int percent = rssi+100;
+    percent=percent>100?100:percent;
+    percent=percent<0?0:percent;
+    [self.sig_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"sig_icon_%d.png",percent]]];
 }
 
 - (void)onBatteryVoltageReceived:(float)voltage {
     //Update the title bar
+    int percent = (voltage-2)*100;
+    percent=percent>100?100:percent;
+    percent=percent<0?0:percent;
+    [self.bat_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"bat_icon_%d.png",percent]]];
 }
 
 - (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {

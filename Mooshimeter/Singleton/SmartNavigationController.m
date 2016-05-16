@@ -30,14 +30,14 @@ static SmartNavigationController *shared = nil;
     return shared;
 }
 
--(instancetype)initWithRootViewController:(UIViewController*)vc {
+-(instancetype)init {
     if(shared != nil) {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                        reason:@"init for this singleton should not be called more than once!"
                                      userInfo:nil];
     } else {
         // Do actual initialization
-        self = [super initWithRootViewController:vc];
+        self = [super initWithNavigationBarClass:[UINavigationBar class] toolbarClass:[UIToolbar class]];
         shared = self;
     }
     return self;
@@ -45,14 +45,13 @@ static SmartNavigationController *shared = nil;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
 -(BOOL)shouldAutorotate {
     return [self.topViewController shouldAutorotate];
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return [self.topViewController supportedInterfaceOrientations];
 }
 
@@ -60,14 +59,17 @@ static SmartNavigationController *shared = nil;
     return [self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#define TAG_FOR_REMOVAL 55
+-(void)clearNavBar {
+    for(UIView* v in self.navigationBar.subviews) {
+        if(v.tag == TAG_FOR_REMOVAL) {
+            [v removeFromSuperview];
+        }
+    }
 }
-*/
+-(void)addToNavBar:(UIView*)to_be_added {
+    to_be_added.tag = TAG_FOR_REMOVAL;
+    [self.navigationBar addSubview:to_be_added];
+}
 
 @end

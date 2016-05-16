@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "LegacyMooshimeterDevice.h"
 
-#import "ScanViewController.h"
+#import "ScanVC.h"
 
 #import "BLETIOADProgressViewController.h"
 #import "BLETIOADProfile.h"

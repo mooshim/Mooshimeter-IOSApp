@@ -12,10 +12,8 @@
 @protocol MooshimeterControlProtocol <NSObject>
 
 @required
-        -(void)addDelegate:(id<MooshimeterDelegateProtocol>)d;
-        -(void)removeDelegate;
-
         -(int)initialize;
+        -(void)removeDelegate;
 
         ////////////////////////////////
         // Convenience functions
@@ -43,6 +41,7 @@
         -(void)pause;
         -(void)oneShot;
         -(void)stream;
+        -(bool)isStreaming;
 
         -(void)enterShippingMode;
 

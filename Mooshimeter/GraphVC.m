@@ -17,9 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "GraphVC.h"
+#import "WidgetFactory.h"
+#import "GraphSettingsVC.h"
+#import "WYPopoverController.h"
 
-@interface GraphVC
-
+@implementation XYPoint
++(XYPoint*)make:(float)x y:(float)y {
+    XYPoint* rval = [[XYPoint alloc]init];
+    rval.x= [NSNumber numberWithFloat:x];
+    rval.y= [NSNumber numberWithFloat:y];
+    return rval;
+}
 @end
 
 @implementation GraphVC
@@ -27,168 +35,103 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @synthesize hostView = hostView_;
 
 -(BOOL)prefersStatusBarHidden { return YES; }
-
--(instancetype)initWithDelegate:(id<ScatterViewControllerDelegate>)delegate {
-    self = [super init];
-    self.delegate = delegate;
-    return self;
-}
-
 -(BOOL)shouldAutorotate { return YES; }
-- (NSUInteger)supportedInterfaceOrientations { return UIInterfaceOrientationMaskAll; }
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations { return UIInterfaceOrientationMaskLandscape; }
 
 #pragma mark - UIViewController lifecycle methods
 
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if(UIInterfaceOrientationIsPortrait([[UIDevice currentDevice] orientation])) {
-        NSLog(@"Seguing to meter");
-        [self.delegate switchToMeterView];
-    }
+-(instancetype)initWithMeter:(MooshimeterDeviceBase*)meter {
+    self = [super init];
+    self.meter = meter;
+
+    self.max_points_onscreen = 1024;
+    self.xy_mode = NO;
+    self.buffer_mode = NO;
+    self.ch1_on = YES;
+    self.ch2_on = YES;
+    self.math_on = NO;
+    self.scroll_lock = YES;
+    self.left_axis_auto = YES;
+    self.right_axis_auto = YES;
+
+    self.left_vals = [[NSMutableArray alloc] init];;
+    self.right_vals = [[NSMutableArray alloc] init];;
+
+    self.start_time = (double)[[NSDate date] timeIntervalSince1970];;
+
+    return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.tapButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBackgroundTap)];
+    [self.view addGestureRecognizer:self.tapButton];
+    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
-    self.config_view = nil;
-    if(g_meter->disp_settings.burst_capture) {
-        [self graphBuffer];
-    } else {
-        self->play = YES;
-        [self initPlot];
-        [self startTrendView];
-    }
+    [self initPlot];
+    [self.meter setDelegate:self];
+    [self.meter stream];
 }
 
-- (void) viewWillDisappear:(BOOL)animated
-{
-    NSLog(@"Goodbye from scatter...");
-    [self pause];
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.meter pause];
 }
 
 -(void)handleBackgroundTap {
-    if(g_meter->disp_settings.burst_capture) {
-        [self graphBuffer];
+    if([self.meter isStreaming]) {
+        [self.meter pause];
     } else {
-        self->play = !self->play;
-        if(self->play) {
-            [self startTrendView];
-        } else {
-            [self pause];
-        }
+        [self.meter stream];
     }
 }
 
--(void)startTrendView {
-    g_meter->meter_settings.rw.calc_settings &=~(METER_CALC_SETTINGS_ONESHOT);
-    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_MEAN|METER_CALC_SETTINGS_MS;
-    g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
-    
-    [g_meter enableStreamMeterBuf:NO cb:^(NSError *error) {
-        [g_meter enableStreamMeterSample:YES cb:^(NSError *error) {
-            self->start_time = [[NSDate date] timeIntervalSince1970];
-            self->buf_i = 0;
-            self->buf_n = 0;
-            [g_meter sendMeterSettings:^(NSError *error) {
-                NSLog(@"Trend mode started");
-                [NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(redrawTrendView:) userInfo:nil repeats:NO];
-            }];
-        } update:^{
-            [self trendViewUpdate];
-        }];
-    } complete_buffer_cb:nil];
-}
-
--(void) pause {
-    self->play = NO;
-    g_meter->meter_settings.rw.target_meter_state = METER_PAUSED;
-    [g_meter sendMeterSettings:^(NSError *error) {
-        NSLog(@"Paused!");
-    }];
-}
-
--(void) trendViewUpdate {
-    NSLog(@"Updating measurements...");
-    
-    // FIXME: This check should go somewhere else...
-    if(g_meter->disp_settings.burst_capture) {
-        self->play = NO;
-        [self pause];
-    }
-    
-    self->time[      buf_i] = [[NSDate date] timeIntervalSince1970] - self->start_time;
-    if(g_meter->disp_settings.ac_display[0]) {
-        self->ch1_values[buf_i] = [g_meter getRMS:0];
-    } else {
-        self->ch1_values[buf_i] = [g_meter getMean:0];
-    }
-    if(g_meter->disp_settings.ac_display[1]) {
-        self->ch2_values[buf_i] = [g_meter getRMS:1];
-    } else {
-        self->ch2_values[buf_i] = [g_meter getMean:1];
-    }
-    buf_i++;
-    buf_i %= N_POINTS_ONSCREEN;
-    if(buf_n < N_POINTS_ONSCREEN) buf_n++;
-    /*
-    if(self->play) {
-        [g_meter sendMeterSettings:^(NSError *error) {
-            NSLog(@"Finished update");
-        }];
-    }*/
-}
-
--(void) redrawTrendView:(NSTimer*)timer {
-    NSLog(@"Redrawing");
+-(void) redrawTrendView {
     CPTGraph *graph = self.hostView.hostedGraph;
     [graph reloadData];
     
     CPTXYPlotSpace *ch1Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:0];
     
     CPTPlot *ch1Plot         = [graph plotAtIndex:0];
-    [ch1Space scaleToFitPlots:[NSArray arrayWithObjects:ch1Plot, nil]];
+    [ch1Space scaleToFitPlots:@[ch1Plot]];
     
-    CPTMutablePlotRange *y1Range = [ch1Space.yRange mutableCopy];
-    NSDecimalNumber* tmpDecimalNumber;
-    double tmpDouble;
+    CPTMutablePlotRange *y1Range = (CPTMutablePlotRange *)[ch1Space.yRange mutableCopy];
     
-    tmpDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:y1Range.length];
-    tmpDouble =[tmpDecimalNumber doubleValue];
-    [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+    [y1Range expandRangeByFactor:@1.2f];
     ch1Space.yRange = y1Range;
     
-    if(!g_meter->disp_settings.xy_mode) {
+    if(!self.xy_mode) {
         CPTXYPlotSpace *ch2Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:1];
         CPTPlot *ch2Plot         = [graph plotAtIndex:1];
-        [ch2Space scaleToFitPlots:[NSArray arrayWithObjects:ch2Plot, nil]];
-        CPTMutablePlotRange *y2Range = [ch2Space.yRange mutableCopy];
-        tmpDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:y2Range.length];
-        tmpDouble =[tmpDecimalNumber doubleValue];
-        [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        [ch2Space scaleToFitPlots:@[ch2Plot]];
+        CPTMutablePlotRange *y2Range = (CPTMutablePlotRange *)[ch2Space.yRange mutableCopy];
+        [y2Range expandRangeByFactor:@1.2f];
         
         CPTMutablePlotRange *xRange;
-        if(g_meter->disp_settings.channel_disp[0]) {
-            xRange = [ch1Space.xRange mutableCopy];
+        if(self.ch1_on) {
+            xRange = (CPTMutablePlotRange *)[ch1Space.xRange mutableCopy];
         } else {
-            xRange = [ch2Space.xRange mutableCopy];
+            xRange = (CPTMutablePlotRange *)[ch2Space.xRange mutableCopy];
         }
-        [xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        [xRange expandRangeByFactor:@1.2f];
         ch1Space.xRange = xRange;
         ch2Space.xRange = xRange;
         ch2Space.yRange = y2Range;
     } else {
         CPTMutablePlotRange *xRange;
-        xRange = [ch1Space.xRange mutableCopy];
-        [xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        xRange = (CPTMutablePlotRange *)[ch1Space.xRange mutableCopy];
+        [xRange expandRangeByFactor:@1.2f];
         ch1Space.xRange = xRange;
     }
     
     [self redrawAxisLabels];
-    
-    if(self->play) {
-        [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(redrawTrendView:) userInfo:nil repeats:NO];
-    }
 }
-
+#if 0
 -(void) graphBuffer {
     g_meter->meter_settings.rw.calc_settings &=~(METER_CALC_SETTINGS_MS|METER_CALC_SETTINGS_MEAN);
     g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
@@ -228,7 +171,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }];
     } update:nil];
 }
-
+#endif
 #pragma mark - Chart behavior
 -(void)initPlot {
     NSLog(@"Initializing Plots!");
@@ -243,45 +186,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     {
         [subView removeFromSuperview];
     }
-    self.hostView = [(CPTGraphHostingView *) [CPTGraphHostingView alloc] initWithFrame:self.view.bounds];
+    self.hostView = [[CPTGraphHostingView alloc] initWithFrame:self.view.bounds];
     self.hostView.allowPinchScaling = YES;
-    
+
+    __weak typeof(self) ws=self;
     // Set up the config button
-    UIButton* b;
-    b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.userInteractionEnabled = YES;
-    [b addTarget:self action:@selector(showPlotSettings) forControlEvents:UIControlEventTouchUpInside];
-    [b.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    [b setTitle:@"Config" forState:UIControlStateNormal];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [b setBackgroundColor:[UIColor whiteColor]];
-    [b setAlpha:0.5];
-    [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor lightGrayColor].CGColor];
-    b.frame = CGRectMake(self.view.bounds.size.width-80, self.view.bounds.size.height-40, 80, 40);
+    UIButton* b = [WidgetFactory makeButton:@"Config" callback:^{
+        // Open the config popover
+        NSLog(@"Config popover");
+        GraphSettingsVC * vc = [[GraphSettingsVC alloc] init];
+
+        //[self.view addSubview:[[WYPopoverController alloc] initWithContentViewController:vc]];
+        self.popover = [[WYPopoverController alloc] initWithContentViewController:vc];
+        vc.popover = self.popover;
+
+        [self.popover setDelegate:ws];
+
+        [self.popover setPopoverContentSize:CGSizeMake(300, 300)];
+        [self.popover presentPopoverAsDialogAnimated:YES];
+        //[self.popover presentPopoverFromRect:CGRectMake(801, 401, 300, 200) inView:ws.view permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
+    } frame:CGRectMake(self.view.bounds.size.width-80, self.view.bounds.size.height-40, 80, 40)];
     self.config_button = b;
-    
     [self.view addSubview:self.hostView];
     [self.view addSubview:b];
-}
-
--(void)showPlotSettings {
-    if(!self.config_view) {
-        CGRect frame = self.view.frame;
-        frame.origin.x += .15*frame.size.width;
-        frame.origin.y += .15*frame.size.height;
-        frame.size.width  *= 0.7;
-        frame.size.height *= 0.7;
-        GraphSettingsView* g = [[GraphSettingsView alloc] initWithFrame:frame];
-        [g setBackgroundColor:[UIColor whiteColor]];
-        [g setAlpha:0.85];
-        self.config_view = g;
-    }
-    if([self.view.subviews containsObject:self.config_view]) {
-        [self.config_view removeFromSuperview];
-    } else {
-        [self.view addSubview:self.config_view];
-    }
 }
 
 -(void)configureGraph {
@@ -322,14 +249,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [graph addPlot:ch1Plot toPlotSpace:ch1PlotSpace];
     
     // 3 - Set up plot space
-    [ch1PlotSpace scaleToFitPlots:[NSArray arrayWithObjects:ch1Plot, nil]];
+    [ch1PlotSpace scaleToFitPlots:@[ch1Plot]];
     
     CPTMutablePlotRange *y1Range = [ch1PlotSpace.yRange mutableCopy];
-    [y1Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+    [y1Range expandRangeByFactor:@1.2f];
     ch1PlotSpace.yRange = y1Range;
     
     // 4 - Create styles and symbols
-    if( !g_meter->disp_settings.xy_mode ) {
+    if( !self.xy_mode ) {
         CPTMutableLineStyle *ch1LineStyle = [ch1Plot.dataLineStyle mutableCopy];
         ch1LineStyle.lineWidth = 2.5;
         ch1LineStyle.lineColor = ch1Color;
@@ -351,7 +278,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     
     
-    if( !g_meter->disp_settings.xy_mode ) {
+    if( !self.xy_mode ) {
         CPTXYPlotSpace *ch2PlotSpace = [[CPTXYPlotSpace alloc]init];
         ch2PlotSpace.allowsUserInteraction = YES;
         self.space2 = ch2PlotSpace;
@@ -368,16 +295,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         CPTMutablePlotRange *y2Range = [ch2PlotSpace.yRange mutableCopy];
         
         CPTMutablePlotRange *xRange;
-        if(g_meter->disp_settings.channel_disp[0]) {
+        if(self.ch1_on) {
             xRange = [ch1PlotSpace.xRange mutableCopy];
         } else {
             xRange = [ch2PlotSpace.xRange mutableCopy];
         }
-        [xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        [xRange expandRangeByFactor:@1.2f];
         ch1PlotSpace.xRange = xRange;
         ch2PlotSpace.xRange = xRange;
         
-        [y2Range expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        [y2Range expandRangeByFactor:@1.2f];
         ch2PlotSpace.yRange = y2Range;
         
         CPTMutableLineStyle *ch2LineStyle = [ch2Plot.dataLineStyle mutableCopy];
@@ -394,7 +321,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     } else {
         CPTMutablePlotRange *xRange;
         xRange = [ch1PlotSpace.xRange mutableCopy];
-        [xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+        [xRange expandRangeByFactor:@1.2f];
         ch1PlotSpace.xRange = xRange;
     }
 }
@@ -461,8 +388,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // 3 - Configure x-axis
     CPTXYAxis *x = axisSet.xAxis;
     x.axisConstraints = [CPTConstraints constraintWithLowerOffset:10.0];
-    if( g_meter->disp_settings.xy_mode ) {
-        x.title = [g_meter getDescriptor:1];
+    if( self.xy_mode ) {
+        x.title = [self.meter getInputLabel:CH2];
     } else {
         x.title = @"Time";
     }
@@ -481,7 +408,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // 4 - Configure y-axis 1
     CPTXYAxis *y1 = axisSet.yAxis;
     y1.axisConstraints = [CPTConstraints constraintWithLowerOffset:20.0];
-    y1.title = [g_meter getDescriptor:0];
+    y1.title = [self.meter getInputLabel:CH1];
     y1.titleTextStyle = ch1AxisTextStyle;
     y1.titleOffset = -35.0f;
     y1.axisLineStyle = axisLineStyle;
@@ -496,19 +423,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     y1.minorTickLength = 4.0f;
     y1.tickDirection = CPTSignPositive;
     
-    if( !g_meter->disp_settings.xy_mode ) {
+    if( !self.xy_mode ) {
         // Create second y axis
         CPTXYAxis *y2 = [[CPTXYAxis alloc]init];
         y2.coordinate = CPTCoordinateY;
         axisSet.axes = [NSArray arrayWithObjects:axisSet.xAxis, axisSet.yAxis, y2, nil];
         y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:20.0];
         y2.plotSpace = self.space2;
-        y2.title = [g_meter getDescriptor:1];
+        y2.title = [self.meter getInputLabel:CH2];
         y2.titleTextStyle = ch2AxisTextStyle;
         y2.titleOffset = -35.0f;
         y2.axisLineStyle = axisLineStyle;
-        // FIXME: Coreplot not respecting differences in major and minor gridlines
-        //y2.minorGridLineStyle = minorGridLineStyle;
         y2.majorGridLineStyle = ch2MajorGridLineStyle;
         y2.labelingPolicy = CPTAxisLabelingPolicyNone;
         y2.labelTextStyle = ch2AxisTextStyle;
@@ -522,45 +447,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self redrawAxisLabels];
 }
 
-- (void)drawLabelsForAxis:(CPTXYAxis*)target dbuf:(double*)dbuf {
-    CGFloat yMin = dbuf[0];
-    for( int i = 0; i < self->buf_n; i++ ) yMin = dbuf[i] < yMin ? dbuf[i]:yMin;
+- (void)drawLabelsForAxis:(CPTXYAxis*)target values:(NSMutableArray<XYPoint*>*)values use_yvalues:(bool)use_yvalues{
+    if(values.count==0) {
+        // Nothing we can do, no data provided
+        return;
+    }
+    float (^getter)(NSUInteger i);
+    if(use_yvalues) {
+        getter = ^float(NSUInteger i) {return ((XYPoint*)values[i]).y.floatValue;};
+    } else {
+        getter = ^float(NSUInteger i) {return ((XYPoint*)values[i]).x.floatValue;};
+    }
+    CGFloat yMin = getter(0);
+    for( NSUInteger i = 0; i < values.count; i++ ) yMin = getter(i) < yMin ? getter(i):yMin;
     
-    CGFloat yMax = dbuf[0];
-    for( int i = 0; i < self->buf_n; i++ ) yMax = dbuf[i] > yMax ? dbuf[i]:yMax;
+    CGFloat yMax = getter(0);
+    for( NSUInteger i = 0; i < values.count; i++ ) yMax = getter(i) > yMax ? getter(i):yMax;
     
     double range = yMax - yMin;
     
     double majorTick = [self getTickFromRange:range];
-    double minorTick = majorTick/5.0;
-    yMin = ( majorTick*floor(yMin/majorTick) );
-    yMax = ( majorTick*floor(yMax/majorTick) );
+    yMin = (float)( majorTick*floor(yMin/majorTick) );
+    yMax = (float)( majorTick*floor(yMax/majorTick) );
     NSMutableSet *yLabels = [NSMutableSet set];
     NSMutableSet *yMajorLocations = [NSMutableSet set];
-    NSMutableSet *yMinorLocations = [NSMutableSet set];
-    int m = 0;
-    double j;
-    while(1) {
-        j = yMin + minorTick*m;
-        if ( ! (m%5) ) {
-            CPTAxisLabel *label = [[CPTAxisLabel alloc] initWithText:[NSString stringWithFormat:@"%3.3f", j] textStyle:target.labelTextStyle];
-            NSDecimal location = CPTDecimalFromDouble(j);
-            label.tickLocation = location;
-            label.offset = -target.majorTickLength - target.labelOffset;
-            label.rotation = 3.14/4;
-            if (label) {
-                [yLabels addObject:label];
-            }
-            [yMajorLocations addObject:[NSNumber numberWithDouble:j]];
-        } else {
-            [yMinorLocations addObject:[NSNumber numberWithDouble:j]];
+    for(double j = yMin; j < yMax; j+=majorTick) {
+        CPTAxisLabel *label = [[CPTAxisLabel alloc] initWithText:[NSString stringWithFormat:@"%3.3f", j] textStyle:target.labelTextStyle];
+        label.tickLocation = [NSNumber numberWithDouble:j];
+        j;
+        label.offset = -target.majorTickLength - target.labelOffset;
+        label.rotation = 3.14f/4; // Rotate 45 degrees for better fit
+        if (label) {
+            [yLabels addObject:label];
         }
-        if( j > yMax && !(m%5) ) break;
-        m++;
+        [yMajorLocations addObject:[NSNumber numberWithDouble:j]];
     }
     target.axisLabels = yLabels;
     target.majorTickLocations = yMajorLocations;
-    //y1.minorTickLocations = yMinorLocations;
 }
 
 - (void)redrawAxisLabels {
@@ -570,63 +493,128 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     CPTXYAxis *y1 = axisSet.yAxis;
     
     // CONFIGURE Y1
-    [self drawLabelsForAxis:y1 dbuf:self->ch1_values];
+    [self drawLabelsForAxis:y1 values:self.left_vals use_yvalues:YES];
     
-    if( !g_meter->disp_settings.xy_mode ) {
+    if( !self.xy_mode ) {
         // CONFIGURE X
-        [self drawLabelsForAxis:x dbuf:self->time];
+        [self drawLabelsForAxis:x values:self.left_vals use_yvalues:NO];
         CPTXYAxis *y2 = axisSet.axes[2];
         // CONFIGURE Y2
-        [self drawLabelsForAxis:y2 dbuf:self->ch2_values];
+        [self drawLabelsForAxis:y2 values:self.right_vals use_yvalues:YES];
     } else {
         // CONFIGURE X
-        [self drawLabelsForAxis:x dbuf:self->ch2_values];
+        [self drawLabelsForAxis:x values:self.right_vals use_yvalues:YES];
     }
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.tapButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBackgroundTap)];
-    [self.view addGestureRecognizer:self.tapButton];
-    self->play = NO;
 }
 
 #pragma mark - CPTPlotDataSource methods
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-    if ( [plot.identifier isEqual:@"CH1"] == YES
-        && !g_meter->disp_settings.channel_disp[0] ) {
-        return 0;
+    if ( [plot.identifier isEqual:@"CH1"] ) {
+        if(self.ch1_on) {
+            return self.left_vals.count;
+        } else {
+            return 0;
+        }
     }
-    if ( [plot.identifier isEqual:@"CH2"] == YES
-        && !g_meter->disp_settings.channel_disp[1] ) {
-        return 0;
+    if ( [plot.identifier isEqual:@"CH2"] ) {
+        if(self.ch2_on) {
+            return self.right_vals.count;
+        } else {
+            return 0;
+        }
     }
-    return self->buf_n;
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
     double val = 0;
-    const int i = (self->buf_i + index) % self->buf_n;
-    
-    switch (fieldEnum) {
-        case CPTScatterPlotFieldX:
-            if(g_meter->disp_settings.xy_mode) {
-                val = self->ch2_values[i];
-            } else {
-                val = self->time[i];
-            }
-            break;
-        case CPTScatterPlotFieldY:
-            if (        [plot.identifier isEqual:@"CH1"] == YES) {
-                val =   self->ch1_values[i];
-            } else if ( [plot.identifier isEqual:@"CH2"] == YES) {
-                val =   self->ch2_values[i];
-            }
-            break;
+
+    NSMutableArray<XYPoint *>* source;
+    if([plot.identifier isEqual:@"CH1"]) {
+        source = self.left_vals;
+    } else if([plot.identifier isEqual:@"CH2"]) {
+        source = self.right_vals;
+    } else {
+        NSLog(@"WHAT");
     }
 
-    return [NSNumber numberWithDouble:val];
+    XYPoint* p = source[index];
+
+    switch (fieldEnum) {
+        case CPTScatterPlotFieldX:
+            return p.x;
+        case CPTScatterPlotFieldY:
+            return p.y;
+    }
+    // Should never get here
+    return nil;
+}
+
+#pragma mark - MooshimeterDelegateProtocol methods
+
+- (void)onInit {NSLog(@"IMPOSIBRUUUU");}
+- (void)onRssiReceived:(int)rssi {}
+- (void)onBatteryVoltageReceived:(float)voltage {}
+- (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"IMPOSIBRUUUU");}
+- (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"IMPOSIBRUUUU");}
+- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {}
+- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"IMPOSIBRUUUU");}
+- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"IMPOSIBRUUUU");}
+- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"IMPOSIBRUUUU");}
+// Delegate calls we actually care about
+- (void)onDisconnect {
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+- (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
+    // Can't trust this timestamp, we're generating it locally so the data's real spikey
+    NSMutableArray * buf=nil;
+    switch(c){
+        case CH1:
+            buf=self.left_vals;
+            break;
+        case CH2:
+            buf=self.right_vals;
+            break;
+        case MATH:
+            // We don't handle this yet
+            return;
+    }
+    if(buf==nil){NSLog(@"wat");return;} // Should never happen
+    float dt = (float)(timestamp_utc - self.start_time);
+    [buf addObject:[XYPoint make:dt y:val.value]];
+    while(buf.count>self.max_points_onscreen) {
+        [buf removeObjectAtIndex:0];
+    }
+    [self redrawTrendView];
+}
+- (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
+
+}
+
+#pragma mark WYPopoverControllerDelegate methods
+
+- (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)popoverController {
+    return NO;
+}
+
+- (void)popoverControllerDidPresentPopover:(WYPopoverController *)popoverController {
+    NSLog(@"Presented");
+}
+
+- (void)popoverControllerDidDismissPopover:(WYPopoverController *)popoverController {
+    NSLog(@"Dismissed");
+}
+
+- (void)popoverController:(WYPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView **)view {
+    NSLog(@"Will reposition");
+}
+
+- (BOOL)popoverControllerShouldIgnoreKeyboardBounds:(WYPopoverController *)popoverController {
+    NSLog(@"Should ignore");
+    return NO;
+}
+
+- (void)popoverController:(WYPopoverController *)popoverController willTranslatePopoverWithYOffset:(float *)value {
+    NSLog(@"Will translate");
 }
 
 @end

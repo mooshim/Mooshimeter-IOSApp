@@ -24,60 +24,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Init singletons
+    // FIXME all 3 have different initialization patterns?  Seriously?
     [LGCentralManager sharedInstance];
     [FirmwareImageDownloader initSingleton];
+    [[SmartNavigationController alloc] init];
 
-    // Init navbar
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
-    
-    self.scan_vc    = [[ScanViewController alloc] init];
-    
-    self.nav = [[SmartNavigationController alloc] initWithRootViewController:self.scan_vc];
-    self.nav.app = self;
-    CGRect nav_size = self.nav.navigationBar.bounds;
-    int w = nav_size.size.width/4;
-    
-    nav_size.origin.x   = 2*w;
-    nav_size.size.width = w;
-    self.bat_label = [[UILabel alloc]initWithFrame:nav_size];
-    [self.nav.navigationBar addSubview:self.bat_label];
-    [self.bat_label setText:@""];
-    
-    nav_size.origin.x   = 1*w;
-    nav_size.size.width = w;
-    self.rssi_label = [[UILabel alloc]initWithFrame:nav_size];
-    [self.nav.navigationBar addSubview:self.rssi_label];
-    [self.rssi_label setText:@""];
-    
-    nav_size.origin.x   = 3*w;
-    nav_size.size.width = w;
-    // Fake some padding
-    nav_size.origin.x    += 5;
-    nav_size.origin.y    += 5;
-    nav_size.size.width  -= 10;
-    nav_size.size.height -= 10;
 
-    // Add settings button to navbar
-    UIButton* b;
-    b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.userInteractionEnabled = YES;
-    [b addTarget:self action:@selector(settings_button_press) forControlEvents:UIControlEventTouchUpInside];
-    [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitle:@"\u2699" forState:UIControlStateNormal];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[b layer] setBorderWidth:2];
-    [[b layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-    b.frame = nav_size;
-    self.settings_button = b;
-    [self.nav.navigationBar addSubview:self.settings_button];
-    
-    //NSMutableString *path= [[NSMutableString  alloc] initWithString: [[NSBundle mainBundle] resourcePath]];
-    //[path appendString:@"/Mooshimeter.bin"];
-
-    [self.window setRootViewController:self.nav];
+    [self.window setRootViewController:[SmartNavigationController getSharedInstance]];
     [self.window makeKeyAndVisible];
+
+    self.scan_vc    = [[ScanVC alloc] init];
+    [[SmartNavigationController getSharedInstance] setViewControllers:@[self.scan_vc] animated:NO];
+
     return YES;
 }
 							
@@ -108,10 +69,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
--(void)settings_button_press {
-    NSLog(@"Main app settings button press");
-    [self.nav.topViewController performSelector:@selector(settings_button_press)];
-}
 /*
 #pragma mark MeterViewControllerDelegate
 
@@ -167,17 +124,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
         [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
     }];
-}
-
-// Estimate the state of charge of an alkaline battery
-+(double)alkSocEstimate:(double)cell_voltage {
-    // CC2540 browns out at 2V, so let's just call 1V cell voltage 0% charge.
-    // 1.5V will be 100%.  Just make it linear.
-    double t = cell_voltage-1.0;
-    t*=2;
-    t = MIN(1.0,t);
-    t = MAX(0.0,t);
-    return t;
 }
 
 #pragma mark UIAlertViewDelegate

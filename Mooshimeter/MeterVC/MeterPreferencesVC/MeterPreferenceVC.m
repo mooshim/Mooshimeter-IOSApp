@@ -17,32 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "MeterPreferenceVC.h"
-#import "SmartNavigationController.h"
-#import <objc/runtime.h>
-
-@interface BlockWrapper:NSObject
-@property void(^callback)();
--(void)callTheCallback;
-@end
-@implementation BlockWrapper
--(instancetype)initAndAttachTo:(UIControl*)control forEvent:(UIControlEvents)forEvent callback:(void(^)())callback{
-    self = [super init];
-    self.callback = callback;
-    // Attach this object to the control so we keep existing as long as it does
-    objc_setAssociatedObject( control, "_blockWrapper", self, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
-    [control addTarget:self action:@selector(callTheCallback) forControlEvents:forEvent];
-    return self;
-}
--(void)callTheCallback {
-    if(self.callback!=nil) {
-        self.callback();
-    }
-}
-@end
+#import "WidgetFactory.h"
 
 @implementation MeterPreferenceVC {
     float y_offset;
 }
+
+////////////////////
+// Helper methods
+////////////////////
 
 +(bool)getPreference:(NSString*)key def:(bool)def {
     if([[NSUserDefaults standardUserDefaults] objectForKey:key]==nil) {
@@ -54,16 +37,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 +(void)setPreference:(NSString*)key value:(bool)value{
     [[NSUserDefaults standardUserDefaults] setBool:value forKey:key];
-}
-
-+(UISwitch*)makeSwitch:(NSString*)prefname {
-    UISwitch * rval = [[UISwitch alloc]init];
-    [rval setOn:[self getPreference:prefname def:NO]];
-    __weak UISwitch* capture = rval;
-    [[BlockWrapper alloc] initAndAttachTo:rval forEvent:UIControlEventValueChanged callback:^{
-        [MeterPreferenceVC setPreference:prefname value:capture.on];
-    }];
-    return rval;
 }
 
 -(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory {
@@ -84,6 +57,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     UILabel* msg_label = [[UILabel alloc] initWithFrame:CGRectMake(inset,title_h,left_w,row_h-title_h)];
     [msg_label setText:msg];
     [msg_label setFont:[UIFont systemFontOfSize:18]];
+    [msg_label setNumberOfLines:0];
 
     // Center the accessory in the space available for it
     CGRect acc_frame = accessory.frame;
@@ -110,34 +84,67 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     return rval;
 }
 
++(UISwitch*)makePrefSwitch:(NSString*)key {
+    UISwitch * rval = [WidgetFactory makeSwitch:^(bool i) {
+        [MeterPreferenceVC setPreference:key value:i];
+    }];
+    [rval setOn:[MeterPreferenceVC  getPreference:key def:NO]]; // FIXME! THIS IS REPEATED CODE WITH GLOBALPREFERENCEVC
+    return rval;
+}
+
+////////////////////
+// Lifecycle methods
+////////////////////
+
+-(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter{
+    self = [super init];
+    self.meter = meter;
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     y_offset = 0;
 
-    [self setTitle:@"Global Preferences"];
+    [self setTitle:@"Meter Preferences"];
 
-    {
-        NSString * appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-        NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        NSString* vstring = [NSString stringWithFormat:@"Mooshimeter iOS App %@ (%@)", appVersionString, appBuildString];
-        [self addPreferenceCell:@"Version Information" msg:vstring accessory:nil];
-    }
-
-    [self addPreferenceCell:@"Temperature" msg:@"Use Fahrenheit?" accessory:[MeterPreferenceVC makeSwitch:@"USE_FAHRENHEIT"]];
-
-    {
-        UIButton* help_button = [[UIButton alloc] initWithFrame:CGRectMake(0,0,50,50)];
-        [[BlockWrapper alloc] initAndAttachTo:help_button forEvent:UIControlEventTouchUpInside callback:^{
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://moosh.im/support/"]];
+    // Meter Name
+    [self addPreferenceCell:@"Name" msg:@"Set the device name" accessory:[WidgetFactory makeButton:@"Set" callback:^{
+            // Start a dialog box to get some input
+        [WidgetFactory makeTextInputBox:@"Enter New Name" msg:@"18 character max" callback:^(NSString *string) {
+            NSLog(@"Received %@",string);
+            if([string length]>18) {
+                return;
+            }
+            [self.meter setName:string];
         }];
-        [ help_button setTitle:@"Go" forState:UIControlStateNormal];
-        [ help_button.titleLabel setFont:[UIFont systemFontOfSize:30]];
-        [ help_button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [[help_button layer] setBorderWidth:2];
-        [[help_button layer] setBorderColor:[UIColor darkGrayColor].CGColor];
-        [self addPreferenceCell:@"Support" msg:@"Open help site" accessory:help_button];
+    } frame:CGRectMake(0,0,50,50)]];
+
+    // Logging interval
+    {
+        NSString* title = [NSString stringWithFormat:@"%ds",([self.meter getLoggingIntervalMS]/1000)];
+        [self addPreferenceCell:@"Logging Interval" msg:@"Set the time between samples when logging is on." accessory:[WidgetFactory makeButton:title callback:^{
+            // Start a dialog box to get some input
+            NSLog(@"Durr");
+        } frame:CGRectMake(0,0,50,50)]];
     }
+
+    // Shipping mode
+    [self addPreferenceCell:@"Shipping Mode" msg:@"Turn off the radio for shipping." accessory:[WidgetFactory makeButton:@"Set" callback:^{
+        // Start a dialog box to get some input
+        [WidgetFactory makeCancelContinueAlert:@"Enter shipping mode?"
+                                           msg:@"This will turn off the radio.  You will need to connect the C and Ω terminals to turn the radio back on."
+                                      callback:^(bool proceed) {
+                                          if(!proceed){return;}
+                                          [self.meter enterShippingMode];
+                                      }];
+    } frame:CGRectMake(0,0,50,50)]];
+
+    // Autoconnect
+    [self addPreferenceCell:@"Autoconnect" msg:@"Connect immediately when device appears in scan." accessory:[MeterPreferenceVC makePrefSwitch:[self.meter getPreferenceKeyString:@"AUTOCONNECT"]]];
+    // Skip upgrade
+    [self addPreferenceCell:@"Skip Upgrade" msg:@"Skip firmware upgrade prompt." accessory:[MeterPreferenceVC makePrefSwitch:[self.meter getPreferenceKeyString:@"SKIP_UPGRADE"]]];
 }
 
 @end

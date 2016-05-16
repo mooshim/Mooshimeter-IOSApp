@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CIDR_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file:///Users/common" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/ScanTableViewCell.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTXYGraph.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificCategories.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPieChart.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTestCase.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTimeFormatter.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableNumericData.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutablePlotRange.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnnotationHostLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnnotation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLineCap.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTResponder.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTXYAxisSet.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDerivedXYGraph.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotSymbol.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLimitBand.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDefinitions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotGroup.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableTextStyle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTextStyle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlot.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTImage.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGraph.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTScatterPlot.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableNumericData+TypeConversion.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTNumericDataType.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTFunctionDataSource.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableLineStyle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTFill.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnimation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTExceptions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPathExtensions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGradient.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisLabel.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTCalendarFormatter.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLegend.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTheme.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSNumberExtensions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSDecimalNumberExtensions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTextStylePlatformSpecific.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnimationPeriod.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotAreaFrame.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLayerAnnotation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotArea.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTColor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTNumericData.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxis.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTUtilities.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTConstraints.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTradingRangePlot.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTXYPlotSpace.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGridLines.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTNumericData+TypeConversion.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDataSourceTestCase.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificFunctions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLineStyle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificDefines.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTBarPlot.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotRange.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGraphHostingView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDebugQuickLook.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLegendEntry.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTColorSpace.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTRangePlot.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisTitle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTBorderedLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSCoderExtensions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTextLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotSpaceAnnotation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CorePlot-CocoaTouch.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisSet.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTShadow.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableShadow.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisLabelGroup.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGridLineGroup.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotSpace.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/mainpage.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnimationOperation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTXYAxis.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCentralManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCentralManager.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCharacteristic.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/CBUUID+StringExtraction.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGPeripheral.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGService.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCharacteristic.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGUtils.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGPeripheral.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/CBUUID+StringExtraction.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGBluetooth.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGService.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WYPopoverController/WYPopoverController.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WYPopoverController/WYStoryboardPopoverSegue.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WYPopoverController/WYStoryboardPopoverSegue.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WYPopoverController/WYPopoverController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDeviceBase.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter-Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/InputDescriptor.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/WidgetFactory.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDeviceBase.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDelegateProtocol.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/WidgetFactory.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Chooser.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADDevice.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterReading.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Chooser.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/PopupMenu.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterReading.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/PopupMenu.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/LegacyMooshimeterDevice.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Default~iphone.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Default.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/ScanVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/BaseVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_41.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_89.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_75.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_16.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_51.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_3.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_85.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_90.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_61.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_95.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_36.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_71.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_12.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_8.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_46.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_81.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_22.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_56.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_91.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_32.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_66.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_42.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_76.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_17.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_78.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_88.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_4.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_86.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_27.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_62.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_96.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_37.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_72.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_13.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_47.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_0.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_82.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_23.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_57.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_92.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_33.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_52.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_10.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_67.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_43.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_98.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_77.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_18.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_53.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_99.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_5.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_87.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_28.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_63.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_97.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_38.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_73.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_14.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_48.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_1.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_83.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_24.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_9.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_58.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_93.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_34.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_79.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_68.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_44.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_20.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_19.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_54.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_6.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_30.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_29.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_26.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_64.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_40.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_39.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_74.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_15.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_50.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_49.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_100.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_84.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_25.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_2.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_60.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_59.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_94.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_35.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_70.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_11.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_45.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_80.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_21.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_55.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_69.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_7.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_31.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_65.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/ScanVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/InputDescriptor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/main.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/ChannelView.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/ChannelView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter-Prefix.pch" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADDevice.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/BaseVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GraphVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProgressViewController.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/RangeDescriptor.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GraphVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProgressViewController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mstar320x480.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/RangeDescriptor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterControlProtocol.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProfile.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/en.lproj/InfoPlist.strings" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter.entitlements" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/BLEUtility.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/AppDelegate.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/MeterDirectory.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/BLEUtility.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/MeterDirectory.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/AppDelegate.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/oad.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Images.xcassets" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProfile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libCorePlot-CocoaTouch.a" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/MooshimeterTests-Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/MooshimeterTests.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/MooshimeterTests.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/en.lproj/InfoPlist.strings" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Default-568h@2x.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_72.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_13.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_47.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_82.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_23.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_6.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_88.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_57.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_20.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_92.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_33.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_85.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_67.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_10.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_43.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_77.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_2.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_53.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_87.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_28.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_63.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_3.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_100.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_97.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_38.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_73.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_14.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_48.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_99.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_83.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_24.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_7.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_18.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_58.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_93.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_34.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_68.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_44.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_78.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_19.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_54.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_30.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_71.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_64.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_98.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_39.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_74.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_15.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_60.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_50.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_49.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_84.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_25.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_8.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_16.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_59.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_1.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_94.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_35.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_70.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_69.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_45.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_80.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_21.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_4.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_55.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_90.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_89.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_65.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_41.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_75.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_0.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_51.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_11.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_26.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_9.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_61.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_95.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_36.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_79.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_40.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_12.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_46.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_81.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_22.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_5.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_56.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_91.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_32.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_66.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_42.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_76.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_17.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_52.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_86.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_27.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_29.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_62.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_31.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_96.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_37.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterProfileTypes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ScanTableViewCell.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterFlashLayout.h" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Header Search Paths">
+        <CLASSES>
+          <root url="file:///Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Frameworks/InterfaceBuilderKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Frameworks/DTPerformanceSession.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HealthKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/PassKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreAudioKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MultipeerConnectivity.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AssetsLibrary.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/WatchConnectivity.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreVideo.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/StoreKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SceneKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/OpenGLES.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CFNetwork.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accelerate.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AddressBookUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/EventKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/WatchKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GSS.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AudioUnit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreSpotlight.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/LocalAuthentication.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HealthKitUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Metal.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/VideoToolbox.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Contacts.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/QuickLook.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SafariServices.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GameplayKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/WebKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CloudKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreImage.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/EventKitUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Photos.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MetalPerformanceShaders.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MediaPlayer.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AVFoundation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/JavaScriptCore.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/PushKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreTelephony.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreText.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ReplayKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SpriteKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Twitter.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/NetworkExtension.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreAudio.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreData.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Foundation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MapKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreFoundation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ContactsUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreMedia.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MediaAccessibility.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ExternalAccessory.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Security.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ModelIO.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GLKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MetalKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HomeKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GameController.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AVKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreBluetooth.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AdSupport.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreMIDI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Social.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SystemConfiguration.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accounts.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/OpenAL.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/NotificationCenter.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ImageIO.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/PhotosUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MobileCoreServices.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AddressBook.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/NewsstandKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MessageUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GameKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreLocation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/QuartzCore.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/iAd.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreMotion.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Frameworks/InterfaceBuilderKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Frameworks/DTPerformanceSession.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HealthKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/PassKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreAudioKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MultipeerConnectivity.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AssetsLibrary.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/WatchConnectivity.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreVideo.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/StoreKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SceneKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/OpenGLES.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CFNetwork.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accelerate.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AddressBookUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/EventKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/WatchKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GSS.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AudioUnit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreSpotlight.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/LocalAuthentication.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HealthKitUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Metal.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/VideoToolbox.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Contacts.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/QuickLook.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SafariServices.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GameplayKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/WebKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CloudKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreImage.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/EventKitUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Photos.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MetalPerformanceShaders.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MediaPlayer.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AVFoundation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/JavaScriptCore.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/PushKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreTelephony.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreText.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ReplayKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SpriteKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Twitter.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/NetworkExtension.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreAudio.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreData.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Foundation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MapKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreFoundation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ContactsUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreMedia.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MediaAccessibility.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ExternalAccessory.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Security.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ModelIO.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GLKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MetalKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HomeKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GameController.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AVKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreBluetooth.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AdSupport.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreMIDI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Social.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/SystemConfiguration.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Accounts.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/OpenAL.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/NotificationCenter.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/ImageIO.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/PhotosUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MobileCoreServices.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/AddressBook.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/NewsstandKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MessageUI.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/GameKit.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreLocation.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/QuartzCore.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/iAd.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreMotion.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>

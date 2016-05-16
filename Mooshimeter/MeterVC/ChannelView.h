@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <UIKit/UIKit.h>
 #import "LegacyMooshimeterDevice.h"
-#import "MeterViewController.h"
+#import "MeterVC.h"
 
 @interface ChannelView : UIView
 

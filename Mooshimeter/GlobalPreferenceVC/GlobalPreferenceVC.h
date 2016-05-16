@@ -21,6 +21,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @interface GlobalPreferenceVC : BaseVC <UIScrollViewDelegate>
 
-@property UIScrollView* scroll_view;
-
 @end
