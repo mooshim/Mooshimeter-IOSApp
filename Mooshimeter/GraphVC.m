@@ -117,7 +117,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     }
     float dif = maxX-minX;
     CPTMutablePlotRange *xr = [[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
-    [xr expandRangeByFactor:@1.1]; // Expand the range because Coreplot annoyingly draws over its own axes
+    //[xr expandRangeByFactor:@1.1]; // Expand the range because Coreplot annoyingly draws over its own axes
     return xr;
 }
 
@@ -287,7 +287,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     graph.fill = [CPTFill fillWithColor:color];
     graph.plotAreaFrame.masksToBorder = NO;
     self.hostView.hostedGraph = graph;
-    
+#if 0
     // 2 - Set graph title
     
     // 3 - Create and set text style
@@ -298,9 +298,14 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     graph.titleTextStyle = titleStyle;
     graph.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     graph.titleDisplacement = CGPointMake(0.0f, 10.0f);
+#endif
     // 4 - Set padding for plot area
-    [graph.plotAreaFrame setPaddingLeft:0.0f];
-    [graph.plotAreaFrame setPaddingBottom:0.0f];
+    graph.paddingLeft = 40;
+    graph.paddingRight = 40;
+    graph.paddingTop = 0;
+    graph.paddingBottom = 40;
+    //[graph.plotAreaFrame setPaddingLeft:0.0f];
+    //[graph.plotAreaFrame setPaddingBottom:0.0f];
 }
 
 -(void)configurePlots {
@@ -456,7 +461,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     
     // 3 - Configure x-axis
     CPTXYAxis *x = axisSet.xAxis;
-    x.axisConstraints = [CPTConstraints constraintWithLowerOffset:10.0];
+    x.axisConstraints = [CPTConstraints constraintWithLowerOffset:00.0];
     if( self.xy_mode ) {
         x.title = [self.meter getInputLabel:CH2];
     } else {
@@ -476,7 +481,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     
     // 4 - Configure y-axis 1
     CPTXYAxis *y1 = axisSet.yAxis;
-    y1.axisConstraints = [CPTConstraints constraintWithLowerOffset:20.0];
+    y1.axisConstraints = [CPTConstraints constraintWithLowerOffset:00.0];
     y1.title = [self.meter getInputLabel:CH1];
     y1.titleTextStyle = ch1AxisTextStyle;
     y1.titleOffset = -35.0f;
@@ -497,7 +502,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         CPTXYAxis *y2 = [[CPTXYAxis alloc]init];
         y2.coordinate = CPTCoordinateY;
         axisSet.axes = [NSArray arrayWithObjects:axisSet.xAxis, axisSet.yAxis, y2, nil];
-        y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:20.0];
+        y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:00.0];
         y2.plotSpace = self.rightAxisSpace;
         y2.title = [self.meter getInputLabel:CH2];
         y2.titleTextStyle = ch2AxisTextStyle;
