@@ -189,7 +189,8 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
         GlobalPreferenceVC * vc = [[GlobalPreferenceVC alloc] init];
         [gnav pushViewController:vc animated:YES];
-    } frame:CGRectMake(0,0,35,35)];
+    }];
+    [b setFrame:CGRectMake(0,0,35,35)];
     [self addToNavBar:b];
 }
 
@@ -203,6 +204,10 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.peripherals.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 100;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

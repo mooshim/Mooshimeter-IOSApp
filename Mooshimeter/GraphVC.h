@@ -29,33 +29,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 +(XYPoint*)make:(float)x y:(float)y;
 @end
 
-@interface GraphVC : BaseVC <CPTPlotDataSource,MooshimeterDelegateProtocol>
+@interface GraphVC : BaseVC <CPTPlotDataSource,MooshimeterDelegateProtocol,CPTPlotSpaceDelegate>
 
 @property MooshimeterDeviceBase * meter;
 
 @property (strong, nonatomic) UITapGestureRecognizer *tapButton;
 @property (strong, nonatomic) CPTGraphHostingView *hostView;
-@property (strong, nonatomic) CPTPlotSpace* space2; //remove this hack
+@property (strong, nonatomic) CPTXYPlotSpace *leftAxisSpace, *rightAxisSpace;
 @property (strong, nonatomic) UIButton* config_button;
 
 // GUI config values
 
-@property double start_time;
 @property int max_points_onscreen;
 @property bool xy_mode;
 @property bool buffer_mode;
 @property bool ch1_on;
 @property bool ch2_on;
 @property bool math_on;
-@property bool scroll_lock;
+@property bool autoscroll;
 
 @property bool left_axis_auto;
 @property bool right_axis_auto;
 
+@property float sample_time;
+
 // Data stashing
 
-@property NSMutableArray<XYPoint*>* left_vals;
-@property NSMutableArray<XYPoint*>* right_vals;
+@property NSMutableArray<XYPoint*>* left_cache;
+@property NSMutableArray<XYPoint*>* right_cache;
+
+@property NSMutableArray<XYPoint*>* left_onscreen;
+@property NSMutableArray<XYPoint*>* right_onscreen;
+
+// Timer to prevent flooding
+@property NSTimer* refresh_timer;
+// Helper to keep track of what side of the graph is being touched (gets around issue with Coreplot
+@property BOOL left_side_touched;
 
 -(instancetype)initWithMeter:(MooshimeterDeviceBase*)meter;
 

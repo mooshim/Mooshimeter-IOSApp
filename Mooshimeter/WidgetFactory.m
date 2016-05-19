@@ -90,27 +90,55 @@
     rval.origin.y-= from.size.height;
     return rval;
 }
++(CGRect)abutLeft:(CGRect)from to:(CGRect)to {
+    from.origin.x = to.origin.x+to.size.width;
+    return from;
+}
++(CGRect)abutRight:(CGRect)from to:(CGRect)to {
+    from.origin.x = to.origin.x-from.size.width;
+    return from;
+}
++(CGRect)abutBottom:(CGRect)from to:(CGRect)to {
+    from.origin.y = to.origin.y+to.size.height;
+    return from;
+}
++(CGRect)abutTop:(CGRect)from to:(CGRect)to {
+    from.origin.y = to.origin.y-from.size.height;
+    return from;
+}
+
 @end
 
 @implementation WidgetFactory
-+(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback frame:(CGRect)frame {
-    UIButton * rval = [WidgetFactory makeButton:title callback:callback];
-    [rval setFrame:frame];
-    return rval;
-}
-+(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback {
-    UIButton* b;
-    b = [UIButton buttonWithType:UIButtonTypeSystem];
++(UIButton*)makeMyStyleButton {
+    UIButton* b = [UIButton buttonWithType:UIButtonTypeSystem];
     b.userInteractionEnabled = YES;
     [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitle:title forState:UIControlStateNormal];
     [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     b.layer.borderWidth = 2;
     b.layer.cornerRadius = 5;
     b.titleLabel.adjustsFontSizeToFitWidth = YES;
-
+    return b;
+}
++(UIButton*)makeButtonReflexive:(NSString*)title callback:(void(^)(UIButton*))callback{
+    UIButton* b = [WidgetFactory makeMyStyleButton];
+    [b setTitle:title forState:UIControlStateNormal];
+    __weak UIButton* wb = b;
+    void (^tmp_cb)() = ^void() {
+        callback(wb);
+    };
+    [[BlockWrapper alloc]initAndAttachTo:b forEvent:UIControlEventTouchUpInside callback:tmp_cb];
+    return b;
+}
++(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback frame:(CGRect)frame {
+    UIButton *b=[WidgetFactory makeButton:title callback:callback];
+    [b setFrame:frame];
+    return b;
+}
++(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback {
+    UIButton* b = [WidgetFactory makeMyStyleButton];
+    [b setTitle:title forState:UIControlStateNormal];
     [[BlockWrapper alloc]initAndAttachTo:b forEvent:UIControlEventTouchUpInside callback:callback];
-
     return b;
 }
 +(UISwitch*)makeSwitch:(void(^)(bool))callback frame:(CGRect)frame {
@@ -153,14 +181,14 @@
     return a;
 }
 
-+(UIView*)makePopoverFromView:(Class)view_class size:(CGSize)size {
++(UIView*)makePopoverFromView:(UIView*)client_view size:(CGSize)size {
     UIViewController * top = [UIApplication sharedApplication].keyWindow.rootViewController;
     while(top.presentedViewController!=nil) {
         top = top.presentedViewController;
     }
     // Instantiate the client
     CGRect client_frame = [CG centerIn:top.view.frame new_size:size];
-    UIView* client_view = [[view_class alloc] initWithFrame:client_frame];
+    [client_view setFrame:client_frame];
     client_view.alpha = 0.0;
     client_view.layer.cornerRadius = 5;
     client_view.layer.masksToBounds = YES;
@@ -188,6 +216,18 @@
         client_view.alpha = 1.0;
     }];
 
+    return client_view;
+}
+
++(UIView*)makePopoverFromViewClass:(Class)view_class size:(CGSize)size {
+    UIViewController * top = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while(top.presentedViewController!=nil) {
+        top = top.presentedViewController;
+    }
+    // Instantiate the client
+    CGRect client_frame = [CG centerIn:top.view.frame new_size:size];
+    UIView* client_view = [[view_class alloc] initWithFrame:client_frame];
+    [WidgetFactory makePopoverFromView:client_view size:size];
     return client_view;
 }
 @end

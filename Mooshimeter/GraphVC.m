@@ -20,6 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "WidgetFactory.h"
 #import "GraphSettingsView.h"
 
+#define BG_COLOR [CPTColor whiteColor]
+#define AXIS_COLOR [CPTColor blackColor]
+#define LEFT_COLOR [CPTColor redColor]
+#define RIGHT_COLOR [CPTColor greenColor]
+
 @implementation XYPoint
 +(XYPoint*)make:(float)x y:(float)y {
     XYPoint* rval = [[XYPoint alloc]init];
@@ -44,32 +49,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(instancetype)initWithMeter:(MooshimeterDeviceBase*)meter {
     self = [super init];
-    self.meter = meter;
+    _meter = meter;
 
-    self.max_points_onscreen = 1024;
-    self.xy_mode = NO;
-    self.buffer_mode = NO;
-    self.ch1_on = YES;
-    self.ch2_on = YES;
-    self.math_on = NO;
-    self.scroll_lock = YES;
-    self.left_axis_auto = YES;
-    self.right_axis_auto = YES;
+    _max_points_onscreen = 100;
+    _xy_mode = NO;
+    _buffer_mode = NO;
+    _ch1_on = YES;
+    _ch2_on = YES;
+    _math_on = NO;
+    _autoscroll = YES;
+    _left_axis_auto = YES;
+    _right_axis_auto = YES;
 
-    self.left_vals = [[NSMutableArray alloc] init];;
-    self.right_vals = [[NSMutableArray alloc] init];;
+    _left_onscreen = [NSMutableArray array];
+    _right_onscreen = [NSMutableArray array];
+    _left_cache = [NSMutableArray array];
+    _right_cache = [NSMutableArray array];
 
-    self.start_time = (double)[[NSDate date] timeIntervalSince1970];;
+    _sample_time = 0;
+
+    _refresh_timer = nil;
 
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tapButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBackgroundTap)];
-    [self.view addGestureRecognizer:self.tapButton];
-    NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationLandscapeRight];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    //self.tapButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBackgroundTap)];
+    //[self.view addGestureRecognizer:self.tapButton];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -78,11 +85,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self initPlot];
     [self.meter setDelegate:self];
     [self.meter stream];
+    _refresh_timer = [NSTimer scheduledTimerWithTimeInterval:0.2
+                                                      target:self
+                                                    selector:@selector(onRefreshTick)
+                                                    userInfo:nil
+                                                     repeats:YES];
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.meter pause];
+    [self.refresh_timer invalidate];
     self.navigationController.navigationBar.hidden = NO;
 }
 
@@ -94,9 +107,94 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 
+CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
+    float minX = CGFLOAT_MAX;
+    float maxX = -CGFLOAT_MAX;
+    for(id p in values) {
+        float x = [(NSNumber*)[p performSelector:returnsAnNSNumber] floatValue];
+        if(x > maxX) {maxX= x;}
+        if(x <minX)  {minX= x;}
+    }
+    float dif = maxX-minX;
+    CPTMutablePlotRange *xr = [[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
+    [xr expandRangeByFactor:@1.1]; // Expand the range because Coreplot annoyingly draws over its own axes
+    return xr;
+}
+
+-(void)fillFromBackingArrayWithXRange:(CPTPlotRange*)range backing_data:(NSMutableArray<XYPoint*>*)backing_data to_fill:(NSMutableArray<XYPoint*>*)to_fill {
+    float min = range.locationDouble;
+    float max = min+range.lengthDouble;
+    [to_fill removeAllObjects];
+    for(XYPoint* p in backing_data) {
+        float x = [p.x floatValue];
+        if(x >= min && x <= max) {
+            [to_fill addObject:p];
+        }
+    }
+}
+
+-(void)onRefreshTick {
+    if(_left_cache.count==0 || _right_cache.count==0) {
+        // If there's no data for us to plot, give up
+        return;
+    }
+
+    CPTGraph *graph = self.hostView.hostedGraph;
+    CPTPlotRange *range;
+
+    // xy mode always auto-ranges just because laziness
+    //if(_xy_mode) {
+    //    [self.leftAxisSpace scaleToFitPlots:[graph plotAtIndex:0]];
+    //}
+
+    // In xy mode, always just grab the latest N readings and autorange both axes
+
+    // If autoscroll is on, time drives the xrange
+    // xrange always drives the data
+
+    // if y autorange is on, data drives the yrange
+    // if y autorange is off, the user scales it himself
+
+    // If scroll lock is on, always display the latest data
+    // This may seem counter-intuitive, but we do this by setting the bounds we'd like to draw first,
+    // then populating the data arrays afterwards.  This is because when we're not scroll locked, the user
+    // may arbitrarily adjust the view bounds, so we should fill in our data based on bounds and not vice versa.
+    if(_autoscroll) {
+        // If autoscroll is on, time drives the xrange
+        float xmax = [((XYPoint*)[_left_cache lastObject]).x floatValue];
+        int xmin_i = _left_cache.count-_max_points_onscreen;
+        if(xmin_i<0) {
+            xmin_i = 0;
+        }
+        float xmin = [((XYPoint*)_left_cache[xmin_i]).x floatValue];
+        range = [CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:xmin] length:[NSNumber numberWithFloat:(xmax-xmin)]];
+        _leftAxisSpace.xRange = range;
+        _rightAxisSpace.xRange = [range copy];
+    }
+
+    // xrange always drives the data
+    [self fillFromBackingArrayWithXRange:_leftAxisSpace.xRange backing_data:_left_cache to_fill:_left_onscreen];
+    [self fillFromBackingArrayWithXRange:_rightAxisSpace.xRange backing_data:_right_cache to_fill:_right_onscreen];
+
+    // if y autorange is on, data drives the yrange
+    if(_left_axis_auto) {
+        _leftAxisSpace.yRange = plotRangeForValueArray(_left_onscreen,@selector(y));
+    }
+
+    if(_right_axis_auto) {
+        _rightAxisSpace.yRange = plotRangeForValueArray(_right_onscreen,@selector(y));
+    }
+
+    [graph reloadData];
+    [self redrawAxisLabels];
+}
+
 -(void) redrawTrendView {
     CPTGraph *graph = self.hostView.hostedGraph;
     [graph reloadData];
+
+    // Only worry about redrawing axes, etc. if we are scroll locked to the right
+    if(!_autoscroll) {return;}
     
     CPTXYPlotSpace *ch1Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:0];
     
@@ -134,47 +232,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     [self redrawAxisLabels];
 }
-#if 0
--(void) graphBuffer {
-    g_meter->meter_settings.rw.calc_settings &=~(METER_CALC_SETTINGS_MS|METER_CALC_SETTINGS_MEAN);
-    g_meter->meter_settings.rw.calc_settings |= METER_CALC_SETTINGS_ONESHOT;
-    g_meter->meter_settings.rw.target_meter_state = METER_RUNNING;
-    
-    // Bring up a loading icon
-    CGRect                  b = self.view.bounds;
-    UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    //center the indicator in the view
-    indicator.frame = CGRectMake((b.size.width-20)/2,(b.size.height-20)/2,20,20);
-    [self.view addSubview:indicator];
-    [indicator startAnimating];
-    
-    [g_meter enableStreamMeterSample:NO cb:^(NSError *error) {
-        [g_meter enableStreamMeterBuf:YES cb:^(NSError *error) {
-            [g_meter sendMeterSettings:^(NSError *error) {
-                NSLog(@"Capture setup complete!");
-            }];
-        } complete_buffer_cb:^{
-            // Load data from meter
-            // FIXME: Super memory inefficient
-            double t = 0;
-            int freq = 125;
-            freq <<= (g_meter->meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK);
-            double dt = 1./((double)(freq));
-            
-            self->buf_i = 0;
-            self->buf_n = [g_meter getBufLen];
-            
-            for( int i = 0; i < [g_meter getBufLen]; i++ ) {
-                time[i] = t;
-                self->ch1_values[i] = [g_meter getValAt:0 i:i];
-                self->ch2_values[i] = [g_meter getValAt:1 i:i];
-                t+=dt;
-            }
-            [self initPlot];
-        }];
-    } update:nil];
-}
-#endif
 #pragma mark - Chart behavior
 -(void)initPlot {
     NSLog(@"Initializing Plots!");
@@ -194,9 +251,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.view addSubview:self.hostView];
 
     // Set up the config button
+    __weak typeof(self) ws=self;
     UIButton* b = [WidgetFactory makeButton:@"Config" callback:^{
         // Open the config popover
-        UIView* v = [WidgetFactory makePopoverFromView:[GraphSettingsView class]size:CGSizeMake(300,300)];
+        GraphSettingsView* v = [[GraphSettingsView alloc]init];
+        [WidgetFactory makePopoverFromView:v size:CGSizeMake(300,300)];
+        v.graph = ws;
         v.backgroundColor = [UIColor whiteColor];
     }];
     b.backgroundColor = [UIColor whiteColor];
@@ -207,11 +267,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.view addSubview:b];
 
     // Set up the back button
-    __weak typeof(self) ws = self;
     b = [WidgetFactory makeButton:@"Back" callback:^{
-        // Pushed and Modally presented have different dismissal routines.  Because apple.
+        // Pushed and Modally presented have different dismissal routines.  Because Apple.
         //[ws.navigationController popViewControllerAnimated:YES];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [ws dismissViewControllerAnimated:YES completion:nil];
     }];
     b.backgroundColor = [UIColor whiteColor];
     b.frame = CGRectMake(0,0,80,40);
@@ -247,23 +306,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)configurePlots {
     // 1 - Get graph and plot space
     CPTGraph *graph = self.hostView.hostedGraph;
-    CPTXYPlotSpace *ch1PlotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
-    
-    ch1PlotSpace.allowsUserInteraction = YES;
+    _leftAxisSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
+    _leftAxisSpace.allowsUserInteraction = YES;
+    _leftAxisSpace.delegate = self;
     
     // 2 - Create the plots
     CPTScatterPlot *ch1Plot = [[CPTScatterPlot alloc] init];
     ch1Plot.dataSource = self;
     ch1Plot.identifier = @"CH1";
     CPTColor *ch1Color = [CPTColor redColor];
-    [graph addPlot:ch1Plot toPlotSpace:ch1PlotSpace];
+    [graph addPlot:ch1Plot toPlotSpace:_leftAxisSpace];
     
     // 3 - Set up plot space
-    [ch1PlotSpace scaleToFitPlots:@[ch1Plot]];
+    [_leftAxisSpace scaleToFitPlots:@[ch1Plot]];
     
-    CPTMutablePlotRange *y1Range = [ch1PlotSpace.yRange mutableCopy];
+    CPTMutablePlotRange *y1Range = [_leftAxisSpace.yRange mutableCopy];
     [y1Range expandRangeByFactor:@1.2f];
-    ch1PlotSpace.yRange = y1Range;
+    _leftAxisSpace.yRange = y1Range;
     
     // 4 - Create styles and symbols
     if( !self.xy_mode ) {
@@ -289,33 +348,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     
     if( !self.xy_mode ) {
-        CPTXYPlotSpace *ch2PlotSpace = [[CPTXYPlotSpace alloc]init];
-        ch2PlotSpace.allowsUserInteraction = YES;
-        self.space2 = ch2PlotSpace;
-        [graph addPlotSpace:ch2PlotSpace];
+        _rightAxisSpace = [[CPTXYPlotSpace alloc]init];
+        _rightAxisSpace.allowsUserInteraction = YES;
+        _rightAxisSpace.delegate = self;
+        [graph addPlotSpace:_rightAxisSpace];
         
         CPTScatterPlot *ch2Plot = [[CPTScatterPlot alloc] init];
         ch2Plot.dataSource = self;
         ch2Plot.identifier = @"CH2";
         CPTColor *ch2Color = [CPTColor greenColor];
-        [graph addPlot:ch2Plot toPlotSpace:ch2PlotSpace];
+        [graph addPlot:ch2Plot toPlotSpace:_rightAxisSpace];
         
-        [ch2PlotSpace scaleToFitPlots:[NSArray arrayWithObjects:ch2Plot, nil]];
+        [_rightAxisSpace scaleToFitPlots:[NSArray arrayWithObjects:ch2Plot, nil]];
         
-        CPTMutablePlotRange *y2Range = [ch2PlotSpace.yRange mutableCopy];
+        CPTMutablePlotRange *y2Range = [_rightAxisSpace.yRange mutableCopy];
         
         CPTMutablePlotRange *xRange;
         if(self.ch1_on) {
-            xRange = [ch1PlotSpace.xRange mutableCopy];
+            xRange = [_leftAxisSpace.xRange mutableCopy];
         } else {
-            xRange = [ch2PlotSpace.xRange mutableCopy];
+            xRange = [_rightAxisSpace.xRange mutableCopy];
         }
         [xRange expandRangeByFactor:@1.2f];
-        ch1PlotSpace.xRange = xRange;
-        ch2PlotSpace.xRange = xRange;
+        _leftAxisSpace.xRange = xRange;
+        _rightAxisSpace.xRange = xRange;
         
         [y2Range expandRangeByFactor:@1.2f];
-        ch2PlotSpace.yRange = y2Range;
+        _rightAxisSpace.yRange = y2Range;
         
         CPTMutableLineStyle *ch2LineStyle = [ch2Plot.dataLineStyle mutableCopy];
         ch2LineStyle.lineWidth = 2.5;
@@ -330,9 +389,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         ch2Plot.plotSymbol = ch2Symbol;
     } else {
         CPTMutablePlotRange *xRange;
-        xRange = [ch1PlotSpace.xRange mutableCopy];
+        xRange = [_leftAxisSpace.xRange mutableCopy];
         [xRange expandRangeByFactor:@1.2f];
-        ch1PlotSpace.xRange = xRange;
+        _leftAxisSpace.xRange = xRange;
     }
 }
 
@@ -387,7 +446,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     CPTMutableLineStyle *ch2MajorGridLineStyle = [CPTMutableLineStyle lineStyle];
     ch2MajorGridLineStyle.lineColor = [CPTColor colorWithComponentRed:0.0 green:0.4 blue:0.0 alpha:1.0];
     ch2MajorGridLineStyle.lineWidth = 1.0f;
-    
+
     CPTMutableLineStyle *minorGridLineStyle = [CPTMutableLineStyle lineStyle];
     minorGridLineStyle.lineColor = [CPTColor blackColor];
     minorGridLineStyle.lineWidth = 1.0f;
@@ -439,7 +498,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         y2.coordinate = CPTCoordinateY;
         axisSet.axes = [NSArray arrayWithObjects:axisSet.xAxis, axisSet.yAxis, y2, nil];
         y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:20.0];
-        y2.plotSpace = self.space2;
+        y2.plotSpace = self.rightAxisSpace;
         y2.title = [self.meter getInputLabel:CH2];
         y2.titleTextStyle = ch2AxisTextStyle;
         y2.titleOffset = -35.0f;
@@ -457,34 +516,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self redrawAxisLabels];
 }
 
-- (void)drawLabelsForAxis:(CPTXYAxis*)target values:(NSMutableArray<XYPoint*>*)values use_yvalues:(bool)use_yvalues{
-    if(values.count==0) {
-        // Nothing we can do, no data provided
-        return;
-    }
-    float (^getter)(NSUInteger i);
-    if(use_yvalues) {
-        getter = ^float(NSUInteger i) {return ((XYPoint*)values[i]).y.floatValue;};
-    } else {
-        getter = ^float(NSUInteger i) {return ((XYPoint*)values[i]).x.floatValue;};
-    }
-    CGFloat yMin = getter(0);
-    for( NSUInteger i = 0; i < values.count; i++ ) yMin = getter(i) < yMin ? getter(i):yMin;
-    
-    CGFloat yMax = getter(0);
-    for( NSUInteger i = 0; i < values.count; i++ ) yMax = getter(i) > yMax ? getter(i):yMax;
-    
-    double range = yMax - yMin;
-    
-    double majorTick = [self getTickFromRange:range];
-    yMin = (float)( majorTick*floor(yMin/majorTick) );
-    yMax = (float)( majorTick*floor(yMax/majorTick) );
+- (void)drawLabelsForAxis:(CPTXYAxis*)target cpt_range:(CPTPlotRange*)cpt_range{
+    double majorTick = [self getTickFromRange:[cpt_range.length floatValue]];
+    float yMin = (float)(        majorTick*floor(cpt_range.locationDouble/majorTick) );
+    float yMax = (float)( yMin + cpt_range.lengthDouble );
     NSMutableSet *yLabels = [NSMutableSet set];
     NSMutableSet *yMajorLocations = [NSMutableSet set];
     for(double j = yMin; j < yMax; j+=majorTick) {
         CPTAxisLabel *label = [[CPTAxisLabel alloc] initWithText:[NSString stringWithFormat:@"%3.3f", j] textStyle:target.labelTextStyle];
         label.tickLocation = [NSNumber numberWithDouble:j];
-        j;
         label.offset = -target.majorTickLength - target.labelOffset;
         label.rotation = 3.14f/4; // Rotate 45 degrees for better fit
         if (label) {
@@ -501,48 +541,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     CPTXYAxis *x = axisSet.xAxis;
     CPTXYAxis *y1 = axisSet.yAxis;
-    
-    // CONFIGURE Y1
-    [self drawLabelsForAxis:y1 values:self.left_vals use_yvalues:YES];
-    
-    if( !self.xy_mode ) {
-        // CONFIGURE X
-        [self drawLabelsForAxis:x values:self.left_vals use_yvalues:NO];
-        CPTXYAxis *y2 = axisSet.axes[2];
-        // CONFIGURE Y2
-        [self drawLabelsForAxis:y2 values:self.right_vals use_yvalues:YES];
-    } else {
-        // CONFIGURE X
-        [self drawLabelsForAxis:x values:self.right_vals use_yvalues:YES];
-    }
+    CPTXYAxis *y2 = axisSet.axes[2];
+
+    [self drawLabelsForAxis:x cpt_range:_leftAxisSpace.xRange];
+    [self drawLabelsForAxis:y1 cpt_range:_leftAxisSpace.yRange];
+    [self drawLabelsForAxis:y2 cpt_range:_rightAxisSpace.yRange];
 }
 
 #pragma mark - CPTPlotDataSource methods
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
+
     if ( [plot.identifier isEqual:@"CH1"] ) {
-        if(self.ch1_on) {
-            return self.left_vals.count;
-        } else {
-            return 0;
-        }
+        return self.left_onscreen.count;
     }
     if ( [plot.identifier isEqual:@"CH2"] ) {
-        if(self.ch2_on) {
-            return self.right_vals.count;
-        } else {
-            return 0;
-        }
+        return self.right_onscreen.count;
     }
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
-    double val = 0;
-
     NSMutableArray<XYPoint *>* source;
     if([plot.identifier isEqual:@"CH1"]) {
-        source = self.left_vals;
+        source = _left_onscreen;
     } else if([plot.identifier isEqual:@"CH2"]) {
-        source = self.right_vals;
+        source = _right_onscreen;
     } else {
         NSLog(@"WHAT");
     }
@@ -579,24 +601,94 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSMutableArray * buf=nil;
     switch(c){
         case CH1:
-            buf=self.left_vals;
+            buf=self.left_cache;
             break;
         case CH2:
-            buf=self.right_vals;
+            buf= self.right_cache;
+            //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
+            // The tendency is for readings to bunch up between renders
+            _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
             break;
         case MATH:
             // We don't handle this yet
             return;
     }
-    if(buf==nil){NSLog(@"wat");return;} // Should never happen
-    float dt = (float)(timestamp_utc - self.start_time);
-    [buf addObject:[XYPoint make:dt y:val.value]];
-    while(buf.count>self.max_points_onscreen) {
-        [buf removeObjectAtIndex:0];
-    }
-    [self redrawTrendView];
+    if(buf==nil){return;} // Might happen with math channel
+    [buf addObject:[XYPoint make:_sample_time y:val.value]];
 }
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
 
 }
+#pragma mark CPTPlotSpaceDelegate methods
+
+-(BOOL)plotSpace:(nonnull CPTPlotSpace *)space shouldScaleBy:(CGFloat)interactionScale aboutPoint:(CGPoint)interactionPoint {
+    // Respect the autorange settings
+    if(    space == _leftAxisSpace
+        && _left_axis_auto ) {
+        return NO;
+    }
+    if(    space == _rightAxisSpace
+            && _right_axis_auto ) {
+        return NO;
+    }
+    // If both axes are manual ranging, distinguish which to modify based on where the interactionpoint is
+    // (left pinch changes left axis, right pinch changes right axis)
+    if(!_left_axis_auto && !_right_axis_auto) {
+        // Determine what side of the screen was pinched
+        BOOL left_side_pinched = interactionPoint.x < self.hostView.frame.size.width/2;
+        BOOL left_side_being_tested = space==_leftAxisSpace;
+        if(left_side_being_tested!=left_side_pinched) {
+            return NO;
+        }
+    }
+
+    CPTXYPlotSpace *xyspace = (CPTXYPlotSpace *)space;
+    CPTMutablePlotRange *y = [[xyspace yRange] mutableCopy];
+
+    // Figure out how to offset the range
+    // interactionPoint is in pixels, but with Y inverted from the native scheme
+    // This is how far up the view the interaction occurred, with 1 being the top
+    double how_far_up = interactionPoint.y/self.hostView.frame.size.height;
+
+    // This is how much the range has changed
+    double range_change = y.lengthDouble*(1/interactionScale - 1);
+    // If the gesture is at the top of the view, the entire change gets applied to the range.location (which specifies bottom)
+    y.locationDouble = y.locationDouble-(range_change*(how_far_up));
+
+    // Scaling is easy
+    y.lengthDouble = y.lengthDouble/interactionScale;
+
+    xyspace.yRange = y;
+    return NO;
+}
+-(BOOL)plotSpace:(nonnull CPTPlotSpace *)space shouldHandlePointingDeviceDownEvent:(nonnull CPTNativeEvent *)event atPoint:(CGPoint)point {
+    _left_side_touched = point.x < self.hostView.frame.size.width/2;
+    return YES;
+}
+-(CGPoint)plotSpace:(nonnull CPTPlotSpace *)space willDisplaceBy:(CGPoint)proposedDisplacementVector {
+    if(_autoscroll) {
+        // If scroll lock is on, don't allow scrolling in X
+        proposedDisplacementVector.x = 0;
+    }
+    if(    space == _leftAxisSpace
+            && _left_axis_auto ) {
+        proposedDisplacementVector.y = 0;
+    }
+    if(    space == _rightAxisSpace
+            && _right_axis_auto ) {
+        proposedDisplacementVector.y = 0;
+    }
+    // If both axes are manual ranging, distinguish which to modify based on where the interactionpoint is
+    // (left pinch changes left axis, right pinch changes right axis)
+    if(!_left_axis_auto && !_right_axis_auto) {
+        // Determine what side of the screen was pinched
+        BOOL left_side_being_tested = space==_leftAxisSpace;
+        if(left_side_being_tested!=_left_side_touched) {
+            proposedDisplacementVector.y = 0;
+        }
+    }
+
+    return proposedDisplacementVector;
+}
+
 @end

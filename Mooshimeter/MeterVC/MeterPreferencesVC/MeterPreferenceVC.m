@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "MeterPreferenceVC.h"
 #import "WidgetFactory.h"
+#import "PopupMenu.h"
 
 @implementation MeterPreferenceVC {
     float y_offset;
@@ -124,10 +125,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // Logging interval
     {
         NSString* title = [NSString stringWithFormat:@"%ds",([self.meter getLoggingIntervalMS]/1000)];
-        [self addPreferenceCell:@"Logging Interval" msg:@"Set the time between samples when logging is on." accessory:[WidgetFactory makeButton:title callback:^{
+        UIButton* b = [WidgetFactory makeButtonReflexive:title callback:^(UIButton *button) {
             // Start a dialog box to get some input
-            NSLog(@"Durr");
-        } frame:CGRectMake(0,0,50,50)]];
+            NSArray<NSString*>* s_options = @[@"MAX",@"1s",@"10s",@"1min"];
+            NSArray<NSNumber*>* i_options = @[@0,@1000,@(10*1000),@(60*1000)];
+            [PopupMenu displayOptionsWithParent:self.view
+                                          title:@"Logging Interval"
+                                        options:s_options callback:^(int i) {
+                        [self.meter setLoggingInterval:[i_options[i] integerValue]];
+                        [button setTitle:[NSString stringWithFormat:@"%ds", ([self.meter getLoggingIntervalMS] / 1000)] forState:UIControlStateNormal];
+                    }];
+        }];
+        [b setFrame:CGRectMake(0,0,50,50)];
+        [self addPreferenceCell:@"Logging Interval" msg:@"Set the time between samples when logging is on." accessory:b];
     }
 
     // Shipping mode

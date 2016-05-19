@@ -117,7 +117,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
         MeterPreferenceVC * vc = [[MeterPreferenceVC alloc] initWithMeter:meter];
         [gnav pushViewController:vc animated:YES];
-    } frame:CGRectMake(0,0,35,35)];
+    }];
+    [b setFrame:CGRectMake(0,0,35,35)];
     [self addToNavBar:b];
 
     UIImageView* bat_icon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bat_icon_0.png"]];

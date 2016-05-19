@@ -20,16 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @implementation ScanTableViewCell
 
--(ScanTableViewCell*) init {
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"ScanCell"];
-    return self;
-}
-
 - (ScanTableViewCell*)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+    //self = [super initWithStyle:UITableViewCellStyle reuseIdentifier:reuseIdentifier];
     UIActivityIndicatorView* spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     spinner.hidesWhenStopped = YES;
     self.accessoryView = spinner;
+    CGRect f = self.frame;
+    f.size.height = 100;
+    self.frame = f;
     return self;
 }
 
@@ -65,15 +64,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         NSLog(@"Shouldn't have received a nil device");
     }
 }
-
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
 @end

@@ -61,7 +61,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         if(weakself==nil){return;}
         if(![weakself respondsToSelector:cb]){return;}
         [weakself performSelector:cb];
-    } frame:frame];
+    }];
+    [b setFrame:frame];
     [self addSubview:b];
     return b;
 }
