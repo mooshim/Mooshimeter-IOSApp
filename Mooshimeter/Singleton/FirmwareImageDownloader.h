@@ -17,4 +17,6 @@
 +(bool)isFirmwareDownloadComplete;
 +(img_hdr_t)getFirmwareImageHeader;
 +(NSData*)getFirmwareImageData;
+
++(uint32)getBuildTime;
 @end

@@ -1,193 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="CIDR_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file:///Users/common" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/libCorePlot-CocoaTouch.a" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/MooshimeterFlashLayout.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Default-568h@2x.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDeviceBase.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter-Info.plist" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/InputDescriptor.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/WidgetFactory.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDeviceBase.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDelegateProtocol.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/WidgetFactory.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Chooser.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADDevice.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterReading.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Chooser.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/PopupMenu.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterReading.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/PopupMenu.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/LegacyMooshimeterDevice.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Default~iphone.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Default.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/ScanVC.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/BaseVC.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_99.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_89.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_75.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_16.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_51.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_3.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_85.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_90.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_61.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_95.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_36.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_71.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_12.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_8.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_46.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_81.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_22.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_56.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_91.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_41.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_66.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_42.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_92.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_76.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_17.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_78.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_52.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_4.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_86.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_27.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_62.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_96.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_37.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_72.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_13.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_47.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_0.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_82.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_23.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_57.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_9.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_33.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_67.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_43.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_98.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_77.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_18.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_53.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_5.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_87.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_28.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_63.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_29.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_97.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_38.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_73.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_14.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_48.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_1.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_83.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_24.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_100.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_58.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_93.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_34.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_54.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_79.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_68.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_44.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_20.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_19.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_32.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_6.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_88.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_7.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_26.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_64.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_40.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_39.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_74.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_15.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_50.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_49.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_2.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_84.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_25.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_10.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_60.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_59.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_94.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_35.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_70.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_11.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_45.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_80.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_21.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_55.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_69.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_30.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_31.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_65.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/ScanVC.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/InputDescriptor.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/main.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterVC.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/ChannelView.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/ChannelView.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterVC.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter-Prefix.pch" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADDevice.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/BaseVC.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GraphVC.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProgressViewController.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/RangeDescriptor.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GraphVC.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProgressViewController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mstar320x480.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/RangeDescriptor.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterControlProtocol.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProfile.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/en.lproj/InfoPlist.strings" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter.entitlements" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/MeterDirectory.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/BLEUtility.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/AppDelegate.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/MeterDirectory.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/BLEUtility.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/AppDelegate.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/oad.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Images.xcassets" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProfile.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGUtils.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCentralManager.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCentralManager.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCharacteristic.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/CBUUID+StringExtraction.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGPeripheral.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGService.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCharacteristic.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGUtils.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGPeripheral.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/CBUUID+StringExtraction.m" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGBluetooth.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGService.m" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MooshimeterProfileTypes.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/ScanTableViewCell.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Default-568h@2x.png" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificCategories.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPieChart.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTestCase.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTimeFormatter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableNumericData.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutablePlotRange.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableLineStyle.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnnotationHostLayer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnnotation.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLineCap.h" isTestSource="false" />
@@ -195,6 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTXYAxisSet.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDerivedXYGraph.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotSymbol.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTBorderedLayer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLimitBand.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDefinitions.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotGroup.h" isTestSource="false" />
@@ -205,10 +29,10 @@
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGraph.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTScatterPlot.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableNumericData+TypeConversion.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTNumericDataType.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisSet.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTFunctionDataSource.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableLineStyle.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTFill.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutablePlotRange.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnimation.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTExceptions.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPathExtensions.h" isTestSource="false" />
@@ -217,7 +41,8 @@
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTCalendarFormatter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLegend.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTheme.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGraphHostingView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSNumberExtensions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTNumericDataType.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSDecimalNumberExtensions.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTextStylePlatformSpecific.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnimationPeriod.h" isTestSource="false" />
@@ -236,22 +61,20 @@
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDataSourceTestCase.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificFunctions.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLineStyle.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificDefines.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLegendEntry.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTBarPlot.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotRange.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSNumberExtensions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTGraphHostingView.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTDebugQuickLook.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLegendEntry.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTShadow.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTColorSpace.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTRangePlot.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisTitle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlatformSpecificDefines.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CorePlot-CocoaTouch.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/NSCoderExtensions.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTBorderedLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTShadow.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTTextLayer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotSpaceAnnotation.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CorePlot-CocoaTouch.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAxisSet.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTPlotSpace.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTLayer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTMutableShadow.h" isTestSource="false" />
@@ -261,111 +84,294 @@
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/mainpage.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTAnimationOperation.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CorePlotHeaders/CPTXYAxis.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGUtils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/CBUUID+StringExtraction.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/CBUUID+StringExtraction.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCentralManager.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGPeripheral.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGPeripheral.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGService.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCharacteristic.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGBluetooth.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCharacteristic.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGCentralManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGUtils.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LGBluetooth/LGService.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ScanTableViewCell.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MooshimeterFlashLayout.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/MooshimeterTests-Info.plist" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/MooshimeterTests.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/MooshimeterTests.m" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MooshimeterTests/en.lproj/InfoPlist.strings" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_72.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_13.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_98.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_47.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_82.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_23.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_6.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_88.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_57.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_20.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_92.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_33.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_67.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_10.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_43.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_77.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_2.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_53.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_87.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_28.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_63.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_100.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_97.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_38.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_73.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_14.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_48.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_99.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_83.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_24.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_7.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_3.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_58.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_93.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_34.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_68.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_44.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_78.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_19.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_54.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_30.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_29.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_64.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_18.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_40.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_39.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_74.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_15.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_60.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_50.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_49.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_84.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_25.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_8.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_16.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_59.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_1.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_94.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_41.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_70.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_69.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_45.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_80.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_21.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_4.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_55.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_90.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_89.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_65.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_11.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_75.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_0.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_51.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_85.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_26.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_9.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_61.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_95.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_36.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_79.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_71.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_12.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_46.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_81.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_22.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_5.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_35.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_91.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_32.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_66.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_42.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_76.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_17.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_56.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_52.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_86.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_27.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_62.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_31.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_96.png" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Icons/BatteryIcon/bat_icon_37.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/main.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter-Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDeviceBase.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter.entitlements" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/WidgetFactory.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Default.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADDevice.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDeviceBase.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterDelegateProtocol.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/WidgetFactory.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Chooser.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADDevice.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterReading.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Chooser.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/PopupMenu.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterReading.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/PopupMenu.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/LegacyMooshimeterDevice.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Default~iphone.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mstar320x480.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/ScanVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/BaseVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_41.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_75.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_16.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_51.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_3.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_85.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_26.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_61.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_95.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_36.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_71.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_12.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_8.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_46.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_81.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_22.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_56.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_30.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_91.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_32.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_66.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_42.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_76.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_17.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_78.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_52.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_4.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_86.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_27.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_62.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_34.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_96.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_37.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_72.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_13.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_47.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_0.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_82.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_23.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_57.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_92.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_33.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_67.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_43.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_98.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_77.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_18.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_21.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_53.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_99.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_5.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_87.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_28.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_63.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_97.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_38.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_68.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_73.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_14.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_48.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_1.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_83.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_24.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_100.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_9.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_58.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_93.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_89.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_10.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_7.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_44.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_20.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_19.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_54.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_6.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_88.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_29.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_64.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_40.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_39.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_74.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_15.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_50.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_49.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_2.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_84.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_25.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_60.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_59.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_94.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_35.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_70.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_11.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_45.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_80.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_79.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_55.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_69.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_90.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_31.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/signal/sig_icon_65.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/connected.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_72.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_13.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_47.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_82.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_23.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_6.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_88.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_57.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_20.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_92.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_33.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_67.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_40.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_43.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_15.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_77.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_2.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_53.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_87.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_28.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_63.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_100.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_97.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_38.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_73.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_14.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_48.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_83.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_24.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_7.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_18.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_58.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_93.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_34.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_10.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_16.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_44.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_78.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_3.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_54.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_30.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_29.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_64.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_98.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_39.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_21.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_74.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_99.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_50.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_49.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_84.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_25.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_8.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_60.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_59.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_94.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_68.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_70.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_69.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_45.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_80.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_89.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_4.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_55.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_90.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_31.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_65.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_41.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_75.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_0.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_51.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_85.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_26.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_9.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_35.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_95.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_36.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_79.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_71.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_12.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_46.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_81.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_22.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_5.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_11.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_56.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_91.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_32.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_61.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_17.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_66.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_42.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_76.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_1.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_52.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_86.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_27.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_19.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_62.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_96.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/battery/bat_icon_37.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/icons/disconnected.png" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/ScanVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/SpeaksOnLargeChange.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/SpeaksOnLargeChange.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/ChannelView.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/ChannelView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/MeterVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Mooshimeter-Prefix.pch" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/InputDescriptor.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/BaseVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GraphVC.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProgressViewController.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/RangeDescriptor.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/GraphVC.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProgressViewController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/RangeDescriptor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/MooshimeterControlProtocol.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/sounds/beep.wav" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/InputDescriptor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/BLEUtility.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/AppDelegate.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/MeterDirectory.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/AppDelegate.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/Beeper.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/BLEUtility.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/MeterDirectory.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/Beeper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/oad.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/en.lproj/InfoPlist.strings" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProfile.m" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/Images.xcassets" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Mooshimeter/OADProfile.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ScanTableViewCell.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

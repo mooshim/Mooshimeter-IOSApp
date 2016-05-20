@@ -33,6 +33,16 @@
 - (bool *)speech_on {return _speech_on;}
 - (bool *)range_auto {return _range_auto;}
 
+-(instancetype)init {
+    self = [super init];
+    _speech_on[0] = NO;
+    _speech_on[1] = NO;
+    _speech_on[2] = NO;
+    _range_auto[0] = NO;
+    _range_auto[1] = NO;
+    return self;
+}
+
 #pragma mark MooshimeterControlProtocol_methods
 -(void)removeDelegate {
     self.delegate = [[DummyDelegate alloc]init];

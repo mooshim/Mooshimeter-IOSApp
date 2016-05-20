@@ -8,6 +8,8 @@
 @interface CG
 
 +(CGRect)centerIn:(CGRect)in new_size:(CGSize)new_size;
++(CGRect)centerHorz:(CGRect)in new_size:(CGSize)new_size;
++(CGRect)centerVert:(CGRect)in new_size:(CGSize)new_size;
 +(CGRect)alignLeft:(CGRect)from to:(CGRect)to;
 +(CGRect)alignRight:(CGRect)from to:(CGRect)to;
 +(CGRect)alignBottom:(CGRect)from to:(CGRect)to;

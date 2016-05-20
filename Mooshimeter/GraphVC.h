@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @interface XYPoint:NSObject
 @property NSNumber *x,*y;
 +(XYPoint*)make:(float)x y:(float)y;
++(XYPoint*)makeWithNSNumber:(NSNumber*)x y:(NSNumber*)y;
 @end
 
 @interface GraphVC : BaseVC <CPTPlotDataSource,MooshimeterDelegateProtocol,CPTPlotSpaceDelegate>

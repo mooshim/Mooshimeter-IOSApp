@@ -14,6 +14,7 @@
 @required
         -(int)initialize;
         -(void)removeDelegate;
+        -(void)reboot;
 
         ////////////////////////////////
         // Convenience functions

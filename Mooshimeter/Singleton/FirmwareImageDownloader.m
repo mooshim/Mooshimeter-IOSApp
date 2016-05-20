@@ -33,6 +33,10 @@ static FirmwareImageDownloader *shared = nil;
     return shared.imageData;
 }
 
++(uint32)getBuildTime {
+    return shared.imageHeader.build_time;
+}
+
 -(instancetype)init {
     // clear
     self.imageData = nil;

@@ -20,8 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "BLEUtility.h"
 #import "LegacyMooshimeterDevice.h"
 #import "ChannelView.h"
-#import "../MeterSettingsView.h"
 #import "BaseVC.h"
+#import "SpeaksOnLargeChange.h"
 
 @class ChannelView;
 
@@ -29,6 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Housekeeping
 @property MooshimeterDeviceBase * meter;
+
+@property SpeaksOnLargeChange* speaker;
 
 // GUI widgets
 

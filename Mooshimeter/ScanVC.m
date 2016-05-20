@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "SmartNavigationController.h"
 #import "GlobalPreferenceVC.h"
 #import "WidgetFactory.h"
+#import "FirmwareImageDownloader.h"
 
 @implementation ScanVC
 
@@ -127,19 +128,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         case CBPeripheralStateDisconnecting:
         case CBPeripheralStateDisconnected:{
             NSLog(@"Connecting new...");
-            [p connectWithTimeout:5 completion:^(NSError *error) {
-                NSLog(@"Discovering services");
-                [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
-                    discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
-                        Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
-                        // We need to split alloc and init here because of some confusing callback issues
-                        // that might reference self.active_meter
-                        self.active_meter = [meter_class alloc];
-                        [(MooshimeterDeviceBase *)self.active_meter init:p delegate:self];
-                        NSLog(@"Wrapped in meter!");
-                    });
-                }];
-            }];
+            [self wrapPeripheralInMooshimeterAndTransition:p];
             [self reloadData];
             break;}
     }
@@ -212,16 +201,20 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    static const NSString* reuse_id = @"Cell";
     LGPeripheral* p;
-    //NSLog(@"Cell %d",(int)indexPath.row);
     if(indexPath.row >= self.peripherals.count) {
         p = nil;
     } else {
         p = [self.peripherals objectAtIndex:indexPath.row];
     }
     
-    ScanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    
+    ScanTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuse_id forIndexPath:indexPath];
+
+    if(cell == nil) {
+        cell = [[ScanTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuse_id];
+    }
+
     [cell setPeripheral:p];
 
     return cell;
@@ -236,9 +229,8 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"You clicked a meter");
     ScanTableViewCell* c = [self.tableView cellForRowAtIndexPath:indexPath];
-    [self handleScanViewSelect:c.p];
+    [self handleScanViewSelect:c.peripheral];
 }
 
 -(void)transitionToMeterView:(MooshimeterDeviceBase*)meter {
@@ -290,16 +282,62 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     }
 }*/
 
-#pragma mark MooshimeterDelegateProtocol methods
-- (void)onInit {
-    NSLog(@"Meter init finished, transitioning");
-    if([self.active_meter isKindOfClass:OADDevice.class]) {
+-(void)wrapPeripheralInMooshimeterAndTransition:(LGPeripheral*)p {
+    [p connectWithTimeout:5 completion:^(NSError *error) {
+        NSLog(@"Discovering services");
+        [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
+            discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
+                Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
+                // We need to split alloc and init here because of some confusing callback issues
+                // that might reference self.active_meter
+                self.active_meter = [meter_class alloc];
+                [self.active_meter init:p delegate:self];
+                NSLog(@"Wrapped in meter!");
+            });
+        }];
+    }];
+}
+
+-(void)chooseAndStartActivityFor:(MooshimeterDeviceBase*)device {
+    if([device isKindOfClass:OADDevice.class]) {
         // Start OAD activity
-        [self transitionToOADView:self.active_meter];
+        [self transitionToOADView:device];
     } else {
-        // Start Meter activity
-        [self transitionToMeterView:self.active_meter];
+        // If the connected meter has an old version of fw
+        if([MooshimeterDeviceBase getBuildTimeFromPeripheral:_active_meter.periph] < [FirmwareImageDownloader getBuildTime]
+                && ![self.active_meter getPreference:@"SKIP_UPGRADE" def:NO]) {
+            // We should offer to upgrade
+            [WidgetFactory makeCancelContinueAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
+                if(proceed) {
+                    // Now we need to disconnect and reconnect to the meter needing upgrade
+                    [self forceReconnectInOADMode:_active_meter];
+                } else {
+                    [self transitionToMeterView:device];
+                }
+            }];
+        } else {
+            //Firmware is up to date, just start
+            [self transitionToMeterView:device];
+        }
     }
 }
 
+-(void)forceReconnectInOADMode:(MooshimeterDeviceBase*)m {
+    // We're going to force the meter to disconnect, then reconnect real quick
+    [m.periph registerDisconnectHandler:^(NSError *error) {
+        [self wrapPeripheralInMooshimeterAndTransition:m.periph];
+    }];
+    [m reboot];
+}
+
+#pragma mark MooshimeterDelegateProtocol methods
+- (void)onInit {
+    [self chooseAndStartActivityFor:self.active_meter];
+}
+-(void)onRssiReceived:(int)rssi {
+    //We should really do something with this but I designed the MooshimeterDeviceDelegate protocol poorly;
+}
+-(void)onBatteryVoltageReceived:(float)voltage {
+    //We should really do something with this but I designed the MooshimeterDeviceDelegate protocol poorly
+}
 @end

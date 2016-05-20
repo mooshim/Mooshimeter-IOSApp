@@ -58,13 +58,21 @@
 //////////////////
 
 @implementation CG
+
++(CGRect)centerVert:(CGRect)in new_size:(CGSize)new_size {
+    float cy = in.origin.y + (in.size.height / 2.0f);
+    in.origin.y = cy - new_size.height / 2.0f;
+    in.size = new_size;
+    return in;
+}
++(CGRect)centerHorz:(CGRect)in new_size:(CGSize)new_size {
+    float cx = in.origin.x + (in.size.width / 2.0f);
+    in.origin.x = cx - new_size.width / 2.0f;
+    in.size = new_size;
+    return in;
+}
 +(CGRect)centerIn:(CGRect)in new_size:(CGSize)new_size {
-    float cx = in.origin.x+(in.size.width/2.0f);
-    float cy = in.origin.y+(in.size.height/2.0f);
-    return CGRectMake(  cx-new_size.width/2.0f,
-                        cy-new_size.height/2.0f,
-                        new_size.width,
-                        new_size.height);
+    return [CG centerVert:[CG centerHorz:in new_size:new_size] new_size:new_size];
 }
 +(CGRect)alignLeft:(CGRect)from to:(CGRect)to {
     CGRect rval = from;

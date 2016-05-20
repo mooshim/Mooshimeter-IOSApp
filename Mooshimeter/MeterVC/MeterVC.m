@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter{
     self = [super init];
     self.meter = meter;
+    self.speaker = [[SpeaksOnLargeChange alloc]init];
     return self;
 }
 
@@ -311,6 +312,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 - (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
+    // Cache values to determine if change is large enough to speak about
     NSLog(@"Updating measurements for %d...",c);
     switch(c) {
         case CH1:
@@ -327,6 +329,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         case MATH:
             [self math_label_refresh:val];
             break;
+    }
+    // Handle speech
+    if(self.meter.speech_on[c]) {
+        [self.speaker decideAndSpeak:val];
     }
 }
 

@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "LegacyMooshimeterDevice.h"
 #import "oad.h"
-#import "Beeper.h"
 
 typedef enum {
     NATIVE,
@@ -191,10 +190,6 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 
 // Callback triggered by sample received
 void (^sample_handler)(NSData*,NSError*);
-
--(void)beep {
-
-}
 
 -(void)finishInit{
     // This should be called after connect and discovery are done
@@ -846,33 +841,6 @@ int24_test to_int24_test(long arg) {
     };
     [descriptor addRange:@"350K" converter:temp_converter max:350 gain:PGA_GAIN_1 gpio:GPIO_IGNORE isrc:ISRC_IGNORE];
     [chooser add:descriptor];
-
-    descriptor = [[LegacyInputDescriptor alloc] initWithName:@"CONTINUITY" units:@"Ω" input:RESISTANCE is_ac:NO];
-    Lsb2NativeConverter res_converter;
-    switch (meter_info.pcb_version) {
-        case 7:
-            res_converter = [self makeSimpleConverter:(1/100e-6f) pga:PGA_GAIN_1 ];
-            break;
-        case 8:
-            res_converter = [self makeResistiveConverter:ISRC_HIGH pga:PGA_GAIN_1 ];
-            break;
-        default:
-            NSLog(@"Unrecognized PCB type");
-            break;
-    }
-    Lsb2NativeConverter beep_converter = ^float(int lsb) {
-        // Yo dawg, I heard you like converters
-        // So I put a converter in your converter so you can convert while you convert
-        // No but seriously, I need to put a beeper somewhere and the least code-repetitive way is to nest converters
-        // and check the result of the inner one with the outer one
-        float ohms = res_converter(lsb);
-        if(ohms < 40.0f) {
-            [Beeper beep];
-        }
-        return ohms;
-    };
-    [descriptor addRange:@"10kΩ"  converter:beep_converter max:1e4 gain:PGA_GAIN_1  gpio:GPIO_IGNORE isrc:ISRC_HIGH];
-    [chooser add:descriptor];
 }
 
 // Return true if settings changed
@@ -890,11 +858,6 @@ int24_test to_int24_test(long arg) {
 //////////////////////////////////////
 // Interacting with the Mooshimeter itself
 //////////////////////////////////////
-
--(void)reboot {
-    meter_settings.rw.target_meter_state = METER_SHUTDOWN;
-    [self sendMeterSettings:nil];
-}
 
 -(void)setName:(NSString*)name {
     [self sendMeterName:name cb:nil];

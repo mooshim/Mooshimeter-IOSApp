@@ -32,6 +32,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     rval.y= [NSNumber numberWithFloat:y];
     return rval;
 }
++(XYPoint*)makeWithNSNumber:(NSNumber*)x y:(NSNumber*)y {
+    XYPoint* rval = [[XYPoint alloc]init];
+    rval.x= x;
+    rval.y= y;
+    return rval;
+}
 @end
 
 @implementation GraphVC
@@ -108,12 +114,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
+    if(values.count==0){
+        return [CPTPlotRange plotRangeWithLocation:@0 length:@0];
+    }
     float minX = CGFLOAT_MAX;
     float maxX = -CGFLOAT_MAX;
     for(id p in values) {
         float x = [(NSNumber*)[p performSelector:returnsAnNSNumber] floatValue];
         if(x > maxX) {maxX= x;}
-        if(x <minX)  {minX= x;}
+        if(x < minX)  {minX= x;}
     }
     float dif = maxX-minX;
     CPTMutablePlotRange *xr = [[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
@@ -142,39 +151,52 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     CPTGraph *graph = self.hostView.hostedGraph;
     CPTPlotRange *range;
 
-    // xy mode always auto-ranges just because laziness
-    //if(_xy_mode) {
-    //    [self.leftAxisSpace scaleToFitPlots:[graph plotAtIndex:0]];
-    //}
-
-    // In xy mode, always just grab the latest N readings and autorange both axes
-
-    // If autoscroll is on, time drives the xrange
-    // xrange always drives the data
-
-    // if y autorange is on, data drives the yrange
-    // if y autorange is off, the user scales it himself
-
-    // If scroll lock is on, always display the latest data
-    // This may seem counter-intuitive, but we do this by setting the bounds we'd like to draw first,
-    // then populating the data arrays afterwards.  This is because when we're not scroll locked, the user
-    // may arbitrarily adjust the view bounds, so we should fill in our data based on bounds and not vice versa.
-    if(_autoscroll) {
-        // If autoscroll is on, time drives the xrange
-        float xmax = [((XYPoint*)[_left_cache lastObject]).x floatValue];
-        int xmin_i = _left_cache.count-_max_points_onscreen;
-        if(xmin_i<0) {
-            xmin_i = 0;
+    if(_xy_mode) {
+        // In xy mode, always just grab the latest N readings and autorange both axes
+        int max_i = MIN(_left_cache.count,_right_cache.count);
+        int min_i = MAX(max_i-_max_points_onscreen,0);
+        [_left_onscreen removeAllObjects];
+        [_right_onscreen removeAllObjects];
+        for(int i = min_i; i < max_i; i++) {
+            XYPoint* lp = _left_cache[i];
+            XYPoint* rp = _right_cache[i];
+            XYPoint* p = [XYPoint makeWithNSNumber:rp.y y:lp.y];
+            [_left_onscreen addObject:p];
         }
-        float xmin = [((XYPoint*)_left_cache[xmin_i]).x floatValue];
-        range = [CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:xmin] length:[NSNumber numberWithFloat:(xmax-xmin)]];
-        _leftAxisSpace.xRange = range;
-        _rightAxisSpace.xRange = [range copy];
-    }
+        // Autorange X dimension
+        _leftAxisSpace.xRange = plotRangeForValueArray(_left_onscreen,@selector(x));
+    } else {
+        // If autoscroll is on, time drives the xrange
+        // xrange always drives the data
 
-    // xrange always drives the data
-    [self fillFromBackingArrayWithXRange:_leftAxisSpace.xRange backing_data:_left_cache to_fill:_left_onscreen];
-    [self fillFromBackingArrayWithXRange:_rightAxisSpace.xRange backing_data:_right_cache to_fill:_right_onscreen];
+        // if y autorange is on, data drives the yrange
+        // if y autorange is off, the user scales it himself
+
+        // If scroll lock is on, always display the latest data
+        // This may seem counter-intuitive, but we do this by setting the bounds we'd like to draw first,
+        // then populating the data arrays afterwards.  This is because when we're not scroll locked, the user
+        // may arbitrarily adjust the view bounds, so we should fill in our data based on bounds and not vice versa.
+        if(_autoscroll) {
+            // If autoscroll is on, time drives the xrange
+            int xmin_i = _left_cache.count-_max_points_onscreen;
+            if(xmin_i<0) {
+                xmin_i = 0;
+            }
+            float xmin = [((XYPoint*)_left_cache[xmin_i]).x floatValue];
+            // Time between samples onscreen depends on whether we're in buffer mode or not
+            // If we're in buffer mode, it's the native sample rate of the Mooshimeter
+            float dt = _buffer_mode?(1.0f):([self.meter getBufferDepth]);
+            dt/= [self.meter getSampleRateHz];
+            float xmax = xmin+_max_points_onscreen*dt;
+            range = [CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:xmin] length:[NSNumber numberWithFloat:(xmax-xmin)]];
+            _leftAxisSpace.xRange = range;
+            _rightAxisSpace.xRange = [range copy];
+        }
+
+        // xrange always drives the data
+        [self fillFromBackingArrayWithXRange:_leftAxisSpace.xRange backing_data:_left_cache to_fill:_left_onscreen];
+        [self fillFromBackingArrayWithXRange:_rightAxisSpace.xRange backing_data:_right_cache to_fill:_right_onscreen];
+    }
 
     // if y autorange is on, data drives the yrange
     if(_left_axis_auto) {
@@ -189,49 +211,29 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     [self redrawAxisLabels];
 }
 
--(void) redrawTrendView {
-    CPTGraph *graph = self.hostView.hostedGraph;
-    [graph reloadData];
+#pragma mark - Getters/Setters
 
-    // Only worry about redrawing axes, etc. if we are scroll locked to the right
-    if(!_autoscroll) {return;}
-    
-    CPTXYPlotSpace *ch1Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:0];
-    
-    CPTPlot *ch1Plot         = [graph plotAtIndex:0];
-    [ch1Space scaleToFitPlots:@[ch1Plot]];
-    
-    CPTMutablePlotRange *y1Range = (CPTMutablePlotRange *)[ch1Space.yRange mutableCopy];
-    
-    [y1Range expandRangeByFactor:@1.2f];
-    ch1Space.yRange = y1Range;
-    
-    if(!self.xy_mode) {
-        CPTXYPlotSpace *ch2Space = (CPTXYPlotSpace*)[graph plotSpaceAtIndex:1];
-        CPTPlot *ch2Plot         = [graph plotAtIndex:1];
-        [ch2Space scaleToFitPlots:@[ch2Plot]];
-        CPTMutablePlotRange *y2Range = (CPTMutablePlotRange *)[ch2Space.yRange mutableCopy];
-        [y2Range expandRangeByFactor:@1.2f];
-        
-        CPTMutablePlotRange *xRange;
-        if(self.ch1_on) {
-            xRange = (CPTMutablePlotRange *)[ch1Space.xRange mutableCopy];
-        } else {
-            xRange = (CPTMutablePlotRange *)[ch2Space.xRange mutableCopy];
-        }
-        [xRange expandRangeByFactor:@1.2f];
-        ch1Space.xRange = xRange;
-        ch2Space.xRange = xRange;
-        ch2Space.yRange = y2Range;
+-(void)setXy_mode:(bool)xy_mode {
+    _xy_mode = xy_mode;
+    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
+    CPTXYAxis *x = axisSet.xAxis;
+    CPTXYAxis *y2 = axisSet.axes[2];
+    if( self.xy_mode ) {
+        x.title = [self.meter getInputLabel:CH2];
+        y2.title = @"";
     } else {
-        CPTMutablePlotRange *xRange;
-        xRange = (CPTMutablePlotRange *)[ch1Space.xRange mutableCopy];
-        [xRange expandRangeByFactor:@1.2f];
-        ch1Space.xRange = xRange;
+        x.title = @"Time [s]";
+        y2.title = [self.meter getInputLabel:CH2];
     }
-    
-    [self redrawAxisLabels];
 }
+
+-(void)setBuffer_mode:(bool)buffer_mode {
+    _buffer_mode = buffer_mode;
+    self.max_points_onscreen = [self.meter getBufferDepth];
+    [self.meter setBufferMode:CH1 on:buffer_mode];
+    [self.meter setBufferMode:CH2 on:buffer_mode];
+}
+
 #pragma mark - Chart behavior
 -(void)initPlot {
     NSLog(@"Initializing Plots!");
@@ -255,7 +257,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     UIButton* b = [WidgetFactory makeButton:@"Config" callback:^{
         // Open the config popover
         GraphSettingsView* v = [[GraphSettingsView alloc]init];
-        [WidgetFactory makePopoverFromView:v size:CGSizeMake(300,300)];
+        [WidgetFactory makePopoverFromView:v size:CGSizeMake(300,260)];
         v.graph = ws;
         v.backgroundColor = [UIColor whiteColor];
     }];
@@ -462,11 +464,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     // 3 - Configure x-axis
     CPTXYAxis *x = axisSet.xAxis;
     x.axisConstraints = [CPTConstraints constraintWithLowerOffset:00.0];
-    if( self.xy_mode ) {
-        x.title = [self.meter getInputLabel:CH2];
-    } else {
-        x.title = @"Time";
-    }
+    x.title = @"Time";
     x.titleTextStyle = axisTitleStyle;
     x.titleOffset = 15.0f;
     x.axisLineStyle = axisLineStyle;
@@ -477,8 +475,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     x.majorTickLineStyle = axisLineStyle;
     x.majorTickLength = 4.0f;
     x.tickDirection = CPTSignNegative;
-    
-    
+
     // 4 - Configure y-axis 1
     CPTXYAxis *y1 = axisSet.yAxis;
     y1.axisConstraints = [CPTConstraints constraintWithLowerOffset:00.0];
@@ -496,28 +493,28 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     y1.majorTickLength = 4.0f;
     y1.minorTickLength = 4.0f;
     y1.tickDirection = CPTSignPositive;
-    
-    if( !self.xy_mode ) {
-        // Create second y axis
-        CPTXYAxis *y2 = [[CPTXYAxis alloc]init];
-        y2.coordinate = CPTCoordinateY;
-        axisSet.axes = [NSArray arrayWithObjects:axisSet.xAxis, axisSet.yAxis, y2, nil];
-        y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:00.0];
-        y2.plotSpace = self.rightAxisSpace;
-        y2.title = [self.meter getInputLabel:CH2];
-        y2.titleTextStyle = ch2AxisTextStyle;
-        y2.titleOffset = -35.0f;
-        y2.axisLineStyle = axisLineStyle;
-        y2.majorGridLineStyle = ch2MajorGridLineStyle;
-        y2.labelingPolicy = CPTAxisLabelingPolicyNone;
-        y2.labelTextStyle = ch2AxisTextStyle;
-        y2.labelOffset = 30.0f;
-        y2.majorTickLineStyle = axisLineStyle;
-        y2.majorTickLength = 4.0f;
-        y2.minorTickLength = 4.0f;
-        y2.tickDirection = CPTSignNegative;
-    }
-    
+
+    // Create second y axis
+    CPTXYAxis *y2 = [[CPTXYAxis alloc]init];
+    y2.coordinate = CPTCoordinateY;
+    y2.axisConstraints = [CPTConstraints constraintWithUpperOffset:00.0];
+    y2.plotSpace = self.rightAxisSpace;
+    y2.title = [self.meter getInputLabel:CH2];
+    y2.titleTextStyle = ch2AxisTextStyle;
+    y2.titleOffset = -35.0f;
+    y2.axisLineStyle = axisLineStyle;
+    y2.majorGridLineStyle = ch2MajorGridLineStyle;
+    y2.labelingPolicy = CPTAxisLabelingPolicyNone;
+    y2.labelTextStyle = ch2AxisTextStyle;
+    y2.labelOffset = 30.0f;
+    y2.majorTickLineStyle = axisLineStyle;
+    y2.majorTickLength = 4.0f;
+    y2.minorTickLength = 4.0f;
+    y2.tickDirection = CPTSignNegative;
+
+    // Add the y2 axis
+    axisSet.axes = @[axisSet.xAxis, axisSet.yAxis, y2];
+
     [self redrawAxisLabels];
 }
 
@@ -602,7 +599,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 - (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
-    // Can't trust this timestamp, we're generating it locally so the data's real spikey
+    // Can't trust timestamp_utc, it's being generated by the processor which tends to bunch readings up
     NSMutableArray * buf=nil;
     switch(c){
         case CH1:
@@ -610,9 +607,6 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
             break;
         case CH2:
             buf= self.right_cache;
-            //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
-            // The tendency is for readings to bunch up between renders
-            _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
             break;
         case MATH:
             // We don't handle this yet
@@ -620,9 +614,40 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     }
     if(buf==nil){return;} // Might happen with math channel
     [buf addObject:[XYPoint make:_sample_time y:val.value]];
+    if(c==CH2) {
+        //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
+        // The tendency is for readings to bunch up between renders because they are timestamped with the time at which
+        // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
+        _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
+    }
 }
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
-
+    // Just shuttle the data in to cache
+    NSMutableArray * buf=nil;
+    switch(c){
+        case CH1:
+            buf=self.left_cache;
+            break;
+        case CH2:
+            buf= self.right_cache;
+            break;
+        case MATH:
+            // We don't handle this yet
+            return;
+    }
+    if(buf==nil){return;} // Might happen with math channel
+    float t = _sample_time;
+    for(NSNumber* n in val) {
+        XYPoint * p = [XYPoint makeWithNSNumber:[NSNumber numberWithFloat:t] y:n];
+        [buf addObject:p];
+        t+=dt;
+    }
+    if(c==CH2) {
+        //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
+        // The tendency is for readings to bunch up between renders because they are timestamped with the time at which
+        // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
+        _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
+    }
 }
 #pragma mark CPTPlotSpaceDelegate methods
 

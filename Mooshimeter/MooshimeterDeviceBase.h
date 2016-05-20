@@ -11,7 +11,7 @@
 
 @interface MooshimeterDeviceBase : NSObject<MooshimeterControlProtocol> {
     bool _range_auto[2];
-    bool _speech_on[2];
+    bool _speech_on[3];
 }
 
 @property id<MooshimeterDelegateProtocol> delegate;
