@@ -240,7 +240,7 @@
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         [[self wrapperByPeripheral:peripheral] handleConnectionWithError:nil];
     });
 }
@@ -248,7 +248,7 @@
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral
                  error:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         [[self wrapperByPeripheral:peripheral] handleConnectionWithError:error];
     });
 }
@@ -256,7 +256,7 @@
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
                  error:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         LGPeripheral *lgPeripheral = [self wrapperByPeripheral:peripheral];
         [lgPeripheral handleDisconnectWithError:error];
     });
@@ -267,7 +267,7 @@
     self.cbCentralManagerState = central.state;
     NSString *message = [self stateMessage];
     if (message) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(LG_DISPATCH_QUEUE, ^{
             LGLogError(@"%@", message);
         });
     }
@@ -278,7 +278,7 @@
      advertisementData:(NSDictionary *)advertisementData
                   RSSI:(NSNumber *)RSSI
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         LGPeripheral *lgPeripheral = [self wrapperByPeripheral:peripheral];
         if([RSSI integerValue] != 127) {
             if (!lgPeripheral.RSSI ) {
@@ -319,7 +319,8 @@ static LGCentralManager *sharedInstance = nil;
 {
 	self = [super init];
 	if (self) {
-        _centralQueue = dispatch_queue_create("com.LGBluetooth.LGCentralQueue", DISPATCH_QUEUE_SERIAL);
+        _callbackQueue= dispatch_queue_create("com.LGBluetooth.LGCallbackQueue", DISPATCH_QUEUE_SERIAL);
+        _centralQueue = dispatch_queue_create("com.LGBluetooth.LGCentralQueue",  DISPATCH_QUEUE_SERIAL);
         _manager      = [[CBCentralManager alloc] initWithDelegate:self queue:self.centralQueue];
         _cbCentralManagerState = _manager.state;
         _scannedPeripherals = [NSMutableArray new];

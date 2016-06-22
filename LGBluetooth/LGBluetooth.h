@@ -25,3 +25,5 @@
 #import "LGService.h"
 #import "LGCharacteristic.h"
 #import "LGUtils.h"
+
+#define LG_DISPATCH_QUEUE ([LGCentralManager sharedInstance].callbackQueue)

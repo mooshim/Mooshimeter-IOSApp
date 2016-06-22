@@ -66,6 +66,11 @@ typedef void (^LGCentralManagerDiscoverPeripheralsCallback) (NSArray *peripheral
 @property (strong, nonatomic, readonly) CBCentralManager *manager;
 
 /**
+ * Our dispatch queue for callbacks
+ */
+@property (strong, nonatomic) dispatch_queue_t callbackQueue;
+
+/**
  * Scans for nearby peripherals
  * and fills the - NSArray *peripherals
  */
