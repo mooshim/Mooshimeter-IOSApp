@@ -10,8 +10,8 @@
 @class LGCharacteristic;
 
 @interface MooshimeterDeviceBase : NSObject<MooshimeterControlProtocol> {
-    bool _range_auto[2];
-    bool _speech_on[3];
+    BOOL _range_auto[2];
+    BOOL _speech_on[3];
 }
 
 @property id<MooshimeterDelegateProtocol> delegate;

@@ -20,17 +20,17 @@
         // Convenience functions
         ////////////////////////////////
 
-        -(bool)isInOADMode;
+        -(BOOL)isInOADMode;
         -(LGCharacteristic*)getLGChar:(uint16_t)UUID;
 
         //////////////////////////////////////
         // Autoranging
         //////////////////////////////////////
 
-        -(bool)bumpRange:(Channel)c expand:(bool)expand;
+        -(BOOL)bumpRange:(Channel)c expand:(BOOL)expand;
 
         // Return true if settings changed
-        -(bool)applyAutorange;
+        -(BOOL)applyAutorange;
 
         //////////////////////////////////////
         // Interacting with the Mooshimeter itself
@@ -42,7 +42,7 @@
         -(void)pause;
         -(void)oneShot;
         -(void)stream;
-        -(bool)isStreaming;
+        -(BOOL)isStreaming;
 
         -(void)enterShippingMode;
 
@@ -55,6 +55,7 @@
         -(void)setOffset:(Channel)c offset:(float)offset;
 
         -(int)getSampleRateHz;
+        -(int) getSampleRateIndex;
         -(int)setSampleRateIndex:(int)i;
         -(NSArray<NSString*>*) getSampleRateList;
 
@@ -62,10 +63,10 @@
         -(int)setBufferDepthIndex:(int)i;
         -(NSArray<NSString*>*) getBufferDepthList;
 
-        -(void)setBufferMode:(Channel)c on:(bool)on;
+        -(void)setBufferMode:(Channel)c on:(BOOL)on;
 
-        -(bool)getLoggingOn;
-        -(void)setLoggingOn:(bool)on;
+        -(BOOL)getLoggingOn;
+        -(void)setLoggingOn:(BOOL)on;
         -(int)getLoggingStatus;
         -(NSString*)getLoggingStatusMessage;
         -(void)setLoggingInterval:(int)ms;
@@ -86,7 +87,7 @@
 
         // Preference management helpers
         -(NSString*)getPreferenceKeyString:(NSString*)tail;
-        -(bool)getPreference:(NSString*)shortkey def:(bool)def;
-        -(bool)getPreference:(NSString*)shortkey;
-        -(void)setPreference:(NSString*)shortkey value:(bool)value;
+        -(BOOL)getPreference:(NSString*)shortkey def:(BOOL)def;
+        -(BOOL)getPreference:(NSString*)shortkey;
+        -(void)setPreference:(NSString*)shortkey value:(BOOL)value;
 @end

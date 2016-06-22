@@ -22,7 +22,7 @@
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {NSLog(@"DUMMYDELEGATE CALL");}
 - (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"DUMMYDELEGATE CALL");}
 - (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {NSLog(@"DUMMYDELEGATE CALL");}
+- (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {NSLog(@"DUMMYDELEGATE CALL");}
 - (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"DUMMYDELEGATE CALL");}
 - (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"DUMMYDELEGATE CALL");}
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"DUMMYDELEGATE CALL");}
@@ -30,8 +30,8 @@
 
 @implementation MooshimeterDeviceBase
 
-- (bool *)speech_on {return _speech_on;}
-- (bool *)range_auto {return _range_auto;}
+- (BOOL *)speech_on {return _speech_on;}
+- (BOOL *)range_auto {return _range_auto;}
 
 -(instancetype)init {
     self = [super init];
@@ -56,15 +56,14 @@
     return rval;
 }
 
--(bool)getPreference:(NSString*)shortkey {
+-(BOOL)getPreference:(NSString*)shortkey {
     return [self getPreference:shortkey def:false];
 }
--(bool)getPreference:(NSString*)shortkey def:(bool)def {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:[self getPreferenceKeyString:shortkey]];
+-(BOOL)getPreference:(NSString*)shortkey def:(BOOL)def {
+    return [Prefman getPreference:[self getPreferenceKeyString:shortkey] def:def];
 }
-
--(void)setPreference:(NSString*)shortkey value:(bool)value{
-    [[NSUserDefaults standardUserDefaults] setBool:value forKey:[self getPreferenceKeyString:shortkey]];
+-(void)setPreference:(NSString*)shortkey value:(BOOL)value{
+    [Prefman setPreference:[self getPreferenceKeyString:shortkey] value:value];
 }
 
 #pragma mark class methods
@@ -79,7 +78,7 @@
     [tmp getBytes:&rval length:4];
     return rval;
 }
-+(bool)isPeripheralInOADMode:(LGPeripheral *)periph {
++(BOOL)isPeripheralInOADMode:(LGPeripheral *)periph {
     // PERIPHERAL MUST BE CONNECTED AND DISCOVERED
     for(LGService* service in periph.services) {
         if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:OAD_SERVICE_UUID]]) {
@@ -110,7 +109,7 @@
 
 #pragma mark MooshimeterControlProtocol_methods
 
--(bool)isInOADMode {
+-(BOOL)isInOADMode {
     return [MooshimeterDeviceBase isPeripheralInOADMode:self.periph];
 }
 
