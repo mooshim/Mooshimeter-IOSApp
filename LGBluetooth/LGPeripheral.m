@@ -161,10 +161,6 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 
 - (void)handleConnectionWithError:(NSError *)anError
 {
-    // Connection was made, canceling watchdog
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:@selector(connectionWatchDogFired)
-                                               object:nil];
     LGLog(@"Connection with error - %@", anError);
     if (self.connectionBlock) {
         self.connectionBlock(anError);
@@ -204,6 +200,9 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 
 - (void)connectionWatchDogFired
 {
+    if([self isConnected]) {
+        return;
+    }
     _watchDogRaised = YES;
     __weak LGPeripheral *weakSelf = self;
     [self disconnectWithCompletion:^(NSError *error) {
@@ -244,7 +243,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         _discoveringServices = NO;
         [self updateServiceWrappers];
 
@@ -264,7 +263,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service
              error:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         [[self wrapperByService:service] handleDiscoveredCharacteristics:service.characteristics
                                                                    error:error];
     });
@@ -274,7 +273,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
              error:(NSError *)error
 {
     NSData *value = [characteristic.value copy];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         [[[self wrapperByService:characteristic.service]
           wrapperByCharacteristic:characteristic]
          handleReadValue:value error:error];
@@ -284,7 +283,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
              error:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         [[[self wrapperByService:characteristic.service]
           wrapperByCharacteristic:characteristic]
          handleSetNotifiedWithError:error];
@@ -294,7 +293,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
              error:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         [[[self wrapperByService:characteristic.service]
           wrapperByCharacteristic:characteristic]
          handleWrittenValueWithError:error];
@@ -303,7 +302,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 
 - (void)peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(LG_DISPATCH_QUEUE, ^{
         if (self.rssiValueBlock) {
             self.rssiValueBlock(peripheral.RSSI, error);
         }

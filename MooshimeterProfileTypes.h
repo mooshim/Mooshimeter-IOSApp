@@ -44,6 +44,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define METER_TEMP          0xFFAB
 #define METER_BAT           0xFFAC
 
+#define METER_SERIN         0xFFA1
+#define METER_SEROUT        0xFFA2
+
 #define OAD_SERVICE_UUID    0xFFC0
 #define OAD_IMAGE_NOTIFY    0xFFC1
 #define OAD_IMAGE_BLOCK_REQ 0xFFC2
