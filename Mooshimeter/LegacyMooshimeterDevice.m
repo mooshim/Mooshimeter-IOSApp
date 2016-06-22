@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "LegacyMooshimeterDevice.h"
 #import "oad.h"
 #import "Beeper.h"
+#import "MathInputDescriptor.h"
 
 typedef enum {
     NATIVE,
@@ -71,12 +72,12 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 
 @interface LegacyInputDescriptor:InputDescriptor
 @property (atomic,assign) INPUT_MODE input;
-@property (atomic,assign) bool is_ac;
--(instancetype) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(bool)is_ac;
+@property (atomic,assign) BOOL is_ac;
+-(instancetype) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(BOOL)is_ac;
 -(void) addRange:(NSString*)name converter:(Lsb2NativeConverter)conv max:(float)max gain:(PGA_GAIN)gain gpio:(GPIO_SETTING)gpio isrc:(ISRC_SETTING)isrc;
 @end
 @implementation LegacyInputDescriptor
--(instancetype) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(bool)is_ac {
+-(instancetype) initWithName:(NSString*)name units:(NSString*)units input:(INPUT_MODE)input is_ac:(BOOL)is_ac {
     self = [super initWithName:name units_arg:units];
     self.input = input;
     self.is_ac = is_ac;
@@ -124,14 +125,6 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 }
 @end
 
-@interface MathInputDescriptor:InputDescriptor
-@property bool (^meterSettingsAreValid)();
-@property void (^onChosen)();
-@property MeterReading* (^calculate)();
-@end
-@implementation MathInputDescriptor
-@end
-
 @implementation LegacyMooshimeterDevice
 
 -(LegacyInputDescriptor *)getSelectedDescriptor:(Channel)c {
@@ -147,7 +140,7 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 }
 
 -(MeterReading*)wrapMeterReading:(float)val c:(Channel)c {
-    LegacyInputDescriptor *id = [self getSelectedDescriptor:c];
+    LegacyInputDescriptor *id = (LegacyInputDescriptor *)[self getSelectedDescriptor:c];
     float enob = [self getENOB:c];
     float max = [self getSelectedRange:c].max;
 
@@ -192,10 +185,6 @@ typedef float (^Lsb2NativeConverter)(int lsb);
 // Callback triggered by sample received
 void (^sample_handler)(NSData*,NSError*);
 
--(void)beep {
-
-}
-
 -(void)finishInit{
     // This should be called after connect and discovery are done
     float i_gain;
@@ -232,20 +221,20 @@ void (^sample_handler)(NSData*,NSError*);
     // Add channel 2 ranges and inputs
     c = self->input_descriptors[CH2];
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"VOLTAGE DC" units:@"V" input:NATIVE is_ac:NO];
-    [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
-    [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
+    [descriptor addRange:@"60V"  converter:simple_converter(((10e6f + 160e3f) / 160e3f)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
+    [descriptor addRange:@"600V" converter:simple_converter(((10e6f + 11e3f) / 11e3f)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
     [c add:descriptor];
     descriptor = [[LegacyInputDescriptor alloc] initWithName:@"VOLTAGE AC" units:@"V" input:NATIVE is_ac:YES];
-    [descriptor addRange:@"60V"  converter:simple_converter(((10e6 + 160e3) / 160e3)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
-    [descriptor addRange:@"600V" converter:simple_converter(((10e6 + 11e3) / 11e3)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
+    [descriptor addRange:@"60V"  converter:simple_converter(((10e6f + 160e3f) / 160e3f)) max:60  gain:PGA_GAIN_1 gpio:GPIO1 isrc:ISRC_IGNORE];
+    [descriptor addRange:@"600V" converter:simple_converter(((10e6f + 11e3f) / 11e3f)  ) max:600 gain:PGA_GAIN_1 gpio:GPIO2 isrc:ISRC_IGNORE];
     [c add:descriptor];
     [self addSharedInputs:c];
 
     // Add channel 2 ranges and inputs
     c = self->input_descriptors[MATH];
     MathInputDescriptor *md = [[MathInputDescriptor alloc] initWithName:@"Power" units_arg:@"W"];
-    md.meterSettingsAreValid = ^bool(){
-        bool rval =
+    md.meterSettingsAreValid = ^BOOL(){
+        BOOL rval =
                 [[self getSelectedDescriptor:CH1].units isEqualToString:@"A"]
             &&  [[self getSelectedDescriptor:CH2].units isEqualToString:@"V"];
         return rval;
@@ -349,7 +338,7 @@ void (^sample_handler)(NSData*,NSError*);
             }
             break;
     }
-    bool found=false;
+    BOOL found=false;
     for(LegacyInputDescriptor* inp in self->input_descriptors[c].choices) {
         for(myRangeDescriptor * rd in inp.ranges.choices) {
             if(     rd.chset   == meter_settings.rw.chset[c]
@@ -371,17 +360,10 @@ void (^sample_handler)(NSData*,NSError*);
     BUILD_BUG_ON(sizeof(MeterSettings_t)    != 13);
     BUILD_BUG_ON(sizeof(meter_state_t)      != 1);
     BUILD_BUG_ON(sizeof(MeterLogSettings_t) != 16);
-    self = [super init];
+    self = [super init:periph delegate:delegate];
 
-    self.periph = periph;
-    self.chars = [[NSMutableDictionary alloc]init];
-
-    self.range_auto[0] = YES;
-    self.range_auto[1] = YES;
     self.rate_auto     = YES;
     self.depth_auto    = YES;
-
-    [self setDelegate:delegate];
 
     self->input_descriptors[CH1]  = [[Chooser alloc]init];
     self->input_descriptors[CH2]  = [[Chooser alloc]init];
@@ -437,24 +419,6 @@ int24_test to_int24_test(long arg) {
     return retval;
 }
 
-/*
- For convenience, builds a dictionary of the LGCharacteristics based on the relevant
- 2 bytes of their UUID
- @param characteristics An array of LGCharacteristics
- @return void
- */
-
--(void)populateLGDict:(NSArray*)characteristics {
-    for (LGCharacteristic* c in characteristics) {
-        NSLog(@"    Char: %@", c.UUIDString);
-        uint16 lookup;
-        [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
-        lookup = NSSwapShort(lookup);
-        NSNumber* key = [NSNumber numberWithInt:lookup];
-        self.chars[key] = c;
-    }
-}
-
 -(void)disconnect:(LGPeripheralConnectionCallback)aCallback {
     [self.periph disconnectWithCompletion:aCallback];
 }
@@ -462,10 +426,6 @@ int24_test to_int24_test(long arg) {
 -(void)accidentalDisconnect:(NSError*)error {
     DLog(@"Accidental disconnect!");
     [self.delegate onDisconnect];
-}
-
--(LGCharacteristic*)getLGChar:(uint16)UUID {
-    return self.chars[[NSNumber numberWithInt:UUID]];
 }
 
 -(void)reqMeterStruct:(uint16)uuid target:(void*)target cb:(LGCharacteristicReadCallback)cb {
@@ -524,10 +484,10 @@ int24_test to_int24_test(long arg) {
     return [i.ranges get:to_choose];
 }
 
--(bool)applyRateAndDepthChange {
+-(BOOL)applyRateAndDepthChange {
     // Autorange sample rate and buffer depth.
     // If anything is doing AC, we need a deep buffer and fast sample
-    bool ac_used = NO;
+    BOOL ac_used = NO;
     ac_used |= ((LegacyInputDescriptor *)[self getSelectedDescriptor:CH1]).is_ac;
     ac_used |= ((LegacyInputDescriptor *)[self getSelectedDescriptor:CH2]).is_ac;
     MeterSettings_t tmp = self->meter_settings;
@@ -550,7 +510,7 @@ int24_test to_int24_test(long arg) {
     return 0 != diff;
 }
 
--(bool)applyAutorange:(Channel) c {
+-(BOOL)applyAutorange:(Channel) c {
     if(!self.range_auto[c]) {
         return NO;
     }
@@ -558,7 +518,7 @@ int24_test to_int24_test(long arg) {
     MeterSettings_t tmp = self->meter_settings;
     MeterSettings_t* ms = &self->meter_settings;
 
-    LegacyInputDescriptor* active_id = [self getSelectedDescriptor:c];
+    LegacyInputDescriptor* active_id = (LegacyInputDescriptor*)[self getSelectedDescriptor:c];
 
     float outer_limit = ((RangeDescriptor *)[active_id.ranges getChosen]).max;
     float inner_limit = (float)0.7*[self getLowerRange:c].max;
@@ -743,7 +703,7 @@ int24_test to_int24_test(long arg) {
     return 0;
 }
 
--(bool)bumpRange:(Channel)channel expand:(bool)expand {
+-(BOOL)bumpRange:(Channel)channel expand:(BOOL)expand {
     InputDescriptor * inputDescriptor = [self getSelectedDescriptor:channel];
     Chooser* ranges = inputDescriptor.ranges;
     if(!expand && ranges.chosen_i>0) {
@@ -876,8 +836,8 @@ int24_test to_int24_test(long arg) {
 }
 
 // Return true if settings changed
--(bool)applyAutorange {
-    bool rval = NO;
+-(BOOL)applyAutorange {
+    BOOL rval = NO;
     rval|=[self applyAutorange:CH1];
     rval|=[self applyAutorange:CH2];
     rval|=[self applyRateAndDepthChange];
@@ -901,7 +861,7 @@ int24_test to_int24_test(long arg) {
 }
 -(NSString*)getName {
     LGCharacteristic* c = [self getLGChar:METER_NAME];
-    NSData* name = [c readValue];
+    NSData* name = [c readValueBlocking];
     if(name==nil) {
         return @"";
     }
@@ -928,7 +888,7 @@ int24_test to_int24_test(long arg) {
     [self sendMeterSettings:nil];
 }
 
--(bool)isStreaming {
+-(BOOL)isStreaming {
     return self->meter_settings.rw.target_meter_state==METER_RUNNING
         && !(self->meter_settings.rw.calc_settings&METER_CALC_SETTINGS_ONESHOT);
 }
@@ -980,6 +940,7 @@ int24_test to_int24_test(long arg) {
     [self sendMeterSettings:^(NSError *error) {
         [self.delegate onSampleRateChanged:(125*(1<<i))];
     }];
+    return 0;
 }
 -(NSArray<NSString*>*) getSampleRateList {
     NSArray* l = @[@"125",@"250",@"500",@"1000",@"2000",@"4000",@"8000"];
@@ -996,13 +957,14 @@ int24_test to_int24_test(long arg) {
     [self sendMeterSettings:^(NSError *error) {
         [self.delegate onBufferDepthChanged:1<<i];
     }];
+    return 0;
 }
 -(NSArray<NSString*>*) getBufferDepthList {
     NSArray* l = @[@"1",@"2",@"4",@"8",@"16",@"32",@"64",@"128",@"256"];
     return [l mutableCopy];
 }
 
--(void)setBufferMode:(Channel)c on:(bool)on {
+-(void)setBufferMode:(Channel)c on:(BOOL)on {
     /**
      * Downloads the complete sample buffer from the Mooshimeter.
      * This interaction spans many connection intervals, the exact length depends on the number of samples in the buffer
@@ -1041,12 +1003,12 @@ int24_test to_int24_test(long arg) {
     }
 }
 
--(bool)getLoggingOn {
-    bool rval = meter_log_settings.ro.present_logging_state != LOGGING_OFF;
+-(BOOL)getLoggingOn {
+    BOOL rval = meter_log_settings.ro.present_logging_state != LOGGING_OFF;
     rval &= meter_log_settings.rw.target_logging_state != LOGGING_OFF;
     return rval;
 }
--(void)setLoggingOn:(bool)on {
+-(void)setLoggingOn:(BOOL)on {
     meter_log_settings.rw.target_logging_state = on?LOGGING_SAMPLING:LOGGING_OFF;
     [self sendMeterLogSettings:nil];
 }
@@ -1125,7 +1087,7 @@ int24_test to_int24_test(long arg) {
     return inputDescriptor.name;
 }
 
-bool isSharedInput(INPUT_MODE i) {
+BOOL isSharedInput(INPUT_MODE i) {
     return  (i==RESISTANCE) ||
             (i==AUX_V) ||
             (i==DIODE);
