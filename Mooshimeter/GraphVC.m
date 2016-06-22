@@ -60,9 +60,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     _max_points_onscreen = 100;
     _xy_mode = NO;
     _buffer_mode = NO;
-    _ch1_on = YES;
-    _ch2_on = YES;
-    _math_on = NO;
     _autoscroll = YES;
     _left_axis_auto = YES;
     _right_axis_auto = YES;
@@ -102,6 +99,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [super viewWillDisappear:animated];
     [self.meter pause];
     [self.refresh_timer invalidate];
+    self.buffer_mode = NO;
     self.navigationController.navigationBar.hidden = NO;
 }
 
@@ -125,8 +123,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         if(x < minX)  {minX= x;}
     }
     float dif = maxX-minX;
-    CPTMutablePlotRange *xr = [[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
-    //[xr expandRangeByFactor:@1.1]; // Expand the range because Coreplot annoyingly draws over its own axes
+    CPTMutablePlotRange *xr = (CPTMutablePlotRange *)[[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
     return xr;
 }
 
@@ -153,11 +150,11 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
     if(_xy_mode) {
         // In xy mode, always just grab the latest N readings and autorange both axes
-        int max_i = MIN(_left_cache.count,_right_cache.count);
-        int min_i = MAX(max_i-_max_points_onscreen,0);
+        NSUInteger max_i = MIN(_left_cache.count,_right_cache.count);
+        NSUInteger min_i = MAX(max_i-_max_points_onscreen,0);
         [_left_onscreen removeAllObjects];
         [_right_onscreen removeAllObjects];
-        for(int i = min_i; i < max_i; i++) {
+        for(NSUInteger i = min_i; i < max_i; i++) {
             XYPoint* lp = _left_cache[i];
             XYPoint* rp = _right_cache[i];
             XYPoint* p = [XYPoint makeWithNSNumber:rp.y y:lp.y];
@@ -178,7 +175,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         // may arbitrarily adjust the view bounds, so we should fill in our data based on bounds and not vice versa.
         if(_autoscroll) {
             // If autoscroll is on, time drives the xrange
-            int xmin_i = _left_cache.count-_max_points_onscreen;
+            NSInteger xmin_i = _left_cache.count-_max_points_onscreen;
             if(xmin_i<0) {
                 xmin_i = 0;
             }
@@ -213,7 +210,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
 #pragma mark - Getters/Setters
 
--(void)setXy_mode:(bool)xy_mode {
+-(void)setXy_mode:(BOOL)xy_mode {
     _xy_mode = xy_mode;
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
     CPTXYAxis *x = axisSet.xAxis;
@@ -227,7 +224,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     }
 }
 
--(void)setBuffer_mode:(bool)buffer_mode {
+-(void)setBuffer_mode:(BOOL)buffer_mode {
     _buffer_mode = buffer_mode;
     self.max_points_onscreen = [self.meter getBufferDepth];
     [self.meter setBufferMode:CH1 on:buffer_mode];
@@ -366,16 +363,11 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         CPTColor *ch2Color = [CPTColor greenColor];
         [graph addPlot:ch2Plot toPlotSpace:_rightAxisSpace];
         
-        [_rightAxisSpace scaleToFitPlots:[NSArray arrayWithObjects:ch2Plot, nil]];
+        [_rightAxisSpace scaleToFitPlots:@[ch2Plot]];
         
-        CPTMutablePlotRange *y2Range = [_rightAxisSpace.yRange mutableCopy];
+        CPTMutablePlotRange *y2Range = (CPTMutablePlotRange*)[_rightAxisSpace.yRange mutableCopy];
         
-        CPTMutablePlotRange *xRange;
-        if(self.ch1_on) {
-            xRange = [_leftAxisSpace.xRange mutableCopy];
-        } else {
-            xRange = [_rightAxisSpace.xRange mutableCopy];
-        }
+        CPTMutablePlotRange *xRange = (CPTMutablePlotRange*)[_leftAxisSpace.xRange mutableCopy];
         [xRange expandRangeByFactor:@1.2f];
         _leftAxisSpace.xRange = xRange;
         _rightAxisSpace.xRange = xRange;
@@ -383,7 +375,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         [y2Range expandRangeByFactor:@1.2f];
         _rightAxisSpace.yRange = y2Range;
         
-        CPTMutableLineStyle *ch2LineStyle = [ch2Plot.dataLineStyle mutableCopy];
+        CPTMutableLineStyle *ch2LineStyle = (CPTMutableLineStyle*)[ch2Plot.dataLineStyle mutableCopy];
         ch2LineStyle.lineWidth = 2.5;
         ch2LineStyle.lineColor = ch2Color;
         ch2Plot.dataLineStyle = ch2LineStyle;
@@ -552,13 +544,13 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
 #pragma mark - CPTPlotDataSource methods
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-
     if ( [plot.identifier isEqual:@"CH1"] ) {
         return self.left_onscreen.count;
     }
     if ( [plot.identifier isEqual:@"CH2"] ) {
         return self.right_onscreen.count;
     }
+    return 0;
 }
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
@@ -590,7 +582,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 - (void)onBatteryVoltageReceived:(float)voltage {}
 - (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"IMPOSIBRUUUU");}
 - (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"IMPOSIBRUUUU");}
-- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {}
+- (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {}
 - (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"IMPOSIBRUUUU");}
 - (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"IMPOSIBRUUUU");}
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"IMPOSIBRUUUU");}
@@ -613,13 +605,15 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
             return;
     }
     if(buf==nil){return;} // Might happen with math channel
-    [buf addObject:[XYPoint make:_sample_time y:val.value]];
-    if(c==CH2) {
-        //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
-        // The tendency is for readings to bunch up between renders because they are timestamped with the time at which
-        // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
-        _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
-    }
+    dispatch_async(dispatch_get_main_queue(),^{
+        [buf addObject:[XYPoint make:_sample_time y:val.value]];
+        if(c==CH2) {
+            //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
+            // The tendency is for readings to bunch up between renders because they are timestamped with the time at which
+            // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
+            _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
+        }
+    });
 }
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
     // Just shuttle the data in to cache
@@ -636,18 +630,20 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
             return;
     }
     if(buf==nil){return;} // Might happen with math channel
-    float t = _sample_time;
-    for(NSNumber* n in val) {
-        XYPoint * p = [XYPoint makeWithNSNumber:[NSNumber numberWithFloat:t] y:n];
-        [buf addObject:p];
-        t+=dt;
-    }
-    if(c==CH2) {
-        //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
-        // The tendency is for readings to bunch up between renders because they are timestamped with the time at which
-        // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
-        _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
-    }
+    dispatch_async(dispatch_get_main_queue(),^{
+        float t = _sample_time;
+        for(NSNumber* n in val) {
+            XYPoint * p = [XYPoint makeWithNSNumber:[NSNumber numberWithFloat:t] y:n];
+            [buf addObject:p];
+            t+=dt;
+        }
+        if(c==CH2) {
+            //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
+            // The tendency is for readings to bunch up between renders because they are timestamped with the time at which
+            // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
+            _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
+        }
+    });
 }
 #pragma mark CPTPlotSpaceDelegate methods
 

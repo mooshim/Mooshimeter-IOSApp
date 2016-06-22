@@ -42,25 +42,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // GUI config values
 
 @property int max_points_onscreen;
-@property bool xy_mode;
-@property bool buffer_mode;
-@property bool ch1_on;
-@property bool ch2_on;
-@property bool math_on;
-@property bool autoscroll;
+@property (nonatomic) BOOL xy_mode;
+@property (nonatomic) BOOL buffer_mode;
+@property (nonatomic) BOOL autoscroll;
 
-@property bool left_axis_auto;
-@property bool right_axis_auto;
+@property BOOL left_axis_auto;
+@property BOOL right_axis_auto;
 
 @property float sample_time;
 
 // Data stashing
 
-@property NSMutableArray<XYPoint*>* left_cache;
-@property NSMutableArray<XYPoint*>* right_cache;
+@property (strong,atomic) NSMutableArray<XYPoint*>* left_cache;
+@property (strong,atomic) NSMutableArray<XYPoint*>* right_cache;
 
-@property NSMutableArray<XYPoint*>* left_onscreen;
-@property NSMutableArray<XYPoint*>* right_onscreen;
+@property (strong,atomic) NSMutableArray<XYPoint*>* left_onscreen;
+@property (strong,atomic) NSMutableArray<XYPoint*>* right_onscreen;
 
 // Timer to prevent flooding
 @property NSTimer* refresh_timer;
