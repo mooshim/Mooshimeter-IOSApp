@@ -137,11 +137,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.sig_icon = sig_icon;
 
     // Use the rest of the space for title
-    //UILabel * name = [[UILabel alloc] initWithFrame:CGRectMake(0,0,x,nav_size.size.height)];
-    //[name setText:[self.meter getName]];
     [self setTitle:[self.meter getName]];
-    //[name setAdjustsFontSizeToFitWidth:YES];
-    //[nav addToNavBar:name];
 }
 
 //////////////////////

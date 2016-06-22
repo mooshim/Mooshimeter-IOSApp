@@ -141,7 +141,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void) sound_button_press {
     NSLog(@"sound");
-    uint8 other_channel = (self.channel+1)%2;
     self.meter.speech_on[self.channel] = !self.meter.speech_on[self.channel];
     // FIXME: We need a way to reach over and poke the other button!
     //if(self.meter.speech_on[self.channel]) {
@@ -152,7 +151,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void)sound_button_refresh {
     // Toggle sound setting for meter
-    uint8 other_channel = (self.channel+1)%2;
     NSString* title;
 
     if(self.meter.speech_on[self.channel]) {
