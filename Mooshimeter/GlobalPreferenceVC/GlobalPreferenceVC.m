@@ -18,23 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "GlobalPreferenceVC.h"
 #import "WidgetFactory.h"
-#import <objc/runtime.h>
+#import "Prefman.h"
 
 
 @implementation GlobalPreferenceVC {
     float y_offset;
-}
-
-+(bool)getPreference:(NSString*)key def:(bool)def {
-    if([[NSUserDefaults standardUserDefaults] objectForKey:key]==nil) {
-        // Key not found, return default
-        return def;
-    }
-    return [[NSUserDefaults standardUserDefaults] boolForKey:key];
-}
-
-+(void)setPreference:(NSString*)key value:(bool)value{
-    [[NSUserDefaults standardUserDefaults] setBool:value forKey:key];
 }
 
 -(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory {
@@ -84,9 +72,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 +(UISwitch*)makePrefSwitch:(NSString*)key {
     UISwitch * rval = [WidgetFactory makeSwitch:^(bool i) {
-        [GlobalPreferenceVC setPreference:key value:i];
+        [Prefman setPreference:key value:i];
     }];
-    [rval setOn:[GlobalPreferenceVC getPreference:key def:NO]];
+    [rval setOn:[Prefman getPreference:key def:NO]];
     return rval;
 }
 

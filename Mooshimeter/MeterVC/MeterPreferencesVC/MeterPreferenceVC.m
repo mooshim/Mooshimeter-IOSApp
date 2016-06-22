@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "MeterPreferenceVC.h"
 #import "WidgetFactory.h"
 #import "PopupMenu.h"
+#import "Prefman.h"
 
 @implementation MeterPreferenceVC {
     float y_offset;
@@ -27,18 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////
 // Helper methods
 ////////////////////
-
-+(bool)getPreference:(NSString*)key def:(bool)def {
-    if([[NSUserDefaults standardUserDefaults] objectForKey:key]==nil) {
-        // Key not found, return default
-        return def;
-    }
-    return [[NSUserDefaults standardUserDefaults] boolForKey:key];
-}
-
-+(void)setPreference:(NSString*)key value:(bool)value{
-    [[NSUserDefaults standardUserDefaults] setBool:value forKey:key];
-}
 
 -(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory {
     const int row_h = 80;
@@ -87,9 +76,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 +(UISwitch*)makePrefSwitch:(NSString*)key {
     UISwitch * rval = [WidgetFactory makeSwitch:^(bool i) {
-        [MeterPreferenceVC setPreference:key value:i];
+        [Prefman setPreference:key value:i];
     }];
-    [rval setOn:[MeterPreferenceVC  getPreference:key def:NO]]; // FIXME! THIS IS REPEATED CODE WITH GLOBALPREFERENCEVC
+    [rval setOn:[Prefman  getPreference:key def:NO]]; // FIXME! THIS IS REPEATED CODE WITH GLOBALPREFERENCEVC
     return rval;
 }
 
