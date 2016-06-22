@@ -104,6 +104,27 @@
                                            forCharacteristic:self.cbCharacteristic];
 }
 
+- (NSError*)setNotifyValueBlocking:(BOOL)notifyValue
+                          onUpdate:(LGCharacteristicReadCallback)uCallback {
+    dispatch_semaphore_t s = dispatch_semaphore_create(0);
+    NSMutableArray * ewrap = [@[] mutableCopy];
+    [self setNotifyValue:notifyValue completion:^(NSError *error) {
+        if(error!=nil) {
+            [ewrap addObject:error];
+        }
+        dispatch_semaphore_signal(s);
+    } onUpdate:uCallback];
+    // Wait for inner block to run, timeout 1s
+    if(dispatch_semaphore_wait(s,dispatch_time(DISPATCH_TIME_NOW,1*NSEC_PER_SEC))) {
+        // TODO: return an NSError signifying semaphore timeout
+        return nil;
+    } else if(ewrap.count>0) {
+        return ewrap[0];
+    } else {
+        return nil;
+    }
+}
+
 - (void)writeValueNoResponse:(NSData *)data
 {
     CBCharacteristicWriteType type =  CBCharacteristicWriteWithoutResponse;
@@ -124,20 +145,34 @@
     CBCharacteristicWriteWithResponse : CBCharacteristicWriteWithoutResponse;
     
     if (aCallback) {
-        NSLog(@"ResponseWrite");
+        //NSLog(@"ResponseWrite");
         [self push:aCallback toArray:self.writeOperationStack];
     } else {
-        NSLog(@"NoResponseWrite");
+        //NSLog(@"NoResponseWrite");
     }
     [self.cbCharacteristic.service.peripheral writeValue:data
                                        forCharacteristic:self.cbCharacteristic
                                                     type:type];
 }
 
-- (void)writeByte:(int8_t)aByte
-       completion:(LGCharacteristicWriteCallback)aCallback
-{
-    [self writeValue:[NSData dataWithBytes:&aByte length:1] completion:aCallback];
+-(NSError*)writeValueBlocking:(NSData*)data {
+    dispatch_semaphore_t s = dispatch_semaphore_create(0);
+    NSMutableArray * ewrap = [@[] mutableCopy];
+    [self writeValue:data completion:^(NSError *error) {
+        if(error!=nil) {
+            [ewrap addObject:error];
+        }
+        dispatch_semaphore_signal(s);
+    }];
+    // Wait for inner block to run, timeout 1s
+    if(dispatch_semaphore_wait(s,dispatch_time(DISPATCH_TIME_NOW,1*NSEC_PER_SEC))) {
+        // TODO: return an NSError signifying semaphore timeout
+        return nil;
+    } else if(ewrap.count>0) {
+        return ewrap[0];
+    } else {
+        return nil;
+    }
 }
 
 - (void)readValueWithBlock:(LGCharacteristicReadCallback)aCallback
@@ -150,7 +185,7 @@
     [self.cbCharacteristic.service.peripheral readValueForCharacteristic:self.cbCharacteristic];
 }
 
--(NSData*)readValue {
+-(NSData*)readValueBlocking {
     dispatch_semaphore_t s = dispatch_semaphore_create(0);
     NSMutableArray * data_wrapper = [[NSMutableArray alloc] init];
     [self readValueWithBlock:^(NSData* data,NSError* error){

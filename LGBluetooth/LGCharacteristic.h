@@ -58,6 +58,15 @@ typedef void (^LGCharacteristicWriteCallback) (NSError *error);
             completion:(LGCharacteristicNotifyCallback)aCallback
               onUpdate:(LGCharacteristicReadCallback)uCallback;
 
+/**
+ * Enables or disables notifications/indications for the characteristic
+ * value of characteristic.
+ * @param notifyValue Enable/Disable notifications
+ * @return nil on success, error otherwise
+ */
+- (NSError*)setNotifyValueBlocking:(BOOL)notifyValue
+                          onUpdate:(LGCharacteristicReadCallback)uCallback;
+
 - (void)writeValueNoResponse:(NSData *)data;
 
 /**
@@ -69,12 +78,10 @@ typedef void (^LGCharacteristicWriteCallback) (NSError *error);
         completion:(LGCharacteristicWriteCallback)aCallback;
 
 /**
- * Writes input byte to characteristic
- * @param aByte byte that needs to be written
- * @param aCallback Will be called after successfull/failure ble-operation
+ * Writes input data to characteristic
+ * @param data NSData object representing bytes that needs to be written
  */
-- (void)writeByte:(int8_t)aByte
-       completion:(LGCharacteristicWriteCallback)aCallback;
+- (NSError*)writeValueBlocking:(NSData *)data;
 
 /**
  * Reads characteristic value
@@ -88,7 +95,7 @@ typedef void (^LGCharacteristicWriteCallback) (NSError *error);
  * Blocks thread
  * returns nil on failure
  */
-- (NSData*)readValue;
+- (NSData*)readValueBlocking;
 
 // ----- Used for input events -----/
 
