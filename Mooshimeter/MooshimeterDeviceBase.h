@@ -23,8 +23,10 @@
 @property NSMutableDictionary <NSNumber*,LGCharacteristic*>* chars;
 
 +(Class)chooseSubClass:(LGPeripheral *)connected_peripheral;
+-(void)populateLGDict:(NSArray*)characteristics;
 
--(MooshimeterDeviceBase*) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
+-(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
+-(BOOL)isConnected;
 
 +(uint32)getBuildTimeFromPeripheral:(LGPeripheral *)periph;
 @end

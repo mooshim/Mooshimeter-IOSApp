@@ -8,7 +8,9 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BLEUtility.h"
 #import "LegacyMooshimeterDevice.h"
+#import "MooshimeterDevice.h"
 #import "OADDevice.h"
+#import "Prefman.h"
 
 
 @interface DummyDelegate:NSObject <MooshimeterDelegateProtocol>
@@ -38,9 +40,29 @@
     _speech_on[0] = NO;
     _speech_on[1] = NO;
     _speech_on[2] = NO;
-    _range_auto[0] = NO;
-    _range_auto[1] = NO;
+    _range_auto[0] = YES;
+    _range_auto[1] = YES;
     return self;
+}
+
+-(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate {
+    self = [self init];
+    self.periph = periph;
+    self.chars = [[NSMutableDictionary alloc]init];
+    [self setDelegate:delegate];
+    // Start an RSSI poller
+    dispatch_async(dispatch_get_main_queue(),^(){[self RSSICB];});
+    return self;
+}
+
+-(void)RSSICB {
+    if(![self isConnected]) {
+        return;
+    }
+    [self.periph readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
+        [self.delegate onRssiReceived:[RSSI intValue]];
+    }];
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(RSSICB) userInfo:nil repeats:NO];
 }
 
 #pragma mark MooshimeterControlProtocol_methods
@@ -87,7 +109,7 @@
     }
     return false;
 }
-+(MooshimeterDeviceBase *)chooseSubClass:(LGPeripheral *)connected_peripheral {
++(Class)chooseSubClass:(LGPeripheral *)connected_peripheral {
     if(connected_peripheral.cbPeripheral.state != CBPeripheralStateConnected) {
         NSLog(@"Can't decide subclass until after connection!");
         return nil;
@@ -100,9 +122,8 @@
         NSLog(@"Wrapping as a LegacyMeter");
         rval = [LegacyMooshimeterDevice class];
     } else {
-        rval = nil;
-        //fixme
-        //IMPLEMENT ME - NEW STYLE MOOSHIMETERDEVICE
+        NSLog(@"Wrapping as a new style meter");
+        rval = [MooshimeterDevice class];
     }
     return rval;
 }
@@ -111,6 +132,33 @@
 
 -(BOOL)isInOADMode {
     return [MooshimeterDeviceBase isPeripheralInOADMode:self.periph];
+}
+
+-(BOOL)isConnected {
+    return self.periph.cbPeripheral.state == CBPeripheralStateConnected;
+}
+
+-(LGCharacteristic*)getLGChar:(uint16)UUID {
+    return self.chars[[NSNumber numberWithInt:UUID]];
+}
+
+
+/*
+ For convenience, builds a dictionary of the LGCharacteristics based on the relevant
+ 2 bytes of their UUID
+ @param characteristics An array of LGCharacteristics
+ @return void
+ */
+
+-(void)populateLGDict:(NSArray*)characteristics {
+    for (LGCharacteristic* c in characteristics) {
+        NSLog(@"    Char: %@", c.UUIDString);
+        uint16 lookup;
+        [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
+        lookup = NSSwapShort(lookup);
+        NSNumber* key = [NSNumber numberWithInt:lookup];
+        self.chars[key] = c;
+    }
 }
 
 @end
