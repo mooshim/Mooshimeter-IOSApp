@@ -45,7 +45,7 @@
             return self.units;
         }
 
-        static const NSString* prefixes[] = {@"n",@"\u03bc",@"m",@"",@"k",@"M",@"G"};
+        static NSString* prefixes[] = {@"n",@"\u03bc",@"m",@"",@"k",@"M",@"G"};
         float lval = self.value;
         if(fabs(lval) > 1.2*self.max) {
             return @"OUT OF RANGE";

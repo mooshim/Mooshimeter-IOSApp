@@ -201,7 +201,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static const NSString* reuse_id = @"Cell";
+    static NSString* reuse_id = @"Cell";
     LGPeripheral* p;
     if(indexPath.row >= self.peripherals.count) {
         p = nil;
