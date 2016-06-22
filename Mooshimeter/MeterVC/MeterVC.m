@@ -80,6 +80,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #undef cg
 #undef mb
 
+    // Dan notes: Connected icon looks like power.  Maybe use something more radio-y?
+    // Try to use standard settings presentation?
+    // Way to clear buffer in graph mode?
+
     [v addSubview:sv];
     [self.view addSubview:v];
 }
@@ -287,7 +291,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onDisconnect {
     NSLog(@"onDisconnect");
     SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-    [nav popToRootViewControllerAnimated:YES];
+    dispatch_async(dispatch_get_main_queue(),^{
+        [nav popToRootViewControllerAnimated:YES];
+    });
 }
 
 - (void)onRssiReceived:(int)rssi {
@@ -296,7 +302,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     int percent = rssi+100;
     percent=percent>100?100:percent;
     percent=percent<0?0:percent;
-    [self.sig_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"sig_icon_%d.png",percent]]];
+    dispatch_async(dispatch_get_main_queue(),^{
+        [self.sig_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"sig_icon_%d.png",percent]]];
+    });
 }
 
 - (void)onBatteryVoltageReceived:(float)voltage {
@@ -304,28 +312,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     int percent = (voltage-2)*100;
     percent=percent>100?100:percent;
     percent=percent<0?0:percent;
-    [self.bat_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"bat_icon_%d.png",percent]]];
+
+    dispatch_async(dispatch_get_main_queue(),^{
+        [self.bat_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"bat_icon_%d.png",percent]]];
+    });
 }
 
 - (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
     // Cache values to determine if change is large enough to speak about
     NSLog(@"Updating measurements for %d...",c);
-    switch(c) {
-        case CH1:
-            [self.ch1_view value_label_refresh:val];
-            break;
-        case CH2:
-            [self.ch2_view value_label_refresh:val];
-            // Handle autoranging
-            if([self.meter applyAutorange]) {
-                // Something changed, refresh to be safe
-                [self refreshAllControls];
-            }
-            break;
-        case MATH:
-            [self math_label_refresh:val];
-            break;
-    }
+    dispatch_async(dispatch_get_main_queue(),^{
+        switch(c) {
+            case CH1:{
+                [self.ch1_view value_label_refresh:val];
+                break;}
+            case CH2:{
+                [self.ch2_view value_label_refresh:val];
+                // Handle autoranging
+                if([self.meter applyAutorange]) {
+                    // Something changed, refresh to be safe
+                    [self refreshAllControls];
+                }
+                break;}
+            case MATH:{
+                [self math_label_refresh:val];
+                break;}
+        }
+    });
     // Handle speech
     if(self.meter.speech_on[c]) {
         [self.speaker decideAndSpeak:val];
@@ -337,24 +350,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 - (void)onSampleRateChanged:(int)sample_rate_hz {
-    [self rate_button_refresh];
+    [self performSelectorOnMainThread:@selector(rate_button_refresh) withObject:nil  waitUntilDone:NO];
 }
 
 - (void)onBufferDepthChanged:(int)buffer_depth {
-    [self depth_button_refresh];
+    [self performSelectorOnMainThread:@selector(depth_button_refresh) withObject:nil  waitUntilDone:NO];
 }
 
 - (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {
-    [self logging_button_refresh];
+    [self performSelectorOnMainThread:@selector(logging_button_refresh) withObject:nil  waitUntilDone:NO];
 }
 
 - (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {
     switch(c) {
         case CH1:
-            [self.ch1_view range_button_refresh];
+            [self.ch1_view performSelectorOnMainThread:@selector(range_button_refresh) withObject:nil waitUntilDone:NO];
             break;
         case CH2:
-            [self.ch2_view range_button_refresh];
+            [self.ch2_view performSelectorOnMainThread:@selector(range_button_refresh) withObject:nil waitUntilDone:NO];
             break;
         case MATH:
             NSLog(@"TODO");
@@ -365,13 +378,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {
     switch(c) {
         case CH1:
-            [self.ch1_view display_set_button_refresh];
+            [self.ch1_view performSelectorOnMainThread:@selector(display_set_button_refresh) withObject:nil waitUntilDone:NO];
             break;
         case CH2:
-            [self.ch2_view display_set_button_refresh];
+            [self.ch2_view performSelectorOnMainThread:@selector(display_set_button_refresh) withObject:nil waitUntilDone:NO];
             break;
         case MATH:
-            [self math_button_refresh];
+            [self performSelectorOnMainThread:@selector(math_button_refresh) withObject:nil waitUntilDone:NO];
             break;
     }
 }
@@ -379,10 +392,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {
     switch(c) {
         case CH1:
-            [self.ch1_view zero_button_refresh];
+            [self.ch1_view performSelectorOnMainThread:@selector(zero_button_refresh) withObject:nil waitUntilDone:NO];
             break;
         case CH2:
-            [self.ch2_view zero_button_refresh];
+            [self.ch2_view performSelectorOnMainThread:@selector(zero_button_refresh) withObject:nil waitUntilDone:NO];
             break;
         case MATH:
             NSLog(@"IMPOSSIBRUUU");

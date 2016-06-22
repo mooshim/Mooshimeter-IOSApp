@@ -240,21 +240,25 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                                              selector:@selector(meterDisconnected)
                                                  name:kLGPeripheralDidDisconnect
                                                object:nil];*/
-    NSLog(@"Pushing meter view controller");
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-    MeterVC * mvc = [[MeterVC alloc] initWithMeter:meter];
-    [nav pushViewController:mvc animated:YES];
-    NSLog(@"Did push meter view controller");
+    dispatch_async(dispatch_get_main_queue(),^{
+        NSLog(@"Pushing meter view controller");
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+        SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+        MeterVC * mvc = [[MeterVC alloc] initWithMeter:meter];
+        [nav pushViewController:mvc animated:YES];
+        NSLog(@"Did push meter view controller");
+    });
 }
 
 -(void)transitionToOADView:(MooshimeterDeviceBase*)meter {
-    NSLog(@"Pushing OAD view controller");
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-    OADViewController * mvc = [[OADViewController alloc] initWithMeter:meter];
-    [nav pushViewController:mvc animated:YES];
-    NSLog(@"Did push OAD view controller");
+    dispatch_async(dispatch_get_main_queue(),^{
+        NSLog(@"Pushing OAD view controller");
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+        SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+        OADViewController * mvc = [[OADViewController alloc] initWithMeter:meter];
+        [nav pushViewController:mvc animated:YES];
+        NSLog(@"Did push OAD view controller");
+    });
 }
 
 /*-(void)handlePeripheralConnected:(LGPeripheral*)p{
@@ -284,14 +288,18 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 -(void)wrapPeripheralInMooshimeterAndTransition:(LGPeripheral*)p {
     [p connectWithTimeout:5 completion:^(NSError *error) {
+        if(error != nil) {
+            NSLog(@"Connection error => %@ ", error.userInfo );
+            return;
+        }
         NSLog(@"Discovering services");
         [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
             discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
                 Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
                 // We need to split alloc and init here because of some confusing callback issues
                 // that might reference self.active_meter
-                self.active_meter = [meter_class alloc];
-                [self.active_meter init:p delegate:self];
+                self.active_meter = (MooshimeterDeviceBase*)[meter_class alloc];
+                self.active_meter = [self.active_meter init:p delegate:self];
                 NSLog(@"Wrapped in meter!");
             });
         }];
@@ -334,10 +342,15 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 - (void)onInit {
     [self chooseAndStartActivityFor:self.active_meter];
 }
--(void)onRssiReceived:(int)rssi {
-    //We should really do something with this but I designed the MooshimeterDeviceDelegate protocol poorly;
-}
--(void)onBatteryVoltageReceived:(float)voltage {
-    //We should really do something with this but I designed the MooshimeterDeviceDelegate protocol poorly
-}
+- (void)onDisconnect {NSLog(@"ScanVC caught meter event");}
+- (void)onRssiReceived:(int)rssi {NSLog(@"ScanVC caught meter event");}
+- (void)onBatteryVoltageReceived:(float)voltage {NSLog(@"ScanVC caught meter event");}
+- (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {NSLog(@"ScanVC caught meter event");}
+- (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {NSLog(@"ScanVC caught meter event");}
+- (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"ScanVC caught meter event");}
+- (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"ScanVC caught meter event");}
+- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {NSLog(@"ScanVC caught meter event");}
+- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"ScanVC caught meter event");}
+- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"ScanVC caught meter event");}
+- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"ScanVC caught meter event");}
 @end
