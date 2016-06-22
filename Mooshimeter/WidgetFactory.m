@@ -17,7 +17,9 @@
 @end
 @implementation BlockWrapper
 -(instancetype)initWithCallback:(void(^)())callback{
+    self = [super init];
     self.callback = callback;
+    return self;
 }
 -(instancetype)initAndAttachTo:(UIControl*)control forEvent:(UIControlEvents)forEvent callback:(void(^)())callback{
     self = [super init];

@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CG
+@interface CG:NSObject
 
 +(CGRect)centerIn:(CGRect)in new_size:(CGSize)new_size;
 +(CGRect)centerHorz:(CGRect)in new_size:(CGSize)new_size;
