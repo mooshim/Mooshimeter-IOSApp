@@ -103,14 +103,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.navigationController.navigationBar.hidden = NO;
 }
 
--(void)handleBackgroundTap {
-    if([self.meter isStreaming]) {
-        [self.meter pause];
-    } else {
-        [self.meter stream];
-    }
-}
-
 CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     if(values.count==0){
         return [CPTPlotRange plotRangeWithLocation:@0 length:@0];
@@ -173,8 +165,9 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         // This may seem counter-intuitive, but we do this by setting the bounds we'd like to draw first,
         // then populating the data arrays afterwards.  This is because when we're not scroll locked, the user
         // may arbitrarily adjust the view bounds, so we should fill in our data based on bounds and not vice versa.
-        if(_autoscroll) {
+        if(_autoscroll||_jump_to_end) {
             // If autoscroll is on, time drives the xrange
+            _jump_to_end=NO;
             NSInteger xmin_i = _left_cache.count-_max_points_onscreen;
             if(xmin_i<0) {
                 xmin_i = 0;
@@ -229,6 +222,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     self.max_points_onscreen = [self.meter getBufferDepth];
     [self.meter setBufferMode:CH1 on:buffer_mode];
     [self.meter setBufferMode:CH2 on:buffer_mode];
+    [self.refresh_button setHidden:!buffer_mode];
 }
 
 #pragma mark - Chart behavior
@@ -277,6 +271,18 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     b.frame = [CG alignBottom:b.frame to:self.view.bounds];
     self.config_button = b;
     [self.view addSubview:b];
+
+    // Set up the refresh button (used in buffer mode)
+    b = [WidgetFactory makeButton:@"Refresh" callback:^{
+        _jump_to_end=YES;
+    }];
+    b.backgroundColor = [UIColor whiteColor];
+    b.frame = CGRectMake(0,0,80,40);
+    b.frame = [CG alignRight:b.frame to:self.view.bounds];
+    b.frame = [CG alignTop:b.frame to:self.view.bounds];
+    self.refresh_button = b;
+    [self.view addSubview:b];
+    [b setHidden:YES];
 }
 
 -(void)configureGraph {
@@ -318,7 +324,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     CPTScatterPlot *ch1Plot = [[CPTScatterPlot alloc] init];
     ch1Plot.dataSource = self;
     ch1Plot.identifier = @"CH1";
-    CPTColor *ch1Color = [CPTColor redColor];
+    CPTColor *ch1Color = LEFT_COLOR;
     [graph addPlot:ch1Plot toPlotSpace:_leftAxisSpace];
     
     // 3 - Set up plot space
@@ -360,7 +366,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         CPTScatterPlot *ch2Plot = [[CPTScatterPlot alloc] init];
         ch2Plot.dataSource = self;
         ch2Plot.identifier = @"CH2";
-        CPTColor *ch2Color = [CPTColor greenColor];
+        CPTColor *ch2Color = RIGHT_COLOR;
         [graph addPlot:ch2Plot toPlotSpace:_rightAxisSpace];
         
         [_rightAxisSpace scaleToFitPlots:@[ch2Plot]];
@@ -421,12 +427,12 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     xAxisTextStyle.fontSize = 11.0f;
     
     CPTMutableTextStyle *ch1AxisTextStyle = [[CPTMutableTextStyle alloc] init];
-    ch1AxisTextStyle.color = [CPTColor redColor];
+    ch1AxisTextStyle.color = LEFT_COLOR;
     ch1AxisTextStyle.fontName = @"Helvetica-Bold";
     ch1AxisTextStyle.fontSize = 11.0f;
     
     CPTMutableTextStyle *ch2AxisTextStyle = [[CPTMutableTextStyle alloc] init];
-    ch2AxisTextStyle.color = [CPTColor greenColor];
+    ch2AxisTextStyle.color = RIGHT_COLOR;
     ch2AxisTextStyle.fontName = @"Helvetica-Bold";
     ch2AxisTextStyle.fontSize = 11.0f;
     

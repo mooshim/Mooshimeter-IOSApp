@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong, nonatomic) CPTGraphHostingView *hostView;
 @property (strong, nonatomic) CPTXYPlotSpace *leftAxisSpace, *rightAxisSpace;
 @property (strong, nonatomic) UIButton* config_button;
+@property (strong, nonatomic) UIButton* refresh_button;
 
 // GUI config values
 
@@ -45,6 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (nonatomic) BOOL xy_mode;
 @property (nonatomic) BOOL buffer_mode;
 @property (nonatomic) BOOL autoscroll;
+@property (nonatomic) BOOL jump_to_end;
 
 @property BOOL left_axis_auto;
 @property BOOL right_axis_auto;
