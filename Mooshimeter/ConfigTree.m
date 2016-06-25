@@ -95,8 +95,12 @@ typedef void(^NodeProcessor)(ConfigNode*);
             }
         }
         @catch(NSException *e) {
-            NSLog(@"Exception caught");
-            NSLog(@"%@",e);
+            if([e.name isEqualToString:@"NSRangeException"]) {
+                // This is an underflow exception and perfectly normal.
+            } else {
+                NSLog(@"Exception caught");
+                NSLog(@"%@",e);
+            }
             return;
         }
         // Advance recv_buf
@@ -365,6 +369,7 @@ void (^serout_callback)(NSData*,NSError*);
         if(n.ntype != NTYPE_VAL_BIN) {
             [n reqValue];
         }
+        if(![self.meter isConnected]) { return; }
     }
 }
 
