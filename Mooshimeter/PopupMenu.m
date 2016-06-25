@@ -8,7 +8,13 @@
 @implementation PopupMenu
 
 +(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options callback:(void(^)(int))callback {
-    return [PopupMenu displayOptionsWithParent:parent title:title options:options cancel:nil callback:callback];
+    PopupMenu * rval = [PopupMenu displayOptionsWithParent:parent
+                                                     title:title
+                                                   options:options
+                                                    cancel:@"Cancel"
+                                                  callback:callback];
+    rval.pass_cancel_as_action = NO;
+    return rval;
 }
 
 +(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options cancel:(NSString*)cancel callback:(void(^)(int))callback {
@@ -38,6 +44,7 @@
         [self.sheet addButtonWithTitle:option];
     }
     if(cancel!=nil) {
+        self.pass_cancel_as_action = YES;
         [self.sheet addButtonWithTitle:cancel];
         [self.sheet setCancelButtonIndex:[options count]];
     }
@@ -49,6 +56,10 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"Action sheet selected %d", buttonIndex);
+    if(     buttonIndex==self.sheet.cancelButtonIndex
+            && !self.pass_cancel_as_action) {
+        return;
+    }
     self.select_cb(buttonIndex);
 }
 
