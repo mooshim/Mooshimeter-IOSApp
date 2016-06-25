@@ -17,8 +17,8 @@
 @property id<MooshimeterDelegateProtocol> delegate;
 @property bool rate_auto;
 @property bool depth_auto;
-@property (readonly) bool* range_auto;
-@property (readonly) bool* speech_on;
+@property (readonly) BOOL* range_auto;
+@property (readonly) BOOL* speech_on;
 @property LGPeripheral* periph;
 @property NSMutableDictionary <NSNumber*,LGCharacteristic*>* chars;
 

@@ -137,7 +137,7 @@
     void (^tmp_cb)() = ^void() {
         callback(wb);
     };
-    [[BlockWrapper alloc]initAndAttachTo:b forEvent:UIControlEventTouchUpInside callback:tmp_cb];
+    (void)[[BlockWrapper alloc]initAndAttachTo:b forEvent:UIControlEventTouchUpInside callback:tmp_cb];
     return b;
 }
 +(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback frame:(CGRect)frame {
@@ -148,7 +148,7 @@
 +(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback {
     UIButton* b = [WidgetFactory makeMyStyleButton];
     [b setTitle:title forState:UIControlStateNormal];
-    [[BlockWrapper alloc]initAndAttachTo:b forEvent:UIControlEventTouchUpInside callback:callback];
+    (void)[[BlockWrapper alloc]initAndAttachTo:b forEvent:UIControlEventTouchUpInside callback:callback];
     return b;
 }
 +(UISwitch*)makeSwitch:(void(^)(bool))callback frame:(CGRect)frame {
@@ -159,7 +159,7 @@
 +(UISwitch*)makeSwitch:(void(^)(bool))callback {
     UISwitch * rval = [[UISwitch alloc]init];
     __weak UISwitch * weak = rval;
-    [[BlockWrapper alloc] initAndAttachTo:rval forEvent:UIControlEventValueChanged callback:^{
+    (void)[[BlockWrapper alloc] initAndAttachTo:rval forEvent:UIControlEventValueChanged callback:^{
         callback([weak isOn]);
     }];
     return rval;
@@ -168,7 +168,7 @@
 +(UIAlertView*)makeCancelContinueAlert:(NSString*)title msg:(NSString*)msg callback:(void(^)(bool proceed))callback {
     UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
     a.alertViewStyle = UIAlertViewStyleDefault;
-    [[AlertViewBlockWrapper alloc] initAndAttachTo:a callback:^(UIAlertView *view, int i) {
+    (void)[[AlertViewBlockWrapper alloc] initAndAttachTo:a callback:^(UIAlertView *view, int i) {
         callback([view cancelButtonIndex]!=i);
     }];
     [a show];
@@ -178,7 +178,7 @@
 +(UIAlertView*)makeTextInputBox:(NSString*)title msg:(NSString*)msg callback:(void(^)(NSString*))callback {
     UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
     a.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [[AlertViewBlockWrapper alloc] initAndAttachTo:a callback:^(UIAlertView *view, int i) {
+    (void)[[AlertViewBlockWrapper alloc] initAndAttachTo:a callback:^(UIAlertView *view, int i) {
         if(i== [view cancelButtonIndex]) {
             NSLog(@"Alert view canceled");
             return;
@@ -208,7 +208,7 @@
     dismiss.frame = top.view.frame;
     dismiss.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
     __weak UIButton* weak_dismiss = dismiss;
-    [[BlockWrapper alloc] initAndAttachTo:dismiss forEvent:UIControlEventTouchUpInside callback:^{
+    (void)[[BlockWrapper alloc] initAndAttachTo:dismiss forEvent:UIControlEventTouchUpInside callback:^{
         [UIView animateWithDuration:0.2 animations:^{
             weak_dismiss.alpha = 0.0;
         } completion:^(BOOL finished) {

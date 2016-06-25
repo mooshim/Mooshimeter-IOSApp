@@ -71,11 +71,6 @@
     }];
 }
 
-#pragma mark MooshimeterControlProtocol_methods
--(void)removeDelegate {
-    self.delegate = [[DummyDelegate alloc]init];
-}
-
 -(NSString*)getPreferenceKeyString:(NSString*)tail {
     NSMutableString* rval = [NSMutableString stringWithString:@"mooshimeter-"];
     [rval appendString:self.periph.UUIDString];
@@ -139,15 +134,58 @@
 -(BOOL)isInOADMode {
     return [MooshimeterDeviceBase isPeripheralInOADMode:self.periph];
 }
-
 -(BOOL)isConnected {
     return self.periph.cbPeripheral.state == CBPeripheralStateConnected;
 }
-
 -(LGCharacteristic*)getLGChar:(uint16)UUID {
     return self.chars[[NSNumber numberWithInt:UUID]];
 }
+// Filler control methods to suppress warnings
 
+- (int)initialize {return 0;}
+- (void)reboot {}
+- (BOOL)bumpRange:(Channel)c expand:(BOOL)expand {return NO;}
+- (BOOL)applyAutorange {return NO;}
+- (void)setName:(NSString *)name {}
+- (NSString *)getName {return nil;}
+- (void)pause {}
+- (void)oneShot {}
+- (void)stream {}
+- (BOOL)isStreaming {return NO;}
+- (void)enterShippingMode {}
+- (int)getPCBVersion {return 0;}
+- (double)getUTCTime {return 0;}
+- (void)setTime:(double)utc_time {}
+- (MeterReading *)getOffset:(Channel)c {return nil;}
+- (void)setOffset:(Channel)c offset:(float)offset {}
+- (int)getSampleRateHz {return 0;}
+- (int)getSampleRateIndex {return 0;}
+- (int)setSampleRateIndex:(int)i {return 0;}
+- (NSArray<NSString *> *)getSampleRateList {return nil;}
+- (int)getBufferDepth {return 0;}
+- (int)setBufferDepthIndex:(int)i {return 0;}
+- (NSArray<NSString *> *)getBufferDepthList {return nil;}
+- (void)setBufferMode:(Channel)c on:(BOOL)on {}
+- (BOOL)getLoggingOn {return NO;}
+- (void)setLoggingOn:(BOOL)on {}
+- (int)getLoggingStatus {return 0;}
+- (NSString *)getLoggingStatusMessage {return nil;}
+- (void)setLoggingInterval:(int)ms {}
+- (int)getLoggingIntervalMS {return 0;}
+- (MeterReading *)getValue:(Channel)c {return nil;}
+- (NSString *)getRangeLabel:(Channel)c {return nil;}
+- (int)setRange:(Channel)c rd:(RangeDescriptor *)rd {return 0;}
+- (NSArray<RangeDescriptor *> *)getRangeList:(Channel)c {return nil;}
+- (NSArray<NSString *> *)getRangeNameList:(Channel)c {return nil;}
+- (NSString *)getInputLabel:(Channel)c {return nil;}
+- (int)setInput:(Channel)c descriptor:(InputDescriptor *)descriptor {return 0;}
+- (NSArray *)getInputList:(Channel)c {return nil;}
+- (NSArray *)getInputNameList:(Channel)c {return nil;}
+- (InputDescriptor *)getSelectedDescriptor:(Channel)c {return nil;}
+
+-(void)removeDelegate {
+    self.delegate = [[DummyDelegate alloc]init];
+}
 
 /*
  For convenience, builds a dictionary of the LGCharacteristics based on the relevant

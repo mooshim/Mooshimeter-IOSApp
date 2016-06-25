@@ -18,7 +18,7 @@
 @property uint8_t send_seq_n;
 @property uint8_t recv_seq_n;
 @property NSMutableData* recv_buf;
-@property NSMutableDictionary * code_list;
+@property NSMutableDictionary<NSNumber*,ConfigNode*>* code_list;
 //Lock lock;
 
 -(void)attach:(MooshimeterDevice*)meter;

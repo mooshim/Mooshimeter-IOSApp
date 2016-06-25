@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // FIXME all 3 have different initialization patterns?  Seriously?
     [LGCentralManager sharedInstance];
     [FirmwareImageDownloader initSingleton];
-    [[SmartNavigationController alloc] init];
+    (void)[[SmartNavigationController alloc] init];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];

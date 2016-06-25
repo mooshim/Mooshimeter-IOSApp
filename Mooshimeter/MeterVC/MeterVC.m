@@ -357,7 +357,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self performSelectorOnMainThread:@selector(depth_button_refresh) withObject:nil  waitUntilDone:NO];
 }
 
-- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {
+- (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {
     [self performSelectorOnMainThread:@selector(logging_button_refresh) withObject:nil  waitUntilDone:NO];
 }
 

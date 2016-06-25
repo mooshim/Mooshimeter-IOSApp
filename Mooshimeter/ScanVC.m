@@ -333,7 +333,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {NSLog(@"ScanVC caught meter event");}
 - (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"ScanVC caught meter event");}
 - (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"ScanVC caught meter event");}
-- (void)onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString *)message {NSLog(@"ScanVC caught meter event");}
+- (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {NSLog(@"ScanVC caught meter event");}
 - (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"ScanVC caught meter event");}
 - (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"ScanVC caught meter event");}
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"ScanVC caught meter event");}

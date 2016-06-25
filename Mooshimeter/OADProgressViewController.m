@@ -15,7 +15,7 @@
 {
     self = [super init];
     // Initialization code
-    self.meter = meter;
+    self.meter = (OADDevice*)meter;
     self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
     self.view.backgroundColor = [UIColor whiteColor];
 

@@ -20,7 +20,7 @@
 -(void) onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber*>*)val;
 -(void) onSampleRateChanged:(int)sample_rate_hz;
 -(void) onBufferDepthChanged:(int)buffer_depth;
--(void) onLoggingStatusChanged:(bool)on new_state:(int)new_state message:(NSString*)message;
+-(void) onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString*)message;
 -(void) onRangeChange:(Channel)c new_range:(RangeDescriptor*)new_range;
 -(void) onInputChange:(Channel)c descriptor:(InputDescriptor*)descriptor;
 -(void) onOffsetChange:(Channel)c offset:(MeterReading*)offset;

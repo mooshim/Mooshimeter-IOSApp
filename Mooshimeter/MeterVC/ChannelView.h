@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void)refreshAllControls;
 
-@property NSUInteger channel;
+@property Channel channel;
 @property MooshimeterDeviceBase * meter;
 
 @property (strong,nonatomic) UILabel*  value_label;

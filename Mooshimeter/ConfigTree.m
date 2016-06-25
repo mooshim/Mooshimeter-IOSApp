@@ -320,7 +320,7 @@ void (^serout_callback)(NSData*,NSError*);
 -(NSString*)getChosenName:(NSString*)name {
     return [self getChosenNode:name].name;
 }
--(NSDictionary<NSNumber*,ConfigNode*>*) getShortCodeMap {
+-(NSMutableDictionary<NSNumber*,ConfigNode*>*) getShortCodeMap {
     //NSMutableDictionary<NSNumber*,ConfigNode*>* rval = [@{} mutableCopy];
     NSMutableDictionary* rval = [@{} mutableCopy];
     NodeProcessor p = ^(ConfigNode * n) {
