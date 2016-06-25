@@ -814,10 +814,6 @@ NSMutableString* concat(int n_strings,...) {
 -(int) setInput:(Channel)c descriptor:(InputDescriptor*)descriptor {
     Chooser* chooser = input_descriptors[c];
     MyInputDescriptor * cast = (MyInputDescriptor *)descriptor;
-    if([chooser getChosen]==descriptor) {
-        // No action required
-        return 0;
-    }
     switch(c) {
         case CH1:
         case CH2:
