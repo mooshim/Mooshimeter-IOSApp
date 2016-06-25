@@ -210,11 +210,19 @@
         NSLog(@"Requested value for a node with no shortcode!");
         return nil;
     }
+    if(![self.tree.meter isConnected]) {
+        NSLog(@"Trying to talk to a disconnected meter");
+        return self.value;
+    }
     [_tree sendBytes:[NSData dataWithBytes:&_code length:1]];
     [lock wait:2000];
     return self.value;
 }
 -(void)sendValue:(NSObject*)new_value blocking:(BOOL)blocking {
+    if(![self.tree.meter isConnected]) {
+        NSLog(@"Trying to talk to a disconnected meter");
+        return;
+    }
     NSMutableData * b = [NSMutableData data];
     [self packToSerial:b new_value:new_value];
     if(!blocking) {
