@@ -61,12 +61,18 @@
     if( !_cooldown_active  || (change>threshold)) {
         // If the value has changed 20%, or just every 5 second
         _last_value = val.value;
-        NSString* to_utter = [self formatValueLabelForSpeaking:[val toString]];
+        NSString* to_utter = [val toString];
+        if([val isInRange]){
+            to_utter = [self formatValueLabelForSpeaking:to_utter];
+        }
         AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:to_utter];
+        utterance.rate = .1;
         AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
         [synth speakUtterance:utterance];
         _cooldown_active = YES;
-        _cooldown_timer=[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(clearCooldown) userInfo:nil repeats:NO];
+        dispatch_async(dispatch_get_main_queue(),^{
+            _cooldown_timer=[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(clearCooldown) userInfo:nil repeats:NO];
+        });
         return true;
     }
     return false;
