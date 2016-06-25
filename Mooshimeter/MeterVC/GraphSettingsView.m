@@ -120,7 +120,7 @@
 
 -(void)layoutSubviews {
     float bw = self.frame.size.width-20;
-    float bh = 40;
+    float bh = 45;
     CGRect subframe = CGRectMake(10,10,bw,bh);
 
     _xy_sw.frame = subframe;

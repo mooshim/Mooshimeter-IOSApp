@@ -115,6 +115,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         if(x < minX)  {minX= x;}
     }
     float dif = maxX-minX;
+    if(dif<1e-5) { dif=1e-5; }
     CPTMutablePlotRange *xr = (CPTMutablePlotRange *)[[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
     return xr;
 }
@@ -168,11 +169,11 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         if(_autoscroll||_jump_to_end) {
             // If autoscroll is on, time drives the xrange
             _jump_to_end=NO;
-            NSInteger xmin_i = _left_cache.count-_max_points_onscreen;
+            NSInteger xmin_i = _right_cache.count-_max_points_onscreen;
             if(xmin_i<0) {
                 xmin_i = 0;
             }
-            float xmin = [((XYPoint*)_left_cache[xmin_i]).x floatValue];
+            float xmin = [((XYPoint*)_right_cache[xmin_i]).x floatValue];
             // Time between samples onscreen depends on whether we're in buffer mode or not
             // If we're in buffer mode, it's the native sample rate of the Mooshimeter
             float dt = _buffer_mode?(1.0f):([self.meter getBufferDepth]);
@@ -248,7 +249,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     UIButton* b = [WidgetFactory makeButton:@"Config" callback:^{
         // Open the config popover
         GraphSettingsView* v = [[GraphSettingsView alloc]init];
-        [WidgetFactory makePopoverFromView:v size:CGSizeMake(300,260)];
+        [WidgetFactory makePopoverFromView:v size:CGSizeMake(300,300)];
         v.graph = ws;
         v.backgroundColor = [UIColor whiteColor];
     }];
@@ -583,15 +584,19 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
 #pragma mark - MooshimeterDelegateProtocol methods
 
-- (void)onInit {NSLog(@"IMPOSIBRUUUU");}
+void erroneousintercept() {
+    NSLog(@"IMPOSIBRUUUU");
+}
+
+- (void)onInit {erroneousintercept();}
 - (void)onRssiReceived:(int)rssi {}
 - (void)onBatteryVoltageReceived:(float)voltage {}
-- (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"IMPOSIBRUUUU");}
-- (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"IMPOSIBRUUUU");}
+- (void)onSampleRateChanged:(int)sample_rate_hz {erroneousintercept();}
+- (void)onBufferDepthChanged:(int)buffer_depth {erroneousintercept();}
 - (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {}
-- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"IMPOSIBRUUUU");}
-- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"IMPOSIBRUUUU");}
-- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"IMPOSIBRUUUU");}
+- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {erroneousintercept();}
+- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {erroneousintercept();}
+- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {erroneousintercept();}
 // Delegate calls we actually care about
 - (void)onDisconnect {
     [self.navigationController popToRootViewControllerAnimated:YES];
