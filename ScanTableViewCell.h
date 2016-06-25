@@ -30,5 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property UIImageView *conn_icon;
 @property UILabel *meter_name;
 @property UILabel *fw_version;
+@property UITapGestureRecognizer * single_tap;
 
 @end

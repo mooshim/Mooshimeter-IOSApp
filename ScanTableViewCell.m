@@ -35,6 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.fw_version setFont:[UIFont systemFontOfSize:16]];
     self.rssi_icon  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sig_icon_0.png"]];
     self.conn_icon  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disconnected.png"]];
+    self.single_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(connIconTapped)];
+    self.single_tap.numberOfTapsRequired = 1;
+    [self.conn_icon setUserInteractionEnabled:YES];
+    [self.conn_icon addGestureRecognizer:self.single_tap];
 
     [self addSubview:_meter_name];
     [self addSubview:_fw_version];
@@ -42,6 +46,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self addSubview:_conn_icon];
 
     return self;
+}
+
+-(void)connIconTapped{
+    NSLog(@"single Tap on imageview");
+    if(self.peripheral.cbPeripheral.state!=CBPeripheralStateConnected) {
+        return;
+    }
+    [self.peripheral disconnectWithCompletion:^(NSError *error) {
+
+    }];
+    __weak ScanTableViewCell * ws = self;
+    [_peripheral disconnectWithCompletion:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(),^{
+            [ws refresh];
+        });
+    }];
 }
 
 -(void)layoutSubviews {
@@ -77,50 +97,52 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.rssi_icon.frame = b;
 }
 
+-(void)refresh{
+    if(_peripheral == nil) {
+        NSLog(@"Shouldn't have received a nil device");
+        return;
+    }
+
+    switch(self.peripheral.cbPeripheral.state) {
+        case CBPeripheralStateDisconnecting:
+            [self.conn_icon setImage:[UIImage imageNamed:@"disconnected.png"]];
+            [self.conn_icon setAlpha:0.5];
+            self.single_tap.cancelsTouchesInView=NO;
+            break;
+        case CBPeripheralStateDisconnected:
+            [self.conn_icon setImage:[UIImage imageNamed:@"disconnected.png"]];
+            [self.conn_icon setAlpha:1.0];
+            self.single_tap.cancelsTouchesInView=NO;
+            break;
+        case CBPeripheralStateConnecting:
+            [self.conn_icon setImage:[UIImage imageNamed:@"connected.png"]];
+            [self.conn_icon setAlpha:0.5];
+            self.single_tap.cancelsTouchesInView=NO;
+            break;
+        case CBPeripheralStateConnected:
+            [self.conn_icon setImage:[UIImage imageNamed:@"connected.png"]];
+            [self.conn_icon setAlpha:1.0];
+            self.single_tap.cancelsTouchesInView=YES;
+            break;
+    }
+
+    uint32_t build_time = [MooshimeterDeviceBase getBuildTimeFromPeripheral:self.peripheral];
+    self.meter_name.text = [NSString stringWithFormat:@"%@",self.peripheral.name];
+    self.fw_version.text = [NSString stringWithFormat:@"FW Build: %u",build_time];
+
+    int percent = _peripheral.RSSI+100;
+    percent=percent>100?100:percent;
+    percent=percent<0?0:percent;
+    [self.rssi_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"sig_icon_%d.png",percent]]];
+}
+
 #pragma mark getters/setters
 
 -(LGPeripheral*)getPeripheral {
     return _peripheral;
 }
 -(void)setPeripheral:(LGPeripheral *)peripheral {
-    uint32 build_time = 0;
-    
     _peripheral = peripheral;
-
-    if(peripheral == nil) {
-        NSLog(@"Shouldn't have received a nil device");
-        return;
-    }
-        
-    switch(self.peripheral.cbPeripheral.state) {
-        case CBPeripheralStateDisconnecting:
-            [self.conn_icon setImage:[UIImage imageNamed:@"disconnected.png"]];
-            [self.conn_icon setAlpha:0.5];
-            break;
-        case CBPeripheralStateDisconnected:
-            //self.backgroundColor = [UIColor whiteColor];
-            [self.conn_icon setImage:[UIImage imageNamed:@"disconnected.png"]];
-            [self.conn_icon setAlpha:1.0];
-            break;
-        case CBPeripheralStateConnecting:
-            //self.backgroundColor = [UIColor orangeColor];
-            [self.conn_icon setImage:[UIImage imageNamed:@"connected.png"]];
-            [self.conn_icon setAlpha:0.5];
-            break;
-        case CBPeripheralStateConnected:
-            //self.backgroundColor = [UIColor greenColor];
-            [self.conn_icon setImage:[UIImage imageNamed:@"connected.png"]];
-            [self.conn_icon setAlpha:1.0];
-            break;
-    }
-
-    build_time = [MooshimeterDeviceBase getBuildTimeFromPeripheral:self.peripheral];
-    self.meter_name.text = [NSString stringWithFormat:@"%@",self.peripheral.name];
-    self.fw_version.text = [NSString stringWithFormat:@"FW Build: %u",build_time];
-
-    int percent = peripheral.RSSI+100;
-    percent=percent>100?100:percent;
-    percent=percent<0?0:percent;
-    [self.rssi_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"sig_icon_%d.png",percent]]];
+    [self refresh];
 }
 @end
