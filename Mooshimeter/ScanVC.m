@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "GlobalPreferenceVC.h"
 #import "WidgetFactory.h"
 #import "FirmwareImageDownloader.h"
+#import "MeterDirectory.h"
 
 @implementation ScanVC
 
@@ -113,10 +114,15 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 -(void)handleScanViewSelect:(LGPeripheral*)p {
     switch( p.cbPeripheral.state ) {
         case CBPeripheralStateConnected:{
-            // We selected one that's already connected, disconnect
-            [p disconnectWithCompletion:^(NSError *error) {
-                [self reloadData];
-            }];
+            self.active_meter = [MeterDirectory getMeterForPeripheral:p];
+            if(self.active_meter==nil) {
+                // Don't know how we connected already but don't have an active meter...
+                Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
+                self.active_meter = (MooshimeterDeviceBase*)[meter_class alloc];
+                self.active_meter = [self.active_meter init:p delegate:self];
+            } else {
+                [self chooseAndStartActivityFor:self.active_meter];
+            }
             break;}
         case CBPeripheralStateConnecting:{
             //What should we do if you click a connecting meter?
@@ -261,31 +267,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     });
 }
 
-/*-(void)handlePeripheralConnected:(LGPeripheral*)p{
-    [self reloadData];
-    NSLog(@"Wrapping in Meter");
-
-    if( g_meter->oad_mode ) {
-        // We connected to a meter in OAD mode as requested previously.  Update firmware.
-        NSLog(@"Connected in OAD mode");
-        if( YES || [g_meter getAdvertisedBuildTime] != self.oad_profile->imageHeader.build_time ) {
-            NSLog(@"Starting upload");
-            [self.oad_profile startUpload];
-        } else {
-            NSLog(@"We connected to an up-to-date meter in OAD mode.  Disconnecting.");
-            [g_meter.p disconnectWithCompletion:nil];
-        }
-    }
-    else if( [g_meter getAdvertisedBuildTime] < self.oad_profile->imageHeader.build_time ) {
-        // Require a firmware update!
-        NSLog(@"FIRMWARE OLD");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Firmware Update" message:@"A new firmware version is available.  Upgrade now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Upgrade Now", nil];
-        [alert show];
-    } else {
-        [self transitionToMeterView];
-    }
-}*/
-
 -(void)wrapPeripheralInMooshimeterAndTransition:(LGPeripheral*)p {
     [p connectWithTimeout:5 completion:^(NSError *error) {
         if(error != nil) {
@@ -294,6 +275,9 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         }
         NSLog(@"Discovering services");
         [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
+            if(services.count==0) {
+                return;
+            }
             discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
                 Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
                 // We need to split alloc and init here because of some confusing callback issues
