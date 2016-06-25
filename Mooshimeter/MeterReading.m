@@ -60,6 +60,10 @@
         return rval;
     }
 
+-(BOOL)isInRange {
+    return (fabs(self.value) < 1.2*self.max);
+}
+
     +(MeterReading*) mult:(MeterReading*)m0 m1:(MeterReading*)m1 {
         MeterReading* rval = [[MeterReading alloc] initWithValue:(m0.value*m1.value)
                                        n_digits_arg:((m0.n_digits+m1.n_digits)/2)
