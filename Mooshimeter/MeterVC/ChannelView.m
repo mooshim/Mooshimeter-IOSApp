@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     l.textColor = [UIColor blackColor];
     l.textAlignment = NSTextAlignmentCenter;
     l.font = [UIFont fontWithName:@"Courier New" size:65];
-    l.text = @"0.00000";
+    l.text = @"LOADING";
     l.adjustsFontSizeToFitWidth = YES;
     [self addSubview:l];
     self.value_label = l;

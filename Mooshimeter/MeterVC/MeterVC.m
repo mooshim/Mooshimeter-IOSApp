@@ -59,14 +59,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.math_label.textColor = [UIColor blackColor];
     self.math_label.textAlignment = NSTextAlignmentCenter;
     self.math_label.font = [UIFont fontWithName:@"Courier New" size:65];
-    self.math_label.text = @"0.00000";
+    self.math_label.text = @"LOADING";
     self.math_label.adjustsFontSizeToFitWidth = YES;
 
     self.math_button             = mb(4,0,2,1,math_button_press);
 
     self.rate_button             = mb(0,1,3,1,rate_button_press);
-    self.logging_button          = mb(3,1,3,1,logging_button_press);
-    self.depth_button            = mb(0,2,3,1,depth_button_press);
+    self.depth_button            = mb(3,1,3,1,depth_button_press);
+    self.logging_button          = mb(0,2,3,1,logging_button_press);
     self.graph_button            = mb(3,2,3,1,graph_button_press);
 
     [self.graph_button setTitle:@"GRAPH" forState:UIControlStateNormal];
