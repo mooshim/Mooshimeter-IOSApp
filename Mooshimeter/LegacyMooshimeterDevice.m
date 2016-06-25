@@ -255,7 +255,6 @@ void (^sample_handler)(NSData*,NSError*);
     [self determineInputDescriptorIndex:CH1];
     [self determineInputDescriptorIndex:CH2];
 
-    [self updateRSSI];
     [self updateBattery];
     [self updateLoggingStatus];
 }
@@ -282,18 +281,6 @@ void (^sample_handler)(NSData*,NSError*);
     [self reqMeterBatteryLevel:^(NSData *data, NSError *error) {
         [self.delegate onBatteryVoltageReceived:self->bat_voltage];
         [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateBattery) userInfo:nil repeats:NO];
-    }];
-}
-
--(void)updateRSSI {
-    if(self.periph.cbPeripheral.state != CBPeripheralStateConnected) {
-        return;
-    }
-    [self.periph readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
-        if(RSSI) {
-            [self.delegate onRssiReceived:[RSSI intValue]];
-        }
-        [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(updateRSSI) userInfo:nil repeats:NO];
     }];
 }
 

@@ -60,9 +60,15 @@
         return;
     }
     [self.periph readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
-        [self.delegate onRssiReceived:[RSSI intValue]];
+        if(RSSI) {
+            [self.delegate onRssiReceived:[RSSI intValue]];
+        }
+        // Can only dispatch this timer from the main queue
+        dispatch_async(dispatch_get_main_queue(),^{
+            [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(RSSICB) userInfo:nil repeats:NO];
+        });
+
     }];
-    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(RSSICB) userInfo:nil repeats:NO];
 }
 
 #pragma mark MooshimeterControlProtocol_methods
