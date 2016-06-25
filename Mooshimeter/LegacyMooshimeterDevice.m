@@ -270,7 +270,9 @@ void (^sample_handler)(NSData*,NSError*);
                                         new_state:[self getLoggingStatus]
                                           message:[self getLoggingStatusMessage]];
         }
-        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateLoggingStatus) userInfo:nil repeats:NO];
+        dispatch_async(dispatch_get_main_queue(),^{
+            [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateLoggingStatus) userInfo:nil repeats:NO];
+        });
     }];
 }
 
@@ -280,7 +282,9 @@ void (^sample_handler)(NSData*,NSError*);
     }
     [self reqMeterBatteryLevel:^(NSData *data, NSError *error) {
         [self.delegate onBatteryVoltageReceived:self->bat_voltage];
-        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateBattery) userInfo:nil repeats:NO];
+        dispatch_async(dispatch_get_main_queue(),^{
+            [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateBattery) userInfo:nil repeats:NO];
+        });
     }];
 }
 

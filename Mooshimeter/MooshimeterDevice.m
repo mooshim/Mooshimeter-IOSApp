@@ -501,7 +501,9 @@ NSMutableString* concat(int n_strings,...) {
         return;
     }
     [_tree command:@"PCB_VERSION"];
-    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(heartbeatCB) userInfo:nil repeats:NO];
+    dispatch_async(dispatch_get_main_queue(),^{
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(heartbeatCB) userInfo:nil repeats:NO];
+    });
 }
 
 ////////////////////////////////
@@ -521,7 +523,7 @@ NSMutableString* concat(int n_strings,...) {
 }
     
 -(void) enterShippingMode {
-    [_tree command:@"HIBERNATE 1"];
+    [_tree command:@"REBOOT 1"];
 }
     
 -(int) getPCBVersion {
