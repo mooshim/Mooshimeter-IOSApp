@@ -299,14 +299,16 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         if([MooshimeterDeviceBase getBuildTimeFromPeripheral:_active_meter.periph] < [FirmwareImageDownloader getBuildTime]
                 && ![self.active_meter getPreference:@"SKIP_UPGRADE" def:NO]) {
             // We should offer to upgrade
-            [WidgetFactory makeCancelContinueAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
-                if(proceed) {
-                    // Now we need to disconnect and reconnect to the meter needing upgrade
-                    [self forceReconnectInOADMode:_active_meter];
-                } else {
-                    [self transitionToMeterView:device];
-                }
-            }];
+            dispatch_async(dispatch_get_main_queue(),^{
+                [WidgetFactory makeCancelContinueAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
+                    if(proceed) {
+                        // Now we need to disconnect and reconnect to the meter needing upgrade
+                        [self forceReconnectInOADMode:_active_meter];
+                    } else {
+                        [self transitionToMeterView:device];
+                    }
+                }];
+            });
         } else {
             //Firmware is up to date, just start
             [self transitionToMeterView:device];

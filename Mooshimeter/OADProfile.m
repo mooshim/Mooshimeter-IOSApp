@@ -105,8 +105,10 @@
     self.nBlocks = imgHeader.len / (OAD_BLOCK_SIZE / HAL_FLASH_WORD_SIZE);
     self.iBlocks = 0;
     self.iBytes = 0;
-  
-    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgressBars:) userInfo:nil repeats:YES];
+
+    dispatch_async(dispatch_get_main_queue(),^{
+        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgressBars:) userInfo:nil repeats:YES];
+    });
     dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     dispatch_async(rq, ^{
         [self sendNextBlock];
@@ -137,7 +139,6 @@
     LGCharacteristic* image_block_req = [self.meter getLGChar:OAD_IMAGE_BLOCK_REQ];
     
     dispatch_semaphore_wait(self.pacer_sem, DISPATCH_TIME_FOREVER);
-    //[image_block_req writeValue:[NSData dataWithBytes:&requestData length:sizeof(requestData)] completion:nil];
     [image_block_req writeValueNoResponse:[NSData dataWithBytes:&requestData length:sizeof(requestData)]];
     
     self.iBlocks++;
@@ -145,13 +146,12 @@
     
     if(self.iBlocks == self.nBlocks) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-        [nav popToRootViewControllerAnimated:YES];
         self.inProgramming = NO;
-        dispatch_queue_t mq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(mq, ^{
-            [self completionDialog];
+        SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
+        dispatch_async(dispatch_get_main_queue(),^{
+            [nav popToRootViewControllerAnimated:YES];
         });
+        [self completionDialog];
         return;
     }
     dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
@@ -176,9 +176,10 @@
 }
 
 -(void) completionDialog {
-    UIAlertView *complete;
-        complete = [[UIAlertView alloc]initWithTitle:@"Firmware upgrade complete" message:@"Firmware upgrade was successfully completed, device needs to be reconnected" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [complete show];
+    dispatch_async(dispatch_get_main_queue(),^{
+        UIAlertView *complete = [[UIAlertView alloc]initWithTitle:@"Firmware upgrade complete" message:@"Firmware upgrade was successfully completed, device needs to be reconnected" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [complete show];
+    });
 }
 @end
 

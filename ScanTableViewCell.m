@@ -137,10 +137,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 #pragma mark getters/setters
-
--(LGPeripheral*)getPeripheral {
-    return _peripheral;
-}
 -(void)setPeripheral:(LGPeripheral *)peripheral {
     _peripheral = peripheral;
     [self refresh];

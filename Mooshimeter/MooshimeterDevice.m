@@ -521,7 +521,11 @@ NSMutableString* concat(int n_strings,...) {
 -(void) stream {
     [_tree command:@"SAMPLING:TRIGGER 2"];
 }
-    
+
+-(void) reboot {
+    [_tree command:@"REBOOT 0"];
+}
+
 -(void) enterShippingMode {
     [_tree command:@"REBOOT 1"];
 }
