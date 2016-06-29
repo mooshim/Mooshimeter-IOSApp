@@ -34,22 +34,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (void)scan
 {
-    uint16 tmp = CFSwapInt16(OAD_SERVICE_UUID);
     LGCentralManager* c = [LGCentralManager sharedInstance];
 
     if(c.isScanning) {
         // Wait for the previous scan to finish.
-        NSLog(@"Already scanning. Swipe ignored.");
+        NSLog(@"Already scanning.");
+        [c stopScanForPeripherals];
         return;
     }
 
     NSArray* services = @[
             [BLEUtility expandToMooshimUUID:METER_SERVICE_UUID],
-            [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID],
-            [CBUUID UUIDWithData:[NSData dataWithBytes:&tmp length:2]]];
+            [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID]];
     NSLog(@"Refresh requested");
 
     NSTimer* refresh_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(reloadData) userInfo:nil repeats:YES];
+    [refresh_timer fire];
 
     NSTimer *dot_timer = [NSTimer scheduledTimerWithTimeInterval:1
                                                       target:[NSBlockOperation blockOperationWithBlock:^{
@@ -68,6 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                                     selector:@selector(main)
                                                     userInfo:nil
                                                      repeats:YES];
+    [dot_timer fire];
 
     [c scanForPeripheralsByInterval:5
                            services:services
@@ -77,25 +78,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                              [refresh_timer invalidate];
                              [dot_timer invalidate];
                              [self reloadData];
-                             [self.scanButton setTitle:@"Start Scan" forState:UIControlStateNormal];
+                             dispatch_async(dispatch_get_main_queue(),^{
+                                 [self.scanButton setTitle:@"Start Scan" forState:UIControlStateNormal];
+                             });
                          }];
 }
 
 -(void)reloadData {
-    LGCentralManager* c = [LGCentralManager sharedInstance];
-    self.peripherals = [c.peripherals copy];
-    [self.tableView reloadData];
-    if(self.peripherals.count==0) {
-        [self setTitle:@"No meters Found"];
-    } else if (self.peripherals.count==1){
-        [self setTitle:@"Found 1 meter"];
-    } else {
-        [self setTitle:[NSString stringWithFormat:@"Found %d meters",self.peripherals.count]];
-    }
-}
-
--(void)handleScanViewRefreshRequest {
-    [self scan];
+    dispatch_async(dispatch_get_main_queue(),^{
+        LGCentralManager* c = [LGCentralManager sharedInstance];
+        self.peripherals = [c.peripherals copy];
+        [self.tableView reloadData];
+        if(self.peripherals.count==0) {
+            [self setTitle:@"No meters Found"];
+        } else if (self.peripherals.count==1){
+            [self setTitle:@"Found 1 meter"];
+        } else {
+            [self setTitle:[NSString stringWithFormat:@"Found %d meters",self.peripherals.count]];
+        }
+    });
 }
 
 void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback) {
@@ -108,7 +109,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
             discoverRecursively(services, i, aCallback);
         }];
     }
-
 }
 
 -(void)handleScanViewSelect:(LGPeripheral*)p {
@@ -147,7 +147,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     self.nrow = 8;
     self.ncol = 1;
 
-    self.scanButton = [self makeButton:[self makeRectInGrid:0 row_off:7 width:1 height:1] cb:@selector(handleScanViewRefreshRequest)];
+    self.scanButton = [self makeButton:[self makeRectInGrid:0 row_off:7 width:1 height:1] cb:@selector(scan)];
     [self.scanButton setTitle:@"Start Scan" forState:UIControlStateNormal];
 
     self.tableView  = [[UITableView alloc] initWithFrame:[self makeRectInGrid:0 row_off:0 width:1 height:7]];
@@ -158,13 +158,19 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     [self.tableView setDataSource:self];
 
     self.active_meter = nil;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(periphConnected:) name:kLGPeripheralDidConnect object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(periphDisconnected:) name:kLGPeripheralDidDisconnect object:nil];
+
 }
+-(void)periphConnected:(NSNotification*)notification {[self reloadData];}
+-(void)periphDisconnected:(NSNotification*)notification {[self reloadData];}
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     // Start a new scan for meters
-    [self handleScanViewRefreshRequest];
+    [self scan];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -242,10 +248,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 -(void)transitionToMeterView:(MooshimeterDeviceBase*)meter {
     // We have a connected meter with the correct firmware.
     // Display the meter view.
-    /*[[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(meterDisconnected)
-                                                 name:kLGPeripheralDidDisconnect
-                                               object:nil];*/
     dispatch_async(dispatch_get_main_queue(),^{
         NSLog(@"Pushing meter view controller");
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -296,14 +298,16 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         [self transitionToOADView:device];
     } else {
         // If the connected meter has an old version of fw
-        if([MooshimeterDeviceBase getBuildTimeFromPeripheral:_active_meter.periph] < [FirmwareImageDownloader getBuildTime]
-                && ![self.active_meter getPreference:@"SKIP_UPGRADE" def:NO]) {
+        /*if([MooshimeterDeviceBase getBuildTimeFromPeripheral:_active_meter.periph] < [FirmwareImageDownloader getBuildTime]
+                && ![self.active_meter getPreference:@"SKIP_UPGRADE" def:NO]) {*/
+        if(1) {
             // We should offer to upgrade
             dispatch_async(dispatch_get_main_queue(),^{
                 [WidgetFactory makeCancelContinueAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
                     if(proceed) {
                         // Now we need to disconnect and reconnect to the meter needing upgrade
-                        [self forceReconnectInOADMode:_active_meter];
+                        //[self forceReconnectInOADMode:_active_meter];
+                        [self transitionToOADView:_active_meter];
                     } else {
                         [self transitionToMeterView:device];
                     }
@@ -319,9 +323,13 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 -(void)forceReconnectInOADMode:(MooshimeterDeviceBase*)m {
     // We're going to force the meter to disconnect, then reconnect real quick
     [m.periph registerDisconnectHandler:^(NSError *error) {
-        [self wrapPeripheralInMooshimeterAndTransition:m.periph];
+        NSLog(@"INVoluntary disconnection");
+        //[self wrapPeripheralInMooshimeterAndTransition:m.periph];
     }];
     [m reboot];
+    [m.periph disconnectWithCompletion:^(NSError *error) {
+        NSLog(@"Voluntary disconnection");
+    }];
 }
 
 #pragma mark MooshimeterDelegateProtocol methods
