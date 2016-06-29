@@ -27,6 +27,7 @@
 
 -(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
 -(BOOL)isConnected;
+-(uint32)getBuildTime;
 
 +(uint32)getBuildTimeFromPeripheral:(LGPeripheral *)periph;
 @end

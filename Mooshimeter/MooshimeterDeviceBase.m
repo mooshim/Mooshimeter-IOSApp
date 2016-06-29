@@ -89,6 +89,10 @@
     [Prefman setPreference:[self getPreferenceKeyString:shortkey] value:value];
 }
 
+-(uint32)getBuildTime {
+    return [MooshimeterDeviceBase getBuildTimeFromPeripheral:self.periph];
+}
+
 #pragma mark class methods
 
 +(uint32)getBuildTimeFromPeripheral:(LGPeripheral *)periph {
