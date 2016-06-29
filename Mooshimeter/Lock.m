@@ -5,24 +5,30 @@
 
 #import "Lock.h"
 
-
 @implementation Lock {
-    dispatch_semaphore_t l;
+    NSCondition * l;
 }
 -(instancetype)init {
     self = [super init];
-    l = dispatch_semaphore_create(0);
+    l = [[NSCondition alloc] init];
     return self;
 }
 -(int)wait:(int)ms {
-    int rval = dispatch_semaphore_wait(l,dispatch_time(DISPATCH_TIME_NOW,ms*NSEC_PER_MSEC));
-    if(rval) {
+    int rval;
+    [l lock];
+    if(![l waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:(float)ms/1000.]]) {
         NSLog(@"Timeout!");
         NSLog(@"%@",[NSThread callStackSymbols]);
+        rval = 1;
+    } else {
+        rval = 0;
     }
+    [l unlock];
     return rval;
 }
 -(int)signal {
-    dispatch_semaphore_signal(l);
+    [l lock];
+    [l signal];
+    [l unlock];
 }
 @end
