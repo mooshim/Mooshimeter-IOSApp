@@ -303,8 +303,8 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         if(1) {
             // We should offer to upgrade
             dispatch_async(dispatch_get_main_queue(),^{
-                [WidgetFactory makeCancelContinueAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
-                    if(proceed) {
+                [WidgetFactory makeYesNoAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
+                    if (proceed) {
                         // Now we need to disconnect and reconnect to the meter needing upgrade
                         //[self forceReconnectInOADMode:_active_meter];
                         [self transitionToOADView:_active_meter];

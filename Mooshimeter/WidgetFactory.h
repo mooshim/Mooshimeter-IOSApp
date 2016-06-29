@@ -31,7 +31,7 @@
 +(UISwitch*)makeSwitch:(void(^)(bool))callback frame:(CGRect)frame;
 +(UISwitch*)makeSwitch:(void(^)(bool))callback;
 
-+(UIAlertView*)makeCancelContinueAlert:(NSString*)title msg:(NSString*)msg callback:(void(^)(bool proceed))callback;
++(UIAlertView*)makeYesNoAlert:(NSString *)title msg:(NSString *)msg callback:(void(^)(bool proceed))callback;
 +(UIAlertView*)makeTextInputBox:(NSString*)title msg:(NSString*)msg callback:(void(^)(NSString*))callback;
 
 +(UIView*)makePopoverFromView:(UIView*)client_view size:(CGSize)size;

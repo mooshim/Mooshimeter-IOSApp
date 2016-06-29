@@ -165,8 +165,8 @@
     return rval;
 }
 
-+(UIAlertView*)makeCancelContinueAlert:(NSString*)title msg:(NSString*)msg callback:(void(^)(bool proceed))callback {
-    UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"Continue", nil];
++(UIAlertView*)makeYesNoAlert:(NSString *)title msg:(NSString *)msg callback:(void(^)(bool proceed))callback {
+    UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     a.alertViewStyle = UIAlertViewStyleDefault;
     (void)[[AlertViewBlockWrapper alloc] initAndAttachTo:a callback:^(UIAlertView *view, int i) {
         callback([view cancelButtonIndex]!=i);
