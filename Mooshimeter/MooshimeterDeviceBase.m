@@ -102,13 +102,21 @@
     return rval;
 }
 +(BOOL)isPeripheralInOADMode:(LGPeripheral *)periph {
-    // PERIPHERAL MUST BE CONNECTED AND DISCOVERED
+    CBUUID* oad_uuid = [BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID];
+    if(periph.cbPeripheral.state!=CBPeripheralStateConnected) {
+        // If we're not connected to the device, judge by advertising data
+        NSArray* adv_serv = [periph.advertisingData valueForKey:@"kCBAdvDataServiceUUIDs"];
+        return adv_serv != nil
+            && adv_serv.count>=1
+            && [oad_uuid isEqual:adv_serv[0]];
+    }
+    // If we've made it here, the peripheral is connected.  Just look at the discovered services (advertising data might be out of date)
     for(LGService* service in periph.services) {
-        if([service.UUIDString isEqualToString:[BLEUtility expandToMooshimUUIDString:OAD_SERVICE_UUID]]) {
+        if([service.UUIDString isEqualToString:[oad_uuid UUIDString]]) {
             return true;
         }
     }
-    return false;
+    return NO;
 }
 +(Class)chooseSubClass:(LGPeripheral *)connected_peripheral {
     if(connected_peripheral.cbPeripheral.state != CBPeripheralStateConnected) {
