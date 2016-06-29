@@ -170,8 +170,8 @@
         float secondsLeft = (float)(self.nBlocks - self.iBlocks) * secondsPerBlock;
         
         self.progressView.progressBar.progress = (float)((float)self.iBlocks / (float)self.nBlocks);
-        self.progressView.label1.text = [NSString stringWithFormat:@"%0.1f%%",(float)((float)self.iBlocks / (float)self.nBlocks) * 100.0f];
-        self.progressView.label2.text = [NSString stringWithFormat:@"Time remaining : %d:%02d",(int)(secondsLeft / 60),(int)secondsLeft - (int)(secondsLeft / 60) * (int)60];
+        self.progressView.percent_label.text = [NSString stringWithFormat:@"%0.1f%%",(float)((float)self.iBlocks / (float)self.nBlocks) * 100.0f];
+        self.progressView.timing_label.text = [NSString stringWithFormat:@"Time remaining : %d:%02d",(int)(secondsLeft / 60),(int)secondsLeft - (int)(secondsLeft / 60) * (int)60];
     });
 }
 
