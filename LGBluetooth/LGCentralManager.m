@@ -113,14 +113,10 @@
 {
     self.scanning = NO;
 	[self.manager stopScan];
-    
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:@selector(stopScanForPeripherals)
-                                               object:nil];
     if (self.scanBlock) {
         self.scanBlock(self.peripherals);
+        self.scanBlock = nil;
     }
-    self.scanBlock = nil;
 }
 
 - (void)scanForPeripheralsWithServices:(NSArray *)serviceUUIDs
@@ -160,14 +156,12 @@
                           completion:(LGCentralManagerDiscoverPeripheralsCallback)aCallback
 {
     self.scanBlock = aCallback;
+    NSLog(@"SCAN");
     [self scanForPeripheralsWithServices:serviceUUIDs
                                  options:options];
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:@selector(stopScanForPeripherals)
-                                               object:nil];
-    [self performSelector:@selector(stopScanForPeripherals)
-               withObject:nil
-               afterDelay:aScanInterval];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,aScanInterval*NSEC_PER_SEC),self.callbackQueue,^{
+        [self stopScanForPeripherals];
+    });
 }
 
 - (NSArray *)retrievePeripheralsWithIdentifiers:(NSArray *)identifiers
@@ -280,6 +274,7 @@
 {
     dispatch_async(LG_DISPATCH_QUEUE, ^{
         LGPeripheral *lgPeripheral = [self wrapperByPeripheral:peripheral];
+        // Average RSSI data over time and ignore 127 values
         if([RSSI integerValue] != 127) {
             if (!lgPeripheral.RSSI ) {
                 lgPeripheral.RSSI = [RSSI integerValue];
@@ -290,9 +285,6 @@
         lgPeripheral.advertisingData = advertisementData;
         
         if ([self.scannedPeripherals count] >= self.peripheralsCountToStop) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                                     selector:@selector(stopScanForPeripherals)
-                                                       object:nil];
             [self stopScanForPeripherals];
         }
     });
