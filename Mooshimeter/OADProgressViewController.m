@@ -7,6 +7,7 @@
 //
 
 #import "OADProgressViewController.h"
+#import "Lock.h"
 
 @implementation OADViewController
 

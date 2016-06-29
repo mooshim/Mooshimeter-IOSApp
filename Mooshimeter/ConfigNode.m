@@ -4,32 +4,7 @@
 //
 
 #import "ConfigNode.h"
-
-@interface Lock:NSObject
--(int)wait:(int)ms;
--(int)signal;
-@end
-@implementation Lock {
-    dispatch_semaphore_t l;
-}
--(instancetype)init {
-    self = [super init];
-    l = dispatch_semaphore_create(0);
-    return self;
-}
--(int)wait:(int)ms {
-    // ms*1000000 = ns
-    int rval = dispatch_semaphore_wait(l,dispatch_time(DISPATCH_TIME_NOW,ms*1000000));
-    if(rval) {
-        NSLog(@"Timeout!");
-        NSLog(@"%@",[NSThread callStackSymbols]);
-    }
-    return rval;
-}
--(int)signal {
-    dispatch_semaphore_signal(l);
-}
-@end
+#import "Lock.h"
 
 @implementation ConfigNode {
     Lock* lock;
