@@ -585,7 +585,9 @@ NSMutableString* concat(int n_strings,...) {
 }
 -(float)getMaxRangeForChannel:(Channel)c {
     ConfigNode* rnode = [self getInputNode:c];
-    ConfigNode* choice = [rnode getChosen];
+    NSString* range_i_str = concat(2,nameForChannel(c),@":RANGE_I");
+    NSUInteger cnum = [((NSNumber *) [_tree getValueAt:range_i_str]) unsignedIntegerValue];
+    ConfigNode* choice = rnode.children[cnum];
     return (float)1.1* [choice.name floatValue];
 }
 -(BOOL) applyAutorange:(Channel)c {
@@ -593,7 +595,7 @@ NSMutableString* concat(int n_strings,...) {
         return NO;
     }
     float max = [self getMaxRangeForChannel:c];
-    float min = [self getMaxRangeForChannel:c];
+    float min = [self getMinRangeForChannel:c];
     float val = [self getValue:c].value + [self getOffset:c].value;
     val = fabs(val);
     if(val > max) {
