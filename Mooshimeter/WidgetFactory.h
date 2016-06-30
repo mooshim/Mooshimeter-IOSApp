@@ -31,6 +31,7 @@
 +(UISwitch*)makeSwitch:(void(^)(bool))callback frame:(CGRect)frame;
 +(UISwitch*)makeSwitch:(void(^)(bool))callback;
 
++(UIAlertView*)makeAlert:(NSString *)title msg:(NSString *)msg;
 +(UIAlertView*)makeYesNoAlert:(NSString *)title msg:(NSString *)msg callback:(void(^)(bool proceed))callback;
 +(UIAlertView*)makeTextInputBox:(NSString*)title msg:(NSString*)msg callback:(void(^)(NSString*))callback;
 

@@ -165,6 +165,13 @@
     return rval;
 }
 
++(UIAlertView*)makeAlert:(NSString *)title msg:(NSString *)msg {
+    UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    a.alertViewStyle = UIAlertViewStyleDefault;
+    [a show];
+    return a;
+}
+
 +(UIAlertView*)makeYesNoAlert:(NSString *)title msg:(NSString *)msg callback:(void(^)(bool proceed))callback {
     UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     a.alertViewStyle = UIAlertViewStyleDefault;
