@@ -64,10 +64,9 @@
             [self.delegate onRssiReceived:[RSSI intValue]];
         }
         // Can only dispatch this timer from the main queue
-        dispatch_async(dispatch_get_main_queue(),^{
-            [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(RSSICB) userInfo:nil repeats:NO];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,5*NSEC_PER_SEC),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
+            [self RSSICB];
         });
-
     }];
 }
 

@@ -501,8 +501,8 @@ NSMutableString* concat(int n_strings,...) {
         return;
     }
     [_tree command:@"PCB_VERSION"];
-    dispatch_async(dispatch_get_main_queue(),^{
-        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(heartbeatCB) userInfo:nil repeats:NO];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,5*NSEC_PER_SEC),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
+        [self heartbeatCB];
     });
 }
 
