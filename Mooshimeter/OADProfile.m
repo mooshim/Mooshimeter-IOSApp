@@ -11,6 +11,7 @@
 #import "SmartNavigationController.h"
 #import "FirmwareImageDownloader.h"
 #import "WidgetFactory.h"
+#import "GCD.h"
 
 @implementation OADProfile
 
@@ -59,9 +60,9 @@
     if(self.iBlocks == self.nBlocks) {
         // We finished before disconnecting, don't display a failure.
     }
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [WidgetFactory makeAlert:@"FW Upgrade Failed !" msg:@"Device disconnected during programming, firmware upgrade was not finished !"];
-    });
+    }];
     self.inProgramming = NO;
     self.canceled = YES;
 }
@@ -106,13 +107,10 @@
     self.iBlocks = 0;
     self.iBytes = 0;
 
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgressBars:) userInfo:nil repeats:YES];
-    });
-    dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-    dispatch_async(rq, ^{
-        [self sendNextBlock];
-    });
+    }];
+    [GCD asyncBack:^{[self sendNextBlock];}];
 }
 
 -(void)sendNextBlock {
@@ -148,20 +146,17 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         self.inProgramming = NO;
         SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-        dispatch_async(dispatch_get_main_queue(),^{
+        [GCD asyncMain:^{
             [WidgetFactory makeAlert:@"Firmware upgrade complete" msg:@"Firmware upgrade was successfully completed, device needs to be reconnected"];
             [nav popToRootViewControllerAnimated:YES];
-        });
+        }];
         return;
     }
-    dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-    dispatch_async(rq, ^{
-        [self sendNextBlock];
-    });
+    [GCD asyncBack:^{[self sendNextBlock];}];
 }
 
 -(void) updateProgressBars:(NSTimer *)timer {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [GCD asyncMain:^{
         if(self.canceled || !self.inProgramming) {
             [timer invalidate];
         }
@@ -172,7 +167,7 @@
         self.progressView.progressBar.progress = (float)((float)self.iBlocks / (float)self.nBlocks);
         self.progressView.percent_label.text = [NSString stringWithFormat:@"%0.1f%%",(float)((float)self.iBlocks / (float)self.nBlocks) * 100.0f];
         self.progressView.timing_label.text = [NSString stringWithFormat:@"Time remaining : %d:%02d",(int)(secondsLeft / 60),(int)secondsLeft - (int)(secondsLeft / 60) * (int)60];
-    });
+    }];
 }
 @end
 

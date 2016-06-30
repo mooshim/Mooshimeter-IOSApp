@@ -28,6 +28,5 @@
 
 -(instancetype) init:(id<MooshimeterControlProtocol>)new_meter;
 -(void) startUpload;
--(void) completionDialog;
 
 @end

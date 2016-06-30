@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "ChannelView.h"
 #import "PopupMenu.h"
 #import "WidgetFactory.h"
+#import "GCD.h"
 
 @implementation ChannelView
 
@@ -46,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     l.font = [UIFont fontWithName:@"Courier New" size:65];
     l.text = @"LOADING";
     l.adjustsFontSizeToFitWidth = YES;
+    l.layer.borderWidth = 1;
     [self addSubview:l];
     self.value_label = l;
     
@@ -56,11 +58,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
     UIButton* b;
-    __weak id weakself=self;
+    DECLARE_WEAKSELF;
     b=[WidgetFactory makeButton:@"FILL" callback:^{
-        if(weakself==nil){return;}
-        if(![weakself respondsToSelector:cb]){return;}
-        [weakself performSelector:cb];
+        if(ws==nil){return;}
+        if(![ws respondsToSelector:cb]){return;}
+        [ws performSelector:cb];
     }];
     [b setFrame:frame];
     [self addSubview:b];

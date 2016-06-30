@@ -4,7 +4,7 @@
 //
 
 #import "FirmwareImageDownloader.h"
-#import "oad.h"
+#import "GCD.h"
 
 @implementation FirmwareImageDownloader
 
@@ -46,7 +46,7 @@ static FirmwareImageDownloader *shared = nil;
     NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-latest.bin";
     //NSString *stringURL = @"https://moosh.im/s/f/mooshimeter-firmware-beta.bin";
     NSURL  *url = [NSURL URLWithString:stringURL];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    [GCD asyncBack:^{
         img_hdr_t tmp_header = {0};
         self.imageData = [NSData dataWithContentsOfURL:url];
         NSLog(@"Loaded firmware of size : %d",(int)self.imageData.length);
@@ -58,7 +58,7 @@ static FirmwareImageDownloader *shared = nil;
             self.imageHeader = tmp_header;
             self.download_complete = YES;
         }
-    });
+    }];
     return self;
 }
 

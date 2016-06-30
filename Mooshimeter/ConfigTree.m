@@ -7,6 +7,7 @@
 #import "CRC32.h"
 #import "NSMutableData+ByteBuffer.h"
 #import "NSData+zlib.h"
+#import "GCD.h"
 
 @interface NSMutableDictionary(SubscriptExtension)
 @end
@@ -370,10 +371,10 @@ void (^serout_callback)(NSData*,NSError*);
     for(int i = 3; i < n_codes; i++) {
         ConfigNode *n = _code_list[i];
         if(   n.ntype != NTYPE_VAL_BIN ) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
+            [GCD asyncBack:^{
                 [n reqValue];
                 dispatch_semaphore_signal(s);
-            });
+            }];
         } else {
             dispatch_semaphore_signal(s);
         }

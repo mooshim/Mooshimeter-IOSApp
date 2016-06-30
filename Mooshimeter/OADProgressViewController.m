@@ -9,6 +9,7 @@
 #import "OADProgressViewController.h"
 #import "Lock.h"
 #import "FirmwareImageDownloader.h"
+#import "GCD.h"
 
 @implementation OADViewController
 - (instancetype)initWithMeter:(MooshimeterDeviceBase*)meter
@@ -73,10 +74,10 @@
 }
 
 -(void)toTerminal:(NSString*)s {
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [self.terminal setText:[self.terminal.text stringByAppendingString:s]];
         [self.terminal scrollRangeToVisible:NSMakeRange(self.terminal.text.length - 1, 1)];
-    });
+    }];
 }
 
 -(void)upload {
@@ -84,14 +85,14 @@
         [self toTerminal:@"Already uploading!\n"];
         return;
     }
-    __weak OADViewController* ws = self;
+    DECLARE_WEAKSELF;
     self.async_block = ^{
         int rval = [ws upload_task];
         if(rval!=0) {
             ws.async_block = nil;
         }
     };
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),self.async_block);
+    [GCD asyncBack:self.async_block];
 }
 
 extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback);

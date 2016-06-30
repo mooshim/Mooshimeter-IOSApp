@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "oad.h"
 #import "Beeper.h"
 #import "MathInputDescriptor.h"
+#import "GCD.h"
 
 typedef enum {
     NATIVE,
@@ -270,9 +271,9 @@ void (^sample_handler)(NSData*,NSError*);
                                         new_state:[self getLoggingStatus]
                                           message:[self getLoggingStatusMessage]];
         }
-        dispatch_async(dispatch_get_main_queue(),^{
+        [GCD asyncMain:^{
             [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateLoggingStatus) userInfo:nil repeats:NO];
-        });
+        }];
     }];
 }
 
@@ -282,9 +283,9 @@ void (^sample_handler)(NSData*,NSError*);
     }
     [self reqMeterBatteryLevel:^(NSData *data, NSError *error) {
         [self.delegate onBatteryVoltageReceived:self->bat_voltage];
-        dispatch_async(dispatch_get_main_queue(),^{
+        [GCD asyncMain:^{
             [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(updateBattery) userInfo:nil repeats:NO];
-        });
+        }];
     }];
 }
 
@@ -714,10 +715,10 @@ int24_test to_int24_test(long arg) {
     // "mult" should be the multiple to convert from voltage at the input to the ADC (after PGA)
     // to native units
     float pga_mult = 1/[LegacyMooshimeterDevice pgaGain:pga];
-    __weak LegacyMooshimeterDevice * weakself = self;
+    DECLARE_WEAKSELF;
     Lsb2NativeConverter rval = ^float(int lsb) {
-        if(!weakself) {return 0;}
-        return [weakself lsb2PGAVoltage:lsb]*pga_mult*mult;
+        if(!ws) {return 0;}
+        return [ws lsb2PGAVoltage:lsb]*pga_mult*mult;
     };
     return rval;
 };
@@ -743,10 +744,10 @@ int24_test to_int24_test(long arg) {
             NSLog(@"UNSUPPORTED:Unknown ISRC setting");
             isrc_res = 0;
     }
-    __weak LegacyMooshimeterDevice * weakself = self;
+    DECLARE_WEAKSELF;
     Lsb2NativeConverter rval = ^float(int lsb) {
-        if(!weakself){return 0;}
-        float adc_volts = [weakself lsb2PGAVoltage:lsb]*pga_mult;
+        if(!ws){return 0;}
+        float adc_volts = [ws lsb2PGAVoltage:lsb]*pga_mult;
         return ((adc_volts/(avdd-adc_volts))*isrc_res) - ptc_res;
     };
     return rval;

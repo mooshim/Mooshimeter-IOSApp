@@ -29,6 +29,7 @@
 #endif
 #import "LGCentralManager.h"
 #import "LGUtils.h"
+#import "GCD.h"
 
 // Notifications
 
@@ -204,9 +205,9 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
         return;
     }
     _watchDogRaised = YES;
-    __weak LGPeripheral *weakSelf = self;
+    DECLARE_WEAKSELF;
     [self disconnectWithCompletion:^(NSError *error) {
-        __strong LGPeripheral *strongSelf = weakSelf;
+        __strong LGPeripheral *strongSelf = ws;
         if (strongSelf.connectionBlock) {
             // Delivering connection timeout
             strongSelf.connectionBlock([self connectionErrorWithCode:kConnectionTimeoutErrorCode

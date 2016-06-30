@@ -8,6 +8,7 @@
 #import "Prefman.h"
 #import "TempUnitsHelper.h"
 #import "MathInputDescriptor.h"
+#import "GCD.h"
 ////////////////////////////////
 // MEMBERS FOR TRACKING AVAILABLE INPUTS AND RANGES
 ////////////////////////////////
@@ -94,18 +95,18 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
         [self.delegate onDisconnect];
     }];
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), ^{
+    [GCD asyncBack:^{
         [_tree attach:self];
         // At this point the tree is loaded.  Refresh all values in the tree.
         [_tree refreshAll];
         // Start a heartbeat.  The Mooshimeter needs to hear from the phone every 20 seconds or it
         // assumes the Android device has fallen in to a phantom connection mode and disconnects itself.
         // We will just read out the PCB version every 10 seconds to satisfy this constraint.
-        dispatch_async(dispatch_get_main_queue(),^(){[self heartbeatCB];});
+        [GCD asyncMain:^{[self heartbeatCB];}];
         [self setTime:[[NSDate date] timeIntervalSince1970]];
         [self addDescriptors];
         [self.delegate onInit];
-    });
+    }];
 
     return self;
 }
@@ -139,8 +140,7 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
     c = MATH;
     l = input_descriptors[c];
 
-    __weak typeof(self) ws=self;
-
+    DECLARE_WEAKSELF;
     MathInputDescriptor *mid = [[MathInputDescriptor alloc] initWithName:@"REAL POWER" units_arg:@"W"];
     mid.onChosen = ^(){};
     mid.meterSettingsAreValid = ^BOOL() {
@@ -501,9 +501,7 @@ NSMutableString* concat(int n_strings,...) {
         return;
     }
     [_tree command:@"PCB_VERSION"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,5*NSEC_PER_SEC),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
-        [self heartbeatCB];
-    });
+    [GCD asyncBackDelayed:5000 block:^{[self heartbeatCB];}];
 }
 
 ////////////////////////////////

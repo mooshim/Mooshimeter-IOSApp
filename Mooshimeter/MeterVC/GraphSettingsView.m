@@ -6,13 +6,14 @@
 #import "GraphSettingsView.h"
 #import "WidgetFactory.h"
 #import "PopupMenu.h"
+#import "GCD.h"
 
 @implementation TitledSwitch
 -(instancetype)init {
     self = [super init];
     _title = [[UILabel alloc]init];
     [_title setFont:[UIFont systemFontOfSize:24]];
-    __weak typeof(self) ws=self;
+    DECLARE_WEAKSELF;
     _sw    = [WidgetFactory makeSwitch:^(bool i) {
         ws.callback(i);
     }];
@@ -52,7 +53,7 @@
 
 -(instancetype)init {
     self = [super init];
-    __weak typeof(self) ws = self;
+    DECLARE_WEAKSELF;
 
     _xy_sw = [[TitledSwitch alloc]init];
     [_xy_sw.title setText:@"XY Mode"];

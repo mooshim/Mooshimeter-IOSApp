@@ -4,7 +4,7 @@
 //
 
 #import "SpeaksOnLargeChange.h"
-#import "MeterReading.h"
+#import "GCD.h"
 #import <AVFoundation/AVFoundation.h>
 
 @implementation SpeaksOnLargeChange
@@ -70,9 +70,9 @@
         AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
         [synth speakUtterance:utterance];
         _cooldown_active = YES;
-        dispatch_async(dispatch_get_main_queue(),^{
+        [GCD asyncMain:^{
             _cooldown_timer=[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(clearCooldown) userInfo:nil repeats:NO];
-        });
+        }];
         return true;
     }
     return false;

@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "SmartNavigationController.h"
 #import "MeterPreferenceVC.h"
 #import "WidgetFactory.h"
+#import "GCD.h"
+#import "UIView+Toast.h"
 
 @implementation MeterVC
 
@@ -61,6 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.math_label.font = [UIFont fontWithName:@"Courier New" size:65];
     self.math_label.text = @"LOADING";
     self.math_label.adjustsFontSizeToFitWidth = YES;
+    self.math_label.layer.borderWidth = 1;
 
     self.math_button             = mb(4,0,2,1,math_button_press);
 
@@ -196,6 +199,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)logging_button_press {
     if([self.meter getLoggingStatus]!=0) {
         // Do nothing if there's a logging error
+        [self.content_view makeToast:@"Logging error"];
         return;
     }
     [self.meter setLoggingOn:![self.meter getLoggingOn]];
@@ -291,9 +295,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onDisconnect {
     NSLog(@"onDisconnect");
     SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [nav popToRootViewControllerAnimated:YES];
-    });
+    }];
 }
 
 - (void)onRssiReceived:(int)rssi {
@@ -302,9 +306,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     int percent = rssi+100;
     percent=percent>100?100:percent;
     percent=percent<0?0:percent;
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [self.sig_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"sig_icon_%d.png",percent]]];
-    });
+    }];
 }
 
 - (void)onBatteryVoltageReceived:(float)voltage {
@@ -313,15 +317,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     percent=percent>100?100:percent;
     percent=percent<0?0:percent;
 
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [self.bat_icon setImage:[UIImage imageNamed:[NSString stringWithFormat:@"bat_icon_%d.png",percent]]];
-    });
+    }];
 }
 
 - (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
     // Cache values to determine if change is large enough to speak about
     NSLog(@"Updating measurements for %d...",c);
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         switch(c) {
             case CH1:{
                 [self.ch1_view value_label_refresh:val];
@@ -338,7 +342,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 [self math_label_refresh:val];
                 break;}
         }
-    });
+    }];
     // Handle speech
     if(self.meter.speech_on[c]) {
         [self.speaker decideAndSpeak:val];

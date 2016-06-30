@@ -4,7 +4,7 @@
 //
 
 #import "BaseVC.h"
-#import "SmartNavigationController.h"
+#import "GCD.h"
 #import "WidgetFactory.h"
 
 @implementation BaseVC
@@ -81,10 +81,10 @@
 }
 
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb {
-    __weak id weakself = self;
+    DECLARE_WEAKSELF;
     UIButton *b = [WidgetFactory makeButton:@"Refactor!" callback:^{
-        if(weakself != nil && [weakself respondsToSelector:cb]) {
-            [weakself performSelector:cb];
+        if(ws != nil && [ws respondsToSelector:cb]) {
+            [ws performSelector:cb];
         }
     }];
     [b setFrame:frame];

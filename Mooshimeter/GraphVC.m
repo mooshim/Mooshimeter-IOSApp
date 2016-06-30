@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "GraphVC.h"
 #import "WidgetFactory.h"
 #import "GraphSettingsView.h"
+#import "GCD.h"
 
 #define BG_COLOR [CPTColor whiteColor]
 #define AXIS_COLOR [CPTColor blackColor]
@@ -245,7 +246,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     [self.view addSubview:self.hostView];
 
     // Set up the config button
-    __weak typeof(self) ws=self;
+    DECLARE_WEAKSELF;
     UIButton* b = [WidgetFactory makeButton:@"Config" callback:^{
         // Open the config popover
         GraphSettingsView* v = [[GraphSettingsView alloc]init];
@@ -616,7 +617,7 @@ void erroneousintercept() {
             return;
     }
     if(buf==nil){return;} // Might happen with math channel
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         [buf addObject:[XYPoint make:_sample_time y:val.value]];
         if(c==CH2) {
             //FIXME: This is a hack to get around the fact that we can't get accurate timestamps from iOS
@@ -624,7 +625,7 @@ void erroneousintercept() {
             // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
             _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
         }
-    });
+    }];
 }
 - (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {
     // Just shuttle the data in to cache
@@ -641,7 +642,7 @@ void erroneousintercept() {
             return;
     }
     if(buf==nil){return;} // Might happen with math channel
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         float t = _sample_time;
         for(NSNumber* n in val) {
             XYPoint * p = [XYPoint makeWithNSNumber:[NSNumber numberWithFloat:t] y:n];
@@ -654,7 +655,7 @@ void erroneousintercept() {
             // the processor can service them.  We don't care much about absolute time, so let's synthesize the time for now.
             _sample_time += (double)[self.meter getBufferDepth]/[self.meter getSampleRateHz];
         }
-    });
+    }];
 }
 #pragma mark CPTPlotSpaceDelegate methods
 

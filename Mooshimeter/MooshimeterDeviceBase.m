@@ -11,6 +11,7 @@
 #import "MooshimeterDevice.h"
 #import "OADDevice.h"
 #import "Prefman.h"
+#import "GCD.h"
 
 
 @interface DummyDelegate:NSObject <MooshimeterDelegateProtocol>
@@ -51,7 +52,7 @@
     self.chars = [[NSMutableDictionary alloc]init];
     [self setDelegate:delegate];
     // Start an RSSI poller
-    dispatch_async(dispatch_get_main_queue(),^(){[self RSSICB];});
+    [GCD asyncMain:^{[self RSSICB];}];
     return self;
 }
 
@@ -63,10 +64,9 @@
         if(RSSI) {
             [self.delegate onRssiReceived:[RSSI intValue]];
         }
-        // Can only dispatch this timer from the main queue
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,5*NSEC_PER_SEC),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
-            [self RSSICB];
-        });
+    }];
+    [GCD asyncBack:^{
+        [self RSSICB];
     }];
 }
 

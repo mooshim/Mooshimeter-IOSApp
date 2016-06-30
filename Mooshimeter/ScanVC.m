@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "WidgetFactory.h"
 #import "FirmwareImageDownloader.h"
 #import "MeterDirectory.h"
+#import "GCD.h"
 
 @implementation ScanVC
 
@@ -78,14 +79,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                              [refresh_timer invalidate];
                              [dot_timer invalidate];
                              [self reloadData];
-                             dispatch_async(dispatch_get_main_queue(),^{
+                             [GCD asyncMain:^{
                                  [self.scanButton setTitle:@"Start Scan" forState:UIControlStateNormal];
-                             });
+                             }];
                          }];
 }
 
 -(void)reloadData {
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         LGCentralManager* c = [LGCentralManager sharedInstance];
         self.peripherals = [c.peripherals copy];
         [self.tableView reloadData];
@@ -96,7 +97,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         } else {
             [self setTitle:[NSString stringWithFormat:@"Found %d meters",self.peripherals.count]];
         }
-    });
+    }];
 }
 
 void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback) {
@@ -248,25 +249,25 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 -(void)transitionToMeterView:(MooshimeterDeviceBase*)meter {
     // We have a connected meter with the correct firmware.
     // Display the meter view.
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         NSLog(@"Pushing meter view controller");
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
         MeterVC * mvc = [[MeterVC alloc] initWithMeter:meter];
         [nav pushViewController:mvc animated:YES];
         NSLog(@"Did push meter view controller");
-    });
+    }];
 }
 
 -(void)transitionToOADView:(MooshimeterDeviceBase*)meter {
-    dispatch_async(dispatch_get_main_queue(),^{
+    [GCD asyncMain:^{
         NSLog(@"Pushing OAD view controller");
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
         OADViewController * mvc = [[OADViewController alloc] initWithMeter:meter];
         [nav pushViewController:mvc animated:YES];
         NSLog(@"Did push OAD view controller");
-    });
+    }];
 }
 
 -(void)wrapPeripheralInMooshimeterAndTransition:(LGPeripheral*)p {
@@ -277,7 +278,12 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         }
         NSLog(@"Discovering services");
         [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
+            if(error != nil) {
+                NSLog(@"Discovery error => %@ ", error.userInfo );
+                return;
+            }
             if(services.count==0) {
+                NSLog(@"Discovered zero services...");
                 return;
             }
             discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
@@ -298,11 +304,11 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         [self transitionToOADView:device];
     } else {
         // If the connected meter has an old version of fw
-        /*if([MooshimeterDeviceBase getBuildTimeFromPeripheral:_active_meter.periph] < [FirmwareImageDownloader getBuildTime]
-                && ![self.active_meter getPreference:@"SKIP_UPGRADE" def:NO]) {*/
-        if(1) {
+        if([MooshimeterDeviceBase getBuildTimeFromPeripheral:_active_meter.periph] < [FirmwareImageDownloader getBuildTime]
+                && ![self.active_meter getPreference:@"SKIP_UPGRADE" def:NO]) {
+        //if(1) {
             // We should offer to upgrade
-            dispatch_async(dispatch_get_main_queue(),^{
+            [GCD asyncMain:^{
                 [WidgetFactory makeYesNoAlert:@"Firmware upgrade available" msg:@"This Mooshimeter's firmware is out of date.  Upgrade now?" callback:^(bool proceed) {
                     if (proceed) {
                         // Now we need to disconnect and reconnect to the meter needing upgrade
@@ -312,7 +318,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                         [self transitionToMeterView:device];
                     }
                 }];
-            });
+            }];
         } else {
             //Firmware is up to date, just start
             [self transitionToMeterView:device];

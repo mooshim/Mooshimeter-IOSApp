@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "ScanTableViewCell.h"
 #import "WidgetFactory.h"
+#import "GCD.h"
 
 @implementation ScanTableViewCell
 
@@ -49,18 +50,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)connIconTapped{
-    NSLog(@"single Tap on imageview");
     if(self.peripheral.cbPeripheral.state!=CBPeripheralStateConnected) {
         return;
     }
     [self.peripheral disconnectWithCompletion:^(NSError *error) {
 
     }];
-    __weak ScanTableViewCell * ws = self;
+    DECLARE_WEAKSELF;
     [_peripheral disconnectWithCompletion:^(NSError *error) {
-        dispatch_async(dispatch_get_main_queue(),^{
+        [GCD asyncMain:^{
             [ws refresh];
-        });
+        }];
     }];
 }
 

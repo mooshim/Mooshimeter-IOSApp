@@ -124,9 +124,9 @@
     UIButton* b = [UIButton buttonWithType:UIButtonTypeSystem];
     b.userInteractionEnabled = YES;
     [b.titleLabel setFont:[UIFont systemFontOfSize:24]];
-    [b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    b.layer.borderWidth = 2;
-    b.layer.cornerRadius = 5;
+    //[b setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    b.layer.borderWidth = 1;
+    //b.layer.cornerRadius = 5;
     b.titleLabel.adjustsFontSizeToFitWidth = YES;
     return b;
 }
