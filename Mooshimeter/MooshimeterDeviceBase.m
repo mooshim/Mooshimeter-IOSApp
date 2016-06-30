@@ -158,7 +158,7 @@
 - (BOOL)bumpRange:(Channel)c expand:(BOOL)expand {return NO;}
 - (BOOL)applyAutorange {return NO;}
 - (void)setName:(NSString *)name {}
-- (NSString *)getName {return nil;}
+- (NSString *)getName {return self.periph.name;}
 - (void)pause {}
 - (void)oneShot {}
 - (void)stream {}
