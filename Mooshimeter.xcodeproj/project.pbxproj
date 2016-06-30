@@ -17,6 +17,7 @@
 		0C63855917D694DD00D3FB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
 		0C63856117D694DD00D3FB31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C63855F17D694DD00D3FB31 /* InfoPlist.strings */; };
 		0C63856417D694DD00D3FB31 /* MooshimeterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C63856317D694DD00D3FB31 /* MooshimeterTests.m */; };
+		12544C21FEB7307247EECC7C /* libPods-Mooshimeter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54BB631A9FA9592CFA8C34 /* libPods-Mooshimeter.a */; };
 		3907900593B3EA4279B0AA0B /* SpeaksOnLargeChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 3907925A14A322A5BFC34F9C /* SpeaksOnLargeChange.m */; };
 		390790064B189EF21324F883 /* sig_icon_85.png in Resources */ = {isa = PBXBuildFile; fileRef = 3907907E3E07E83B0A9C5F2E /* sig_icon_85.png */; };
 		3907900BC340131F206634B1 /* sig_icon_25.png in Resources */ = {isa = PBXBuildFile; fileRef = 390794772FF6FAF087A08A34 /* sig_icon_25.png */; };
@@ -160,6 +161,7 @@
 		390798BDB87591F3814D7596 /* sig_icon_46.png in Resources */ = {isa = PBXBuildFile; fileRef = 39079EDA7205058265FAA0D7 /* sig_icon_46.png */; };
 		390798C21408B2CD09D27225 /* bat_icon_63.png in Resources */ = {isa = PBXBuildFile; fileRef = 390791424D6D47EE1913EF71 /* bat_icon_63.png */; };
 		390798C6B574ACB24084F874 /* bat_icon_61.png in Resources */ = {isa = PBXBuildFile; fileRef = 390793556808DA6BFC12B626 /* bat_icon_61.png */; };
+		390798E17E2F6E8C6C2A0249 /* GCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3907929AB8786B0C6F8E8ADC /* GCD.m */; };
 		390798E20333F9E6EF59EAC3 /* sig_icon_19.png in Resources */ = {isa = PBXBuildFile; fileRef = 390799FE64E47D919A3B31A5 /* sig_icon_19.png */; };
 		390799098AF31F32F09159EB /* sig_icon_47.png in Resources */ = {isa = PBXBuildFile; fileRef = 39079617DA7CCE7D8D40C0E5 /* sig_icon_47.png */; };
 		3907991FD092CD8F6B965BA8 /* sig_icon_42.png in Resources */ = {isa = PBXBuildFile; fileRef = 39079F50C320F7F0B5662DA2 /* sig_icon_42.png */; };
@@ -227,6 +229,7 @@
 		39079D9636F104E99B3D690C /* sig_icon_13.png in Resources */ = {isa = PBXBuildFile; fileRef = 39079770767B4FC459B289E1 /* sig_icon_13.png */; };
 		39079DAE31621D394D782AF2 /* sig_icon_60.png in Resources */ = {isa = PBXBuildFile; fileRef = 39079024FD0A9E7C20D652AB /* sig_icon_60.png */; };
 		39079DB73B5CA9CE21B24200 /* sig_icon_68.png in Resources */ = {isa = PBXBuildFile; fileRef = 39079EF428DC0A922358A387 /* sig_icon_68.png */; };
+		39079DB9EAF7B3ECBAA312A9 /* Lock.m in Sources */ = {isa = PBXBuildFile; fileRef = 390791D623D5BAA09AC6D45A /* Lock.m */; };
 		39079DBAF75A377987D53CA5 /* sig_icon_29.png in Resources */ = {isa = PBXBuildFile; fileRef = 3907997AD5AD4329B2559B4A /* sig_icon_29.png */; };
 		39079DD015C803AAC86BB1BA /* sig_icon_35.png in Resources */ = {isa = PBXBuildFile; fileRef = 3907982CE9CC15BA206C7BE6 /* sig_icon_35.png */; };
 		39079DF2828F8CEC2DB5F96B /* OADProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 390799B173A06AF4FCB0B8E9 /* OADProgressViewController.m */; };
@@ -274,6 +277,7 @@
 		4ABE54151A07FEE900277456 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63852E17D694DC00D3FB31 /* Foundation.framework */; };
 		4ABE54161A07FF0000277456 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C63853017D694DC00D3FB31 /* CoreGraphics.framework */; };
 		4ADDC5D51A882CFB00FC5093 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ADDC5D41A882CFB00FC5093 /* Accelerate.framework */; };
+		C452CADFED86FE11236288C3 /* libPods-MooshimeterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB4099884775A8CDF75D11C /* libPods-MooshimeterTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -343,12 +347,15 @@
 		39079153D9AD47C1CAE7C140 /* BaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseVC.m; sourceTree = "<group>"; };
 		3907915C64BC41A147D83799 /* bat_icon_29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_29.png; sourceTree = "<group>"; };
 		39079167CF66F18C23F58A2A /* CPTLegend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTLegend.h; sourceTree = "<group>"; };
+		39079172FD197595E372867D /* GCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCD.h; sourceTree = "<group>"; };
 		3907918BC510017D7B7F6F60 /* MeterVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeterVC.m; sourceTree = "<group>"; };
 		3907918BDEB2D96EB28F6906 /* bat_icon_51.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_51.png; sourceTree = "<group>"; };
 		3907919335CF4D4EF7BDDFFF /* sig_icon_84.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sig_icon_84.png; sourceTree = "<group>"; };
 		390791B42303942BC9B1DF5D /* bat_icon_27.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_27.png; sourceTree = "<group>"; };
+		390791D623D5BAA09AC6D45A /* Lock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Lock.m; sourceTree = "<group>"; };
 		390791D8771D20D4F7F82BB8 /* bat_icon_33.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_33.png; sourceTree = "<group>"; };
 		390791FB8AC6C4652004FC32 /* CPTGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTGraph.h; sourceTree = "<group>"; };
+		3907920B48A8BA5D082651FA /* Lock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lock.h; sourceTree = "<group>"; };
 		3907920DD57E2EFB0AA0DEC1 /* bat_icon_55.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_55.png; sourceTree = "<group>"; };
 		3907924DCC88089B3B5B1281 /* bat_icon_88.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_88.png; sourceTree = "<group>"; };
 		390792524C7A99AA26988613 /* CPTFunctionDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTFunctionDataSource.h; sourceTree = "<group>"; };
@@ -363,6 +370,7 @@
 		39079288340D72D68786A601 /* bat_icon_28.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_28.png; sourceTree = "<group>"; };
 		39079289ABC6700E38CEED00 /* disconnected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = disconnected.png; sourceTree = "<group>"; };
 		39079296C10D809A47851BD3 /* sig_icon_43.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sig_icon_43.png; sourceTree = "<group>"; };
+		3907929AB8786B0C6F8E8ADC /* GCD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCD.m; sourceTree = "<group>"; };
 		390792A56E5F351B9F29B6AB /* WidgetFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetFactory.h; sourceTree = "<group>"; };
 		390792AB70588BC9C25B3A60 /* OADProgressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OADProgressViewController.h; path = Mooshimeter/OADProgressViewController.h; sourceTree = "<group>"; };
 		390792B98D516B9746B0100A /* bat_icon_12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bat_icon_12.png; sourceTree = "<group>"; };
@@ -667,6 +675,8 @@
 		39079FDF3609F9B5F24BC41B /* CPTDerivedXYGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTDerivedXYGraph.h; sourceTree = "<group>"; };
 		39079FF99A1DF1397B999601 /* CPTPlot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTPlot.h; sourceTree = "<group>"; };
 		39079FFFE4737ED44ADCC85F /* sig_icon_11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sig_icon_11.png; sourceTree = "<group>"; };
+		3A54BB631A9FA9592CFA8C34 /* libPods-Mooshimeter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Mooshimeter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C2047E4697D5F553641F0F6 /* Pods-Mooshimeter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mooshimeter.release.xcconfig"; path = "Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter.release.xcconfig"; sourceTree = "<group>"; };
 		4A6B13C91A2EA97C000AF17B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4A6B13CB1A2FE808000AF17B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4A777EA51A09B2F2007FEEB9 /* ScanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTableViewCell.h; path = ../ScanTableViewCell.h; sourceTree = "<group>"; };
@@ -686,6 +696,10 @@
 		4AA9EA2A1A12B54E0031C12B /* LGUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LGUtils.h; path = LGBluetooth/LGUtils.h; sourceTree = "<group>"; };
 		4AA9EA2B1A12B54E0031C12B /* LGUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LGUtils.m; path = LGBluetooth/LGUtils.m; sourceTree = "<group>"; };
 		4ADDC5D41A882CFB00FC5093 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		555DD33A74E4290328747860 /* Pods-MooshimeterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MooshimeterTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests.release.xcconfig"; sourceTree = "<group>"; };
+		7FBE994F152950FB0DF28C25 /* Pods-Mooshimeter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mooshimeter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter.debug.xcconfig"; sourceTree = "<group>"; };
+		891A3261855E4CDC619B6552 /* Pods-MooshimeterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MooshimeterTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CBB4099884775A8CDF75D11C /* libPods-MooshimeterTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MooshimeterTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -702,6 +716,7 @@
 				4ABE54121A07FEB900277456 /* CoreBluetooth.framework in Frameworks */,
 				4ABE54111A07FE9C00277456 /* libCorePlot-CocoaTouch.a in Frameworks */,
 				39079CFC702945CCBC03F6C8 /* AVFoundation.framework in Frameworks */,
+				12544C21FEB7307247EECC7C /* libPods-Mooshimeter.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,12 +726,24 @@
 			files = (
 				0C63855817D694DD00D3FB31 /* UIKit.framework in Frameworks */,
 				0C63855917D694DD00D3FB31 /* Foundation.framework in Frameworks */,
+				C452CADFED86FE11236288C3 /* libPods-MooshimeterTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		088B9482EF4E8B4C9338B160 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7FBE994F152950FB0DF28C25 /* Pods-Mooshimeter.debug.xcconfig */,
+				3C2047E4697D5F553641F0F6 /* Pods-Mooshimeter.release.xcconfig */,
+				891A3261855E4CDC619B6552 /* Pods-MooshimeterTests.debug.xcconfig */,
+				555DD33A74E4290328747860 /* Pods-MooshimeterTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		0C63852017D694DC00D3FB31 = {
 			isa = PBXGroup;
 			children = (
@@ -732,6 +759,7 @@
 				39079B8111BB21854257BCAA /* icons */,
 				3907997F2B1D67F65842FD16 /* sounds */,
 				3907978827B7E747E64E5A7B /* BBSZLib */,
+				088B9482EF4E8B4C9338B160 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -755,6 +783,8 @@
 				0C63852E17D694DC00D3FB31 /* Foundation.framework */,
 				0C63853017D694DC00D3FB31 /* CoreGraphics.framework */,
 				3907935F754F17D330D29A65 /* AVFoundation.framework */,
+				3A54BB631A9FA9592CFA8C34 /* libPods-Mooshimeter.a */,
+				CBB4099884775A8CDF75D11C /* libPods-MooshimeterTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1321,6 +1351,10 @@
 				390796E769E91918A01DE683 /* CRC32.h */,
 				390793D784FD0CADCD8867A0 /* NSMutableData+ByteBuffer.m */,
 				3907968B8322605EA9D3858C /* NSMutableData+ByteBuffer.h */,
+				390791D623D5BAA09AC6D45A /* Lock.m */,
+				3907920B48A8BA5D082651FA /* Lock.h */,
+				3907929AB8786B0C6F8E8ADC /* GCD.m */,
+				39079172FD197595E372867D /* GCD.h */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1332,10 +1366,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0C63856717D694DD00D3FB31 /* Build configuration list for PBXNativeTarget "Mooshimeter" */;
 			buildPhases = (
+				787F6B26692AC9A316681C23 /* [CP] Check Pods Manifest.lock */,
 				0C63852517D694DC00D3FB31 /* Sources */,
 				4A6716D81A8B13B2000A4F52 /* ShellScript */,
 				0C63852617D694DC00D3FB31 /* Frameworks */,
 				0C63852717D694DC00D3FB31 /* Resources */,
+				3933D9CC7D1EBE504DB783B9 /* [CP] Embed Pods Frameworks */,
+				1171A7556DE1BCC9F3837523 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1350,10 +1387,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0C63856A17D694DD00D3FB31 /* Build configuration list for PBXNativeTarget "MooshimeterTests" */;
 			buildPhases = (
+				F9FB7BF6C93BA963A3579227 /* [CP] Check Pods Manifest.lock */,
 				0C63855017D694DD00D3FB31 /* Sources */,
 				0C63855117D694DD00D3FB31 /* Frameworks */,
 				0C63855217D694DD00D3FB31 /* Resources */,
 				0C63855317D694DD00D3FB31 /* ShellScript */,
+				C4BC8D0ED0E1856311236972 /* [CP] Embed Pods Frameworks */,
+				C6762706E5C1BB39ECB6D94F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1642,6 +1682,36 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
+		1171A7556DE1BCC9F3837523 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3933D9CC7D1EBE504DB783B9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4A6716D81A8B13B2000A4F52 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1654,6 +1724,66 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/bash\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"";
+		};
+		787F6B26692AC9A316681C23 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C4BC8D0ED0E1856311236972 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C6762706E5C1BB39ECB6D94F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9FB7BF6C93BA963A3579227 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1705,6 +1835,8 @@
 				3907969F887E5EDC6B4874CA /* TempUnitsHelper.m in Sources */,
 				39079135CC4E3EB15CEA7C5B /* MathInputDescriptor.m in Sources */,
 				3907913A1815AE4811A0A977 /* NSData+zlib.m in Sources */,
+				39079DB9EAF7B3ECBAA312A9 /* Lock.m in Sources */,
+				390798E17E2F6E8C6C2A0249 /* GCD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1815,6 +1947,7 @@
 		};
 		0C63856817D694DD00D3FB31 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7FBE994F152950FB0DF28C25 /* Pods-Mooshimeter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1825,15 +1958,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
-				);
-				"OTHER_LDFLAGS[arch=*]" = (
-					"-ObjC",
-					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1847,6 +1976,7 @@
 		};
 		0C63856917D694DD00D3FB31 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3C2047E4697D5F553641F0F6 /* Pods-Mooshimeter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1856,15 +1986,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mooshimeter/Mooshimeter-Prefix.pch";
 				INFOPLIST_FILE = "Mooshimeter/Mooshimeter-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
-				);
-				"OTHER_LDFLAGS[arch=*]" = (
-					"-ObjC",
-					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1878,6 +2004,7 @@
 		};
 		0C63856B17D694DD00D3FB31 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 891A3261855E4CDC619B6552 /* Pods-MooshimeterTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mooshimeter.app/Mooshimeter";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1895,6 +2022,7 @@
 		};
 		0C63856C17D694DD00D3FB31 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 555DD33A74E4290328747860 /* Pods-MooshimeterTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mooshimeter.app/Mooshimeter";
 				FRAMEWORK_SEARCH_PATHS = (
