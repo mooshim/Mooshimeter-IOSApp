@@ -8,6 +8,7 @@
 
 #import "OADProgressViewController.h"
 #import "Lock.h"
+#import "FirmwareImageDownloader.h"
 
 @implementation OADViewController
 - (instancetype)initWithMeter:(MooshimeterDeviceBase*)meter
@@ -22,9 +23,9 @@
     float center = self.view.bounds.size.width / 2;
     float width = self.view.bounds.size.width - 40;
     
-    self.percent_label.frame = CGRectMake(center - (width / 2), 80, width, 20);
-    self.timing_label.frame = CGRectMake(center - (width / 2), 110, width, 20);
-    self.progressBar.frame = CGRectMake(center - (width /2), 150, width, 20);
+    self.percent_label.frame = CGRectMake(center - (width / 2), 20, width, 20);
+    self.timing_label.frame = CGRectMake(center - (width / 2), 50, width, 20);
+    self.progressBar.frame = CGRectMake(center - (width /2), 90, width, 20);
 }
 
 -(void)viewDidLoad {
@@ -51,7 +52,7 @@
     [self.content_view addSubview:self.percent_label];
     [self.content_view addSubview:self.timing_label];
 
-    self.title = @"Firmware upload in progress";
+    self.title = @"Firmware Uploader";
     self.percent_label.text = @"0%";
     [self.view setNeedsLayout];
 
@@ -67,8 +68,8 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
-    [self toTerminal:@"Starting activity...\n"];
-    //[self.oad_profile startUpload];
+    NSString* intro = [NSString stringWithFormat:@"Connected to: %@\nFirmware on meter: %d\nNew firmware: %d\n", [self.meter getName],[self.meter getBuildTime], [FirmwareImageDownloader getBuildTime]];
+    [self toTerminal:intro];
 }
 
 -(void)toTerminal:(NSString*)s {
@@ -84,24 +85,33 @@
         return;
     }
     __weak OADViewController* ws = self;
-    self.async_block = ^{[ws upload_task];};
+    self.async_block = ^{
+        int rval = [ws upload_task];
+        if(rval!=0) {
+            ws.async_block = nil;
+        }
+    };
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),self.async_block);
 }
 
 extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback);
 
--(void)upload_task {
+-(int)upload_task {
     // Assume we're on a background thread
     Lock* l = [[Lock alloc] init];
     if(![self.meter isInOADMode]) {
         [self toTerminal:@"Rebooting meter...\n"];
-        [self.meter reboot];
-        // Reconnect in OAD mode
-        [self.meter.periph disconnectWithCompletion:^(NSError *error) {
+        [self.meter.periph registerDisconnectHandler:^(NSError *error) {
             [l signal];
         }];
-        [l wait:1000];
-        [self toTerminal:@"Waiting for meter to enter bootloader mode."];
+        [self.meter reboot];
+        [self toTerminal:@"Waiting for meter to disconnect...\n"];
+        [l wait:6000];
+        if([self.meter isConnected]) {
+            [self toTerminal:@"Meter failed to disconnect!\n"];
+            return -1;
+        }
+        [self toTerminal:@"Scanning for meter in bootloader mode."];
         NSArray *services_to_scan_for = @[[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID]];
         LGCentralManager *c = [LGCentralManager sharedInstance];
         LGPeripheral* peripheral = nil;
@@ -125,17 +135,17 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
         [self toTerminal:@"\n"];
 
         if (peripheral!=nil) {
-            [self toTerminal:@"Found!  Connecting...\n"];
+            [self toTerminal:@"Found the meter in bootloader mode!  Connecting...\n"];
         } else {
             [self toTerminal:@"Could not find the meter!\n"];
-            return;
+            return -1;
         }
         [peripheral connectWithCompletion:^(NSError *error) {
             [l signal];
         }];
         if ([l wait:5000]) {
             [self toTerminal:@"Connection failed!\n"];
-            return;
+            return-1;
         }
         [self toTerminal:@"Connected.  Discovering services...\n"];
         [peripheral discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
@@ -143,17 +153,17 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
         }];
         if ([l wait:5000]) {
             [self toTerminal:@"Discovery failed!\n"];
-            return;
+            return -1;
         }
         if (peripheral.services.count == 0) {
-            return;
+            return -1;
         }
         discoverRecursively(peripheral.services, 0, ^(NSArray *characteristics, NSError *error) {
             [l signal];
         });
         if ([l wait:5000]) {
             [self toTerminal:@"Discovery failed!\n"];
-            return;
+            return -1;
         }
         [self toTerminal:@"Discovery successful!\n"];
         self.meter = [[OADDevice alloc] init:peripheral delegate:nil];
@@ -163,5 +173,6 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
     self.oad_profile.progressView = self;
     [self toTerminal:@"Uploading...\n"];
     [self.oad_profile startUpload];
+    return 0;
 }
 @end
