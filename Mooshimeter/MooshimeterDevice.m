@@ -855,12 +855,29 @@ NSMutableString* concat(int n_strings,...) {
 }
     
 -(NSArray*) getInputList:(Channel)c {
-    return input_descriptors[c].choices;
+    // Returns the inputs available for the channel
+    if(c==MATH) {
+        return input_descriptors[c].choices;
+    }
+    Channel other = c==CH1?CH2:CH1;
+    MyInputDescriptor * other_id = (MyInputDescriptor *)[self getSelectedDescriptor:other];
+    if(other_id.shared_node==nil) {
+        // Other channel is not using shared input
+        return input_descriptors[c].choices;
+    }
+    // If we're here, we need to filter the return value
+    NSMutableArray * rval = [@[] mutableCopy];
+    for(MyInputDescriptor * my_id in input_descriptors[c].choices) {
+        if(my_id.shared_node==nil) {
+            [rval addObject:my_id];
+        }
+    }
+    return rval;
 }
 
 -(NSArray*)getInputNameList:(Channel)c {
     NSMutableArray <NSString*>* rval = [NSMutableArray array];
-    for(MyInputDescriptor * i in input_descriptors[c].choices) {
+    for(MyInputDescriptor * i in [self getInputList:c]) {
         [rval addObject:i.name];
     }
     return rval;

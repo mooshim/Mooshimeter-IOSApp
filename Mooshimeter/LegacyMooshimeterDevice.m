@@ -1120,15 +1120,28 @@ BOOL isSharedInput(INPUT_MODE i) {
     return 0;
 }
 -(NSArray *)getInputList:(Channel)c {
-    Chooser* r = self->input_descriptors[c];
-    return [r.choices copy];
+    if(c==MATH) {
+        return self->input_descriptors[c].choices;
+    }
+    LegacyInputDescriptor * my_id = (LegacyInputDescriptor *)[self getSelectedDescriptor:c];
+    LegacyInputDescriptor * other_id = (LegacyInputDescriptor *)[self getSelectedDescriptor:(c==CH1?CH2:CH1)];
+    if(isSharedInput(other_id.input)) {
+        // We can't offer shared inputs because the shared inputs are already occupied
+        NSMutableArray * rval = [@[] mutableCopy];
+        for(LegacyInputDescriptor * tmp in self->input_descriptors[c]) {
+            if(!isSharedInput(tmp.input)) {
+                [rval addObject:tmp];
+            }
+        }
+        return rval;
+    }
+    return self->input_descriptors[c].choices;
 }
 -(NSArray *)getInputNameList:(Channel)c {
-    Chooser* r = self->input_descriptors[c];
-    NSMutableArray<NSString*>* rval = [NSMutableArray arrayWithCapacity:[r getNChoices] ];
-    for(unsigned int i = 0; i < [r getNChoices]; i++) {
-        InputDescriptor * rd = [r get:i];
-        rval[i] = rd.name;
+    NSArray* choices = [self getInputList:c];
+    NSMutableArray<NSString*>* rval = [NSMutableArray arrayWithCapacity:choices.count];
+    for(LegacyInputDescriptor * tmp in choices) {
+        [rval addObject:tmp.name];
     }
     return rval;
 }
