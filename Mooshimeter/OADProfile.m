@@ -10,6 +10,7 @@
 #import "OADProfile.h"
 #import "SmartNavigationController.h"
 #import "FirmwareImageDownloader.h"
+#import "WidgetFactory.h"
 
 @implementation OADProfile
 
@@ -58,10 +59,9 @@
     if(self.iBlocks == self.nBlocks) {
         // We finished before disconnecting, don't display a failure.
     }
-
-    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"FW Upgrade Failed !" message:@"Device disconnected during programming, firmware upgrade was not finished !" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    alertView.tag = 0;
-    [alertView show];
+    dispatch_async(dispatch_get_main_queue(),^{
+        [WidgetFactory makeAlert:@"FW Upgrade Failed !" msg:@"Device disconnected during programming, firmware upgrade was not finished !"];
+    });
     self.inProgramming = NO;
     self.canceled = YES;
 }
@@ -149,9 +149,9 @@
         self.inProgramming = NO;
         SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
         dispatch_async(dispatch_get_main_queue(),^{
+            [WidgetFactory makeAlert:@"Firmware upgrade complete" msg:@"Firmware upgrade was successfully completed, device needs to be reconnected"];
             [nav popToRootViewControllerAnimated:YES];
         });
-        [self completionDialog];
         return;
     }
     dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
@@ -172,13 +172,6 @@
         self.progressView.progressBar.progress = (float)((float)self.iBlocks / (float)self.nBlocks);
         self.progressView.percent_label.text = [NSString stringWithFormat:@"%0.1f%%",(float)((float)self.iBlocks / (float)self.nBlocks) * 100.0f];
         self.progressView.timing_label.text = [NSString stringWithFormat:@"Time remaining : %d:%02d",(int)(secondsLeft / 60),(int)secondsLeft - (int)(secondsLeft / 60) * (int)60];
-    });
-}
-
--(void) completionDialog {
-    dispatch_async(dispatch_get_main_queue(),^{
-        UIAlertView *complete = [[UIAlertView alloc]initWithTitle:@"Firmware upgrade complete" message:@"Firmware upgrade was successfully completed, device needs to be reconnected" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [complete show];
     });
 }
 @end
