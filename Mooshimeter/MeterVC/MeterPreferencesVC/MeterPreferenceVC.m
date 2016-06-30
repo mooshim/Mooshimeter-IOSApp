@@ -132,12 +132,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // Shipping mode
     [self addPreferenceCell:@"Shipping Mode" msg:@"Turn off the radio for shipping." accessory:[WidgetFactory makeButton:@"Set" callback:^{
         // Start a dialog box to get some input
-        [WidgetFactory makeCancelContinueAlert:@"Enter shipping mode?"
-                                           msg:@"This will turn off the radio.  You will need to connect the C and Ω terminals to turn the radio back on."
-                                      callback:^(bool proceed) {
-                                          if(!proceed){return;}
-                                          [self.meter enterShippingMode];
-                                      }];
+        [WidgetFactory makeYesNoAlert:@"Enter shipping mode?"
+                                  msg:@"This will turn off the radio.  You will need to connect the C and Ω terminals to turn the radio back on."
+                             callback:^(bool proceed) {
+                                 if (!proceed) {return;}
+                                 [self.meter enterShippingMode];
+                             }];
+    } frame:CGRectMake(0,0,50,50)]];
+
+    // Shipping mode
+    [self addPreferenceCell:@"Reboot" msg:@"Reboots the meter immediately." accessory:[WidgetFactory makeButton:@"Set" callback:^{
+        // Start a dialog box to get some input
+        [self.meter reboot];
     } frame:CGRectMake(0,0,50,50)]];
 
     // Autoconnect
