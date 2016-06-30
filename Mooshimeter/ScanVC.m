@@ -107,6 +107,10 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         [service discoverCharacteristicsWithCompletion:aCallback];
     } else {
         [service discoverCharacteristicsWithCompletion:^(NSArray *characteristics, NSError *error) {
+            if(error != nil) {
+                NSLog(@"Characteristic discovery error!");
+                aCallback(@[], [NSError errorWithDomain:@"Mooshimeter" code:-1 userInfo:@{}]);
+            }
             discoverRecursively(services, i, aCallback);
         }];
     }
@@ -118,6 +122,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
             self.active_meter = [MeterDirectory getMeterForPeripheral:p];
             if(self.active_meter==nil) {
                 // Don't know how we connected already but don't have an active meter...
+                [self setBusy:YES];
                 Class meter_class = [MooshimeterDeviceBase chooseSubClass:p];
                 self.active_meter = (MooshimeterDeviceBase*)[meter_class alloc];
                 self.active_meter = [self.active_meter init:p delegate:self];
@@ -271,19 +276,23 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 }
 
 -(void)wrapPeripheralInMooshimeterAndTransition:(LGPeripheral*)p {
+    [self setBusy:YES];
     [p connectWithTimeout:5 completion:^(NSError *error) {
         if(error != nil) {
             NSLog(@"Connection error => %@ ", error.userInfo );
+            [self setBusy:NO];
             return;
         }
         NSLog(@"Discovering services");
         [p discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
             if(error != nil) {
                 NSLog(@"Discovery error => %@ ", error.userInfo );
+                [self setBusy:NO];
                 return;
             }
             if(services.count==0) {
                 NSLog(@"Discovered zero services...");
+                [self setBusy:NO];
                 return;
             }
             discoverRecursively(services,0,^(NSArray *characteristics, NSError *error) {
@@ -292,6 +301,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
                 // that might reference self.active_meter
                 self.active_meter = (MooshimeterDeviceBase*)[meter_class alloc];
                 self.active_meter = [self.active_meter init:p delegate:self];
+                [MeterDirectory addMeter:self.active_meter];
                 NSLog(@"Wrapped in meter!");
             });
         }];
@@ -340,6 +350,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
 
 #pragma mark MooshimeterDelegateProtocol methods
 - (void)onInit {
+    [self setBusy:NO];
     [self chooseAndStartActivityFor:self.active_meter];
 }
 - (void)onDisconnect {NSLog(@"ScanVC caught meter event");}
