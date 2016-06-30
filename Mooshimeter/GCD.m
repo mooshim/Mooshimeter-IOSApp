@@ -18,10 +18,10 @@
 + (void)syncMain:(void (^)())block {
     dispatch_async(dispatch_get_main_queue(),block);
 }
-+ (void)asyncMainDelayed:(int)ms block:(void (^)())block {
++ (void)asyncMainAfterMS:(int)ms block:(void (^)())block {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC*ms),dispatch_get_main_queue(),block);
 }
-+ (void)asyncBackDelayed:(int)ms block:(void (^)())block {
++ (void)asyncBackAfterMS:(int)ms block:(void (^)())block {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC*ms),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),block);
 }
 @end

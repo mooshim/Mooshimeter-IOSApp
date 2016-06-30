@@ -576,7 +576,7 @@ int24_test to_int24_test(long arg) {
  */
 
 -(float)getENOB:(int)channel {
-    const double base_enob_table[] = {
+    const float base_enob_table[] = {
         20.10,
         19.58,
         19.11,
@@ -587,17 +587,17 @@ int24_test to_int24_test(long arg) {
     const int pga_gain_table[] = {6,1,2,3,4,8,12};
     const int samplerate_setting =self->meter_settings.rw.adc_settings & ADC_SETTINGS_SAMPLERATE_MASK;
     const int buffer_depth_log2 = self->meter_settings.rw.calc_settings & METER_CALC_SETTINGS_DEPTH_LOG2;
-    double enob = base_enob_table[ samplerate_setting ];
+    float enob = base_enob_table[ samplerate_setting ];
     int pga_setting = self->meter_settings.rw.chset[channel];
     pga_setting &= METER_CH_SETTINGS_PGA_MASK;
     pga_setting >>= 4;
     int pga_gain = pga_gain_table[pga_setting];
     // At lower sample frequencies, pga gain affects noise
     // At higher frequencies it has no effect
-    double pga_degradation = (1.5/12) * pga_gain * ((6-samplerate_setting)/6.0);
+    float pga_degradation = (1.5f/12) * pga_gain * ((6-samplerate_setting)/6.0f);
     enob -= pga_degradation;
     // Oversampling adds 1 ENOB per factor of 4
-    enob += ((double)buffer_depth_log2)/2.0;
+    enob += ((float)buffer_depth_log2)/2.0;
     //
     if(meter_info.pcb_version==7 && channel == 0 && (self->meter_settings.rw.chset[CH1] & METER_CH_SETTINGS_INPUT_MASK) == 0 ) {
         // This is compensation for a bug in RevH, where current sense chopper noise dominates
@@ -1009,12 +1009,12 @@ int24_test to_int24_test(long arg) {
 }
 -(NSString*)getLoggingStatusMessage {
     static const char* messages[] = {
-        "LOGGING_OK",
-        "LOGGING_NO_MEDIA",
-        "LOGGING_MOUNT_FAIL",
-        "LOGGING_INSUFFICIENT_SPACE",
-        "LOGGING_WRITE_ERROR",
-        "LOGGING_END_OF_FILE", };
+            "OK",
+            "No SD card detected",
+            "SD card failed to mount - check filesystem",
+            "SD card is full",
+            "SD card write error",
+            "END_OF_FILE", };
     return [NSString stringWithUTF8String:messages[[self getLoggingStatus]]];
 }
 -(void)setLoggingInterval:(int)ms {

@@ -11,6 +11,6 @@
 +(void)asyncMain:(void(^)())block;
 +(void)asyncBack:(void(^)())block;
 +(void)syncMain:(void(^)())block;
-+(void)asyncMainDelayed:(int)ms block:(void(^)())block;
-+(void)asyncBackDelayed:(int)ms block:(void(^)())block;
++(void)asyncMainAfterMS:(int)ms block:(void(^)())block;
++(void)asyncBackAfterMS:(int)ms block:(void(^)())block;
 @end

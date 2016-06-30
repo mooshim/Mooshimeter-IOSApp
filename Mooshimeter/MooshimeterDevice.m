@@ -501,7 +501,9 @@ NSMutableString* concat(int n_strings,...) {
         return;
     }
     [_tree command:@"PCB_VERSION"];
-    [GCD asyncBackDelayed:5000 block:^{[self heartbeatCB];}];
+    [GCD asyncBackAfterMS:5000 block:^{
+        [self heartbeatCB];
+    }];
 }
 
 ////////////////////////////////
@@ -745,10 +747,10 @@ NSMutableString* concat(int n_strings,...) {
 -(NSString*)getLoggingStatusMessage {
     const NSString* messages[] = {
             @"OK",
-            @"NO_MEDIA",
-            @"MOUNT_FAIL",
-            @"INSUFFICIENT_SPACE",
-            @"WRITE_ERROR",
+            @"No SD card detected",
+            @"SD card failed to mount - check filesystem",
+            @"SD card is full",
+            @"SD card write error",
             @"END_OF_FILE",
     };
     return [messages[[self getLoggingStatus]] copy];
