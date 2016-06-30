@@ -363,13 +363,27 @@ void (^serout_callback)(NSData*,NSError*);
 -(void)refreshAll {
     // Shortcodes are guaranteed to be consecutive
     int n_codes = _code_list.count;
+    int n_req = _code_list.count-3;
+    // Set up a semaphore so we can refresh all these values concurrently, saves time
+    dispatch_semaphore_t s = dispatch_semaphore_create(0);
     // Skip the first 3 codes (they are for CRC, tree and diagnostic
     for(int i = 3; i < n_codes; i++) {
         ConfigNode *n = _code_list[i];
-        if(n.ntype != NTYPE_VAL_BIN) {
-            [n reqValue];
+        if(   n.ntype != NTYPE_VAL_BIN ) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0),^{
+                [n reqValue];
+                dispatch_semaphore_signal(s);
+            });
+        } else {
+            dispatch_semaphore_signal(s);
         }
-        if(![self.meter isConnected]) { return; }
+        //if(![self.meter isConnected]) { return; } TODO find a way to add this check back in
+    }
+    for(int i = 3; i < n_codes; i++) {
+        if(dispatch_semaphore_wait(s,dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC*500))) {
+            NSLog(@"Timeout refreshing tree!");
+            return;
+        }
     }
 }
 
