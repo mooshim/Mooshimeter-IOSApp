@@ -11,6 +11,7 @@
 @property float visible_w,visible_h;
 @property int nrow,ncol;
 @property UIView *content_view; // Portion of the view below the nav controller
+@property BOOL busymsg_up;
 
 -(void)populateNavBar;
 
@@ -20,4 +21,5 @@
 -(UIButton*)makeButton:(CGRect)frame cb:(SEL)cb;
 -(void)addToNavBar:(UIView*)new_item;
 
+-(void)setBusy:(BOOL)busy;
 @end

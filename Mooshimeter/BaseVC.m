@@ -6,6 +6,7 @@
 #import "BaseVC.h"
 #import "GCD.h"
 #import "WidgetFactory.h"
+#import "UIView+Toast.h"
 
 @implementation BaseVC
 
@@ -108,4 +109,16 @@
     self.navigationItem.rightBarButtonItems = items;
 }
 
+-(void)setBusy:(BOOL)busy {
+    [GCD asyncMain:^{
+        if(_busymsg_up && !busy) {
+            _busymsg_up=NO;
+            [self.content_view hideToastActivity];
+        }
+        if(!_busymsg_up && busy) {
+            _busymsg_up=YES;
+            [self.content_view makeToastActivity:CSToastPositionCenter];
+        }
+    }];
+}
 @end
