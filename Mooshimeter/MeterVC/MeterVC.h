@@ -40,9 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong,nonatomic) UILabel*  math_label;
 @property (strong,nonatomic) UIButton*  math_button;
 
-@property (strong, nonatomic) UIButton* rate_auto_button;
 @property (strong, nonatomic) UIButton* rate_button;
-@property (strong, nonatomic) UIButton* depth_auto_button;
 @property (strong, nonatomic) UIButton* depth_button;
 @property (strong, nonatomic) UIButton* logging_button;
 @property (strong, nonatomic) UIButton* graph_button;

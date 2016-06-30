@@ -159,19 +159,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Button push handlers
 /////////////////
 
-+(void)style_auto_button:(UIButton*)b on:(BOOL)on {
-    if(on) {
-        [b setBackgroundColor:[UIColor greenColor]];
-        [b setTitle:@"A" forState:UIControlStateNormal];
-    } else {
-        [b setBackgroundColor:[UIColor redColor]];
-        [b setTitle:@"M" forState:UIControlStateNormal];
-    }
-}
-
--(void)rate_auto_button_refresh{
-    [MeterVC style_auto_button:self.rate_auto_button on:self.meter.rate_auto];
-}
 -(void)rate_button_press {
     NSMutableArray * options = [[self.meter getSampleRateList] mutableCopy];
     [options addObjectsFromArray:[self.meter getSampleRateList]];
@@ -191,15 +178,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSString* title = [NSString stringWithFormat:@"%dHz", rate];
     [self.rate_button setTitle:title forState:UIControlStateNormal];
     if(self.meter.rate_auto) {
-        [self.rate_button setBackgroundColor:[UIColor lightGrayColor]];
+        [WidgetFactory setButtonSubtitle:self.rate_button subtitle:@"AUTO"];
     } else {
-        [self.rate_button setBackgroundColor:[UIColor whiteColor]];
+        [WidgetFactory setButtonSubtitle:self.rate_button subtitle:@"MANUAL"];
     }
 }
 -(void)logging_button_press {
     if([self.meter getLoggingStatus]!=0) {
         // Do nothing if there's a logging error
-        [self.content_view makeToast:@"Logging error"];
+        [self.content_view makeToast:[self.meter getLoggingStatusMessage]];
         return;
     }
     [self.meter setLoggingOn:![self.meter getLoggingOn]];
@@ -217,9 +204,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     [self.logging_button setTitle:title forState:UIControlStateNormal];
 }
--(void)depth_auto_button_refresh {
-    [MeterVC style_auto_button:self.depth_auto_button on:self.meter.depth_auto];
-}
 -(void)depth_button_press {
     [PopupMenu displayOptionsWithParent:self.view title:@"Buffer Depth" options:[self.meter getBufferDepthList] cancel:@"AUTORANGE" callback:^(int i) {
         NSLog(@"Received %d", i);
@@ -236,9 +220,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSString* title = [NSString stringWithFormat:@"%dsmpl", depth];
     [self.depth_button setTitle:title forState:UIControlStateNormal];
     if(self.meter.depth_auto) {
-        [self.depth_button setBackgroundColor:[UIColor lightGrayColor]];
+        [WidgetFactory setButtonSubtitle:self.depth_button subtitle:@"AUTO"];
     } else {
-        [self.depth_button setBackgroundColor:[UIColor whiteColor]];
+        [WidgetFactory setButtonSubtitle:self.depth_button subtitle:@"MANUAL"];
     }
 }
 
@@ -273,9 +257,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void) refreshAllControls {
     // Make all controls reflect the state of the meter
-    [self rate_auto_button_refresh];
     [self rate_button_refresh];
-    [self depth_auto_button_refresh];
     [self depth_button_refresh];
     [self logging_button_refresh];
     [self math_button_refresh];

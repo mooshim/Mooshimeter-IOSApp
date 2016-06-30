@@ -165,6 +165,27 @@
     return rval;
 }
 
++(UILabel*)setButtonSubtitle:(UIButton *)button subtitle:(NSString*)subtitle {
+    const char* key = "_moosh_subtitle";
+    UILabel* rval = objc_getAssociatedObject( button, key );
+    if(rval == nil) {
+        CGRect r = button.titleLabel.frame;
+        // Shift the existing label up a bit
+        [button setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(5.0f,0.0f,0.0f,0.0f)];
+        rval = [[UILabel alloc]init];
+        rval.frame = CGRectOffset(r,0,15);
+        rval.frame = CGRectMake(0,rval.frame.origin.y,button.bounds.size.width,rval.frame.size.height);
+        rval.font = [UIFont systemFontOfSize:12];
+        rval.textColor = button.titleLabel.textColor;
+        rval.textAlignment = NSTextAlignmentCenter;
+        [button addSubview:rval];
+        objc_setAssociatedObject(button,key,rval,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    rval.text = subtitle;
+    return rval;
+}
+
 +(UIAlertView*)makeAlert:(NSString *)title msg:(NSString *)msg {
     UIAlertView* a = [[UIAlertView alloc] initWithTitle:title message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     a.alertViewStyle = UIAlertViewStyleDefault;

@@ -28,6 +28,8 @@
 +(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback;
 +(UIButton*)makeButton:(NSString*)title callback:(void(^)())callback frame:(CGRect)frame;
 
++(UILabel*)setButtonSubtitle:(UIButton *)button subtitle:(NSString*)subtitle;
+
 +(UISwitch*)makeSwitch:(void(^)(bool))callback frame:(CGRect)frame;
 +(UISwitch*)makeSwitch:(void(^)(bool))callback;
 

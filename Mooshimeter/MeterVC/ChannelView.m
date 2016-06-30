@@ -109,9 +109,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSString * lval = [self.meter getRangeLabel:self.channel];
     [self.range_button setTitle:lval forState:UIControlStateNormal];
     if(self.meter.range_auto[self.channel]) {
-        [self.range_button setBackgroundColor:[UIColor lightGrayColor]];
+        [WidgetFactory setButtonSubtitle:self.range_button subtitle:@"AUTO"];
     } else {
-        [self.range_button setBackgroundColor:[UIColor whiteColor]];
+        [WidgetFactory setButtonSubtitle:self.range_button subtitle:@"MANUAL"];
     }
 }
 
