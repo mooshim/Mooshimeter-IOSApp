@@ -30,13 +30,13 @@ static MeterDirectory *shared = nil;
 }
 
 +(MooshimeterDeviceBase *)getMeterForUUID:(NSString*)uuid {
-    return shared.meter_dict[uuid];
+    return [MeterDirectory getSharedInstance].meter_dict[uuid];
 }
 +(void)addMeter:(MooshimeterDeviceBase *)meter {
-    shared.meter_dict[meter.periph.UUIDString] = meter;
+    [MeterDirectory getSharedInstance].meter_dict[meter.periph.UUIDString] = meter;
 }
 +(void)removeMeter:(MooshimeterDeviceBase *)meter {
-    [shared.meter_dict removeObjectForKey:meter.periph.UUIDString];
+    [[MeterDirectory getSharedInstance].meter_dict removeObjectForKey:meter.periph.UUIDString];
 }
 +(MooshimeterDeviceBase *)getMeterForPeripheral:(LGPeripheral *)periph {
     return [self getMeterForUUID:periph.UUIDString];
