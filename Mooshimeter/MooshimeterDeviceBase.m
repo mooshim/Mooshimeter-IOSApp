@@ -31,13 +31,16 @@
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"DUMMYDELEGATE CALL");}
 @end
 
-@implementation MooshimeterDeviceBase
+@implementation MooshimeterDeviceBase {
+    BOOL rssi_poller_running;
+}
 
 - (BOOL *)speech_on {return _speech_on;}
 - (BOOL *)range_auto {return _range_auto;}
 
 -(instancetype)init {
     self = [super init];
+    rssi_poller_running = NO;
     _speech_on[0] = NO;
     _speech_on[1] = NO;
     _speech_on[2] = NO;
@@ -51,9 +54,16 @@
     self.periph = periph;
     self.chars = [[NSMutableDictionary alloc]init];
     [self setDelegate:delegate];
-    // Start an RSSI poller
-    [GCD asyncMain:^{[self RSSICB];}];
+    [self startRSSIPoller];
     return self;
+}
+
+-(void)startRSSIPoller {
+    if(rssi_poller_running) {
+        return;
+    }
+    rssi_poller_running = YES;
+    [GCD asyncBack:^{[self RSSICB];}];
 }
 
 -(void)RSSICB {
@@ -62,12 +72,12 @@
     }
     [self.periph readRSSIValueCompletion:^(NSNumber *RSSI, NSError *error) {
         if(RSSI) {
-            [self.delegate onRssiReceived:[RSSI intValue]];
+            [GCD asyncBack:^{
+                [self.delegate onRssiReceived:[RSSI intValue]];
+            }];
         }
     }];
-    [GCD asyncBack:^{
-        [self RSSICB];
-    }];
+    [GCD asyncMainAfterMS:5000 block:^{[self RSSICB];}];
 }
 
 -(NSString*)getPreferenceKeyString:(NSString*)tail {
