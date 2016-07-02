@@ -55,6 +55,9 @@
     }
     return outbuilder;
 }
+
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 -(BOOL)decideAndSpeak:(MeterReading*)val {
     double threshold = MAX(ABS(0.20 * val.value), ABS(0.05 * val.max));
     double change = ABS(_last_value - val.value);
@@ -66,7 +69,12 @@
             to_utter = [self formatValueLabelForSpeaking:to_utter];
         }
         AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:to_utter];
-        utterance.rate = .1;
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
+            // In iOS 9 and later, speech is Gump slow, need different settings
+            utterance.rate = .55;
+        } else {
+            utterance.rate = .15;
+        }
         AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
         [synth speakUtterance:utterance];
         _cooldown_active = YES;
