@@ -150,11 +150,14 @@ typedef void(^NodeProcessor)(ConfigNode*);
     NSMutableData* wrapped_payload = [NSMutableData dataWithCapacity:20];
     [wrapped_payload appendBytes:&_send_seq_n length:1]; // Sequence number, for keeping track of which packet is which
     [wrapped_payload appendData:payload];                // Payload data
+    uint8 bind_seqn = _send_seq_n;
     _send_seq_n++;
     LGCharacteristic *c = [self.meter getLGChar:METER_SERIN];
     [c writeValue:wrapped_payload completion:^(NSError *error) {
         if(error) {
             NSLog(@"Badness on send");
+        } else {
+            NSLog(@"SENT: %u %u bytes",bind_seqn,wrapped_payload.length);
         }
     }];
 }
@@ -364,7 +367,6 @@ void (^serout_callback)(NSData*,NSError*);
 -(void)refreshAll {
     // Shortcodes are guaranteed to be consecutive
     int n_codes = _code_list.count;
-    int n_req = _code_list.count-3;
     // Set up a semaphore so we can refresh all these values concurrently, saves time
     dispatch_semaphore_t s = dispatch_semaphore_create(0);
     // Skip the first 3 codes (they are for CRC, tree and diagnostic

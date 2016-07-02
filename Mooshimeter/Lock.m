@@ -30,5 +30,6 @@
     [l lock];
     [l signal];
     [l unlock];
+    return 0;
 }
 @end

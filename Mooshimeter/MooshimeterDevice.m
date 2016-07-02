@@ -27,7 +27,9 @@
 @implementation MyInputDescriptor
 @end
 
-@implementation MooshimeterDevice
+@implementation MooshimeterDevice{
+    BOOL stop_heartbeat;
+}
 ////////////////////////////////
 // Private methods for dealing with config tree
 ////////////////////////////////
@@ -69,6 +71,7 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
     // We are expecting periph to already have had its services discovered
     self = [super init:periph delegate:delegate];
 
+    stop_heartbeat = NO;
     self.rate_auto     = YES;
     self.depth_auto    = YES;
 
@@ -92,6 +95,7 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
     }
 
     [self.periph registerDisconnectHandler:^(NSError *error) {
+        stop_heartbeat = YES;
         [self.delegate onDisconnect];
     }];
 
@@ -102,7 +106,7 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
         // Start a heartbeat.  The Mooshimeter needs to hear from the phone every 20 seconds or it
         // assumes the Android device has fallen in to a phantom connection mode and disconnects itself.
         // We will just read out the PCB version every 10 seconds to satisfy this constraint.
-        [GCD asyncMain:^{[self heartbeatCB];}];
+        [self heartbeatCB];
         [self setTime:[[NSDate date] timeIntervalSince1970]];
         [self addDescriptors];
         [self.delegate onInit];
@@ -497,11 +501,11 @@ NSMutableString* concat(int n_strings,...) {
 ////////////////////////////////
 
 -(void)heartbeatCB {
-    if(![self isConnected]) {
+    if(stop_heartbeat || ![self isConnected]) {
         return;
     }
     [_tree command:@"PCB_VERSION"];
-    [GCD asyncBackAfterMS:5000 block:^{
+    [GCD asyncBackAfterMS:10000 block:^{
         [self heartbeatCB];
     }];
 }
