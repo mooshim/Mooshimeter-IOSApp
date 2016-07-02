@@ -172,9 +172,13 @@
         CGRect r = button.titleLabel.frame;
         // Shift the existing label up a bit
         [button setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(5.0f,0.0f,0.0f,0.0f)];
+        float topinset = button.frame.size.height-40; // 40 = guessing at label height FIXME
+        topinset /= 2;
+        topinset -= 10;
+        topinset = topinset<0?0:topinset;
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(topinset,0.0f,0.0f,0.0f)];
         rval = [[UILabel alloc]init];
-        rval.frame = CGRectOffset(r,0,15);
+        rval.frame = CGRectOffset(button.bounds,0,12);
         rval.frame = CGRectMake(0,rval.frame.origin.y,button.bounds.size.width,rval.frame.size.height);
         rval.font = [UIFont systemFontOfSize:12];
         rval.textColor = button.titleLabel.textColor;
