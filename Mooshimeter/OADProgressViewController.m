@@ -11,11 +11,13 @@
 #import "FirmwareImageDownloader.h"
 #import "GCD.h"
 
-@implementation OADViewController
+@implementation OADViewController {
+    Lock* lock;
+}
 - (instancetype)initWithMeter:(MooshimeterDeviceBase*)meter
 {
     self = [super init];
-    // Initialization code
+    lock = [[Lock alloc] init];
     self.meter = (OADDevice*)meter;
     return self;
 }
@@ -69,8 +71,12 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
+    self.meter.delegate = self;
     NSString* intro = [NSString stringWithFormat:@"Connected to: %@\nFirmware on meter: %d\nNew firmware: %d\n", [self.meter getName],[self.meter getBuildTime], [FirmwareImageDownloader getBuildTime]];
     [self toTerminal:intro];
+    if(self.upload_on_present) {
+        [self upload];
+    }
 }
 
 -(void)toTerminal:(NSString*)s {
@@ -86,11 +92,11 @@
         return;
     }
     DECLARE_WEAKSELF;
+    [GCD asyncMain:^{[self.upload_button setTitle:@"Uploading..." forState:UIControlStateNormal];}];
     self.async_block = ^{
-        int rval = [ws upload_task];
-        if(rval!=0) {
-            ws.async_block = nil;
-        }
+        [ws upload_task];
+        ws.async_block = nil;
+        [GCD asyncMain:^{[ws.upload_button setTitle:@"Start Upload" forState:UIControlStateNormal];}];
     };
     [GCD asyncBack:self.async_block];
 }
@@ -99,19 +105,19 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
 
 -(int)upload_task {
     // Assume we're on a background thread
-    Lock* l = [[Lock alloc] init];
     if(![self.meter isInOADMode]) {
         [self toTerminal:@"Rebooting meter...\n"];
-        [self.meter.periph registerDisconnectHandler:^(NSError *error) {
-            [l signal];
-        }];
         [self.meter reboot];
         [self toTerminal:@"Waiting for meter to disconnect...\n"];
-        [l wait:6000];
+        [lock wait:10000]; // onDisconnect will signal the lock
         if([self.meter isConnected]) {
             [self toTerminal:@"Meter failed to disconnect!\n"];
             return -1;
         }
+        // Sleep for a while to allow disconnect handlers to trickle through.
+        [NSThread sleepForTimeInterval:1.0];
+        LGPeripheral* target_peripheral = self.meter.periph;
+        self.meter = nil;
         [self toTerminal:@"Scanning for meter in bootloader mode."];
         NSArray *services_to_scan_for = @[[BLEUtility expandToMooshimUUID:OAD_SERVICE_UUID]];
         LGCentralManager *c = [LGCentralManager sharedInstance];
@@ -123,10 +129,10 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
                                     options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES}
                                  completion:^(NSArray *peripherals) {
                                      NSLog(@"SCANSIG");
-                                     [l signal];}];
-            [l wait:2000];
+                                     [lock signal];}];
+            [lock wait:2000];
             for (LGPeripheral *p in c.peripherals) {
-                if([p.UUIDString isEqualToString:self.meter.periph.UUIDString]) {
+                if([p.UUIDString isEqualToString:target_peripheral.UUIDString]) {
                     NSLog(@"FOUND");
                     peripheral = p;
                     break;
@@ -142,17 +148,17 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
             return -1;
         }
         [peripheral connectWithCompletion:^(NSError *error) {
-            [l signal];
+            [lock signal];
         }];
-        if ([l wait:5000]) {
+        if ([lock wait:5000]) {
             [self toTerminal:@"Connection failed!\n"];
             return-1;
         }
         [self toTerminal:@"Connected.  Discovering services...\n"];
         [peripheral discoverServicesWithCompletion:^(NSArray *services, NSError *error) {
-            [l signal];
+            [lock signal];
         }];
-        if ([l wait:5000]) {
+        if ([lock wait:5000]) {
             [self toTerminal:@"Discovery failed!\n"];
             return -1;
         }
@@ -160,9 +166,9 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
             return -1;
         }
         discoverRecursively(peripheral.services, 0, ^(NSArray *characteristics, NSError *error) {
-            [l signal];
+            [lock signal];
         });
-        if ([l wait:5000]) {
+        if ([lock wait:5000]) {
             [self toTerminal:@"Discovery failed!\n"];
             return -1;
         }
@@ -176,4 +182,19 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
     [self.oad_profile startUpload];
     return 0;
 }
+
+- (void)onInit {}
+- (void)onDisconnect {
+    [lock signal];
+}
+- (void)onRssiReceived:(int)rssi {}
+- (void)onBatteryVoltageReceived:(float)voltage {}
+- (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {}
+- (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {}
+- (void)onSampleRateChanged:(int)sample_rate_hz {}
+- (void)onBufferDepthChanged:(int)buffer_depth {}
+- (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {}
+- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {}
+- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {}
+- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {}
 @end

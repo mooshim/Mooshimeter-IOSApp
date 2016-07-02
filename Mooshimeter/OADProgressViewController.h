@@ -13,7 +13,7 @@
 
 @class OADProfile;
 
-@interface OADViewController : BaseVC
+@interface OADViewController : BaseVC <MooshimeterDelegateProtocol>
 
 @property (strong,nonatomic) UIProgressView *progressBar;
 @property (strong,nonatomic) UILabel *percent_label;
@@ -24,6 +24,8 @@
 @property (strong,nonatomic) OADProfile* oad_profile;
 @property OADDevice* meter;
 @property void(^async_block)();
+
+@property BOOL upload_on_present;
 
 
 - (instancetype)initWithMeter:(MooshimeterDeviceBase*)meter;
