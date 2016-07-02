@@ -2,134 +2,47 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f28ffdf-ad84-4a8f-bcf6-c3edc7016e8d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.m" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.m" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_0.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_10.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_100.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_11.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_12.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_13.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_14.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_15.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_16.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_17.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_18.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_19.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_20.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_21.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_22.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_23.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_24.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_25.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_26.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_27.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_28.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_29.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_3.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_30.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_31.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_32.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_33.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_34.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_35.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_36.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_37.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_38.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_39.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_4.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_40.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_41.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_42.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_43.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_44.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_45.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_46.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_47.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_48.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_49.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_5.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_50.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_51.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_52.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_53.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_54.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_55.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_56.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_57.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_58.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_59.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_6.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_60.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_61.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_62.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_63.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_64.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_65.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_66.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_67.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_68.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_69.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_7.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_70.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_71.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_72.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_73.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_74.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_75.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_76.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_77.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_78.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_79.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_8.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_80.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_81.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_82.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_83.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_84.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_85.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_86.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_87.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_88.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_89.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_9.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_90.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_91.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_92.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_93.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_94.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_95.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_96.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_97.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_98.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Icons/BatteryIcon/bat_icon_99.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterSettingsView.h" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Mooshimeter/MeterSettingsView.m" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter.xcodeproj/project.xcworkspace/xcuserdata/jameswhong.xcuserdatad/UserInterfaceState.xcuserstate" afterPath="$PROJECT_DIR$/Mooshimeter.xcodeproj/project.xcworkspace/xcuserdata/jameswhong.xcuserdatad/UserInterfaceState.xcuserstate" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Mooshimeter-IOSApp.iml" afterPath="$PROJECT_DIR$/.idea/Mooshimeter-IOSApp.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/xcode.xml" afterPath="$PROJECT_DIR$/.idea/xcode.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LGBluetooth/LGCharacteristic.m" afterPath="$PROJECT_DIR$/LGBluetooth/LGCharacteristic.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LGBluetooth/LGPeripheral.m" afterPath="$PROJECT_DIR$/LGBluetooth/LGPeripheral.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LGBluetooth/LGUtils.h" afterPath="$PROJECT_DIR$/LGBluetooth/LGUtils.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/Mooshimeter.xcodeproj/project.pbxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/GraphVC.h" afterPath="$PROJECT_DIR$/Mooshimeter/GraphVC.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/GraphVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" afterPath="$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist" afterPath="$PROJECT_DIR$/Mooshimeter.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/ConfigNode.m" afterPath="$PROJECT_DIR$/Mooshimeter/ConfigNode.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/ConfigTree.m" afterPath="$PROJECT_DIR$/Mooshimeter/ConfigTree.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Lock.m" afterPath="$PROJECT_DIR$/Mooshimeter/Lock.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist" afterPath="$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterControlProtocol.h" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterControlProtocol.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.m" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m" afterPath="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/OADProgressViewController.h" afterPath="$PROJECT_DIR$/Mooshimeter/OADProgressViewController.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/OADProgressViewController.m" afterPath="$PROJECT_DIR$/Mooshimeter/OADProgressViewController.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/PopupMenu.h" afterPath="$PROJECT_DIR$/Mooshimeter/PopupMenu.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/PopupMenu.m" afterPath="$PROJECT_DIR$/Mooshimeter/PopupMenu.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/ScanVC.m" afterPath="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" afterPath="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" afterPath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m" afterPath="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" afterPath="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ScanTableViewCell.h" afterPath="$PROJECT_DIR$/ScanTableViewCell.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Podfile" afterPath="$PROJECT_DIR$/Podfile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Podfile.lock" afterPath="$PROJECT_DIR$/Podfile.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Manifest.lock" afterPath="$PROJECT_DIR$/Pods/Manifest.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Pods.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/Pods/Pods.xcodeproj/project.pbxproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/Pods-Mooshimeter.xcscheme" afterPath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/Pods-Mooshimeter.xcscheme" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/Pods-MooshimeterTests.xcscheme" afterPath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/Pods-MooshimeterTests.xcscheme" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/Toast.xcscheme" afterPath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/Toast.xcscheme" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/xcschememanagement.plist" afterPath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcuserdata/jameswhong.xcuserdatad/xcschemes/xcschememanagement.plist" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-acknowledgements.markdown" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-acknowledgements.markdown" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-acknowledgements.plist" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-acknowledgements.plist" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter.debug.xcconfig" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter.debug.xcconfig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter.release.xcconfig" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter.release.xcconfig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests.debug.xcconfig" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests.debug.xcconfig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests.release.xcconfig" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Pods-MooshimeterTests/Pods-MooshimeterTests.release.xcconfig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Target Support Files/Toast/Toast.xcconfig" afterPath="$PROJECT_DIR$/Pods/Target Support Files/Toast/Toast.xcconfig" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ScanTableViewCell.m" afterPath="$PROJECT_DIR$/ScanTableViewCell.m" />
     </list>
     <ignored path="Mooshimeter-IOSApp.iws" />
@@ -145,260 +58,40 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="iphoneos" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphoneos_662503f910618012ec864bf0fca6fe4f6c3494c2" />
   <component name="FavoritesManager">
     <favorites_list name="Mooshimeter" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MooshimeterDeviceBase.m" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m">
+      <file leaf-file-name="OADProgressViewController.m" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/OADProgressViewController.m">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="42" column="16" selection-start-line="42" selection-start-column="16" selection-end-line="42" selection-end-column="16" />
+            <state relative-caret-position="217">
+              <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
+              <folding>
+                <element signature="e#506#872#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Mooshimeter/main.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ScanVC.m" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.m">
+      <file leaf-file-name="LGCentralManager.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LGBluetooth/LGCentralManager.m">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="293" column="31" selection-start-line="293" selection-start-column="31" selection-end-line="293" selection-end-column="31" />
-              <folding>
-                <element signature="e#770#788#0" expanded="true" />
-                <element signature="e#1039#3677#0" expanded="false" />
-                <element signature="e#4120#4176#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MeterVC.m" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="255" column="0" selection-start-line="255" selection-start-column="0" selection-end-line="255" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#768#0" expanded="false" />
-                <element signature="e#770#789#0" expanded="true" />
-                <element signature="e#3271#5020#0" expanded="false" />
-                <element signature="e#5422#5725#0" expanded="false" />
-                <element signature="e#5727#5840#0" expanded="false" />
-                <element signature="e#6150#6478#0" expanded="false" />
-                <element signature="e#6483#6882#0" expanded="false" />
-                <element signature="e#7087#7596#0" expanded="false" />
-                <element signature="e#7597#7714#0" expanded="false" />
-                <element signature="e#7715#8146#0" expanded="false" />
-                <element signature="e#7884#8142#0" expanded="false" />
-                <element signature="e#8147#8554#0" expanded="false" />
-                <element signature="e#9085#9594#0" expanded="false" />
-                <element signature="e#9333#9590#0" expanded="false" />
-                <element signature="e#9596#9969#0" expanded="false" />
-                <element signature="e#10096#10136#0" expanded="false" />
-                <element signature="e#10138#10322#0" expanded="false" />
-                <element signature="e#11705#11865#0" expanded="false" />
-                <element signature="e#11867#11950#0" expanded="false" />
-                <element signature="e#11952#12035#0" expanded="false" />
-                <element signature="e#12037#12168#0" expanded="false" />
-                <element signature="e#12170#12507#0" expanded="false" />
-                <element signature="e#12509#12872#0" expanded="false" />
-                <element signature="e#12874#13209#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ChannelView.m" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="22" column="27" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#768#0" expanded="false" />
-                <element signature="e#2714#2987#0" expanded="false" />
-                <element signature="e#2993#3140#0" expanded="false" />
-                <element signature="e#3142#4034#0" expanded="false" />
-                <element signature="e#4408#4505#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ChannelView.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="297">
+              <caret line="163" column="7" selection-start-line="163" selection-start-column="7" selection-end-line="163" selection-end-column="7" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MeterVC.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="38" />
-              <folding>
-                <element signature="e#770#793#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MooshimeterDeviceBase.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="13" column="19" selection-start-line="13" selection-start-column="9" selection-end-line="13" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LegacyMooshimeterDevice.m" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="379" column="29" selection-start-line="379" selection-start-column="29" selection-end-line="379" selection-end-column="29" />
-              <folding>
-                <element signature="e#0#768#0" expanded="false" />
-                <element signature="e#770#805#0" expanded="true" />
-                <element signature="e#850#918#0" expanded="false" />
-                <element signature="e#938#1011#0" expanded="false" />
-                <element signature="e#1030#1099#0" expanded="false" />
-                <element signature="e#1122#1204#0" expanded="false" />
-                <element signature="e#1268#1507#0" expanded="false" />
-                <element signature="e#1508#1737#0" expanded="false" />
-                <element signature="e#1542#1732#0" expanded="false" />
-                <element signature="e#1672#1712#0" expanded="false" />
-                <element signature="e#1739#2138#0" expanded="false" />
-                <element signature="e#2410#3476#0" expanded="false" />
-                <element signature="e#3483#3647#0" expanded="false" />
-                <element signature="e#3731#3844#0" expanded="false" />
-                <element signature="e#3845#4081#0" expanded="false" />
-                <element signature="e#4506#4789#0" expanded="false" />
-                <element signature="e#4791#5143#0" expanded="false" />
-                <element signature="e#5756#5859#0" expanded="false" />
-                <element signature="e#7637#7849#0" expanded="false" />
-                <element signature="e#7869#7907#0" expanded="false" />
-                <element signature="e#7928#8161#0" expanded="false" />
-                <element signature="e#9051#9433#0" expanded="false" />
-                <element signature="e#8560#9045#0" expanded="false" />
-                <element signature="e#9435#9844#0" expanded="false" />
-                <element signature="e#9198#9429#0" expanded="false" />
-                <element signature="e#9846#11720#0" expanded="false" />
-                <element signature="e#9589#9840#0" expanded="false" />
-                <element signature="e#11722#14094#0" expanded="false" />
-                <element signature="e#13088#13503#0" expanded="false" />
-                <element signature="e#13529#14072#0" expanded="false" />
-                <element signature="e#13594#14064#0" expanded="false" />
-                <element signature="e#13666#14052#0" expanded="false" />
-                <element signature="e#13869#13961#0" expanded="false" />
-                <element signature="e#14097#14259#0" expanded="false" />
-                <element signature="e#14261#14371#0" expanded="false" />
-                <element signature="e#14373#14555#0" expanded="false" />
-                <element signature="e#14373#14939#0" expanded="false" />
-                <element signature="e#14941#15058#0" expanded="false" />
-                <element signature="e#15060#15178#0" expanded="false" />
-                <element signature="e#15180#15280#0" expanded="false" />
-                <element signature="e#15282#15569#0" expanded="false" />
-                <element signature="e#15451#15565#0" expanded="false" />
-                <element signature="e#15570#15695#0" expanded="false" />
-                <element signature="e#15696#15833#0" expanded="false" />
-                <element signature="e#15834#15982#0" expanded="false" />
-                <element signature="e#15983#16114#0" expanded="false" />
-                <element signature="e#16115#16512#0" expanded="false" />
-                <element signature="e#16258#16508#0" expanded="false" />
-                <element signature="e#16513#16752#0" expanded="false" />
-                <element signature="e#16753#17008#0" expanded="false" />
-                <element signature="e#17009#17279#0" expanded="false" />
-                <element signature="e#17380#17617#0" expanded="false" />
-                <element signature="e#17619#18712#0" expanded="false" />
-                <element signature="e#18714#19459#0" expanded="false" />
-                <element signature="e#19461#19839#0" expanded="false" />
-                <element signature="e#19841#21221#0" expanded="false" />
-                <element signature="e#21223#21470#0" expanded="false" />
-                <element signature="e#21223#22727#0" expanded="false" />
-                <element signature="e#22729#22978#0" expanded="false" />
-                <element signature="e#22729#23125#0" expanded="false" />
-                <element signature="e#23127#23381#0" expanded="false" />
-                <element signature="e#23127#23643#0" expanded="false" />
-                <element signature="e#23788#23926#0" expanded="false" />
-                <element signature="e#23927#25721#0" expanded="false" />
-                <element signature="e#25624#25703#0" expanded="false" />
-                <element signature="e#31493#31656#0" expanded="false" />
-                <element signature="e#32988#33260#0" expanded="false" />
-                <element signature="e#33384#33494#0" expanded="false" />
-                <element signature="e#33496#33568#0" expanded="false" />
-                <element signature="e#33569#33835#0" expanded="false" />
-                <element signature="e#33837#33950#0" expanded="false" />
-                <element signature="e#33951#34141#0" expanded="false" />
-                <element signature="e#34143#34550#0" expanded="false" />
-                <element signature="e#34552#34724#0" expanded="false" />
-                <element signature="e#34726#34854#0" expanded="false" />
-                <element signature="e#34856#34914#0" expanded="false" />
-                <element signature="e#34916#35134#0" expanded="false" />
-                <element signature="e#35135#35374#0" expanded="false" />
-                <element signature="e#35376#35474#0" expanded="false" />
-                <element signature="e#35476#35759#0" expanded="false" />
-                <element signature="e#35761#35924#0" expanded="false" />
-                <element signature="e#35925#36185#0" expanded="false" />
-                <element signature="e#36098#36181#0" expanded="false" />
-                <element signature="e#36186#36332#0" expanded="false" />
-                <element signature="e#36246#36301#1" expanded="false" />
-                <element signature="e#36334#36448#0" expanded="false" />
-                <element signature="e#36450#36718#0" expanded="false" />
-                <element signature="e#36638#36714#0" expanded="false" />
-                <element signature="e#36719#36865#0" expanded="false" />
-                <element signature="e#36780#36834#1" expanded="false" />
-                <element signature="e#36867#38890#0" expanded="false" />
-                <element signature="e#36917#37192#0" expanded="false" />
-                <element signature="e#38394#38592#0" expanded="false" />
-                <element signature="e#38472#38580#0" expanded="false" />
-                <element signature="e#38602#38702#0" expanded="false" />
-                <element signature="e#38892#39079#0" expanded="false" />
-                <element signature="e#39080#39231#0" expanded="false" />
-                <element signature="e#39232#39306#0" expanded="false" />
-                <element signature="e#39307#39645#0" expanded="false" />
-                <element signature="e#39646#39768#0" expanded="false" />
-                <element signature="e#39769#39851#0" expanded="false" />
-                <element signature="e#39853#40981#0" expanded="false" />
-                <element signature="e#40983#41068#0" expanded="false" />
-                <element signature="e#41069#41267#0" expanded="false" />
-                <element signature="e#41268#41673#0" expanded="false" />
-                <element signature="e#41675#41821#0" expanded="false" />
-                <element signature="e#41827#41940#0" expanded="false" />
-                <element signature="e#41943#43310#0" expanded="false" />
-                <element signature="e#43311#43424#0" expanded="false" />
-                <element signature="e#43425#43752#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Beeper.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="12" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
-              <folding>
-                <element signature="e#96#129#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Beeper.m" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.m">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="34" column="1" selection-start-line="34" selection-start-column="1" selection-end-line="34" selection-end-column="1" />
-              <folding>
-                <element signature="e#96#114#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -411,57 +104,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterView/MeterViewController.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/mooshimeterAppDelegate.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist" />
-        <option value="$PROJECT_DIR$/Mooshimeter/BaseViewController.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/ScanViewController.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceView.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceView.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/ScanSettingsView.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/ScanVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/GlobalPreferenceVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/GlobalPreferenceVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GlobalPreferenceVC/GlobalPreferenceVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterReading.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GraphViewController.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GraphViewController.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GraphSettingsView.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/OADDevice.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.m" />
-        <option value="$PROJECT_DIR$/WYPopoverController/WYPopoverController.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m" />
+        <option value="$PROJECT_DIR$/LGBluetooth/LGBluetooth.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
         <option value="$PROJECT_DIR$/ScanTableViewCell.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
-        <option value="$PROJECT_DIR$/ScanTableViewCell.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterControlProtocol.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterReading.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterReading.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/NSMutableData+ByteBuffer.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterDelegateProtocol.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m" />
+        <option value="$PROJECT_DIR$/LGBluetooth/LGUtils.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ConfigTree.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ScrollingText.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ScrollingText.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/mooshimeterAppDelegate.m" />
+        <option value="$PROJECT_DIR$/LGBluetooth/LGCentralManager.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Lock.h" />
         <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.h" />
-        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/GCD.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/OADProfile.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/OADProfile.h" />
+        <option value="$PROJECT_DIR$/Podfile" />
+        <option value="$PROJECT_DIR$/Mooshimeter/main.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/GCD.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/GraphVC.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/BaseVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Singleton/MeterDirectory.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/OADProgressViewController.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ScanVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/Lock.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ConfigNode.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/ConfigTree.m" />
+        <option value="$PROJECT_DIR$/LGBluetooth/LGCharacteristic.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/WidgetFactory.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.m" />
         <option value="$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/PopupMenu.h" />
+        <option value="$PROJECT_DIR$/Mooshimeter/PopupMenu.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m" />
+        <option value="$PROJECT_DIR$/LGBluetooth/LGPeripheral.m" />
+        <option value="$PROJECT_DIR$/ScanTableViewCell.m" />
+        <option value="$PROJECT_DIR$/Mooshimeter/OADProgressViewController.m" />
       </list>
     </option>
   </component>
@@ -508,6 +201,16 @@
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="Pods" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="Mooshimeter" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
             </PATH_ELEMENT>
@@ -522,7 +225,7 @@
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Products" />
+              <option name="myItemId" value="Mooshimeter" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -537,6 +240,54 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ViewControllers" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ViewControllers" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="OAD" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mooshimeter" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ViewControllers" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MeterVC" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -590,25 +341,7 @@
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Mooshimeter" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Singleton" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeRootNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Mooshimeter" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Frameworks" />
+              <option name="myItemId" value="LGBluetooth" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.XcodeViewNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -620,13 +353,15 @@
   <component name="PropertiesComponent">
     <property name="FullScreen" value="true" />
     <property name="OBJC.PRESERVED_TARGET_SELECTION" value="Mooshimeter" />
-    <property name="SearchEverywhereHistoryKey" value="Widge&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.h&#10;Popup&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/PopupMenu.h&#10;base&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;AppDe&#9;null&#9;null&#10;GraphSe&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;BaseVC.h&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;BaseVC.m&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.m&#10;GraphSettings&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;Graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;Graphv&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.m&#10;wid&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.h&#10;Story&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/en.lproj/MainStoryboard_iPad.storyboard&#10;appde&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/Singleton/AppDelegate.m&#10;channel&#9;null&#9;null&#10;scan&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;scanview&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;app&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/AppDelegate.m&#10;SignificantDigits&#9;null&#9;null&#10;Mooshimeter.bin&#9;null&#9;null&#10;int24&#9;null&#9;null&#10;sendMeterSettings&#9;null&#9;null&#10;send&#9;null&#9;null&#10;g_meter&#9;null&#9;null&#10;g_meter =&#9;null&#9;null&#10;[MooshimeterDevice&#9;null&#9;null&#10;MooshimeterDevice init&#9;null&#9;null&#10;formatstring&#9;null&#9;null&#10;to live is to suffer&#9;null&#9;null&#10;nsarray&#9;null&#9;null" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Mooshimeter/sounds" />
+    <property name="SearchEverywhereHistoryKey" value="Mooshim&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MooshimeterDevice.m&#10;Popup&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/PopupMenu.m&#10;Widget&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.m&#10;ConfigNode&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ConfigNode.m&#10;ScanV&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanVC.m&#10;Mooshimeter&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MooshimeterDevice.m&#10;WidgetFa&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.m&#10;MooshimeterDeviceBase.m&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MooshimeterDeviceBase.m&#10;MooshimeterDe&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MooshimeterDeviceBase.h&#10;Oad&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/OADProgressViewController.m&#10;plist&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/Mooshimeter-Info.plist&#10;AppDele&#9;null&#9;null&#10;graphvc&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.m&#10;ScanVC&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanVC.m&#10;LegacyM&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/LegacyMooshimeterDevice.m&#10;DeviceB&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MooshimeterDeviceBase.m&#10;oadp&#9;null&#9;null&#10;pod&#9;ACTION&#9;CocoaPods.AddPodFile&#10;NSData+&#9;null&#9;null&#10;Moos&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MooshimeterDevice.m&#10;getLG&#9;null&#9;null&#10;Widge&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.h&#10;base&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;AppDe&#9;null&#9;null&#10;GraphSe&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;BaseVC.h&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.h&#10;BaseVC.m&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/BaseVC.m&#10;GraphSettings&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/MeterVC/GraphSettingsVC.m&#10;Graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;graph&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.h&#10;Graphv&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/GraphVC.m&#10;wid&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/WidgetFactory.h&#10;Story&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/en.lproj/MainStoryboard_iPad.storyboard&#10;appde&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/Singleton/AppDelegate.m&#10;channel&#9;null&#9;null&#10;scan&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;scanview&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/ScanViewController.m&#10;app&#9;FILE&#9;file:///Users/jameswhong/Mooshimeter-IOSApp/Mooshimeter/AppDelegate.m&#10;SignificantDigits&#9;null&#9;null&#10;Mooshimeter.bin&#9;null&#9;null&#10;int24&#9;null&#9;null&#10;sendMeterSettings&#9;null&#9;null&#10;send&#9;null&#9;null&#10;g_meter&#9;null&#9;null&#10;g_meter =&#9;null&#9;null&#10;[MooshimeterDevice&#9;null&#9;null&#10;MooshimeterDevice init&#9;null&#9;null&#10;formatstring&#9;null&#9;null&#10;to live is to suffer&#9;null&#9;null&#10;nsarray&#9;null&#9;null" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/BBSZLib" />
+    <property name="settings.editor.selected.configurable" value="CocoaPods" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Mooshimeter/Singleton" />
       <recent name="$PROJECT_DIR$/Mooshimeter" />
+      <recent name="$PROJECT_DIR$/Mooshimeter/Singleton" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Mooshimeter">
@@ -671,8 +406,32 @@
       </EXTENSION>
       <method />
     </configuration>
-    <list size="1">
+    <configuration default="false" name="Pods-Mooshimeter" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Pods" TARGET_NAME="Pods-Mooshimeter" CONFIG_NAME="Debug" SCHEME_NAME="Pods-Mooshimeter" MAKE_ACTIVE="TRUE" WAIT_FOR="FALSE">
+      <envs />
+      <EXTENSION ID="org.jetbrains.appcode.reveal.RevealRunConfigurationExtension">
+        <REVEAL_SETTINGS autoInject="false" autoInstall="true" askToEnableAutoInstall="true" />
+      </EXTENSION>
+      <method />
+    </configuration>
+    <configuration default="false" name="Pods-MooshimeterTests" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Pods" TARGET_NAME="Pods-MooshimeterTests" CONFIG_NAME="Debug" SCHEME_NAME="Pods-MooshimeterTests" MAKE_ACTIVE="TRUE" WAIT_FOR="FALSE">
+      <envs />
+      <EXTENSION ID="org.jetbrains.appcode.reveal.RevealRunConfigurationExtension">
+        <REVEAL_SETTINGS autoInject="false" autoInstall="true" askToEnableAutoInstall="true" />
+      </EXTENSION>
+      <method />
+    </configuration>
+    <configuration default="false" name="Toast" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Pods" TARGET_NAME="Toast" CONFIG_NAME="Debug" SCHEME_NAME="Toast" MAKE_ACTIVE="TRUE" WAIT_FOR="FALSE">
+      <envs />
+      <EXTENSION ID="org.jetbrains.appcode.reveal.RevealRunConfigurationExtension">
+        <REVEAL_SETTINGS autoInject="false" autoInstall="true" askToEnableAutoInstall="true" />
+      </EXTENSION>
+      <method />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Application.Mooshimeter" />
+      <item index="1" class="java.lang.String" itemvalue="Application.Pods-Mooshimeter" />
+      <item index="2" class="java.lang.String" itemvalue="Application.Pods-MooshimeterTests" />
+      <item index="3" class="java.lang.String" itemvalue="Application.Toast" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -693,21 +452,21 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31445783" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31325302" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27836505" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35060242" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24453841" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23975904" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37831324" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4566265" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -729,628 +488,512 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="239" />
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="476" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="AppleRunConfiguration">
-        <watch expression="self" language="ObjectiveC" />
-        <watch expression="self.view.frame" language="ObjectiveC" />
-        <watch expression="self.view.bounds" language="ObjectiveC" />
-        <watch expression="self.interfaceOrientation" language="ObjectiveC" />
-        <watch expression="self.navigationController" language="ObjectiveC" />
-        <watch expression="self.navigationController.navigationBar.subviews" language="ObjectiveC" />
-        <watch expression="self.navigationController.navigationBarHidden" language="ObjectiveC" />
-        <watch expression="self.hostView.userInteractionEnabled" language="ObjectiveC" />
-        <watch expression="self.view.userInteractionEnabled" language="ObjectiveC" />
-        <watch expression="self.bounds" language="ObjectiveC" />
+        <watch expression="serout_callback" language="ObjectiveC" />
+        <watch expression="shared.meter_dict" language="ObjectiveC" />
+        <watch expression="shared" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/OADProfile.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
-          <folding />
+        <state relative-caret-position="405">
+          <caret line="29" column="20" selection-start-line="29" selection-start-column="20" selection-end-line="29" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/OADProfile.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
+          <folding>
+            <element signature="e#149#171#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="15" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Podfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pods/Toast/Toast/Toast/UIView+Toast.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="40" selection-start-line="19" selection-start-column="40" selection-end-line="19" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="15" selection-start-line="13" selection-start-column="15" selection-end-line="13" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pods/Toast/Toast/Toast/UIView+Toast.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="377" column="27" selection-start-line="377" selection-start-column="27" selection-end-line="377" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/BaseVC.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
-          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
-          <folding>
-            <element signature="e#1391#1545#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="1770">
+          <caret line="118" column="27" selection-start-line="118" selection-start-column="27" selection-end-line="118" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/SmartNavigationController.m">
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/objc/runtime.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="59" column="1" selection-start-line="59" selection-start-column="1" selection-end-line="59" selection-end-column="1" />
-          <folding />
+        <state relative-caret-position="241">
+          <caret line="1526" column="15" selection-start-line="1526" selection-start-column="15" selection-end-line="1526" selection-end-column="15" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/PopupMenu.m">
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIGeometry.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="55" column="36" selection-start-line="55" selection-start-column="36" selection-end-line="55" selection-end-column="36" />
-          <folding />
+        <state relative-caret-position="141">
+          <caret line="31" column="33" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UISwitch.h">
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSText.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="16" column="32" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="32" />
-          <folding />
+        <state relative-caret-position="3">
+          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/PopupMenu.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/MeterDirectory.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSDate.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="12" column="15" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTGraphHostingView.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="64" selection-start-line="8" selection-start-column="64" selection-end-line="8" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTDefinitions.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="121" column="41" selection-start-line="121" selection-start-column="41" selection-end-line="121" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTXYPlotSpace.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="6" column="38" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTPlotRange.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="52" column="44" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTMutablePlotRange.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTColor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="31" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="73" selection-start-line="19" selection-start-column="73" selection-end-line="19" selection-end-column="73" />
-          <folding>
-            <element signature="e#97#130#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="116" column="45" selection-start-line="116" selection-start-column="45" selection-end-line="116" selection-end-column="45" />
-          <folding>
-            <element signature="e#97#126#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTGraph.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="62" column="30" selection-start-line="62" selection-start-column="28" selection-end-line="62" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTPlotSpace.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="138" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1815">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="56" />
-          <folding>
-            <element signature="e#770#793#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CorePlotHeaders/CPTXYAxisSet.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="53" selection-start-line="6" selection-start-column="53" selection-end-line="6" selection-end-column="53" />
+        <state relative-caret-position="615">
+          <caret line="41" column="52" selection-start-line="41" selection-start-column="52" selection-end-line="41" selection-end-column="52" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/GraphVC.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="144" column="21" selection-start-line="144" selection-start-column="21" selection-end-line="144" selection-end-column="21" />
+        <state relative-caret-position="197">
+          <caret line="51" column="48" selection-start-line="51" selection-start-column="48" selection-end-line="51" selection-end-column="48" />
           <folding>
-            <element signature="e#0#768#0" expanded="false" />
-            <element signature="e#1009#1371#0" expanded="false" />
-            <element signature="e#1033#1216#0" expanded="false" />
-            <element signature="e#1217#1366#0" expanded="false" />
-            <element signature="e#1627#1749#0" expanded="false" />
-            <element signature="e#1802#2364#0" expanded="false" />
-            <element signature="e#2366#2584#0" expanded="false" />
-            <element signature="e#2586#3150#0" expanded="false" />
-            <element signature="e#3357#3498#0" expanded="false" />
-            <element signature="e#3500#4219#0" expanded="false" />
-            <element signature="e#4221#4649#0" expanded="false" />
-            <element signature="e#4651#7701#0" expanded="false" />
-            <element signature="e#8578#10084#0" expanded="false" />
-            <element signature="e#8996#9247#0" expanded="false" />
-            <element signature="e#9592#9821#0" expanded="false" />
-            <element signature="e#10086#11116#0" expanded="false" />
-            <element signature="e#11118#14760#0" expanded="false" />
-            <element signature="e#11705#11715#1" expanded="false" />
-            <element signature="e#19298#20323#0" expanded="false" />
-            <element signature="e#20325#20740#0" expanded="false" />
-            <element signature="e#20783#21026#0" expanded="false" />
-            <element signature="e#21028#21602#0" expanded="false" />
-            <element signature="e#24663#26369#0" expanded="false" />
-            <element signature="e#26370#26596#0" expanded="false" />
-            <element signature="e#26597#27571#0" expanded="false" />
-            <marker date="1463674412000" expanded="false" signature="8432:8576" placeholder="{...}" />
-            <marker date="1463674412000" expanded="false" signature="14800:14982" placeholder="{...}" />
-            <marker date="1463674412000" expanded="false" signature="22377:22449" placeholder="{...}" />
+            <element signature="e#10413#11443#0" expanded="false" />
+            <element signature="e#11445#14973#0" expanded="false" />
+            <element signature="e#14975#15195#0" expanded="false" />
+            <element signature="e#15197#19490#0" expanded="false" />
+            <element signature="e#19492#20517#0" expanded="false" />
+            <element signature="e#20519#20934#0" expanded="false" />
+            <element signature="e#20977#21233#0" expanded="false" />
+            <element signature="e#21235#21809#0" expanded="false" />
+            <element signature="e#22569#22703#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/main.m">
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIApplication.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+        <state relative-caret-position="131">
+          <caret line="48" column="81" selection-start-line="48" selection-start-column="81" selection-end-line="48" selection-end-column="81" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ScanTableViewCell.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/AppDelegate.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+        <state relative-caret-position="41">
+          <caret line="24" column="27" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGPeripheral.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Mooshimeter-Info.plist">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="76" column="14" selection-start-line="76" selection-start-column="14" selection-end-line="76" selection-end-column="14" />
+        <state relative-caret-position="643">
+          <caret line="70" column="12" selection-start-line="70" selection-start-column="12" selection-end-line="70" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGPeripheral.m">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Lock.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="120" column="59" selection-start-line="120" selection-start-column="59" selection-end-line="120" selection-end-column="59" />
+        <state relative-caret-position="105">
+          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ScanTableViewCell.m">
+    <entry file="file://$PROJECT_DIR$/MooshimeterProfileTypes.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="113" column="4" selection-start-line="113" selection-start-column="4" selection-end-line="113" selection-end-column="84" />
+        <state relative-caret-position="241">
+          <caret line="46" column="34" selection-start-line="46" selection-start-column="34" selection-end-line="46" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/OADProgressViewController.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="15" column="67" selection-start-line="15" selection-start-column="67" selection-end-line="15" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreBluetooth.framework/Headers/CBPeripheral.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="172" column="57" selection-start-line="172" selection-start-column="57" selection-end-line="172" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGCharacteristic.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="97" column="11" selection-start-line="97" selection-start-column="11" selection-end-line="97" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/GCD.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/ConfigNode.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="191" column="19" selection-start-line="191" selection-start-column="19" selection-end-line="191" selection-end-column="19" />
           <folding>
-            <element signature="e#770#799#0" expanded="true" />
+            <element signature="e#860#1139#0" expanded="false" />
+            <element signature="e#1140#1212#0" expanded="false" />
+            <element signature="e#1213#1468#0" expanded="false" />
+            <element signature="e#1469#1930#0" expanded="false" />
+            <element signature="e#2423#2487#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/ConfigTree.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="155" column="4" selection-start-line="155" selection-start-column="4" selection-end-line="155" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGBluetooth.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="28" column="64" selection-start-line="28" selection-start-column="64" selection-end-line="28" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGCentralManager.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-720">
+          <caret line="70" column="60" selection-start-line="70" selection-start-column="47" selection-end-line="70" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGCharacteristic.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="257" column="0" selection-start-line="257" selection-start-column="0" selection-end-line="257" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="348">
-          <caret line="156" column="174" selection-start-line="156" selection-start-column="162" selection-end-line="156" selection-end-column="174" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="32" column="36" selection-start-line="32" selection-start-column="36" selection-end-line="32" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Chooser.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/OADDevice.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="56" column="65" selection-start-line="56" selection-start-column="63" selection-end-line="56" selection-end-column="65" />
+          <caret line="30" column="11" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
+        <state relative-caret-position="83">
+          <caret line="170" column="21" selection-start-line="170" selection-start-column="21" selection-end-line="170" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="69" column="29" selection-start-line="69" selection-start-column="29" selection-end-line="69" selection-end-column="29" />
           <folding>
-            <element signature="e#97#122#0" expanded="false" />
-            <element signature="e#4846#5018#0" expanded="false" />
-            <element signature="e#5303#5797#0" expanded="false" />
-            <element signature="e#5799#6482#0" expanded="false" />
+            <element signature="e#4549#5248#0" expanded="false" />
+            <element signature="e#7476#7658#0" expanded="false" />
+            <element signature="e#7476#8042#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/WidgetFactory.h">
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIActionSheet.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="33" column="38" selection-start-line="33" selection-start-column="15" selection-end-line="33" selection-end-column="38" />
+        <state relative-caret-position="127">
+          <caret line="42" column="32" selection-start-line="42" selection-start-column="29" selection-end-line="42" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterControlProtocol.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/PopupMenu.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="16" column="21" selection-start-line="16" selection-start-column="15" selection-end-line="16" selection-end-column="21" />
+        <state relative-caret-position="334">
+          <caret line="60" column="11" selection-start-line="60" selection-start-column="11" selection-end-line="60" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/PopupMenu.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="49" column="20" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="20" />
+        <state relative-caret-position="120">
+          <caret line="8" column="20" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/oad.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="105" column="26" selection-start-line="105" selection-start-column="16" selection-end-line="105" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/FirmwareImageDownloader.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="35" column="21" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSString.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="23" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="42" />
+        <state relative-caret-position="196">
+          <caret line="207" column="5" selection-start-line="207" selection-start-column="5" selection-end-line="207" selection-end-column="5" />
           <folding>
-            <element signature="e#97#128#0" expanded="false" />
+            <element signature="e#770#789#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterPreferencesVC/MeterPreferenceVC.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="38" />
-          <folding>
-            <element signature="e#770#793#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="13" column="19" selection-start-line="13" selection-start-column="9" selection-end-line="13" selection-end-column="19" />
+        <state relative-caret-position="196">
+          <caret line="120" column="13" selection-start-line="120" selection-start-column="13" selection-end-line="120" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/GraphSettingsView.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="196">
+          <caret line="98" column="9" selection-start-line="98" selection-start-column="9" selection-end-line="98" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/ChannelView.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="22" column="27" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="27" />
+        <state relative-caret-position="201">
+          <caret line="76" column="5" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
           <folding>
-            <element signature="e#0#768#0" expanded="false" />
-            <element signature="e#2714#2987#0" expanded="false" />
-            <element signature="e#2993#3140#0" expanded="false" />
-            <element signature="e#3142#4034#0" expanded="false" />
-            <element signature="e#4408#4505#0" expanded="false" />
+            <element signature="e#770#793#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MeterVC/MeterVC.m">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="255" column="0" selection-start-line="255" selection-start-column="0" selection-end-line="255" selection-end-column="0" />
+        <state relative-caret-position="108">
+          <caret line="62" column="49" selection-start-line="62" selection-start-column="49" selection-end-line="62" selection-end-column="49" />
           <folding>
-            <element signature="e#0#768#0" expanded="false" />
-            <element signature="e#770#789#0" expanded="true" />
-            <element signature="e#3271#5020#0" expanded="false" />
-            <element signature="e#5422#5725#0" expanded="false" />
-            <element signature="e#5727#5840#0" expanded="false" />
-            <element signature="e#6150#6478#0" expanded="false" />
-            <element signature="e#6483#6882#0" expanded="false" />
-            <element signature="e#7087#7596#0" expanded="false" />
-            <element signature="e#7597#7714#0" expanded="false" />
-            <element signature="e#7715#8146#0" expanded="false" />
-            <element signature="e#7884#8142#0" expanded="false" />
-            <element signature="e#8147#8554#0" expanded="false" />
-            <element signature="e#9085#9594#0" expanded="false" />
-            <element signature="e#9333#9590#0" expanded="false" />
-            <element signature="e#9596#9969#0" expanded="false" />
-            <element signature="e#10096#10136#0" expanded="false" />
-            <element signature="e#10138#10322#0" expanded="false" />
-            <element signature="e#11705#11865#0" expanded="false" />
-            <element signature="e#11867#11950#0" expanded="false" />
-            <element signature="e#11952#12035#0" expanded="false" />
-            <element signature="e#12037#12168#0" expanded="false" />
-            <element signature="e#12170#12507#0" expanded="false" />
-            <element signature="e#12509#12872#0" expanded="false" />
-            <element signature="e#12874#13209#0" expanded="false" />
+            <element signature="e#97#128#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/SpeaksOnLargeChange.h">
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/unistd.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="24" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
-          <folding>
-            <element signature="e#97#130#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="301">
+          <caret line="479" column="5" selection-start-line="479" selection-start-column="5" selection-end-line="479" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.h">
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="12" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
-          <folding>
-            <element signature="e#96#129#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="168">
+          <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/Singleton/Beeper.m">
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGPeripheral.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="34" column="1" selection-start-line="34" selection-start-column="1" selection-end-line="34" selection-end-column="1" />
-          <folding>
-            <element signature="e#96#114#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="132">
+          <caret line="159" column="27" selection-start-line="159" selection-start-column="27" selection-end-line="159" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.m">
+    <entry file="file://$PROJECT_DIR$/ScanTableViewCell.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="293" column="31" selection-start-line="293" selection-start-column="31" selection-end-line="293" selection-end-column="31" />
-          <folding>
-            <element signature="e#770#788#0" expanded="true" />
-            <element signature="e#1039#3677#0" expanded="false" />
-            <element signature="e#4120#4176#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDeviceBase.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="42" column="16" selection-start-line="42" selection-start-column="16" selection-end-line="42" selection-end-column="16" />
+        <state relative-caret-position="201">
+          <caret line="55" column="51" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Mooshimeter/LegacyMooshimeterDevice.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="379" column="29" selection-start-line="379" selection-start-column="29" selection-end-line="379" selection-end-column="29" />
+        <state relative-caret-position="196">
+          <caret line="414" column="17" selection-start-line="414" selection-start-column="17" selection-end-line="414" selection-end-column="17" />
           <folding>
-            <element signature="e#0#768#0" expanded="false" />
-            <element signature="e#770#805#0" expanded="true" />
-            <element signature="e#850#918#0" expanded="false" />
-            <element signature="e#938#1011#0" expanded="false" />
-            <element signature="e#1030#1099#0" expanded="false" />
-            <element signature="e#1122#1204#0" expanded="false" />
-            <element signature="e#1268#1507#0" expanded="false" />
-            <element signature="e#1508#1737#0" expanded="false" />
-            <element signature="e#1542#1732#0" expanded="false" />
-            <element signature="e#1672#1712#0" expanded="false" />
-            <element signature="e#1739#2138#0" expanded="false" />
-            <element signature="e#2410#3476#0" expanded="false" />
-            <element signature="e#3483#3647#0" expanded="false" />
-            <element signature="e#3731#3844#0" expanded="false" />
-            <element signature="e#3845#4081#0" expanded="false" />
-            <element signature="e#4506#4789#0" expanded="false" />
-            <element signature="e#4791#5143#0" expanded="false" />
-            <element signature="e#5756#5859#0" expanded="false" />
-            <element signature="e#7637#7849#0" expanded="false" />
-            <element signature="e#7869#7907#0" expanded="false" />
-            <element signature="e#7928#8161#0" expanded="false" />
-            <element signature="e#9051#9433#0" expanded="false" />
-            <element signature="e#8560#9045#0" expanded="false" />
-            <element signature="e#9435#9844#0" expanded="false" />
-            <element signature="e#9198#9429#0" expanded="false" />
-            <element signature="e#9846#11720#0" expanded="false" />
-            <element signature="e#9589#9840#0" expanded="false" />
-            <element signature="e#11722#14094#0" expanded="false" />
-            <element signature="e#13088#13503#0" expanded="false" />
-            <element signature="e#13529#14072#0" expanded="false" />
-            <element signature="e#13594#14064#0" expanded="false" />
-            <element signature="e#13666#14052#0" expanded="false" />
-            <element signature="e#13869#13961#0" expanded="false" />
-            <element signature="e#14097#14259#0" expanded="false" />
-            <element signature="e#14261#14371#0" expanded="false" />
-            <element signature="e#14373#14555#0" expanded="false" />
-            <element signature="e#14373#14939#0" expanded="false" />
-            <element signature="e#14941#15058#0" expanded="false" />
-            <element signature="e#15060#15178#0" expanded="false" />
-            <element signature="e#15180#15280#0" expanded="false" />
-            <element signature="e#15282#15569#0" expanded="false" />
-            <element signature="e#15451#15565#0" expanded="false" />
-            <element signature="e#15570#15695#0" expanded="false" />
-            <element signature="e#15696#15833#0" expanded="false" />
-            <element signature="e#15834#15982#0" expanded="false" />
-            <element signature="e#15983#16114#0" expanded="false" />
-            <element signature="e#16115#16512#0" expanded="false" />
-            <element signature="e#16258#16508#0" expanded="false" />
-            <element signature="e#16513#16752#0" expanded="false" />
-            <element signature="e#16753#17008#0" expanded="false" />
-            <element signature="e#17009#17279#0" expanded="false" />
-            <element signature="e#17380#17617#0" expanded="false" />
-            <element signature="e#17619#18712#0" expanded="false" />
-            <element signature="e#18714#19459#0" expanded="false" />
-            <element signature="e#19461#19839#0" expanded="false" />
-            <element signature="e#19841#21221#0" expanded="false" />
-            <element signature="e#21223#21470#0" expanded="false" />
-            <element signature="e#21223#22727#0" expanded="false" />
-            <element signature="e#22729#22978#0" expanded="false" />
-            <element signature="e#22729#23125#0" expanded="false" />
-            <element signature="e#23127#23381#0" expanded="false" />
-            <element signature="e#23127#23643#0" expanded="false" />
-            <element signature="e#23788#23926#0" expanded="false" />
-            <element signature="e#23927#25721#0" expanded="false" />
-            <element signature="e#25624#25703#0" expanded="false" />
-            <element signature="e#31493#31656#0" expanded="false" />
-            <element signature="e#32988#33260#0" expanded="false" />
-            <element signature="e#33384#33494#0" expanded="false" />
-            <element signature="e#33496#33568#0" expanded="false" />
-            <element signature="e#33569#33835#0" expanded="false" />
-            <element signature="e#33837#33950#0" expanded="false" />
-            <element signature="e#33951#34141#0" expanded="false" />
-            <element signature="e#34143#34550#0" expanded="false" />
-            <element signature="e#34552#34724#0" expanded="false" />
-            <element signature="e#34726#34854#0" expanded="false" />
-            <element signature="e#34856#34914#0" expanded="false" />
-            <element signature="e#34916#35134#0" expanded="false" />
-            <element signature="e#35135#35374#0" expanded="false" />
-            <element signature="e#35376#35474#0" expanded="false" />
-            <element signature="e#35476#35759#0" expanded="false" />
-            <element signature="e#35761#35924#0" expanded="false" />
-            <element signature="e#35925#36185#0" expanded="false" />
-            <element signature="e#36098#36181#0" expanded="false" />
-            <element signature="e#36186#36332#0" expanded="false" />
-            <element signature="e#36246#36301#1" expanded="false" />
-            <element signature="e#36334#36448#0" expanded="false" />
-            <element signature="e#36450#36718#0" expanded="false" />
-            <element signature="e#36638#36714#0" expanded="false" />
-            <element signature="e#36719#36865#0" expanded="false" />
-            <element signature="e#36780#36834#1" expanded="false" />
-            <element signature="e#36867#38890#0" expanded="false" />
-            <element signature="e#36917#37192#0" expanded="false" />
-            <element signature="e#38394#38592#0" expanded="false" />
-            <element signature="e#38472#38580#0" expanded="false" />
-            <element signature="e#38602#38702#0" expanded="false" />
-            <element signature="e#38892#39079#0" expanded="false" />
-            <element signature="e#39080#39231#0" expanded="false" />
-            <element signature="e#39232#39306#0" expanded="false" />
-            <element signature="e#39307#39645#0" expanded="false" />
-            <element signature="e#39646#39768#0" expanded="false" />
-            <element signature="e#39769#39851#0" expanded="false" />
-            <element signature="e#39853#40981#0" expanded="false" />
-            <element signature="e#40983#41068#0" expanded="false" />
-            <element signature="e#41069#41267#0" expanded="false" />
-            <element signature="e#41268#41673#0" expanded="false" />
-            <element signature="e#41675#41821#0" expanded="false" />
-            <element signature="e#41827#41940#0" expanded="false" />
-            <element signature="e#41943#43310#0" expanded="false" />
-            <element signature="e#43311#43424#0" expanded="false" />
-            <element signature="e#43425#43752#0" expanded="false" />
+            <element signature="e#898#966#0" expanded="false" />
+            <element signature="e#986#1059#0" expanded="false" />
+            <element signature="e#1078#1147#0" expanded="false" />
+            <element signature="e#1170#1252#0" expanded="false" />
+            <element signature="e#1590#1780#0" expanded="false" />
+            <element signature="e#1720#1760#0" expanded="false" />
+            <element signature="e#2458#3524#0" expanded="false" />
+            <element signature="e#3572#3685#0" expanded="false" />
+            <element signature="e#3686#3922#0" expanded="false" />
+            <element signature="e#4372#4655#0" expanded="false" />
+            <element signature="e#4657#5009#0" expanded="false" />
+            <element signature="e#5604#5707#0" expanded="false" />
+            <element signature="e#7729#7767#0" expanded="false" />
+            <element signature="e#7788#8021#0" expanded="false" />
+            <element signature="e#9356#11230#0" expanded="false" />
+            <element signature="e#13459#13621#0" expanded="false" />
+            <element signature="e#14262#14387#0" expanded="false" />
+            <element signature="e#14388#14525#0" expanded="false" />
+            <element signature="e#14526#14674#0" expanded="false" />
+            <element signature="e#14675#14806#0" expanded="false" />
+            <element signature="e#15205#15444#0" expanded="false" />
+            <element signature="e#15701#15971#0" expanded="false" />
+            <element signature="e#18177#18555#0" expanded="false" />
+            <element signature="e#18557#19937#0" expanded="false" />
+            <element signature="e#19939#20186#0" expanded="false" />
+            <element signature="e#21443#21692#0" expanded="false" />
+            <element signature="e#21443#21839#0" expanded="false" />
+            <element signature="e#21841#22095#0" expanded="false" />
+            <element signature="e#21841#22357#0" expanded="false" />
+            <element signature="e#22502#22640#0" expanded="false" />
+            <element signature="e#22641#24435#0" expanded="false" />
+            <element signature="e#24338#24417#0" expanded="false" />
+            <element signature="e#30119#30282#0" expanded="false" />
+            <element signature="e#32122#32194#0" expanded="false" />
+            <element signature="e#32471#32584#0" expanded="false" />
+            <element signature="e#32585#32775#0" expanded="false" />
+            <element signature="e#32777#33184#0" expanded="false" />
+            <element signature="e#33186#33358#0" expanded="false" />
+            <element signature="e#33360#33488#0" expanded="false" />
+            <element signature="e#33490#33548#0" expanded="false" />
+            <element signature="e#33550#33768#0" expanded="false" />
+            <element signature="e#33769#34008#0" expanded="false" />
+            <element signature="e#34010#34108#0" expanded="false" />
+            <element signature="e#34110#34393#0" expanded="false" />
+            <element signature="e#34395#34558#0" expanded="false" />
+            <element signature="e#34732#34815#0" expanded="false" />
+            <element signature="e#34834#34980#0" expanded="false" />
+            <element signature="e#34894#34949#1" expanded="false" />
+            <element signature="e#34982#35096#0" expanded="false" />
+            <element signature="e#35286#35362#0" expanded="false" />
+            <element signature="e#35381#35527#0" expanded="false" />
+            <element signature="e#35442#35496#1" expanded="false" />
+            <element signature="e#35529#37552#0" expanded="false" />
+            <element signature="e#35579#35854#0" expanded="false" />
+            <element signature="e#37056#37254#0" expanded="false" />
+            <element signature="e#37134#37242#0" expanded="false" />
+            <element signature="e#37264#37364#0" expanded="false" />
+            <element signature="e#37554#37741#0" expanded="false" />
+            <element signature="e#37742#37893#0" expanded="false" />
+            <element signature="e#37894#37968#0" expanded="false" />
+            <element signature="e#38332#38454#0" expanded="false" />
+            <element signature="e#38455#38537#0" expanded="false" />
+            <element signature="e#38539#39667#0" expanded="false" />
+            <element signature="e#39669#39754#0" expanded="false" />
+            <element signature="e#39755#39953#0" expanded="false" />
+            <element signature="e#39954#40359#0" expanded="false" />
+            <element signature="e#40361#40507#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/ScanVC.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="351" column="22" selection-start-line="351" selection-start-column="22" selection-end-line="351" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGPeripheral.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/MooshimeterDevice.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="100" column="0" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/Lock.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="20" column="20" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LGBluetooth/LGCentralManager.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="163" column="7" selection-start-line="163" selection-start-column="7" selection-end-line="163" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/main.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mooshimeter/OADProgressViewController.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="155" column="9" selection-start-line="155" selection-start-column="9" selection-end-line="155" selection-end-column="9" />
+          <folding>
+            <element signature="e#506#872#0" expanded="false" />
           </folding>
         </state>
       </provider>

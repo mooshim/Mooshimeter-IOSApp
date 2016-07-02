@@ -26,6 +26,20 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>835</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>c6f4868d73a7c8ad3d1fe30f0408e19b65cdc775</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIMainStoryboardFile~ipad</key>

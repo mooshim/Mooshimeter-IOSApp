@@ -1373,6 +1373,7 @@
 				0C63852717D694DC00D3FB31 /* Resources */,
 				3933D9CC7D1EBE504DB783B9 /* [CP] Embed Pods Frameworks */,
 				1171A7556DE1BCC9F3837523 /* [CP] Copy Pods Resources */,
+				4A05BF431D262733001D2EDE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1711,6 +1712,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mooshimeter/Pods-Mooshimeter-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		4A05BF431D262733001D2EDE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" c6f4868d73a7c8ad3d1fe30f0408e19b65cdc775 deae75786f29fbebef83784eab98c053d8ab12edbf062305695a1bca5e249608";
 		};
 		4A6716D81A8B13B2000A4F52 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

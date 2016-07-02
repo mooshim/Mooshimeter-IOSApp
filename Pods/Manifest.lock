@@ -1,12 +1,19 @@
 PODS:
+  - Crashlytics (3.7.2):
+    - Fabric (~> 1.6.3)
+  - Fabric (1.6.7)
   - Toast (3.0)
 
 DEPENDENCIES:
+  - Crashlytics
+  - Fabric
   - Toast (~> 3.0)
 
 SPEC CHECKSUMS:
+  Crashlytics: 130ab943f8c78cda7a814b434f270b2e2c8a3cba
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   Toast: 32c59229abfcf41850162b83bb9259dc84372473
 
-PODFILE CHECKSUM: 673849771f577ad20069c90a6c2251d4e881e0df
+PODFILE CHECKSUM: eaa6b1323a0b60f7a6b00a3788ff391de1421eed
 
 COCOAPODS: 1.0.1

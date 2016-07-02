@@ -18,11 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "AppDelegate.h"
 #import "FirmwareImageDownloader.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Fabric with:@[[Crashlytics class]]];
+    
     // Init singletons
     // FIXME all 3 have different initialization patterns?  Seriously?
     [LGCentralManager sharedInstance];
