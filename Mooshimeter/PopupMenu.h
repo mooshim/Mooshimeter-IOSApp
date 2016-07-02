@@ -9,7 +9,6 @@
 @interface PopupMenu : NSObject<UIActionSheetDelegate>
 @property void(^select_cb)(int);
 @property UIActionSheet * sheet;
-@property BOOL pass_cancel_as_action;
 +(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options callback:(void(^)(int))callback;
 +(PopupMenu*)displayOptionsWithParent:(UIView*)parent title:(NSString*)title options:(NSArray<NSString*>*)options cancel:(NSString*)cancel callback:(void(^)(int))callback;
 @end

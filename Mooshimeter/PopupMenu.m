@@ -11,9 +11,8 @@
     PopupMenu * rval = [PopupMenu displayOptionsWithParent:parent
                                                      title:title
                                                    options:options
-                                                    cancel:@"Cancel"
+                                                    cancel:nil
                                                   callback:callback];
-    rval.pass_cancel_as_action = NO;
     return rval;
 }
 
@@ -44,10 +43,10 @@
         [self.sheet addButtonWithTitle:option];
     }
     if(cancel!=nil) {
-        self.pass_cancel_as_action = YES;
         [self.sheet addButtonWithTitle:cancel];
-        [self.sheet setCancelButtonIndex:[options count]];
     }
+    [self.sheet addButtonWithTitle:@"Cancel"];
+    [self.sheet setCancelButtonIndex:[self.sheet numberOfButtons]-1];
     [self.sheet showInView:parent];
     return self;
 }
@@ -56,8 +55,7 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"Action sheet selected %d", buttonIndex);
-    if(     buttonIndex==self.sheet.cancelButtonIndex
-            && !self.pass_cancel_as_action) {
+    if( buttonIndex==self.sheet.cancelButtonIndex) {
         return;
     }
     self.select_cb(buttonIndex);
