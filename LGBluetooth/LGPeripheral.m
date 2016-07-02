@@ -115,7 +115,9 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 
 - (void)disconnectWithCompletion:(LGPeripheralConnectionCallback)aCallback
 {
-    self.disconnectBlock = aCallback;
+    if(aCallback!=nil) {
+        self.disconnectBlock = aCallback;
+    }
     [self.manager.manager cancelPeripheralConnection:self.cbPeripheral];
 }
 
@@ -301,14 +303,21 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
     });
 }
 
-- (void)peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error
-{
+-(void)rssiCommonCallback:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error {
     dispatch_async(LG_DISPATCH_QUEUE, ^{
         if (self.rssiValueBlock) {
-            self.rssiValueBlock(peripheral.RSSI, error);
+            self.rssiValueBlock(RSSI, error);
         }
         self.rssiValueBlock = nil;
     });
+}
+
+-(void)peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error {
+    [self rssiCommonCallback:peripheral didReadRSSI:RSSI error:error];
+}
+
+- (void)peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error {
+    [self rssiCommonCallback:peripheral didReadRSSI:peripheral.RSSI error:error];
 }
 
 /*----------------------------------------------------*/

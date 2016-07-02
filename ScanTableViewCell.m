@@ -53,9 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     if(self.peripheral.cbPeripheral.state!=CBPeripheralStateConnected) {
         return;
     }
-    [self.peripheral disconnectWithCompletion:^(NSError *error) {
-
-    }];
+    [self.peripheral disconnectWithCompletion:nil];
     DECLARE_WEAKSELF;
     [_peripheral disconnectWithCompletion:^(NSError *error) {
         [GCD asyncMain:^{
