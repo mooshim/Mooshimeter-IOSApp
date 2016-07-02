@@ -295,7 +295,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (void)onBatteryVoltageReceived:(float)voltage {
     //Update the title bar
-    int percent = (voltage-2)*100;
+    int percent = (int)((voltage-2)*100);
     percent=percent>100?100:percent;
     percent=percent<0?0:percent;
 
@@ -306,7 +306,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {
     // Cache values to determine if change is large enough to speak about
-    NSLog(@"Updating measurements for %d...",c);
     [GCD asyncMain:^{
         switch(c) {
             case CH1:{
@@ -350,10 +349,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {
     switch(c) {
         case CH1:
-            [self.ch1_view performSelectorOnMainThread:@selector(range_button_refresh) withObject:nil waitUntilDone:NO];
+            {[GCD asyncMain:^{[self.ch1_view range_button_refresh];}];}
             break;
         case CH2:
-            [self.ch2_view performSelectorOnMainThread:@selector(range_button_refresh) withObject:nil waitUntilDone:NO];
+            {[GCD asyncMain:^{[self.ch2_view range_button_refresh];}];}
             break;
         case MATH:
             NSLog(@"TODO");
@@ -364,24 +363,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 - (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {
     switch(c) {
         case CH1:
-            [self.ch1_view performSelectorOnMainThread:@selector(display_set_button_refresh) withObject:nil waitUntilDone:NO];
-            break;
+            {[GCD asyncMain:^{[self.ch1_view display_set_button_refresh];}];}
+        break;
         case CH2:
-            [self.ch2_view performSelectorOnMainThread:@selector(display_set_button_refresh) withObject:nil waitUntilDone:NO];
-            break;
+            {[GCD asyncMain:^{[self.ch2_view display_set_button_refresh];}];}
+        break;
         case MATH:
-            [self performSelectorOnMainThread:@selector(math_button_refresh) withObject:nil waitUntilDone:NO];
-            break;
+        {[GCD asyncMain:^{[self math_button_refresh];}];}
+        break;
     }
 }
 
 - (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {
     switch(c) {
         case CH1:
-            [self.ch1_view performSelectorOnMainThread:@selector(zero_button_refresh) withObject:nil waitUntilDone:NO];
+            {[GCD asyncMain:^{[self.ch1_view zero_button_refresh];}];}
             break;
         case CH2:
-            [self.ch2_view performSelectorOnMainThread:@selector(zero_button_refresh) withObject:nil waitUntilDone:NO];
+            {[GCD asyncMain:^{[self.ch2_view zero_button_refresh];}];}
             break;
         case MATH:
             NSLog(@"IMPOSSIBRUUU");

@@ -51,6 +51,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //@property (strong, nonatomic) MeterSettingsView* settings_view;
 
 -(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter;
-+(void)style_auto_button:(UIButton*)b on:(BOOL)on;
 
 @end
