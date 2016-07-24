@@ -16,10 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
+#import <Toast/UIView+Toast.h>
 #import "ChannelView.h"
 #import "PopupMenu.h"
 #import "WidgetFactory.h"
 #import "GCD.h"
+
+static BOOL sound_is_on = NO;
 
 @implementation ChannelView
 
@@ -143,11 +146,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void) sound_button_press {
     NSLog(@"sound");
-    self.meter.speech_on[self.channel] = !self.meter.speech_on[self.channel];
-    // FIXME: We need a way to reach over and poke the other button!
-    //if(self.meter.speech_on[self.channel]) {
-    //    self.meter.speech_on[other_channel] = NO;
-    //}
+    BOOL to_state = !self.meter.speech_on[self.channel];
+    if(to_state && sound_is_on) {
+        // The other channel has sound on, we can't turn ourselves on
+        [self makeToast:@"Both channels can't be speaking at the same time"];
+        return;
+    }
+    self.meter.speech_on[self.channel] = to_state;
+    sound_is_on = to_state;
     [self sound_button_refresh];
 };
 
