@@ -36,7 +36,6 @@
 }
 
 - (BOOL *)speech_on {return _speech_on;}
-- (BOOL *)range_auto {return _range_auto;}
 
 -(instancetype)init {
     self = [super init];
@@ -44,8 +43,6 @@
     _speech_on[0] = NO;
     _speech_on[1] = NO;
     _speech_on[2] = NO;
-    _range_auto[0] = YES;
-    _range_auto[1] = YES;
     return self;
 }
 
@@ -100,6 +97,60 @@
 
 -(uint32)getBuildTime {
     return [MooshimeterDeviceBase getBuildTimeFromPeripheral:self.periph];
+}
+
+#pragma mark getter/setter
+
+-(BOOL)rate_auto {
+    return [self getPreference:@"RATE_AUTO" def:YES];
+}
+-(void)setRate_auto:(BOOL)rate_auto {
+    [self setPreference:@"RATE_AUTO" value:rate_auto];
+    [self.delegate onSampleRateChanged:[self getSampleRateHz]];
+}
+-(BOOL)depth_auto {
+    return [self getPreference:@"DEPTH_AUTO" def:YES];
+}
+-(void)setDepth_auto:(BOOL)Depth_auto {
+    [self setPreference:@"DEPTH_AUTO" value:Depth_auto];
+    [self.delegate onBufferDepthChanged:[self getBufferDepth]];
+}
+-(BOOL)ch1_range_auto {
+    return [self getPreference:@"CH1_RANGE_AUTO"];
+}
+-(void)setCh1_range_auto:(BOOL)ch1_range_auto {
+    [self setPreference:@"CH1_RANGE_AUTO" value:ch1_range_auto];
+    [self.delegate onRangeChange:CH1 new_range:[self getSelectedRange:CH1]];
+}
+-(BOOL)ch2_range_auto {
+    return [self getPreference:@"CH2_RANGE_AUTO"];
+}
+-(void)setCh2_range_auto:(BOOL)ch2_range_auto {
+    [self setPreference:@"CH2_RANGE_AUTO" value:ch2_range_auto];
+    [self.delegate onRangeChange:CH2 new_range:[self getSelectedRange:CH2]];
+}
+
+-(void)setAutorangeOn:(Channel)c val:(BOOL)val {
+    switch(c) {
+        case CH1:
+            self.ch1_range_auto = val;
+            break;
+        case CH2:
+            self.ch2_range_auto = val;
+            break;
+        default:
+            break;
+    }
+}
+-(BOOL)getAutorangeOn:(Channel)c {
+    switch(c) {
+        case CH1:
+            return self.ch1_range_auto;
+        case CH2:
+            return self.ch2_range_auto;
+        default:
+            return NO;
+    }
 }
 
 #pragma mark class methods

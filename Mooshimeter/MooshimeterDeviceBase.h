@@ -10,14 +10,14 @@
 @class LGCharacteristic;
 
 @interface MooshimeterDeviceBase : NSObject<MooshimeterControlProtocol> {
-    BOOL _range_auto[2];
     BOOL _speech_on[3];
 }
 
 @property id<MooshimeterDelegateProtocol> delegate;
-@property bool rate_auto;
-@property bool depth_auto;
-@property (readonly) BOOL* range_auto;
+@property BOOL rate_auto;
+@property BOOL depth_auto;
+@property BOOL ch1_range_auto;
+@property BOOL ch2_range_auto;
 @property (readonly) BOOL* speech_on;
 @property LGPeripheral* periph;
 @property NSMutableDictionary <NSNumber*,LGCharacteristic*>* chars;
@@ -28,6 +28,9 @@
 -(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
 -(BOOL)isConnected;
 -(uint32)getBuildTime;
+
+-(void)setAutorangeOn:(Channel)c val:(BOOL)val;
+-(BOOL)getAutorangeOn:(Channel)c;
 
 +(uint32)getBuildTimeFromPeripheral:(LGPeripheral *)periph;
 @end

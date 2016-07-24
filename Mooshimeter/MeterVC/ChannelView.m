@@ -96,9 +96,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                  cancel:@"AUTORANGE"
                                callback:^(int i) {
                                    if(i>= [range_list count]) {
-                                       self.meter.range_auto[self.channel]=YES;
+                                       [self.meter setAutorangeOn:self.channel val:YES];
                                    } else {
-                                       self.meter.range_auto[self.channel]=NO;
+                                       [self.meter setAutorangeOn:self.channel val:NO];
                                        NSArray<RangeDescriptor*>* choices = [self.meter getRangeList:self.channel];
                                        [self.meter setRange:self.channel rd:choices[i]];
                                    }
@@ -108,7 +108,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void)range_button_refresh {
     NSString * lval = [self.meter getRangeLabel:self.channel];
     [self.range_button setTitle:lval forState:UIControlStateNormal];
-    if(self.meter.range_auto[self.channel]) {
+    if([self.meter getAutorangeOn:self.channel]) {
         [WidgetFactory setButtonSubtitle:self.range_button subtitle:@"AUTO"];
     } else {
         [WidgetFactory setButtonSubtitle:self.range_button subtitle:@"MANUAL"];

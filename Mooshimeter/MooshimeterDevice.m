@@ -72,8 +72,6 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
     self = [super init:periph delegate:delegate];
 
     stop_heartbeat = NO;
-    self.rate_auto     = YES;
-    self.depth_auto    = YES;
 
     self.tree = [[ConfigTree alloc]init];
 
@@ -595,7 +593,7 @@ NSMutableString* concat(int n_strings,...) {
     return (float)1.1* [choice.name floatValue];
 }
 -(BOOL) applyAutorange:(Channel)c {
-    if(!self.range_auto[c]) {
+    if(![self getAutorangeOn:c]) {
         return NO;
     }
     float max = [self getMaxRangeForChannel:c];
@@ -635,8 +633,8 @@ NSMutableString* concat(int n_strings,...) {
                 [_tree command:@"SAMPLING:DEPTH 3"];
             }
         } else {
-            if(![[[_tree getNode:@"SAMPLING:DEPTH"] getChosen].name isEqualToString:@"64"]) {
-                [_tree command:@"SAMPLING:DEPTH 1"];
+            if(![[[_tree getNode:@"SAMPLING:DEPTH"] getChosen].name isEqualToString:@"32"]) {
+                [_tree command:@"SAMPLING:DEPTH 0"];
             }
         }
     }

@@ -354,9 +354,6 @@ void (^sample_handler)(NSData*,NSError*);
     BUILD_BUG_ON(sizeof(MeterLogSettings_t) != 16);
     self = [super init:periph delegate:delegate];
 
-    self.rate_auto     = YES;
-    self.depth_auto    = YES;
-
     self->input_descriptors[CH1]  = [[Chooser alloc]init];
     self->input_descriptors[CH2]  = [[Chooser alloc]init];
     self->input_descriptors[MATH] = [[Chooser alloc]init];
@@ -503,7 +500,7 @@ int24_test to_int24_test(long arg) {
 }
 
 -(BOOL)applyAutorange:(Channel) c {
-    if(!self.range_auto[c]) {
+    if(![self getAutorangeOn:c]) {
         return NO;
     }
 
@@ -1124,7 +1121,6 @@ BOOL isSharedInput(INPUT_MODE i) {
     if(c==MATH) {
         return self->input_descriptors[c].choices;
     }
-    LegacyInputDescriptor * my_id = (LegacyInputDescriptor *)[self getSelectedDescriptor:c];
     LegacyInputDescriptor * other_id = (LegacyInputDescriptor *)[self getSelectedDescriptor:(c==CH1?CH2:CH1)];
     if(isSharedInput(other_id.input)) {
         // We can't offer shared inputs because the shared inputs are already occupied

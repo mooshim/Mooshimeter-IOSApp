@@ -79,8 +79,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //self.tapButton = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBackgroundTap)];
-    //[self.view addGestureRecognizer:self.tapButton];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
