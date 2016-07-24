@@ -50,8 +50,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     NSLog(@"Refresh requested");
 
     NSTimer* refresh_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(reloadData) userInfo:nil repeats:YES];
-    [refresh_timer fire];
 
+    [GCD asyncMain:^{[self.scanButton setTitle:@"Scanning" forState:UIControlStateNormal];}];
     NSTimer *dot_timer = [NSTimer scheduledTimerWithTimeInterval:1
                                                       target:[NSBlockOperation blockOperationWithBlock:^{
                                                           static int i = 0;
@@ -69,7 +69,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                                     selector:@selector(main)
                                                     userInfo:nil
                                                      repeats:YES];
-    [dot_timer fire];
 
     [c scanForPeripheralsByInterval:5
                            services:services
@@ -95,7 +94,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         } else if (self.peripherals.count==1){
             [self setTitle:@"Found 1 meter"];
         } else {
-            [self setTitle:[NSString stringWithFormat:@"Found %d meters",self.peripherals.count]];
+            [self setTitle:[NSString stringWithFormat:@"Found %lu meters",(unsigned long)self.peripherals.count]];
         }
     }];
 }
@@ -270,6 +269,7 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
         OADViewController * mvc = [[OADViewController alloc] initWithMeter:meter];
+        mvc.upload_on_present = YES;
         [nav pushViewController:mvc animated:YES];
         NSLog(@"Did push OAD view controller");
     }];
