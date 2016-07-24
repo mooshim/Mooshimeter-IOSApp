@@ -254,6 +254,9 @@
 - (NSArray *)getInputList:(Channel)c {return nil;}
 - (NSArray *)getInputNameList:(Channel)c {return nil;}
 - (InputDescriptor *)getSelectedDescriptor:(Channel)c {return nil;}
+- (RangeDescriptor*)getSelectedRange:(Channel)c {
+    return nil;
+}
 
 -(void)removeDelegate {
     self.delegate = [[DummyDelegate alloc]init];

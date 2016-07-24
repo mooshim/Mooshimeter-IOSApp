@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.fw_version setFont:[UIFont systemFontOfSize:16]];
     self.rssi_icon  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sig_icon_0.png"]];
     self.conn_icon  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"disconnected.png"]];
-    self.single_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(connIconTapped)];
+    self.single_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(connIconTapped:)];
     self.single_tap.numberOfTapsRequired = 1;
     [self.conn_icon setUserInteractionEnabled:YES];
     [self.conn_icon addGestureRecognizer:self.single_tap];
@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     return self;
 }
 
--(void)connIconTapped{
+-(void)connIconTapped:(UITapGestureRecognizer*)rec {
     if(self.peripheral.cbPeripheral.state!=CBPeripheralStateConnected) {
         return;
     }

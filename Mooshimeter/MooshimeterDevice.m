@@ -888,4 +888,10 @@ NSMutableString* concat(int n_strings,...) {
 -(InputDescriptor*) getSelectedDescriptor:(Channel)c {
     return [input_descriptors[c] getChosen];
 }
+
+-(RangeDescriptor*) getSelectedRange:(Channel)c {
+    NSString* range_i_str = concat(2,nameForChannel(c),@":RANGE_I");
+    NSUInteger cnum = [((NSNumber *) [_tree getValueAt:range_i_str]) unsignedIntegerValue];
+    return [self getSelectedDescriptor:c].ranges.choices[cnum];
+}
 @end

@@ -84,6 +84,7 @@
         -(NSArray*)getInputList:(Channel)c;
         -(NSArray*)getInputNameList:(Channel)c;
         -(InputDescriptor*) getSelectedDescriptor:(Channel)c;
+        -(RangeDescriptor*) getSelectedRange:(Channel)c;
 
         // Preference management helpers
         -(NSString*)getPreferenceKeyString:(NSString*)tail;
