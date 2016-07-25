@@ -99,7 +99,14 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
 
     [GCD asyncBack:^{
         [_tree attach:self];
-        // At this point the tree is loaded.  Refresh all values in the tree.
+        // At this point the tree is loaded.
+        // July242016: Found a bug in CoreBluetooth that is causing the "service" member of cbCharacteristics
+        // to be an object of the wrong type, causing a crash down the line.  It only comes up when logging
+        // is being torture tested on the meter, which causes readings to be streamed out immediately to the
+        // iOS device.  It only manifests the second time you connect to the meter after starting the app.
+        // As a mitigation strategy, I'm going to immediately try to pause a meter after connecting
+        [self pause];
+        // Refresh all values in the tree.
         [_tree refreshAll];
         // Start a heartbeat.  The Mooshimeter needs to hear from the phone every 20 seconds or it
         // assumes the Android device has fallen in to a phantom connection mode and disconnects itself.

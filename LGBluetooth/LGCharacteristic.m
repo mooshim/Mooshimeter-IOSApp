@@ -150,6 +150,12 @@
     } else {
         //NSLog(@"NoResponseWrite");
     }
+    // FIXME: For unknown reasons, cbCharacteristic.service sometimes becomes NOT a cbService.
+    // I think this is an iOS bug.
+    if([self.cbCharacteristic.service class] != [CBService class]) {
+        NSLog(@"BAD CBSERVICE BUG DETECTED!");
+        return;
+    }
     [self.cbCharacteristic.service.peripheral writeValue:data
                                        forCharacteristic:self.cbCharacteristic
                                                     type:type];
