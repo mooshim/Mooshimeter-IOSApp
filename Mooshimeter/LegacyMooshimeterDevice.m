@@ -442,7 +442,7 @@ int24_test to_int24_test(long arg) {
         uint16 lsb;
         [data getBytes:&lsb length:data.length];
         // 12 bit reading, 1.24V reference, reading VDD/3
-        self->bat_voltage = 3*1.24*(((double)lsb)/(1<<12));
+        self->bat_voltage = (float)(3*1.24*(((double)lsb)/(1<<12)));
         cb(data,error);
     }];
 }
