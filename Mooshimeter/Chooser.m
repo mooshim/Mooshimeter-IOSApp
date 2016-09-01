@@ -16,7 +16,10 @@
     [self.choices addObject:new_value];
 }
 -(id)get:(int)i {
-    return [self.choices objectAtIndex:i];
+    if([self getNChoices]<=i) {
+        return nil;
+    }
+    return self.choices[i];
 }
 -(void)clear{
     [self.choices removeAllObjects];

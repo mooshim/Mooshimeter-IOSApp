@@ -218,18 +218,21 @@ void (^serout_callback)(NSData*,NSError*);
     return self;
 }
 
--(void)enumerate:(ConfigNode*)n indent:(NSString*)indent {
-    NSLog(@"%@%@",indent, [n toString]);
+-(NSString*)enumerate:(ConfigNode*)n indent:(NSString*)indent aggregate:(NSMutableString*)aggregate {
+    NSString* newline = [NSString stringWithFormat:@"%@%@\n",indent, [n toString]];
+    NSLog(newline);
+    [aggregate appendString:newline];
     indent = [indent stringByAppendingString:@"  "];
     for(ConfigNode *c in n.children) {
-        [self enumerate:c indent:indent];
+        [self enumerate:c indent:indent aggregate:aggregate];
     }
+    return aggregate;
 }
--(void)enumerate:(ConfigNode*)n {
-    [self enumerate:n indent:@""];
+-(NSString*)enumerate:(ConfigNode*)n {
+    return [self enumerate:n indent:@"" aggregate:[@"" mutableCopy]];
 }
--(void)enumerate {
-    [self enumerate:_root];
+-(NSString*)enumerate {
+    return [self enumerate:_root];
 }
 -(int)addNotifyHandler:(NSString*)node_name handler:(NotifyHandler)h {
     ConfigNode *n = [self getNode:node_name];

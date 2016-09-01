@@ -27,5 +27,6 @@
 -(void)refreshAll;
 -(void)command:(NSString*)cmd;
 -(NSString*)getChosenName:(NSString*)name;
+-(NSString*)enumerate;
 
 @end

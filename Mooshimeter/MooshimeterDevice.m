@@ -9,6 +9,9 @@
 #import "TempUnitsHelper.h"
 #import "MathInputDescriptor.h"
 #import "GCD.h"
+
+#import <Crashlytics/Answers.h>
+
 ////////////////////////////////
 // MEMBERS FOR TRACKING AVAILABLE INPUTS AND RANGES
 ////////////////////////////////
@@ -805,7 +808,18 @@ NSMutableString* concat(int n_strings,...) {
     int range_i = [[self getNSNumberAt:concat(2, nameForChannel(c), @":RANGE_I")] intValue];
     // FIXME: This is borking because our internal descriptor structures are out of sync with the configtree updates
     RangeDescriptor *rd =[id.ranges get:range_i];
-    return rd.name;
+    if(rd!=nil) {
+        return rd.name;
+    }
+    // Log the circumstance of this failure!
+
+    [Answers logCustomEventWithName:@"getRangeLabelCrash"
+                   customAttributes:@{
+                           @"StackTrace":[NSThread callStackSymbols],
+                           @"InputDescriptor":[NSString stringWithFormat:@"%@",id],
+                           @"TreeEnumeration":[self.tree enumerate]
+                   }];
+    return @"";
 }
 
 -(NSArray<RangeDescriptor*>*)getRangeList:(Channel)c {
