@@ -1125,7 +1125,7 @@ BOOL isSharedInput(INPUT_MODE i) {
     if(isSharedInput(other_id.input)) {
         // We can't offer shared inputs because the shared inputs are already occupied
         NSMutableArray * rval = [@[] mutableCopy];
-        for(LegacyInputDescriptor * tmp in self->input_descriptors[c]) {
+        for(LegacyInputDescriptor * tmp in self->input_descriptors[c].choices) {
             if(!isSharedInput(tmp.input)) {
                 [rval addObject:tmp];
             }
