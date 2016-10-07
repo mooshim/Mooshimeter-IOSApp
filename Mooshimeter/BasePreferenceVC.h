@@ -17,10 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import <UIKit/UIKit.h>
-#import "BasePreferenceVC.h"
-#import "MooshimeterDeviceBase.h"
+#import "BaseVC.h"
 
-@interface MeterPreferenceVC : BasePreferenceVC
-@property MooshimeterDeviceBase* meter;
--(instancetype)initWithMeter:(MooshimeterDeviceBase *)meter;
+@interface BasePreferenceVC : BaseVC <UIScrollViewDelegate>
+-(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory;
++(UISwitch*)makePrefSwitch:(NSString*)key;
 @end
