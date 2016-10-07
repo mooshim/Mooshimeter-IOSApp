@@ -14,21 +14,74 @@
 #import "GCD.h"
 
 
-@interface DummyDelegate:NSObject <MooshimeterDelegateProtocol>
+@interface DistributorDelegate:NSObject <MooshimeterDelegateProtocol>
+@property NSMutableSet<id<MooshimeterDelegateProtocol>>* delegates;
 @end
-@implementation DummyDelegate
-- (void)onInit {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onDisconnect {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onRssiReceived:(int)rssi {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onBatteryVoltageReceived:(float)voltage {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading *)val {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber *> *)val {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onSampleRateChanged:(int)sample_rate_hz {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onBufferDepthChanged:(int)buffer_depth {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onRangeChange:(Channel)c new_range:(RangeDescriptor *)new_range {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onInputChange:(Channel)c descriptor:(InputDescriptor *)descriptor {NSLog(@"DUMMYDELEGATE CALL");}
-- (void)onOffsetChange:(Channel)c offset:(MeterReading *)offset {NSLog(@"DUMMYDELEGATE CALL");}
+@implementation DistributorDelegate
+-(instancetype)init {
+    self = [super init];
+    _delegates = [[NSMutableSet alloc]init];
+}
+-(void) onInit {
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onInit];
+    }
+}
+-(void) onDisconnect{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onDisconnect];
+    }
+}
+-(void) onRssiReceived:(int)rssi{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onRssiReceived:rssi];
+    }
+}
+-(void) onBatteryVoltageReceived:(float)voltage{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onBatteryVoltageReceived:voltage];
+    }
+}
+-(void) onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading*)val{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onSampleReceived:timestamp_utc c:c val:val];
+    }
+}
+-(void) onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber*>*)val{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onBufferReceived:timestamp_utc c:c dt:dt val:val];
+    }
+}
+-(void) onSampleRateChanged:(int)sample_rate_hz{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onSampleRateChanged:sample_rate_hz];
+    }
+}
+-(void) onBufferDepthChanged:(int)buffer_depth{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onBufferDepthChanged:buffer_depth];
+    }
+}
+-(void) onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString*)message{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onLoggingStatusChanged:on new_state:new_state message:message];
+    }
+}
+-(void) onRangeChange:(Channel)c new_range:(RangeDescriptor*)new_range{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onRangeChange:c new_range:new_range];
+    }
+}
+-(void) onInputChange:(Channel)c descriptor:(InputDescriptor*)descriptor{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onInputChange:c descriptor:descriptor];
+    }
+}
+-(void) onOffsetChange:(Channel)c offset:(MeterReading*)offset{
+    for(id<MooshimeterDelegateProtocol> d in _delegates) {
+        [d onOffsetChange:c offset:offset];
+    }
+}
 @end
 
 @implementation MooshimeterDeviceBase {
@@ -43,6 +96,7 @@
     _speech_on[0] = NO;
     _speech_on[1] = NO;
     _speech_on[2] = NO;
+    _delegate = [[DistributorDelegate alloc]init];
     return self;
 }
 
@@ -50,8 +104,10 @@
     self = [self init];
     self.periph = periph;
     self.chars = [[NSMutableDictionary alloc]init];
-    [self setDelegate:delegate];
-    [self startRSSIPoller];
+    [self addDelegate:delegate];
+    if(periph!=nil) {
+        [self startRSSIPoller];
+    }
     return self;
 }
 
@@ -258,8 +314,13 @@
     return nil;
 }
 
--(void)removeDelegate {
-    self.delegate = [[DummyDelegate alloc]init];
+-(void)addDelegate:(id<MooshimeterDelegateProtocol>)delegate {
+    if(delegate==nil){return;}
+    [((DistributorDelegate *) self.delegate).delegates addObject:delegate];
+}
+-(void)removeDelegate:(id<MooshimeterDelegateProtocol>)delegate {
+    if(delegate==nil){return;}
+    [((DistributorDelegate *) self.delegate).delegates removeObject:delegate];
 }
 
 /*

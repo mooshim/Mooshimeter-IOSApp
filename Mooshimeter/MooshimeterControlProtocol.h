@@ -13,7 +13,8 @@
 
 @required
         -(int)initialize;
-        -(void)removeDelegate;
+        -(void)addDelegate:(   id<MooshimeterDelegateProtocol>)delegate;
+        -(void)removeDelegate:(id<MooshimeterDelegateProtocol>)delegate;
         -(void)reboot;
 
         ////////////////////////////////
@@ -81,8 +82,8 @@
 
         -(NSString*) getInputLabel:(Channel)c;
         -(int)setInput:(Channel)c descriptor:(InputDescriptor*)descriptor;
-        -(NSArray*)getInputList:(Channel)c;
-        -(NSArray*)getInputNameList:(Channel)c;
+        -(NSArray<InputDescriptor*>*)getInputList:(Channel)c;
+        -(NSArray<NSString*>*)getInputNameList:(Channel)c;
         -(InputDescriptor*) getSelectedDescriptor:(Channel)c;
         -(RangeDescriptor*) getSelectedRange:(Channel)c;
 

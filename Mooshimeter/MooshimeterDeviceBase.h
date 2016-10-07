@@ -13,7 +13,7 @@
     BOOL _speech_on[3];
 }
 
-@property id<MooshimeterDelegateProtocol> delegate;
+@property (readonly) id<MooshimeterDelegateProtocol> delegate;
 @property BOOL rate_auto;
 @property BOOL depth_auto;
 @property BOOL ch1_range_auto;

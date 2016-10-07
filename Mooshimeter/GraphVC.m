@@ -85,7 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [super viewDidAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
     [self initPlot];
-    [self.meter setDelegate:self];
+    [self.meter addDelegate:self];
     [self.meter stream];
     _refresh_timer = [NSTimer scheduledTimerWithTimeInterval:0.2
                                                       target:self
@@ -100,6 +100,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.refresh_timer invalidate];
     self.buffer_mode = NO;
     self.navigationController.navigationBar.hidden = NO;
+    [self.meter removeDelegate:self];
 }
 
 CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {

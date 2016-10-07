@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.periph = periph;
     self.chars = [[NSMutableDictionary alloc]init];
 
-    [self setDelegate:delegate];
+    [self addDelegate:delegate];
 
     // Populate our characteristic array
     for(LGService * service in periph.services) {

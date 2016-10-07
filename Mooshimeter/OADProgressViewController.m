@@ -71,7 +71,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
-    self.meter.delegate = self;
+    [self.meter addDelegate:self];
     NSString* intro = [NSString stringWithFormat:@"Connected to: %@\nFirmware on meter: %d\nNew firmware: %d\n", [self.meter getName],[self.meter getBuildTime], [FirmwareImageDownloader getBuildTime]];
     [self toTerminal:intro];
     if(self.upload_on_present) {
