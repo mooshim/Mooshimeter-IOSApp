@@ -9,11 +9,15 @@
 
 @class LGCharacteristic;
 
+@interface DistributorDelegate:NSObject <MooshimeterDelegateProtocol>
+@property NSMutableSet<id<MooshimeterDelegateProtocol>>* children;
+@end
+
 @interface MooshimeterDeviceBase : NSObject<MooshimeterControlProtocol> {
     BOOL _speech_on[3];
 }
 
-@property (readonly) id<MooshimeterDelegateProtocol> delegate;
+@property (readonly) DistributorDelegate* delegate;
 @property BOOL rate_auto;
 @property BOOL depth_auto;
 @property BOOL ch1_range_auto;

@@ -12,6 +12,7 @@
 #import "InputDescriptor.h"
 
 @protocol MooshimeterDelegateProtocol <NSObject>
+@optional
 -(void) onInit;
 -(void) onDisconnect;
 -(void) onRssiReceived:(int)rssi;

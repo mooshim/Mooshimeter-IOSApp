@@ -14,76 +14,103 @@
 #import "GCD.h"
 
 
-@interface DistributorDelegate:NSObject <MooshimeterDelegateProtocol>
-@property NSMutableSet<id<MooshimeterDelegateProtocol>>* delegates;
-@end
 @implementation DistributorDelegate
 -(instancetype)init {
     self = [super init];
-    _delegates = [[NSMutableSet alloc]init];
+    _children = [[NSMutableSet alloc]init];
+    return self;
 }
 -(void) onInit {
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onInit];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onInit)]) {
+            [d onInit];
+        }
     }
 }
 -(void) onDisconnect{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onDisconnect];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onDisconnect)]) {
+            [d onDisconnect];
+        }
     }
 }
 -(void) onRssiReceived:(int)rssi{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onRssiReceived:rssi];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onRssiReceived:)]) {
+            [d onRssiReceived:rssi];
+        }
     }
 }
 -(void) onBatteryVoltageReceived:(float)voltage{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onBatteryVoltageReceived:voltage];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onBatteryVoltageReceived:)]) {
+            [d onBatteryVoltageReceived:voltage];
+        }
     }
 }
 -(void) onSampleReceived:(double)timestamp_utc c:(Channel)c val:(MeterReading*)val{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onSampleReceived:timestamp_utc c:c val:val];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onSampleReceived:c:val:)]) {
+            [d onSampleReceived:timestamp_utc c:c val:val];
+        }
     }
 }
 -(void) onBufferReceived:(double)timestamp_utc c:(Channel)c dt:(float)dt val:(NSArray<NSNumber*>*)val{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onBufferReceived:timestamp_utc c:c dt:dt val:val];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onBufferReceived:c:dt:val:)]) {
+            [d onBufferReceived:timestamp_utc c:c dt:dt val:val];
+        }
     }
 }
 -(void) onSampleRateChanged:(int)sample_rate_hz{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onSampleRateChanged:sample_rate_hz];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if ([d respondsToSelector:@selector(onSampleRateChanged:)]) {
+            [d onSampleRateChanged:sample_rate_hz];
+        }
     }
 }
 -(void) onBufferDepthChanged:(int)buffer_depth{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onBufferDepthChanged:buffer_depth];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onBufferDepthChanged:)]) {
+            [d onBufferDepthChanged:buffer_depth];
+        }
     }
 }
 -(void) onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString*)message{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onLoggingStatusChanged:on new_state:new_state message:message];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onLoggingStatusChanged:new_state:message:)]) {
+            [d onLoggingStatusChanged:on new_state:new_state message:message];
+        }
     }
 }
 -(void) onRangeChange:(Channel)c new_range:(RangeDescriptor*)new_range{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onRangeChange:c new_range:new_range];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onRangeChange:new_range:)]) {
+            [d onRangeChange:c new_range:new_range];
+        }
     }
 }
 -(void) onInputChange:(Channel)c descriptor:(InputDescriptor*)descriptor{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onInputChange:c descriptor:descriptor];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onInputChange:descriptor:)]) {
+            [d onInputChange:c descriptor:descriptor];
+        }
     }
 }
 -(void) onOffsetChange:(Channel)c offset:(MeterReading*)offset{
-    for(id<MooshimeterDelegateProtocol> d in _delegates) {
-        [d onOffsetChange:c offset:offset];
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onOffsetChange:offset:)]) {
+            [d onOffsetChange:c offset:offset];
+        }
+    }
+}
     }
 }
 @end
 
+@interface MooshimeterDeviceBase()
+@property DistributorDelegate* delegate;
+@end
 @implementation MooshimeterDeviceBase {
     BOOL rssi_poller_running;
 }
@@ -316,11 +343,11 @@
 
 -(void)addDelegate:(id<MooshimeterDelegateProtocol>)delegate {
     if(delegate==nil){return;}
-    [((DistributorDelegate *) self.delegate).delegates addObject:delegate];
+    [self.delegate.children addObject:delegate];
 }
 -(void)removeDelegate:(id<MooshimeterDelegateProtocol>)delegate {
     if(delegate==nil){return;}
-    [((DistributorDelegate *) self.delegate).delegates removeObject:delegate];
+    [self.delegate.children removeObject:delegate];
 }
 
 /*
