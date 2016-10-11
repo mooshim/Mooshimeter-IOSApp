@@ -186,7 +186,7 @@ void (^serout_callback)(NSData*,NSError*);
     serout_callback = ^(NSData* payload,NSError* error) {
         NSMutableData *mutable = [payload mutableCopy];
         uint8_t seq_n = [mutable popUint8];
-        if(seq_n != (_recv_seq_n+1)) {
+        if(seq_n != (_recv_seq_n+1) && seq_n!=0) {
             NSLog(@"OUT OF ORDER PACKET");
             NSLog(@"EXPECTED: %d",((_recv_seq_n+1)));
             NSLog(@"GOT:      %d",(seq_n));
