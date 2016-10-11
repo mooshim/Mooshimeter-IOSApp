@@ -104,6 +104,25 @@
         }
     }
 }
+-(void) onLogInfoReceived:(LogFile*)log {
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onLogInfoReceived:)]) {
+            [d onLogInfoReceived:log];
+        }
+    }
+}
+-(void) onLogFileReceived:(LogFile*)log {
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onLogFileReceived:)]) {
+            [d onLogFileReceived:log];
+        }
+    }
+}
+-(void) onLogDataReceived:(LogFile*)log data:(NSData*)data {
+    for(id<MooshimeterDelegateProtocol> d in _children) {
+        if([d respondsToSelector:@selector(onLogDataReceived:data:)]) {
+            [d onLogDataReceived:log data:data];
+        }
     }
 }
 @end

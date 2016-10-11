@@ -8,6 +8,7 @@
 #import "MooshimeterDelegateProtocol.h"
 #import "MeterReading.h"
 #import "LGCharacteristic.h"
+#import "LogFile.h"
 
 @protocol MooshimeterControlProtocol <NSObject>
 
@@ -92,4 +93,10 @@
         -(BOOL)getPreference:(NSString*)shortkey def:(BOOL)def;
         -(BOOL)getPreference:(NSString*)shortkey;
         -(void)setPreference:(NSString*)shortkey value:(BOOL)value;
+
+        -(void)pollLogInfo;
+        -(void)downloadLog:(LogFile*)log;
+        -(void)cancelLogDownload;
+        -(LogFile*) getLogInfo:(int)index;
+        -(void) setLogOffset:(uint32_t)offset;
 @end

@@ -10,6 +10,7 @@
 #import "MeterReading.h"
 #import "RangeDescriptor.h"
 #import "InputDescriptor.h"
+#import "LogFile.h"
 
 @protocol MooshimeterDelegateProtocol <NSObject>
 @optional
@@ -25,4 +26,7 @@
 -(void) onRangeChange:(Channel)c new_range:(RangeDescriptor*)new_range;
 -(void) onInputChange:(Channel)c descriptor:(InputDescriptor*)descriptor;
 -(void) onOffsetChange:(Channel)c offset:(MeterReading*)offset;
+-(void) onLogInfoReceived:(LogFile*)log;
+-(void) onLogFileReceived:(LogFile*)log;
+-(void) onLogDataReceived:(LogFile*)log data:(NSData*)data;
 @end
