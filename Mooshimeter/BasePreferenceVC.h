@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "BaseVC.h"
 
 @interface BasePreferenceVC : BaseVC <UIScrollViewDelegate>
+-(void)addCell:(UIView*)view;
 -(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory;
 +(UISwitch*)makePrefSwitch:(NSString*)key;
 @end
