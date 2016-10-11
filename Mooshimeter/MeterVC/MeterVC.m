@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "MeterPreferenceVC.h"
 #import "WidgetFactory.h"
 #import "GCD.h"
+#import "LoggingPreferencesVC.h"
 #import "UIView+Toast.h"
 
 @implementation MeterVC
@@ -94,12 +95,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.meter pause];
+    [self.meter removeDelegate:self];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     // Display done.  Check the meter settings.
-    [self.meter setDelegate:self];
+    [self.meter addDelegate:self];
     [self.meter stream];
     [self refreshAllControls];
 }
@@ -184,12 +186,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 -(void)logging_button_press {
-    if([self.meter getLoggingStatus]!=0) {
-        // Do nothing if there's a logging error
-        [self.content_view makeToast:[self.meter getLoggingStatusMessage]];
-        return;
-    }
-    [self.meter setLoggingOn:![self.meter getLoggingOn]];
+    SmartNavigationController * gnav = [SmartNavigationController getSharedInstance];
+    LoggingPreferencesVC * vc = [[LoggingPreferencesVC alloc] initWithMeter:self.meter];
+    [gnav pushViewController:vc animated:YES];
 }
 -(void)logging_button_refresh {
     int s = [self.meter getLoggingStatus];
