@@ -30,6 +30,11 @@
 @implementation MyInputDescriptor
 @end
 
+@interface MooshimeterDevice()
+@property LogFile* active_log;
+@property NSMutableArray* logfiles;
+@end
+
 @implementation MooshimeterDevice{
     BOOL stop_heartbeat;
 }
@@ -76,6 +81,7 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
 
     stop_heartbeat = NO;
 
+    self.logfiles = [[NSMutableArray alloc]init];
     self.tree = [[ConfigTree alloc]init];
 
     self->input_descriptors[CH1]  = [[Chooser alloc]init];
@@ -316,6 +322,29 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
     [self attachCallback:@"BAT_V" cb:^(NSObject *payload) {
         float bat_v = [((NSNumber *) payload) floatValue];
         [ws.delegate onBatteryVoltageReceived:bat_v];
+    }];
+    [self attachCallback:@"LOG:INFO:INDEX" cb:^(NSObject *payload) {
+        ws.active_log = [[LogFile alloc]init];
+        ws.active_log.index = [(NSNumber *) payload intValue];
+        ws.active_log.meter = ws;
+        [ws.logfiles insertObject:ws.active_log atIndex:ws.active_log.index];
+    }];
+    [self attachCallback:@"LOG:INFO:END_TIME" cb:^(NSObject *payload) {
+        uint32_t utc_time = [(NSNumber*)payload unsignedIntValue];
+        ws.active_log.end_time = utc_time;
+    }];
+    [self attachCallback:@"LOG:INFO:N_BYTES" cb:^(NSObject *payload) {
+        uint32_t bytes = [(NSNumber*)payload unsignedIntValue];
+        ws.active_log.bytes = bytes;
+        [ws.delegate onLogInfoReceived:ws.active_log];
+    }];
+    [self attachCallback:@"LOG:STREAM:DATA" cb:^(NSObject *payload) {
+        NSData* data = (NSData*)payload;
+        [ws.active_log appendToFile:data];
+        [ws.delegate onLogDataReceived:ws.active_log data:data];
+        if(ws.active_log.bytes <= [ws.active_log getFileSize]){
+            [ws.delegate onLogFileReceived:ws.active_log];
+        }
     }];
 
     // Figure out which input we're presently reading based on the tree state
@@ -658,7 +687,17 @@ NSMutableString* concat(int n_strings,...) {
 
     
 -(NSString*)getName {
-    return (NSString*)[_tree getValueAt:@"NAME"];
+    NSString* rval = (NSString*)[_tree getValueAt:@"NAME"];
+    // Strip out any trailing nulls.  Why is this so annoying?
+    uint8_t buffer[[rval length]];
+    NSUInteger written=0;
+    [rval getBytes:buffer maxLength:[rval length] usedLength:&written encoding:NSASCIIStringEncoding options:nil range:NSMakeRange(0,[rval length]) remainingRange:nil];
+    //Find a null
+    NSUInteger i = 0;
+    for(i=0; i < written; i++) {
+        if(buffer[i]==0x00) {break;}
+    }
+    return [rval substringToIndex:i];
 }
 
 -(float) getEnob:(Channel)c {
@@ -914,5 +953,38 @@ NSMutableString* concat(int n_strings,...) {
     NSString* range_i_str = concat(2,nameForChannel(c),@":RANGE_I");
     NSUInteger cnum = [((NSNumber *) [_tree getValueAt:range_i_str]) unsignedIntegerValue];
     return [self getSelectedDescriptor:c].ranges.choices[cnum];
+}
+
+-(void)pollLogInfo {
+    [self.tree command:@"LOG:POLLDIR 1"];
+}
+-(void)downloadLog:(LogFile*)log {
+    // TEMPORARY: Always start fresh.  This is for testing.
+    [log deleteFile];
+    [self.tree command:[NSString stringWithFormat:@"LOG:STREAM:INDEX %d",log.index]];
+
+#if 0
+    uint32_t filesize = [log getFileSize];
+    if(filesize>=log.bytes) {
+        // Already downloded the whole file
+        [GCD asyncBack:^{
+            [self.delegate onLogFileReceived:log];
+        }];
+    } else {
+        if(filesize>0) {
+            [self setLogOffset:filesize];
+        }
+        [self.tree command:[NSString stringWithFormat:@"LOG:STREAM:INDEX %d",log.index]];
+    }
+#endif
+}
+-(void)cancelLogDownload {
+    [self.tree command:@"LOG:STREAM:INDEX -1"];
+}
+-(LogFile*) getLogInfo:(int)index {
+    return self.logfiles[index];
+}
+-(void) setLogOffset:(uint32_t)offset {
+    [self.tree command:[NSString stringWithFormat:@"LOG:STREAM:OFFSET %u",offset]];
 }
 @end
