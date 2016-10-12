@@ -24,11 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @interface DownloadVC()
 @property LogFile* log_file;
-@property LinearLayout* bg;
 @property UILabel* filename_label;
 @property UILabel* progress_label;
 @property UIProgressView* progress_bar;
 @property UILabel* content_label;
+@property UIImageView* share_button;
 @property BOOL done;
 @end
 
@@ -56,19 +56,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     [self setTitle:@"Downloading file"];
 
-    self.bg = [[LinearLayout alloc] init];
-    self.bg.direction = LAYOUT_VERTICAL;
-    self.bg.frame = self.content_view.frame;
-    [self.content_view addSubview:self.bg];
-
     self.filename_label = [[UILabel alloc]init];
     [self.filename_label setText:@"Filename.csv"];
     [self.filename_label setLLSize:50];
     [self.filename_label setAdjustsFontSizeToFitWidth:YES];
     [self.filename_label setTextAlignment:UITextAlignmentCenter];
+    [self.filename_label setText:[self.log_file getFileName]];
 
     self.progress_label = [[UILabel alloc]init];
-    [self.progress_label setText:@"0% Asshole"];
+    [self.progress_label setText:@"0%"];
     [self.progress_label setLLSize:50];
     [self.progress_label setAdjustsFontSizeToFitWidth:YES];
     [self.progress_label setTextAlignment:UITextAlignmentCenter];
@@ -79,18 +75,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     self.content_label = [[UILabel alloc]init];
     self.content_label.numberOfLines = 0;
-    [self.content_label setText:@"Yadda yadda yadda"];
+    [self.content_label setText:@"Log Contents Displayed Here"];
     [self.content_label setLLWeight:1];
     [self.content_label setAdjustsFontSizeToFitWidth:NO];
+    [self.content_label setTextAlignment:UITextAlignmentCenter];
 
-    [self.bg addSubview:self.filename_label];
-    [self.bg addSubview:self.progress_label];
-    [self.bg addSubview:self.progress_bar];
-    [self.bg addSubview:self.content_label];
+    self.share_button = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"share.png"]];
+    [self.share_button setLLSize:100];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shareButtonTapped:)];
+    tap.numberOfTapsRequired = 1;
+    [self.share_button setUserInteractionEnabled:YES];
+    [self.share_button addGestureRecognizer:tap];
+
+    // Now that we've instantiated all the widgets, lay them out
+
+    LinearLayout* bg = [[LinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
+    bg.frame = CGRectInset(self.content_view.frame,20,20);
+    [self.content_view addSubview:bg];
+
+    LinearLayout* top_pane = [[LinearLayout alloc] initWithDirection:LAYOUT_HORIZONTAL];
+    [top_pane setLLSize:100];
+
+    LinearLayout* progress_pane = [[LinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
+    [progress_pane setLLWeight:1];
+    [progress_pane addSubview:self.filename_label];
+    [progress_pane addSubview:self.progress_label];
+
+    [top_pane addSubview:progress_pane];
+    [top_pane addSubview:self.share_button];
+
+    [bg addSubview:top_pane];
+    [bg addSubview:self.progress_bar];
+    [bg addSubview:self.content_label];
 
     [self refreshProgress:nil];
 
     [self.log_file.meter downloadLog:self.log_file];
+}
+
+-(void)shareButtonTapped:(UITapGestureRecognizer*)rec {
+    if(!self.done) {
+        [self.content_view makeToast:@"Can't share until log download complete!"];
+    } else {
+        [self sendEmail];
+    }
 }
 
 -(void)refreshProgress:(NSData*)data {
@@ -112,6 +140,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(void)onLogFileReceived:(LogFile *)log {
+    self.done = YES;
     [GCD asyncMain:^{
         [self.progress_bar setProgress:1];
         int dl_kb = [self.log_file getFileSize]/1024;
