@@ -13,6 +13,8 @@
 @property uint32_t bytes;
 @property uint32_t end_time;
 
+-(NSString*)getFilePath;
+-(NSString*)getFileName;
 -(void)appendToFile:(NSData*)payload;
 -(NSFileHandle *)getFile;
 -(uint32_t)getFileSize;
