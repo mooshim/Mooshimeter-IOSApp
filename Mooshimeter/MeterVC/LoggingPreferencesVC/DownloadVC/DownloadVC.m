@@ -17,9 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ***************************/
 
 #import "DownloadVC.h"
-#import "WidgetFactory.h"
 #import "GCD.h"
 #import "LinearLayout.h"
+#import "UIView+Toast.h"
+#import "WidgetFactory.h"
 
 @interface DownloadVC()
 @property LogFile* log_file;
@@ -77,6 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [self.progress_bar setLLSize:20];
 
     self.content_label = [[UILabel alloc]init];
+    self.content_label.numberOfLines = 0;
     [self.content_label setText:@"Yadda yadda yadda"];
     [self.content_label setLLWeight:1];
     [self.content_label setAdjustsFontSizeToFitWidth:NO];
@@ -96,9 +98,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         if(data!=nil) {
             [self.content_label setText:[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding]];
         }
-        int dl_kb = [self.log_file getFileSize]/1024;
+        uint32_t dl_bytes = [self.log_file getFileSize];
+        int dl_kb = dl_bytes/1024;
         int total_kb = self.log_file.bytes/1024;
-        [self.progress_bar setProgress:[self.log_file getFileSize]/self.log_file.bytes];
+        float progress = (float)dl_bytes/(float)self.log_file.bytes;
+        [self.progress_bar setProgress:progress];
         [self.progress_label setText:[NSString stringWithFormat:@"Downloaded %d of %dkB",dl_kb,total_kb]];
     }];
 }
@@ -112,6 +116,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         [self.progress_bar setProgress:1];
         int dl_kb = [self.log_file getFileSize]/1024;
         [self.progress_label setText:[NSString stringWithFormat:@"Done!  Downloaded %dkB",dl_kb]];
+
+        [self sendEmail];
     }];
 }
+
+-(void)sendEmail {
+    MFMailComposeViewController * mc = [WidgetFactory makeEmailComposeWindow];
+    [mc setSubject:@"Mooshimeter log"];
+    [mc setMessageBody:@"This is a log from a Mooshimeter" isHTML:NO];
+
+    // Get the resource path and read the file using NSData
+    NSString *fileName = [self.log_file getFileName];
+    NSData *fileData = [NSData dataWithContentsOfFile:[self.log_file getFilePath]];
+
+    // Add attachment
+    [mc addAttachmentData:fileData mimeType:@"text/plain" fileName:fileName];
+
+    // Present mail view controller on screen
+    [self presentViewController:mc animated:YES completion:NULL];
+}
+
 @end

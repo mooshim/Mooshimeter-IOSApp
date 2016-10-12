@@ -4,6 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MessageUI/MessageUI.h>
 
 @interface CG:NSObject
 
@@ -39,4 +40,6 @@
 
 +(UIView*)makePopoverFromView:(UIView*)client_view size:(CGSize)size;
 +(UIView*)makePopoverFromViewClass:(Class)view_class size:(CGSize)size;
+
++(MFMailComposeViewController*)makeEmailComposeWindow;
 @end

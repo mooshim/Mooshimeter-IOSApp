@@ -7,10 +7,28 @@
 #import "SmartNavigationController.h"
 #import "BlockWrapper.h"
 #import <objc/runtime.h>
+#import <MessageUI/MessageUI.h>
 
 //////////////////////////
 // Private helper classes
 //////////////////////////
+
+@interface MailComposeDummyDelegate:NSObject<MFMailComposeViewControllerDelegate>
+@property (weak) MFMailComposeViewController * vc;
+@end
+@implementation MailComposeDummyDelegate
+-(instancetype)initAndAttachTo:(MFMailComposeViewController*)mailview {
+    self = [super init];
+    self.vc = mailview;
+    // Attach this object to the control so we keep existing as long as it does
+    objc_setAssociatedObject( mailview, "_dummydelegate", self, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
+    [mailview setMailComposeDelegate:self];
+    return self;
+}
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [self.vc dismissViewControllerAnimated:YES completion:nil];
+}
+@end
 
 @interface AlertViewBlockWrapper:NSObject<UIAlertViewDelegate>
 @property void(^callback)(UIAlertView*,int);
@@ -247,5 +265,13 @@
     UIView* client_view = [[view_class alloc] initWithFrame:client_frame];
     [WidgetFactory makePopoverFromView:client_view size:size];
     return client_view;
+}
++(MFMailComposeViewController*)makeEmailComposeWindow {
+    if(![MFMailComposeViewController canSendMail]) {
+        return nil;
+    }
+    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
+    MailComposeDummyDelegate *md = [[MailComposeDummyDelegate alloc] initAndAttachTo:mc];
+    return mc;
 }
 @end
