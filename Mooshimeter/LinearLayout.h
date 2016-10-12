@@ -16,4 +16,5 @@ typedef enum layout_dir_t {LAYOUT_HORIZONTAL,LAYOUT_VERTICAL};
 
 @interface LinearLayout : UIView
 @property enum layout_dir_t direction;
+-(instancetype)initWithDirection:(enum layout_dir_t)direction;
 @end

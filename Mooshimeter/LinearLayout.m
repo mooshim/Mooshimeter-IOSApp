@@ -50,6 +50,11 @@
 @implementation LinearLayout {
 
 }
+-(instancetype)initWithDirection:(enum layout_dir_t)direction {
+    self = [super init];
+    self.direction = direction;
+    return self;
+}
 -(void)layoutSubviews {
     float w = self.frame.size.width;
     float h = self.frame.size.height;
