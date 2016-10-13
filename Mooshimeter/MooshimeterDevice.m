@@ -966,7 +966,7 @@ NSMutableString* concat(int n_strings,...) {
 #if 0
     uint32_t filesize = [log getFileSize];
     if(filesize>=log.bytes) {
-        // Already downloded the whole file
+        // Already downloaded the whole file
         [GCD asyncBack:^{
             [self.delegate onLogFileReceived:log];
         }];

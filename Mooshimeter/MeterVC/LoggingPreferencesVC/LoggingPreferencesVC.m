@@ -108,7 +108,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // Load logs button
     {
         UIButton* b = [WidgetFactory makeButtonReflexive:@"Load Logs" callback:^(UIButton *button) {
-            [b setEnabled:NO];
+            [button setEnabled:NO];
             [GCD asyncBack:^{
                 [ws.meter pollLogInfo];
             }];
@@ -143,6 +143,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }];
         [row setLLSize:60];
         [self.scroller addSubview:row];
+        UIView* space = [[UIView alloc]init];
+        [space setBackgroundColor:[UIColor lightGrayColor]];
+        [space setLLSize:1];
+        [self.scroller addSubview:space];
     }];
 }
 @end

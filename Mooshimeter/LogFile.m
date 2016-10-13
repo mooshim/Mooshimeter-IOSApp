@@ -88,7 +88,6 @@ const NSString* logdir_name = @"MooshimeterLogs";
 }
 
 - (void)appendToFile:(NSData *)payload {
-    NSLog(@"Appending %u bytes", payload.length);
     NSFileHandle * handle = [self getFile];
     [handle writeData:payload];
     [handle synchronizeFile];
@@ -98,8 +97,6 @@ const NSString* logdir_name = @"MooshimeterLogs";
     uint64_t rval;
     NSFileHandle * handle = [self getFile];
     rval = handle.offsetInFile;
-    //NSLog(@"%@",self);
-    //NSLog(@"Checking %@: From %@: %u: Filesize %llu",handle,[NSThread currentThread].description, [NSThread currentThread].hash, rval);
     return (uint32_t)rval;
 }
 
