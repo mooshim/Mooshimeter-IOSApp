@@ -18,8 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <UIKit/UIKit.h>
 #import "BaseVC.h"
+#import "LinearLayout.h"
 
 @interface BasePreferenceVC : BaseVC <UIScrollViewDelegate>
+@property LinearLayout* background_ll;
 -(void)addCell:(UIView*)view;
 -(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory;
 +(UISwitch*)makePrefSwitch:(NSString*)key;

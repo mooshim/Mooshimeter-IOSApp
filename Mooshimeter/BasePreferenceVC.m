@@ -22,44 +22,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 @implementation BasePreferenceVC {
-    float y_offset;
 }
 const int row_h = 80;
 const int title_h = 30;
 const int inset = 10;
 const int spacer_h = 5;
+const int acc_inset = 10;
 
 -(void)addSpacer {
-    UIView* spacer = [[UIView alloc] initWithFrame:CGRectMake(0,y_offset,self.visible_w,spacer_h)];
-    y_offset+=spacer_h;
+    UIView* spacer = [[UIView alloc] init];
     [spacer setBackgroundColor:[UIColor lightGrayColor]];
-    [self.content_view addSubview:spacer];
+    [spacer setLLSize:spacer_h];
+    [_background_ll addSubview:spacer];
 }
 
 -(void)addCell:(UIView*)view {
-    [view setFrame:CGRectMake(0,y_offset,self.visible_w,row_h)];
-    y_offset += row_h;
-    [self.content_view addSubview:view];
+    [view setLLSize:row_h];
+    [_background_ll addSubview:view];
     [self addSpacer];
 }
 
 -(UIView*)addPreferenceCell:(NSString*)title msg:(NSString*)msg accessory:(UIView*)accessory {
-    UIView* rval = [[UIView alloc] initWithFrame:CGRectMake(0,y_offset,self.visible_w,row_h)];
-    y_offset += row_h;
+    LinearLayout* rval = [[LinearLayout alloc] initWithDirection:LAYOUT_HORIZONTAL];
+    [rval setLLSize:row_h];
 
-    float left_w = .75*self.visible_w;
+    LinearLayout* leftpane = [[LinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
+    [leftpane setLLWeight:1];
 
-    UILabel* title_label = [[UILabel alloc] initWithFrame:CGRectMake(inset,0,left_w,title_h)];
+    UILabel* title_label = [[UILabel alloc] init];
+    [title_label setLLSize:title_h];
     [title_label setText:title];
     [title_label setFont:[UIFont boldSystemFontOfSize:24]];
 
-    UILabel* msg_label = [[UILabel alloc] initWithFrame:CGRectMake(inset,title_h,left_w,row_h-title_h)];
+    UILabel* msg_label = [[UILabel alloc] init];
+    [msg_label setLLSize:row_h-title_h];
     [msg_label setText:msg];
     [msg_label setFont:[UIFont systemFontOfSize:18]];
     [msg_label setNumberOfLines:0];
 
+    [leftpane addSubview:title_label];
+    [leftpane addSubview:msg_label];
+
+    [rval addSubview:leftpane];
+    [accessory setLLSize:row_h];
+    [accessory setLLInset:acc_inset];
+    [rval addSubview:accessory];
+
     // Center the accessory in the space available for it
-    CGRect acc_frame = accessory.frame;
+    /*CGRect acc_frame = accessory.frame;
     {
         float acc_w = self.visible_w-left_w-inset;
         float acc_x_inset = (acc_w - acc_frame.size.width)/2;
@@ -73,7 +83,8 @@ const int spacer_h = 5;
     [rval addSubview:msg_label];
     [rval addSubview:accessory];
 
-    [self.content_view addSubview:rval];
+    [self.content_view addSubview:rval];*/
+    [_background_ll addSubview:rval];
 
     [self addSpacer];
 
@@ -88,10 +99,11 @@ const int spacer_h = 5;
     return rval;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    y_offset = 0;
+    _background_ll = [[LinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
+    _background_ll.frame = CGRectInset(self.content_view.bounds,20,20);
+    [self.content_view addSubview:_background_ll];
 }
 
 @end
