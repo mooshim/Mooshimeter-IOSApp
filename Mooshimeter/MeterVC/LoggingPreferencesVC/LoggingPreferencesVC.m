@@ -53,6 +53,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 @end
 
+@interface LoggingPreferencesVC()
+@property ScrollingLinearLayout * scroller;
+@end
+
 @implementation LoggingPreferencesVC {
 }
 
@@ -98,7 +102,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         [button setTitle:[NSString stringWithFormat:@"%ds", ([self.meter getLoggingIntervalMS] / 1000)] forState:UIControlStateNormal];
                     }];
         }];
-        [b setFrame:CGRectMake(0,0,50,50)];
         [self addPreferenceCell:@"Logging Interval" msg:@"Set the time between samples when logging is on." accessory:b];
     }
 
@@ -110,12 +113,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 [ws.meter pollLogInfo];
             }];
         }];
+        [b setLLInset:10];
         [self addCell:b];
     }
+
+    _scroller = [[ScrollingLinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
+    [_scroller setShowsVerticalScrollIndicator:YES];
+    [_scroller setMaximumZoomScale:1];
+    [_scroller setMinimumZoomScale:1];
+    [_scroller setLLWeight:1];
+
+    [self.background_ll addSubview:_scroller];
 }
 
 -(void)onLogInfoReceived:(LogFile *)log {
-    DECLARE_WEAKSELF;
     [GCD asyncMain:^{
         LogInfoRow * row = [[LogInfoRow alloc]init];
         [row.index_tv setText:[NSString stringWithFormat:@"%u",log.index]];
@@ -130,7 +141,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             DownloadVC * vc = [[DownloadVC alloc] initWithLogfile:log];
             [gnav pushViewController:vc animated:YES];
         }];
-        [self addCell:row];
+        [row setLLSize:60];
+        [self.scroller addSubview:row];
     }];
 }
 @end

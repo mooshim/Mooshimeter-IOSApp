@@ -152,7 +152,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -(void)sendEmail {
     MFMailComposeViewController * mc = [WidgetFactory makeEmailComposeWindow];
-    [mc setSubject:@"Mooshimeter log"];
+    NSString* subject = @"Mooshimeter log ";
+    subject = [subject stringByAppendingString:[self.log_file getFileName]];
+    [mc setSubject:subject];
     [mc setMessageBody:@"This is a log from a Mooshimeter" isHTML:NO];
 
     // Get the resource path and read the file using NSData
