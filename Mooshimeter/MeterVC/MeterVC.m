@@ -192,16 +192,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 -(void)logging_button_refresh {
     int s = [self.meter getLoggingStatus];
-    NSString* title;
+    NSString* title, *subtitle;
     bool logging_ok = s==0;
-    if(logging_ok) {
-        title = [self.meter getLoggingOn]?@"Logging:ON":@"Logging:OFF";
-        [self.logging_button setBackgroundColor:[UIColor whiteColor]];
-    } else {
-        title = [self.meter getLoggingStatusMessage];
-        [self.logging_button setBackgroundColor:[UIColor lightGrayColor]];
-    }
+    title = [self.meter getLoggingOn]?@"Logging:ENABLED":@"Logging:DISABLED";
+    subtitle = [self.meter getLoggingStatusMessage];
+    [self.logging_button setBackgroundColor:logging_ok?[UIColor whiteColor]:[UIColor lightGrayColor]];
     [self.logging_button setTitle:title forState:UIControlStateNormal];
+    [WidgetFactory setButtonSubtitle:self.logging_button subtitle:subtitle];
 }
 -(void)depth_button_press {
     [PopupMenu displayOptionsWithParent:self.view title:@"Buffer Depth" options:[self.meter getBufferDepthList] cancel:@"AUTORANGE" callback:^(int i) {
