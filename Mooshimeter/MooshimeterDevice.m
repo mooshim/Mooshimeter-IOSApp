@@ -959,11 +959,7 @@ NSMutableString* concat(int n_strings,...) {
     [self.tree command:@"LOG:POLLDIR 1"];
 }
 -(void)downloadLog:(LogFile*)log {
-    // TEMPORARY: Always start fresh.  This is for testing.
-    [log deleteFile];
-    [self.tree command:[NSString stringWithFormat:@"LOG:STREAM:INDEX %d",log.index]];
-
-#if 0
+    self.active_log = log;
     uint32_t filesize = [log getFileSize];
     if(filesize>=log.bytes) {
         // Already downloaded the whole file
@@ -976,7 +972,6 @@ NSMutableString* concat(int n_strings,...) {
         }
         [self.tree command:[NSString stringWithFormat:@"LOG:STREAM:INDEX %d",log.index]];
     }
-#endif
 }
 -(void)cancelLogDownload {
     [self.tree command:@"LOG:STREAM:INDEX -1"];
