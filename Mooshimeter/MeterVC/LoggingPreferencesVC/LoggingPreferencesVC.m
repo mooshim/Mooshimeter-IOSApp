@@ -48,8 +48,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     float fw = self.frame.size.width;
     float fh = self.frame.size.height;
     [self.index_tv setFrame:CGRectMake(   0,0,50,fh)];
-    [self.endtime_tv setFrame:CGRectMake(50,0,fw-100,fh)];
-    [self.size_tv setFrame:CGRectMake(fw-50,0,50,fh)];
+    [self.endtime_tv setFrame:CGRectMake(50,0,fw-140,fh)];
+    [self.size_tv setFrame:CGRectMake(fw-90,0,90,fh)];
 }
 @end
 
