@@ -12,9 +12,17 @@ typedef enum layout_dir_t {LAYOUT_HORIZONTAL,LAYOUT_VERTICAL};
 -(void)setLLSize:(float)size;
 -(float)getLLWeight;
 -(void)setLLWeight:(float)weight;
+-(float)getLLInset;
+-(void)setLLInset:(float)inset;
 @end
 
-@interface LinearLayout : UIView
-@property enum layout_dir_t direction;
--(instancetype)initWithDirection:(enum layout_dir_t)direction;
+@protocol LinearLayoutProtocol
+-(void)setDirection:(enum layout_dir_t)direction;
+-(id<LinearLayoutProtocol>)initWithDirection:(enum layout_dir_t)direction;
+@end
+
+@interface LinearLayout : UIView <LinearLayoutProtocol>
+@end
+
+@interface ScrollingLinearLayout : UIScrollView <LinearLayoutProtocol>
 @end
