@@ -25,8 +25,6 @@
 @property OADDevice* meter;
 @property void(^async_block)();
 
-@property BOOL upload_on_present;
-
 
 - (instancetype)initWithMeter:(MooshimeterDeviceBase*)meter;
 -(void) setupView;

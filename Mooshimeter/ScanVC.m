@@ -269,7 +269,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         SmartNavigationController * nav = [SmartNavigationController getSharedInstance];
         OADViewController * mvc = [[OADViewController alloc] initWithMeter:meter];
-        mvc.upload_on_present = YES;
         [nav pushViewController:mvc animated:YES];
         NSLog(@"Did push OAD view controller");
     }];
