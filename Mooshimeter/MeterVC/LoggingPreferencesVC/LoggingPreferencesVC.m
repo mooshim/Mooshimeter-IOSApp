@@ -55,6 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @interface LoggingPreferencesVC()
 @property ScrollingLinearLayout * scroller;
+@property UILabel* status_label;
 @end
 
 @implementation LoggingPreferencesVC {
@@ -80,8 +81,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     [self setTitle:@"Logging Preferences"];
 
-    // Logging enable
     DECLARE_WEAKSELF;
+
+    // Logging Status
+    _status_label = ((UIView*)([self addPreferenceCell:@"Log Status" msg:[ws.meter getLoggingStatusMessage] accessory:nil].subviews[0])).subviews[1];
+
+    // Logging enable
     UISwitch * logging_on_switch = [WidgetFactory makeSwitch:^(bool i) {
         [ws.meter setLoggingOn:i];
     }];
@@ -108,10 +113,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // Load logs button
     {
         UIButton* b = [WidgetFactory makeButtonReflexive:@"Load Logs" callback:^(UIButton *button) {
-            [button setEnabled:NO];
-            [GCD asyncBack:^{
-                [ws.meter pollLogInfo];
-            }];
+            // Only works on versions of firmware after 1460000000
+            if([ws.meter getBuildTime] < 1460000000) {
+                [WidgetFactory makeAlert:@"Not supported" msg:@"This feature is not supported by the firmware on the meter.  Upload new firmware to resolve this issue."];
+            } else if([ws.meter getLoggingStatus] != 0) {
+                [WidgetFactory makeAlert:@"SD Card Error" msg:@"SD card not mounted"];
+            } else {
+                [button setEnabled:NO];
+                [GCD asyncBack:^{
+                    [ws.meter pollLogInfo];
+                }];
+            }
         }];
         [b setLLInset:10];
         [self addCell:b];
@@ -124,6 +136,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     [_scroller setLLWeight:1];
 
     [self.background_ll addSubview:_scroller];
+}
+
+-(void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {
+    [GCD asyncMain:^{
+        [_status_label setText:message];
+    }];
 }
 
 -(void)onLogInfoReceived:(LogFile *)log {

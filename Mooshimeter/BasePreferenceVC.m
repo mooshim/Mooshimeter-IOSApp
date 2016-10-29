@@ -64,9 +64,12 @@ const int acc_inset = 10;
     [leftpane addSubview:msg_label];
 
     [rval addSubview:leftpane];
-    [accessory setLLSize:row_h];
-    [accessory setLLInset:acc_inset];
-    [rval addSubview:accessory];
+
+    if(accessory!=nil) {
+        [accessory setLLSize:row_h];
+        [accessory setLLInset:acc_inset];
+        [rval addSubview:accessory];
+    }
 
     // Center the accessory in the space available for it
     /*CGRect acc_frame = accessory.frame;
