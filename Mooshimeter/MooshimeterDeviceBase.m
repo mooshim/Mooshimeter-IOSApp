@@ -218,14 +218,14 @@
     [self.delegate onBufferDepthChanged:[self getBufferDepth]];
 }
 -(BOOL)ch1_range_auto {
-    return [self getPreference:@"CH1_RANGE_AUTO"];
+    return [self getPreference:@"CH1_RANGE_AUTO" def:YES];
 }
 -(void)setCh1_range_auto:(BOOL)ch1_range_auto {
     [self setPreference:@"CH1_RANGE_AUTO" value:ch1_range_auto];
     [self.delegate onRangeChange:CH1 new_range:[self getSelectedRange:CH1]];
 }
 -(BOOL)ch2_range_auto {
-    return [self getPreference:@"CH2_RANGE_AUTO"];
+    return [self getPreference:@"CH2_RANGE_AUTO" def:YES];
 }
 -(void)setCh2_range_auto:(BOOL)ch2_range_auto {
     [self setPreference:@"CH2_RANGE_AUTO" value:ch2_range_auto];
