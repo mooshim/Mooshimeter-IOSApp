@@ -94,6 +94,7 @@
         -(BOOL)getPreference:(NSString*)shortkey;
         -(void)setPreference:(NSString*)shortkey value:(BOOL)value;
 
+@optional
         -(void)pollLogInfo;
         -(void)downloadLog:(LogFile*)log;
         -(void)cancelLogDownload;

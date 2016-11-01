@@ -15,7 +15,7 @@
 @property void (^callback)(BOOL);
 @end
 @interface GraphSettingsView : UIView
-@property GraphVC* graph;
+@property (nonatomic) GraphVC* graph;
 
 @property TitledSwitch *xy_sw, *buffer_sw, *lock_sw, *ch1_auto, *ch2_auto;
 @property UIButton *n_samples_button;

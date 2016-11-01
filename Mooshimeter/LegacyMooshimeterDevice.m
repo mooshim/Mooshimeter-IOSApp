@@ -611,7 +611,7 @@ int24_test to_int24_test(long arg) {
  */
 
 -(float) lsbToNativeUnits:(int)lsb channel:(Channel)c {
-    myRangeDescriptor * tmp = [self getSelectedRange:c];
+    myRangeDescriptor * tmp = (myRangeDescriptor*)[self getSelectedRange:c];
     return tmp.converter(lsb);
 }
 

@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum layout_dir_t {LAYOUT_HORIZONTAL,LAYOUT_VERTICAL};
+enum layout_dir_t {LAYOUT_HORIZONTAL,LAYOUT_VERTICAL};
 
 @interface UIView (LinearLayoutExtension)
 -(float)getLLSize;

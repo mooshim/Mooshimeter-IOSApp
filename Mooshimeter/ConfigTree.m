@@ -220,7 +220,7 @@ void (^serout_callback)(NSData*,NSError*);
 
 -(NSString*)enumerate:(ConfigNode*)n indent:(NSString*)indent aggregate:(NSMutableString*)aggregate {
     NSString* newline = [NSString stringWithFormat:@"%@%@\n",indent, [n toString]];
-    NSLog(newline);
+    NSLog(@"%@",newline);
     [aggregate appendString:newline];
     indent = [indent stringByAppendingString:@"  "];
     for(ConfigNode *c in n.children) {

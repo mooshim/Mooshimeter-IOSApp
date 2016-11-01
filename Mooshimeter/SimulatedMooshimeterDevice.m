@@ -48,7 +48,7 @@
 // MooshimeterControlInterface methods
 ////////////////////////////////
 
--(int)initialize{}
+-(int)initialize{return 0;}
 -(void)reboot{
     [GCD asyncBackAfterMS:1000 block:^{
         connected = NO;
@@ -128,7 +128,7 @@
 
 -(int)getSampleRateHz{return 125;}
 -(int) getSampleRateIndex{return 0;}
--(int)setSampleRateIndex:(int)i{}
+-(int)setSampleRateIndex:(int)i{return 0;}
 -(NSArray<NSString*>*) getSampleRateList{return @[@"125"];}
 
 -(int)getBufferDepth{return 256;}
@@ -151,7 +151,7 @@
 -(NSString*)   getRangeLabel:(Channel)c {
     return @"100";
 }
--(int)         setRange:(Channel)c rd:(RangeDescriptor*)rd {}
+-(int)         setRange:(Channel)c rd:(RangeDescriptor*)rd {return 0;}
 -(NSArray<RangeDescriptor*>*)getRangeList:(Channel)c {
     RangeDescriptor * rval = [[RangeDescriptor alloc]init];
     rval.name = @"100F";
@@ -165,7 +165,7 @@
 -(NSString*) getInputLabel:(Channel)c {
     return [NSString stringWithFormat:@"Fake %d", c];
 }
--(int)setInput:(Channel)c descriptor:(InputDescriptor*)descriptor {}
+-(int)setInput:(Channel)c descriptor:(InputDescriptor*)descriptor {return 0;}
 -(NSArray*)getInputList:(Channel)c {
     return @[[[InputDescriptor alloc] initWithName:@"Fake" units_arg:@"F"]];
 }

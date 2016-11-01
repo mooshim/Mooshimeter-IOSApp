@@ -35,9 +35,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     self.index_tv   = [[UILabel alloc]init];
     self.endtime_tv = [[UILabel alloc]init];
     self.size_tv    = [[UILabel alloc]init];
-    [self.index_tv   setTextAlignment:UITextAlignmentCenter];
-    [self.endtime_tv setTextAlignment:UITextAlignmentCenter];
-    [self.size_tv    setTextAlignment:UITextAlignmentCenter];
+    [self.index_tv   setTextAlignment:NSTextAlignmentCenter];
+    [self.endtime_tv setTextAlignment:NSTextAlignmentCenter];
+    [self.size_tv    setTextAlignment:NSTextAlignmentCenter];
     [self addSubview:self.index_tv];
     [self addSubview:self.endtime_tv];
     [self addSubview:self.size_tv];

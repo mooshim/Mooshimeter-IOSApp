@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @interface ScanTableViewCell : UITableViewCell
 
-@property LGPeripheral* peripheral;
+@property (nonatomic)LGPeripheral* peripheral;
 
 @property UIImageView *rssi_icon;
 @property UIImageView *conn_icon;

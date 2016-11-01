@@ -163,7 +163,6 @@
     const char* key = "_moosh_subtitle";
     UILabel* rval = objc_getAssociatedObject( button, key );
     if(rval == nil) {
-        CGRect r = button.titleLabel.frame;
         // Shift the existing label up a bit
         [button setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
         float topinset = button.frame.size.height-40; // 40 = guessing at label height FIXME
