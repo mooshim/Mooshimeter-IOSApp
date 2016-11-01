@@ -47,7 +47,7 @@
 
         static NSString* prefixes[] = {@"n",@"\u03bc",@"m",@"",@"k",@"M",@"G"};
         float lval = self.value;
-        if(fabs(lval) > 1.2*self.max) {
+        if(fabs(lval) > self.max) {
             return @"OUT OF RANGE";
         }
         NSMutableString* rval = [[NSMutableString alloc] init];
