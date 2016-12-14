@@ -21,4 +21,16 @@
 +(void)setPreference:(NSString*)key value:(bool)value{
     [[NSUserDefaults standardUserDefaults] setBool:value forKey:key];
 }
+
++(int)getPreferenceInt:(NSString*)key def:(int)def {
+    if([[NSUserDefaults standardUserDefaults] objectForKey:key]==nil) {
+        // Key not found, return default
+        return def;
+    }
+    return [[NSUserDefaults standardUserDefaults] integerForKey:key];
+}
++(void)setPreferenceInt:(NSString*)key value:(int)value{
+    [[NSUserDefaults standardUserDefaults] setInteger:value forKey:key];
+}
+
 @end

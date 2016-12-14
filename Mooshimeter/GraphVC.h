@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // GUI config values
 
-@property int max_points_onscreen;
+@property (nonatomic) int max_points_onscreen;
 @property (nonatomic) BOOL xy_mode;
 @property (nonatomic) BOOL buffer_mode;
 @property (nonatomic) BOOL autoscroll;

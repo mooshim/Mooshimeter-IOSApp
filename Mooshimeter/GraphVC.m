@@ -20,6 +20,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "WidgetFactory.h"
 #import "GraphSettingsView.h"
 #import "GCD.h"
+#import "PrefMan.h"
+
+// Some settings we want to be persistent across page changes but
+static struct {
+    bool valid;
+    bool left_auto;
+    bool right_auto;
+    float left_ymin;
+    float left_ymax;
+    float right_ymin;
+    float right_ymax;
+    int n_points;
+} settings_stash = {
+        NO,
+        NO,
+        NO,
+        NAN,
+        NAN,
+        NAN,
+        NAN,
+        0,
+};
 
 #define BG_COLOR [CPTColor whiteColor]
 #define AXIS_COLOR [CPTColor blackColor]
@@ -57,13 +79,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -(instancetype)initWithMeter:(MooshimeterDeviceBase*)meter {
     self = [super init];
     _meter = meter;
+    
+    _max_points_onscreen = [Prefman getPreferenceInt:PREF_GRAPH_POINTS_ONSCREEN def:100];
 
-    _max_points_onscreen = 100;
-    _xy_mode = NO;
+    _xy_mode = [Prefman getPreference:PREF_GRAPH_XY_MODE def:NO];
     _buffer_mode = NO;
-    _autoscroll = YES;
-    _left_axis_auto = YES;
-    _right_axis_auto = YES;
+    _autoscroll = [Prefman getPreference:PREF_GRAPH_AUTOSCROLL def:YES];
+    _left_axis_auto = [Prefman getPreference:PREF_GRAPH_LEFT_AXIS_AUTO def:YES];
+    _right_axis_auto = [Prefman getPreference:PREF_GRAPH_RIGHT_AXIS_AUTO def:YES];
 
     _left_onscreen = [NSMutableArray array];
     _right_onscreen = [NSMutableArray array];
@@ -204,7 +227,27 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
 #pragma mark - Getters/Setters
 
+
+#pragma mark - getters and setters
+
+-(void)setMax_points_onscreen:(int)max_points_onscreen {
+    [Prefman setPreferenceInt:PREF_GRAPH_POINTS_ONSCREEN value:max_points_onscreen];
+    _max_points_onscreen = max_points_onscreen;
+}
+-(void)setAutoscroll:(BOOL)autoscroll {
+    [Prefman setPreference:PREF_GRAPH_AUTOSCROLL value:autoscroll];
+    _autoscroll = autoscroll;
+}
+-(void)setLeft_axis_auto:(BOOL)left_axis_auto {
+    [Prefman setPreference:PREF_GRAPH_LEFT_AXIS_AUTO value:left_axis_auto];
+    _left_axis_auto = left_axis_auto;
+}
+-(void)setRight_axis_auto:(BOOL)right_axis_auto {
+    [Prefman setPreference:PREF_GRAPH_RIGHT_AXIS_AUTO value:right_axis_auto];
+    _right_axis_auto = right_axis_auto;
+}
 -(void)setXy_mode:(BOOL)xy_mode {
+    [Prefman setPreference:PREF_GRAPH_XY_MODE value:xy_mode];
     _xy_mode = xy_mode;
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
     CPTXYAxis *x = axisSet.xAxis;
