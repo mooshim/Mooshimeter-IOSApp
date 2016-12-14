@@ -37,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @property (strong,nonatomic) UIButton* display_set_button;
 @property (strong,nonatomic) UIButton* range_button;
 @property (strong,nonatomic) UIButton* zero_button;
+@property (strong,nonatomic) UIButton* minmax_button;
 @property (strong,nonatomic) UIButton* sound_button;
 
 @end

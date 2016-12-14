@@ -37,4 +37,5 @@
 -(BOOL)getAutorangeOn:(Channel)c;
 
 +(uint32)getBuildTimeFromPeripheral:(LGPeripheral *)periph;
+-(MeterReading*)wrapMeterReading:(Channel)c val:(float)val;
 @end

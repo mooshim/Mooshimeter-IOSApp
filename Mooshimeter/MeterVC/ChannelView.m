@@ -21,12 +21,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "PopupMenu.h"
 #import "WidgetFactory.h"
 #import "GCD.h"
+#import "MinMaxTracker.h"
 
-static BOOL sound_is_on = NO;
+typedef enum minmax_mode_t {
+    MODE_NONE,
+    MODE_MIN,
+    MODE_MAX,
+};
 
-@implementation ChannelView
+@implementation ChannelView {
+    BOOL sound_is_on;
+    enum minmax_mode_t minmax_mode;
+    MinMaxTracker* tracker;
+}
 
 -(instancetype)initWithFrame:(CGRect)frame ch:(NSInteger)ch meter:(MooshimeterDeviceBase *)meter{
+    tracker = [[MinMaxTracker alloc]init];
+    sound_is_on = NO;
+    minmax_mode = MODE_NONE;
+
     UILabel* l;
     self = [super initWithFrame:frame];
     self.userInteractionEnabled = YES;
@@ -41,8 +54,9 @@ static BOOL sound_is_on = NO;
 
     self.display_set_button = mb(0,0,4,1,display_set_button_press);
     self.range_button       = mb(4,0,2,1,range_button_press);
-    self.zero_button        = mb(0,3,3,1,zero_button_press);
-    self.sound_button       = mb(3,3,3,1,sound_button_press);
+    self.zero_button        = mb(0,3,2,1,zero_button_press);
+    self.minmax_button      = mb(2,3,2,1,minmax_button_press);
+    self.sound_button       = mb(4,3,2,1,sound_button_press);
 
     l = [[UILabel alloc] initWithFrame:cg(0,1,6,2)];
     l.textColor = [UIColor blackColor];
@@ -81,9 +95,9 @@ static BOOL sound_is_on = NO;
                                   title:@"Input Select"
                                 options:[self.meter getInputNameList:self.channel]
                                callback:^(int i) {
-                                   NSLog(@"Received %d", i);
                                    [self.meter setInput:self.channel
                                              descriptor:[self.meter getInputList:self.channel][i]];
+                                   [tracker clear];
                                }];
 }
 
@@ -119,7 +133,49 @@ static BOOL sound_is_on = NO;
 }
 
 -(void)value_label_refresh:(MeterReading*)value {
+    if([tracker process:value.value]) {
+        [self minmax_button_refresh];
+    }
     self.value_label.text = [value toString];
+}
+
+-(void) minmax_button_press {
+    NSArray* options = @[@"Off",@"Min",@"Max"];
+    DECLARE_WEAKSELF;
+    [PopupMenu displayOptionsWithParent:self
+                                  title:@"Function Select"
+                                options:options
+                               callback:^(int i) {
+                                   if(i>=0) {
+                                       [tracker clear];
+                                       minmax_mode = (enum minmax_mode_t)i;
+                                       [GCD asyncMain:^{
+                                           [ws minmax_button_refresh];
+                                       }];
+                                   }
+                               }];
+}
+
+-(void) minmax_button_refresh {
+    NSString* title;
+    MeterReading * val;
+    switch(minmax_mode){
+        case MODE_NONE:
+            title = @"Min/Max";
+            break;
+        case MODE_MIN:
+            val = [self.meter wrapMeterReading:self.channel val:tracker.min];
+            title = [NSString stringWithFormat:@"Min: %@", [val toString]];
+            break;
+        case MODE_MAX:
+            val = [self.meter wrapMeterReading:self.channel val:tracker.max];
+            title = [NSString stringWithFormat:@"Max: %@", [val toString]];
+            break;
+        default:
+            title = @"INVALID";
+            break;
+    }
+    [self.minmax_button setTitle:title forState:UIControlStateNormal];
 }
 
 -(void) zero_button_press {
@@ -173,6 +229,7 @@ static BOOL sound_is_on = NO;
     [self display_set_button_refresh];
     [self range_button_refresh];
     [self zero_button_refresh];
+    [self minmax_button_refresh];
     [self sound_button_refresh];
 }
 
