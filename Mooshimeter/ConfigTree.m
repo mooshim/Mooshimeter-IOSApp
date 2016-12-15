@@ -13,10 +13,10 @@
 @end
 @implementation NSMutableDictionary(SubscriptExtension)
 -(id)objectAtIndexedSubscript:(NSUInteger)subscript {
-    return [self objectForKey:[NSNumber numberWithInt:subscript]];
+    return [self objectForKey:@(subscript)];
 }
 -(void)setObject:(id)object atIndexedSubscript:(NSUInteger)subscript {
-    [self setObject:object forKey:[NSNumber numberWithInt:subscript]];
+    [self setObject:object forKey:@(subscript)];
 }
 @end
 
@@ -209,7 +209,7 @@ void (^serout_callback)(NSData*,NSError*);
             [self enumerate];
             uint32_t crc = [pdata crc32];
             NSLog(@"CALC CRC: %0X",crc);
-            [self getNode:@"ADMIN:CRC32"].value = [NSNumber numberWithInt:crc];
+            [self getNode:@"ADMIN:CRC32"].value = @(crc);
         }
         @catch (NSException * e) {
             NSLog(@"%@",e);
@@ -286,7 +286,7 @@ void (^serout_callback)(NSData*,NSError*);
             int code = [g_code[0] intValue];
             n.code = code;
             code++;
-            g_code[0] = [NSNumber numberWithInt:code];
+            g_code[0] = @(code);
         }
     };
     [self walk:p];
