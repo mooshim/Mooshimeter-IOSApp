@@ -76,12 +76,16 @@
     [self toTerminal:intro];
 }
 
+// Prints a string to the large GUI text field in the middle of the screen
+
 -(void)toTerminal:(NSString*)s {
     [GCD asyncMain:^{
         [self.terminal setText:[self.terminal.text stringByAppendingString:s]];
         [self.terminal scrollRangeToVisible:NSMakeRange(self.terminal.text.length - 1, 1)];
     }];
 }
+
+// Starts uploading the firmware to the Mooshimeter (if the upload isn't already underway)
 
 -(void)upload {
     if(self.async_block!=nil) {
@@ -99,6 +103,8 @@
 }
 
 extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverServicesCallback aCallback);
+
+// upload_task is not called directly, it is dispatched to the background queue by [upload]
 
 -(int)upload_task {
     // Assume we're on a background thread
@@ -180,8 +186,13 @@ extern void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscover
     return 0;
 }
 
+///////////////////
+// Delegate methods
+///////////////////
+
 - (void)onInit {}
 - (void)onDisconnect {
+    // Wake any thread waiting on the meter
     [lock signal];
 }
 - (void)onRssiReceived:(int)rssi {}
