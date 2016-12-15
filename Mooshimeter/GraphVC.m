@@ -20,17 +20,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "WidgetFactory.h"
 #import "GraphSettingsView.h"
 #import "GCD.h"
-#import "PrefMan.h"
 
 // Some settings we want to be persistent across page changes but
+
 static struct {
     bool valid;
     bool left_auto;
     bool right_auto;
-    float left_ymin;
-    float left_ymax;
-    float right_ymin;
-    float right_ymax;
+    double left_location;
+    double left_length;
+    double right_location;
+    double right_length;
     int n_points;
 } settings_stash = {
         NO,
@@ -79,14 +79,20 @@ static struct {
 -(instancetype)initWithMeter:(MooshimeterDeviceBase*)meter {
     self = [super init];
     _meter = meter;
-    
-    _max_points_onscreen = [Prefman getPreferenceInt:PREF_GRAPH_POINTS_ONSCREEN def:100];
 
-    _xy_mode = [Prefman getPreference:PREF_GRAPH_XY_MODE def:NO];
+    if(settings_stash.valid) {
+        _max_points_onscreen = settings_stash.n_points;
+        _left_axis_auto = settings_stash.left_auto;
+        _right_axis_auto = settings_stash.right_auto;
+    } else {
+        _max_points_onscreen = 100;
+        _left_axis_auto = YES;
+        _right_axis_auto = YES;
+    }
+
+    _xy_mode = NO;
     _buffer_mode = NO;
-    _autoscroll = [Prefman getPreference:PREF_GRAPH_AUTOSCROLL def:YES];
-    _left_axis_auto = [Prefman getPreference:PREF_GRAPH_LEFT_AXIS_AUTO def:YES];
-    _right_axis_auto = [Prefman getPreference:PREF_GRAPH_RIGHT_AXIS_AUTO def:YES];
+    _autoscroll = YES;
 
     _left_onscreen = [NSMutableArray array];
     _right_onscreen = [NSMutableArray array];
@@ -124,6 +130,14 @@ static struct {
     self.buffer_mode = NO;
     self.navigationController.navigationBar.hidden = NO;
     [self.meter removeDelegate:self];
+    settings_stash.valid = YES;
+    settings_stash.n_points = _max_points_onscreen;
+    settings_stash.left_auto = _left_axis_auto;
+    settings_stash.right_auto = _right_axis_auto;
+    settings_stash.left_location = _leftAxisSpace.yRange.locationDouble;
+    settings_stash.left_length   = _leftAxisSpace.yRange.lengthDouble;
+    settings_stash.right_location = _rightAxisSpace.yRange.locationDouble;
+    settings_stash.right_length   = _rightAxisSpace.yRange.lengthDouble;
 }
 
 CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
@@ -229,25 +243,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
 
 #pragma mark - getters and setters
-
--(void)setMax_points_onscreen:(int)max_points_onscreen {
-    [Prefman setPreferenceInt:PREF_GRAPH_POINTS_ONSCREEN value:max_points_onscreen];
-    _max_points_onscreen = max_points_onscreen;
-}
--(void)setAutoscroll:(BOOL)autoscroll {
-    [Prefman setPreference:PREF_GRAPH_AUTOSCROLL value:autoscroll];
-    _autoscroll = autoscroll;
-}
--(void)setLeft_axis_auto:(BOOL)left_axis_auto {
-    [Prefman setPreference:PREF_GRAPH_LEFT_AXIS_AUTO value:left_axis_auto];
-    _left_axis_auto = left_axis_auto;
-}
--(void)setRight_axis_auto:(BOOL)right_axis_auto {
-    [Prefman setPreference:PREF_GRAPH_RIGHT_AXIS_AUTO value:right_axis_auto];
-    _right_axis_auto = right_axis_auto;
-}
 -(void)setXy_mode:(BOOL)xy_mode {
-    [Prefman setPreference:PREF_GRAPH_XY_MODE value:xy_mode];
     _xy_mode = xy_mode;
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.hostView.hostedGraph.axisSet;
     CPTXYAxis *x = axisSet.xAxis;
@@ -263,7 +259,9 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
 
 -(void)setBuffer_mode:(BOOL)buffer_mode {
     _buffer_mode = buffer_mode;
-    self.max_points_onscreen = [self.meter getBufferDepth];
+    if(buffer_mode) {
+        self.max_points_onscreen = [self.meter getBufferDepth];
+    }
     [self.meter setBufferMode:CH1 on:buffer_mode];
     [self.meter setBufferMode:CH2 on:buffer_mode];
     [self.refresh_button setHidden:!buffer_mode];
@@ -372,11 +370,14 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     [graph addPlot:ch1Plot toPlotSpace:_leftAxisSpace];
     
     // 3 - Set up plot space
-    [_leftAxisSpace scaleToFitPlots:@[ch1Plot]];
-    
-    CPTMutablePlotRange *y1Range = [_leftAxisSpace.yRange mutableCopy];
-    [y1Range expandRangeByFactor:@1.2f];
-    _leftAxisSpace.yRange = y1Range;
+    if(settings_stash.valid) {
+        _leftAxisSpace.yRange = [[CPTPlotRange alloc] initWithLocation:@(settings_stash.left_location) length:@(settings_stash.left_length)];
+    } else {
+        [_leftAxisSpace scaleToFitPlots:@[ch1Plot]];
+        CPTMutablePlotRange *y1Range = [_leftAxisSpace.yRange mutableCopy];
+        [y1Range expandRangeByFactor:@1.2f];
+        _leftAxisSpace.yRange = y1Range;
+    }
     
     // 4 - Create styles and symbols
     if( !self.xy_mode ) {
@@ -413,17 +414,19 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
         CPTColor *ch2Color = RIGHT_COLOR;
         [graph addPlot:ch2Plot toPlotSpace:_rightAxisSpace];
         
-        [_rightAxisSpace scaleToFitPlots:@[ch2Plot]];
-        
-        CPTMutablePlotRange *y2Range = (CPTMutablePlotRange*)[_rightAxisSpace.yRange mutableCopy];
-        
         CPTMutablePlotRange *xRange = (CPTMutablePlotRange*)[_leftAxisSpace.xRange mutableCopy];
         [xRange expandRangeByFactor:@1.2f];
         _leftAxisSpace.xRange = xRange;
         _rightAxisSpace.xRange = xRange;
-        
-        [y2Range expandRangeByFactor:@1.2f];
-        _rightAxisSpace.yRange = y2Range;
+
+        if(settings_stash.valid) {
+            _rightAxisSpace.yRange = [[CPTPlotRange alloc] initWithLocation:@(settings_stash.right_location) length:@(settings_stash.right_length)];
+        } else {
+            [_rightAxisSpace scaleToFitPlots:@[ch2Plot]];
+            CPTMutablePlotRange *y2Range = (CPTMutablePlotRange*)[_rightAxisSpace.yRange mutableCopy];
+            [y2Range expandRangeByFactor:@1.2f];
+            _rightAxisSpace.yRange = y2Range;
+        }
         
         CPTMutableLineStyle *ch2LineStyle = (CPTMutableLineStyle*)[ch2Plot.dataLineStyle mutableCopy];
         ch2LineStyle.lineWidth = 2.5;
