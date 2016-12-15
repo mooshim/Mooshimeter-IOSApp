@@ -56,7 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         uint16 lookup;
         [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
         lookup = NSSwapShort(lookup);
-        NSNumber* key = [NSNumber numberWithInt:lookup];
+        NSNumber* key = @(lookup);
         self.chars[key] = c;
     }
 }
@@ -71,7 +71,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 -(LGCharacteristic*)getLGChar:(uint16)UUID {
-    return self.chars[[NSNumber numberWithInt:UUID]];
+    return self.chars[@(UUID)];
 }
 
 #pragma mark MooshimeterControlProtocol_methods

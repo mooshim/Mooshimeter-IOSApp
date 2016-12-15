@@ -501,7 +501,7 @@ NSMutableString* concat(int n_strings,...) {
         else if(bytes_per_sample==2) {val = [b popShort];}
         else if(bytes_per_sample==1) {val = [b popInt8];}
         else{NSLog(@"Badness ensues");}
-        [rval addObject:[NSNumber numberWithFloat:(((float)val)*lsb2native)]];
+        [rval addObject:@(((float)val)*lsb2native)];
     }
     return rval;
 }
@@ -595,7 +595,7 @@ NSMutableString* concat(int n_strings,...) {
 }
     
 -(void) setOffset:(Channel)c offset:(float)offset {
-    NSNumber* nobj = [NSNumber numberWithFloat:offset];
+    NSNumber* nobj = @(offset);
     [_tree command:concat(3,nameForChannel(c),@":OFFSET ",[nobj stringValue])];
 }
     

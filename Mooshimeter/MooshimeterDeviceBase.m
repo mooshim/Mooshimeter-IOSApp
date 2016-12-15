@@ -312,7 +312,7 @@
     return self.periph.cbPeripheral.state == CBPeripheralStateConnected;
 }
 -(LGCharacteristic*)getLGChar:(uint16)UUID {
-    return self.chars[[NSNumber numberWithInt:UUID]];
+    return self.chars[@(UUID)];
 }
 // Filler control methods to suppress warnings
 
@@ -382,7 +382,7 @@
         uint16 lookup;
         [c.cbCharacteristic.UUID.data getBytes:&lookup range:NSMakeRange(2, 2)];
         lookup = NSSwapShort(lookup);
-        NSNumber* key = [NSNumber numberWithInt:lookup];
+        NSNumber* key = @(lookup);
         self.chars[key] = c;
     }
 }

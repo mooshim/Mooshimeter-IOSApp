@@ -48,22 +48,22 @@ typedef void(^NodeProcessor)(ConfigNode*);
                         NSLog(@"Shouldn't receive notification here!");
                         return;
                     case NTYPE_CHOOSER:
-                        [n notify:[NSNumber numberWithInt:[b popUint8]]];
+                        [n notify:@([b popUint8])];
                         break;
                     case NTYPE_LINK   :
                         NSLog(@"Shouldn't receive notification here!");
                         return;
                     case NTYPE_VAL_U8 :
                     case NTYPE_VAL_S8 :
-                        [n notify:[NSNumber numberWithInt:[b popUint8]]];
+                        [n notify:@([b popUint8])];
                         break;
                     case NTYPE_VAL_U16:
                     case NTYPE_VAL_S16:
-                        [n notify:[NSNumber numberWithInt:[b popShort]]];
+                        [n notify:@([b popShort])];
                         break;
                     case NTYPE_VAL_U32:
                     case NTYPE_VAL_S32:
-                        [n notify:[NSNumber numberWithInt:[b popInt]]];
+                        [n notify:@([b popInt])];
                         break;
                     case NTYPE_VAL_STR:
                         expecting_bytes = [b popShort];
@@ -83,7 +83,7 @@ typedef void(^NodeProcessor)(ConfigNode*);
                         [n notify:[b pop:expecting_bytes]];
                         break;
                     case NTYPE_VAL_FLT:
-                        [n notify:[NSNumber numberWithFloat:[b popFloat]]];
+                        [n notify:@([b popFloat])];
                         break;
                 }
             } else {

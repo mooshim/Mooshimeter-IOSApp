@@ -527,7 +527,7 @@ int24_test to_int24_test(long arg) {
     int n_samples = [self getBufferDepth];
     NSMutableArray * rval = [[NSMutableArray alloc] initWithCapacity:n_samples];
     for(unsigned int i = 0; i < n_samples; i++) {
-        rval[i] = [NSNumber numberWithFloat:[self lsbToNativeUnits:to_int32(in[i]) channel:c]];
+        rval[i] = @([self lsbToNativeUnits:to_int32(in[i]) channel:c]);
     }
     return rval;
 }

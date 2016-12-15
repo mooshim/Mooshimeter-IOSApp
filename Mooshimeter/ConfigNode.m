@@ -98,24 +98,24 @@
         case NTYPE_PLAIN:
             return nil;
         case NTYPE_CHOOSER:
-            return [NSNumber numberWithInt:[str intValue]];
+            return @([str intValue]);
         case NTYPE_LINK:
             return nil;
         case NTYPE_VAL_S8:
         case NTYPE_VAL_S16:
         case NTYPE_VAL_S32:
-            return [NSNumber numberWithInt:[str intValue]];
+            return @([str intValue]);
         case NTYPE_VAL_U8:
         case NTYPE_VAL_U16:
         case NTYPE_VAL_U32:
-            return [NSNumber numberWithUnsignedInt:strtoul([str UTF8String],NULL,0)];
+            return @(strtoul([str UTF8String],NULL,0));
         case NTYPE_VAL_STR:
             return str;
         case NTYPE_VAL_BIN:
             NSLog(@"Not implemented yet");
             return nil;
         case NTYPE_VAL_FLT:
-            return [NSNumber numberWithFloat:[str floatValue]];
+            return @([str floatValue]);
     }
     NSLog(@"Bad ntype!");
     return nil;
@@ -176,7 +176,7 @@
 }
 -(void)choose {
     if(_parent.ntype==NTYPE_CHOOSER) {
-        [_parent sendValue:[NSNumber numberWithInt:[self getIndex]] blocking:YES];
+        [_parent sendValue:@([self getIndex]) blocking:YES];
     }
 }
 -(NSObject*)reqValue {

@@ -51,8 +51,8 @@ static struct {
 @implementation XYPoint
 +(XYPoint*)make:(float)x y:(float)y {
     XYPoint* rval = [[XYPoint alloc]init];
-    rval.x= [NSNumber numberWithFloat:x];
-    rval.y= [NSNumber numberWithFloat:y];
+    rval.x= @(x);
+    rval.y= @(y);
     return rval;
 }
 +(XYPoint*)makeWithNSNumber:(NSNumber*)x y:(NSNumber*)y {
@@ -153,7 +153,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     }
     float dif = maxX-minX;
     if(dif<1e-5) { dif=1e-5; }
-    CPTMutablePlotRange *xr = (CPTMutablePlotRange *)[[CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:minX] length:[NSNumber numberWithFloat:dif]] mutableCopy];
+    CPTMutablePlotRange *xr = (CPTMutablePlotRange *)[[CPTPlotRange plotRangeWithLocation:@(minX) length:@(dif)] mutableCopy];
     return xr;
 }
 
@@ -216,7 +216,7 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
             float dt = _buffer_mode?(1.0f):([self.meter getBufferDepth]);
             dt/= [self.meter getSampleRateHz];
             float xmax = xmin+_max_points_onscreen*dt;
-            range = [CPTPlotRange plotRangeWithLocation:[NSNumber numberWithFloat:xmin] length:[NSNumber numberWithFloat:(xmax-xmin)]];
+            range = [CPTPlotRange plotRangeWithLocation:@(xmin) length:@(xmax-xmin)];
             _leftAxisSpace.xRange = range;
             _rightAxisSpace.xRange = [range copy];
         }
@@ -571,13 +571,13 @@ CPTPlotRange* plotRangeForValueArray(NSArray* values, SEL returnsAnNSNumber) {
     NSMutableSet *yMajorLocations = [NSMutableSet set];
     for(double j = yMin; j < yMax; j+=majorTick) {
         CPTAxisLabel *label = [[CPTAxisLabel alloc] initWithText:[NSString stringWithFormat:@"%3.3f", j] textStyle:target.labelTextStyle];
-        label.tickLocation = [NSNumber numberWithDouble:j];
+        label.tickLocation = @(j);
         label.offset = -target.majorTickLength - target.labelOffset;
         label.rotation = 3.14f/4; // Rotate 45 degrees for better fit
         if (label) {
             [yLabels addObject:label];
         }
-        [yMajorLocations addObject:[NSNumber numberWithDouble:j]];
+        [yMajorLocations addObject:@(j)];
     }
     target.axisLabels = yLabels;
     target.majorTickLocations = yMajorLocations;
@@ -690,7 +690,7 @@ void erroneousintercept() {
     [GCD asyncMain:^{
         float t = _sample_time;
         for(NSNumber* n in val) {
-            XYPoint * p = [XYPoint makeWithNSNumber:[NSNumber numberWithFloat:t] y:n];
+            XYPoint * p = [XYPoint makeWithNSNumber:@(t) y:n];
             [buf addObject:p];
             t+=dt;
         }
