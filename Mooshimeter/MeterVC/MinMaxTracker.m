@@ -6,17 +6,7 @@
 #import "MinMaxTracker.h"
 
 
-@implementation MinMaxTracker {
-    float sum;
-}
-
-#pragma mark getters/setters
--(float)getAvg {
-    if(_n_samples==0) {
-        return 0;
-    }
-    return sum/_n_samples;
-}
+@implementation MinMaxTracker
 #pragma mark initializer
 -(instancetype)init {
     self = [super init];
@@ -27,18 +17,17 @@
 #pragma mark public methods
 -(void)clear {
     _min = CGFLOAT_MAX;
-    _max = CGFLOAT_MIN;
-    sum = 0;
-    _n_samples = 0;
+    _max =-CGFLOAT_MAX;
 }
--(void)process:(float)arg {
+-(BOOL)process:(float)arg {
     if(arg < _min) {
         _min = arg;
+        return YES;
     }
     if(arg > _max) {
         _max = arg;
+        return YES;
     }
-    sum += arg;
-    _n_samples++;
+    return NO;
 }
 @end

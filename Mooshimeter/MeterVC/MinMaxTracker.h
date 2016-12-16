@@ -9,10 +9,8 @@
 @interface MinMaxTracker : NSObject
 @property float min;
 @property float max;
-@property float avg;
-@property int n_samples;
 
-// Clear the min, max and average
+// Clear the min, max
 -(void)clear;
 // Update the min, max and average with the provided sample
 // Returns true if min or max updated
