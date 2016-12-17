@@ -377,6 +377,8 @@ void (^serout_callback)(NSData*,NSError*);
         ConfigNode *n = _code_list[i];
         if(   n.ntype != NTYPE_VAL_BIN ) {
             [GCD asyncBack:^{
+                // NOTE: This reqValue call may time out, as some elements of the configuration tree
+                // are not readable and the Mooshimeter will send no response.  A timeout here is not something to worry about.
                 [n reqValue];
                 dispatch_semaphore_signal(s);
             }];

@@ -339,7 +339,6 @@ void discoverRecursively(NSArray* services,uint32 i, LGPeripheralDiscoverService
     // We're going to force the meter to disconnect, then reconnect real quick
     [m.periph registerDisconnectHandler:^(NSError *error) {
         NSLog(@"INVoluntary disconnection");
-        //[self wrapPeripheralInMooshimeterAndTransition:m.periph];
     }];
     [m reboot];
     [m.periph disconnectWithCompletion:^(NSError *error) {

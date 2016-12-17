@@ -385,7 +385,6 @@ void (^sample_handler)(NSData*,NSError*);
                 uint32 utc_time = [[NSDate date] timeIntervalSince1970];
                 [self setTime:utc_time];
                 [self.periph registerDisconnectHandler:^(NSError *error) {
-                    [ws clearLGDict];
                     [ws accidentalDisconnect:error];
                 }];
                 [self finishInit];

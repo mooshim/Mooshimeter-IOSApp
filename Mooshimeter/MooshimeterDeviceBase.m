@@ -387,8 +387,4 @@
     }
 }
 
--(void)clearLGDict {
-    [self.chars removeAllObjects];
-}
-
 @end

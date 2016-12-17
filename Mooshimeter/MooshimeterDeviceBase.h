@@ -28,7 +28,6 @@
 
 +(Class)chooseSubClass:(LGPeripheral *)connected_peripheral;
 -(void)populateLGDict:(NSArray*)characteristics;
--(void)clearLGDict;
 
 -(instancetype) init:(LGPeripheral*)periph delegate:(id<MooshimeterDelegateProtocol>)delegate;
 -(BOOL)isConnected;
