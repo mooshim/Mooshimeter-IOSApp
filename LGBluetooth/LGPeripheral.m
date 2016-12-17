@@ -50,7 +50,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 @interface LGPeripheral ()<CBPeripheralDelegate>
 
 @property (copy, atomic) LGPeripheralConnectionCallback       connectionBlock;
-@property (copy, atomic) LGPeripheralConnectionCallback       disconnectBlock;
+@property (copy, atomic) NSMutableArray<LGPeripheralConnectionCallback>* disconnectBlocks;
 @property (copy, atomic) LGPeripheralDiscoverServicesCallback discoverServicesBlock;
 @property (copy, atomic) LGPeripheralRSSIValueCallback        rssiValueBlock;
 
@@ -116,14 +116,14 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 - (void)disconnectWithCompletion:(LGPeripheralConnectionCallback)aCallback
 {
     if(aCallback!=nil) {
-        self.disconnectBlock = aCallback;
+        [self.disconnectBlocks addObject:aCallback];
     }
     [self.manager.manager cancelPeripheralConnection:self.cbPeripheral];
 }
 
 - (void)registerDisconnectHandler:(LGPeripheralConnectionCallback)aCallback
 {
-    self.disconnectBlock = aCallback;
+    [self.disconnectBlocks addObject:aCallback];
 }
 
 - (void)discoverServicesWithCompletion:(LGPeripheralDiscoverServicesCallback)aCallback
@@ -177,13 +177,13 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
 - (void)handleDisconnectWithError:(NSError *)anError
 {
     LGLog(@"Disconnect with error - %@", anError);
-    if (self.disconnectBlock) {
-        self.disconnectBlock(anError);
+    for(LGPeripheralConnectionCallback b in self.disconnectBlocks) {
+        b(anError);
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:kLGPeripheralDidDisconnect
                                                         object:self
                                                       userInfo:@{@"error" : anError ? : [NSNull null]}];
-    self.disconnectBlock = nil;
+    [self.disconnectBlocks removeAllObjects];
 }
 
 /*----------------------------------------------------*/
@@ -330,6 +330,7 @@ NSString * const kConnectionMissingErrorMessage = @"BLE Device is not connected"
         _cbPeripheral = aPeripheral;
         _cbPeripheral.delegate = self;
         _manager = manager;
+        _disconnectBlocks = [@[] mutableCopy];
     }
     return self;
 }
