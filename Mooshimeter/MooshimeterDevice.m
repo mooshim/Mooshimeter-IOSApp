@@ -103,6 +103,8 @@ void addRangeDescriptors(InputDescriptor* id, ConfigNode* rangenode) {
 
     [self.periph registerDisconnectHandler:^(NSError *error) {
         stop_heartbeat = YES;
+        // Clear the characteristic dictionary, because after disconnect the services are no longer valid
+        [self clearLGDict];
         [self.delegate onDisconnect];
     }];
 

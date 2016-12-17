@@ -377,13 +377,16 @@ void (^sample_handler)(NSData*,NSError*);
         [self.delegate onSampleReceived:utc_time c:MATH val:[self getValue:MATH]];
     };
 
+    DECLARE_WEAKSELF;
+
     [self reqMeterInfo:^(NSData *data, NSError *error) {
         [self reqMeterSettings:^(NSData *data, NSError *error) {
             [self reqMeterLogSettings:^(NSData *data, NSError *error) {
                 uint32 utc_time = [[NSDate date] timeIntervalSince1970];
                 [self setTime:utc_time];
                 [self.periph registerDisconnectHandler:^(NSError *error) {
-                    [self accidentalDisconnect:error];
+                    [ws clearLGDict];
+                    [ws accidentalDisconnect:error];
                 }];
                 [self finishInit];
                 [self.delegate onInit];
