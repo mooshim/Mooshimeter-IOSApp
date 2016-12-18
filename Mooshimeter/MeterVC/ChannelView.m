@@ -23,15 +23,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #import "GCD.h"
 #import "MinMaxTracker.h"
 
-typedef enum minmax_mode_t {
+typedef enum {
     MODE_NONE,
     MODE_MIN,
     MODE_MAX,
-};
+} minmax_mode_t;
 
 @implementation ChannelView {
     BOOL sound_is_on;
-    enum minmax_mode_t minmax_mode;
+    minmax_mode_t minmax_mode;
     MinMaxTracker* tracker;
 }
 
@@ -43,7 +43,7 @@ typedef enum minmax_mode_t {
     UILabel* l;
     self = [super initWithFrame:frame];
     self.userInteractionEnabled = YES;
-    self.channel = ch;
+    self.channel = (Channel)ch;
     self.meter = meter;
 
     float h = frame.size.height/4;
@@ -148,7 +148,7 @@ typedef enum minmax_mode_t {
                                callback:^(int i) {
                                    if(i>=0) {
                                        [tracker clear];
-                                       minmax_mode = (enum minmax_mode_t)i;
+                                       minmax_mode = (minmax_mode_t)i;
                                        [GCD asyncMain:^{
                                            [ws minmax_button_refresh];
                                        }];
