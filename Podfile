@@ -9,9 +9,4 @@ target 'Mooshimeter' do
   pod 'Toast', '~> 3.0'
   pod 'Fabric'
   pod 'Crashlytics'
-
-  target 'MooshimeterTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
 end
