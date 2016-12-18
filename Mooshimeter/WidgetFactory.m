@@ -45,7 +45,7 @@
     return self;
 }
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    self.callback(self.alertView,buttonIndex);
+    self.callback(self.alertView,(int)buttonIndex);
 }
 @end
 
@@ -270,7 +270,7 @@
         return nil;
     }
     MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
-    MailComposeDummyDelegate *md = [[MailComposeDummyDelegate alloc] initAndAttachTo:mc];
+    volatile MailComposeDummyDelegate *md = [[MailComposeDummyDelegate alloc] initAndAttachTo:mc];
     return mc;
 }
 @end
