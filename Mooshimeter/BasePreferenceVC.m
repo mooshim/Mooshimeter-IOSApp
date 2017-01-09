@@ -70,23 +70,6 @@ const int acc_inset = 10;
         [accessory setLLInset:acc_inset];
         [rval addSubview:accessory];
     }
-
-    // Center the accessory in the space available for it
-    /*CGRect acc_frame = accessory.frame;
-    {
-        float acc_w = self.visible_w-left_w-inset;
-        float acc_x_inset = (acc_w - acc_frame.size.width)/2;
-        float acc_y_inset = (row_h - acc_frame.size.height)/2;
-        acc_frame.origin.x = left_w + acc_x_inset;
-        acc_frame.origin.y = acc_y_inset;
-    }
-    [accessory setFrame:acc_frame];
-
-    [rval addSubview:title_label];
-    [rval addSubview:msg_label];
-    [rval addSubview:accessory];
-
-    [self.content_view addSubview:rval];*/
     [_background_ll addSubview:rval];
 
     [self addSpacer];
@@ -104,8 +87,12 @@ const int acc_inset = 10;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _background_ll = [[LinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
+    _background_ll = [[ScrollingLinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
     _background_ll.frame = CGRectInset(self.content_view.bounds,20,20);
+    [_background_ll setScrollEnabled:YES];
+    [_background_ll setShowsVerticalScrollIndicator:YES];
+    [_background_ll setMaximumZoomScale:1];
+    [_background_ll setMinimumZoomScale:1];
     [self.content_view addSubview:_background_ll];
 }
 
