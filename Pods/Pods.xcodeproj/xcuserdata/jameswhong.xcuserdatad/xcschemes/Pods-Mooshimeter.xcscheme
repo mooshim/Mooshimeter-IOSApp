@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '7B6E2ADCB5048357F276801566B37B3C'
+               BlueprintIdentifier = '10E2AB53707A27CE7C49705E6023B9DF'
                BlueprintName = 'Pods-Mooshimeter'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libPods-Mooshimeter.a'>
