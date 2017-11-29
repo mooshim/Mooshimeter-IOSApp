@@ -58,4 +58,9 @@ static SmartNavigationController *shared = nil;
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration NS_DEPRECATED_IOS(2_0,8_0, "Implement viewWillTransitionToSize:withTransitionCoordinator: instead") {
     return [self.topViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [self.topViewController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
+
 @end
