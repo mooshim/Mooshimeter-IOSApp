@@ -54,7 +54,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @end
 
 @interface LoggingPreferencesVC()
-@property ScrollingLinearLayout * scroller;
 @property UILabel* status_label;
 @end
 
@@ -128,14 +127,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         [b setLLInset:10];
         [self addCell:b];
     }
-
-    _scroller = [[ScrollingLinearLayout alloc] initWithDirection:LAYOUT_VERTICAL];
-    [_scroller setShowsVerticalScrollIndicator:YES];
-    [_scroller setMaximumZoomScale:1];
-    [_scroller setMinimumZoomScale:1];
-    [_scroller setLLWeight:1];
-
-    [self.background_ll addSubview:_scroller];
 }
 
 -(void)onLoggingStatusChanged:(BOOL)on new_state:(int)new_state message:(NSString *)message {
@@ -160,11 +151,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             [gnav pushViewController:vc animated:YES];
         }];
         [row setLLSize:60];
-        [self.scroller addSubview:row];
+        [self.background_ll addSubview:row];
         UIView* space = [[UIView alloc]init];
         [space setBackgroundColor:[UIColor lightGrayColor]];
         [space setLLSize:1];
-        [self.scroller addSubview:space];
+        [self.background_ll addSubview:space];
     }];
 }
 @end
